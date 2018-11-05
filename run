@@ -1,0 +1,7 @@
+#!/bin/bash
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" && cd $CURRDIR
+if [ -f classFiles ]; then
+    mkdir classFiles
+fi
+javac -cp ".:dependencies/JSONparser/JSON-java.jar" -d classFiles src/*.java
+java -cp ".:dependencies/JSONparser/JSON-java.jar" classFiles/textFighter

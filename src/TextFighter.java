@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.nio.File;
 
+import org.json.*;
+
 public class TextFighter {
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
@@ -15,7 +17,7 @@ public class TextFighter {
         //Read from the /Resources/Interfaces directory
         File interfaceDirectory = new File("../Resources/Interfaces");
         for (File f : interfaceDirectory.listFiles()) {
-            
+                    
         }
 
     }
