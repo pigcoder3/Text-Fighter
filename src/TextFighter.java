@@ -17,7 +17,7 @@ public class TextFighter {
         //Read from the /Resources/Interfaces directory
         File interfaceDirectory = new File("../Resources/Interfaces");
         for (File f : interfaceDirectory.listFiles()) {
-                    
+             
         }
 
     }
@@ -29,6 +29,8 @@ public class TextFighter {
 
     public static void loadSave(String name) {
         //Read from /Saves directory
+        File saveDirectory = new File("../Saves");
+            
 
     }
 
@@ -45,7 +47,7 @@ public class TextFighter {
     public static void main(String[] args) {
         loadEnemies();
         loadInterfaces();
-
+        Player player = new Player();
         // Display all saves
         // Ask if user want to load saves
         // if yes, then load
