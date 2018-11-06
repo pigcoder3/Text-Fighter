@@ -1,0 +1,4 @@
+Planned Additions:
+ N/A
+
+Add .jar file when a stable version is released
