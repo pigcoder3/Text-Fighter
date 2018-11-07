@@ -1,4 +1,4 @@
-
+package tfighter;
 
 public class Boots extends Armor {
 

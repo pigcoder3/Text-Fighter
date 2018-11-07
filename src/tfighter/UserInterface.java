@@ -1,11 +1,11 @@
+package tfighter;
 
-
-public class userInterface {
+public class UserInterface {
 
     String[] unParsedUI;
     String[] parsedUI;
 
-    public userInterface(String[] UI) {
+    public UserInterface(String[] UI) {
         this.unParsedUI = UI;
     }
 
@@ -14,7 +14,7 @@ public class userInterface {
         //<tag> is used to indicate a place to be parsed
         String[] UI;
         parsedUI = UI;
-    
+
     }
 
 }

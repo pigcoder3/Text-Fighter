@@ -1,12 +1,16 @@
+package tfighter;
+
 import java.util.ArrayList;
-import java.nio.File;
+import java.io.File;
+
+import tfighter.Display;
 
 import org.json.*;
 
 public class TextFighter {
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    ArrayList<Interface> userInterfaces = new ArrayList<Interface>();
+ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
 
     public static void loadEnemies() {
         //Read from the /Resources/Enemies directory
@@ -17,7 +21,7 @@ public class TextFighter {
         //Read from the /Resources/Interfaces directory
         File interfaceDirectory = new File("../Resources/Interfaces");
         for (File f : interfaceDirectory.listFiles()) {
-             
+
         }
 
     }
@@ -30,7 +34,13 @@ public class TextFighter {
     public static void loadSave(String name) {
         //Read from /Saves directory
         File saveDirectory = new File("../Saves");
-            
+
+
+    }
+
+    public static void newGame() {
+        //Create a .JSON file in /Saves
+        //Write to it the default stuff
 
     }
 
