@@ -3,9 +3,9 @@ package tfighter;
 import java.util.ArrayList;
 import java.io.File;
 
-import org.tfighter.Display;
+import tfighter.Display;
 
-import org.json.JSONObject;
+import org.json.*;
 
 public class TextFighter {
 

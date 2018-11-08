@@ -1,8 +1,5 @@
 #!/bin/bash
 CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $CURRDIR
-if [ ! -d classes/org/tfighter ]; then
-    mkdir classes/org/tfighter
-fi
-javac -classpath ".:lib/JSONparser/json-20180813.jar:classes/" -d classes/org/tfighter src/org/tfighter/*.java
-java -classpath ".:lib/JSONparser/json-20180813.jar:classes/" classes/org/tfighter/TextFighter
+javac -classpath ".:lib/JSONparser/json-20180813.jar" -d . src/tfighter/*.java
+java -classpath ".:lib/JSONparser/json-20180813.jar" tfighter.TextFighter
