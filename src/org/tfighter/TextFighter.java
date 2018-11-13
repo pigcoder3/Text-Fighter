@@ -2,15 +2,21 @@ package tfighter;
 
 import java.util.ArrayList;
 import java.io.File;
+import java.io.FileReader;
 
 import tfighter.Display;
 
-import org.json.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class TextFighter {
 
+    //Resources directory
+    static String resourcesDir = "../../Resources";
+    static JSONParser parser = new JSONParser();
+
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
+    ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
 
     public static void loadEnemies() {
         //Read from the /Resources/Enemies directory
@@ -19,9 +25,11 @@ ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
 
     public static void loadInterfaces() {
         //Read from the /Resources/Interfaces directory
-        File interfaceDirectory = new File("../Resources/Interfaces");
-        for (File f : interfaceDirectory.listFiles()) {
-
+        File interfaceDir = new File(resourcesDir + "/Interfaces/");
+        for (File f : interfaceDir.listFiles()) {
+            JSONArray uiarray = (JSONArray) parser.parse(new FileReader(f));
+            UserInterface ui = new UserInterface(uiarray.get(2).join('\n'));
+            userInterfaces.add(ui);
         }
 
     }
