@@ -6,7 +6,7 @@ import java.io.FileReader;
 
 import tfighter.Display;
 
-import org.json.simple.JSONObject;
+import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 
 public class TextFighter {
