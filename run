@@ -1,5 +1,5 @@
 #!/bin/bash
 CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $CURRDIR
-javac -classpath ".:lib/JSONparser/json-simple-1.1.1.jar" -d . src/org/tfighter/*.java
+javac -classpath ".:lib/JSONparser/json-simple-1.1.1.jar" -Xlint:unchecked -d . src/org/tfighter/*.java
 java -classpath ".:lib/JSONparser/json-simple-1.1.1.jar" tfighter.TextFighter

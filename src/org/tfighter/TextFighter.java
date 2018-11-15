@@ -3,11 +3,16 @@ package tfighter;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import tfighter.Display;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.util.ArrayList;
 
 public class TextFighter {
 
@@ -15,8 +20,8 @@ public class TextFighter {
     static String resourcesDir = "../../Resources";
     static JSONParser parser = new JSONParser();
 
-    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
+    static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    static ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
 
     public static void loadEnemies() {
         //Read from the /Resources/Enemies directory
@@ -25,11 +30,24 @@ public class TextFighter {
 
     public static void loadInterfaces() {
         //Read from the /Resources/Interfaces directory
-        File interfaceDir = new File(resourcesDir + "/Interfaces/");
-        for (File f : interfaceDir.listFiles()) {
-            JSONArray uiarray = (JSONArray) parser.parse(new FileReader(f));
-            UserInterface ui = new UserInterface(uiarray.get(2).join('\n'));
-            userInterfaces.add(ui);
+        try {
+            File interfaceDir = new File(resourcesDir + "/Interfaces/");
+            for (File f : interfaceDir.listFiles()) {
+                JSONArray uiArrayFile = (JSONArray) parser.parse(new FileReader(f));
+                ArrayList<String> array = (ArrayList<String>)(uiArrayFile.get(2));
+                String uiString = " ";
+                for (int i = 0; i < array.size(); i++) {
+                    uiString = uiString + array.get(i);
+                }
+                UserInterface ui = new UserInterface(uiString);
+                userInterfaces.add(ui);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
