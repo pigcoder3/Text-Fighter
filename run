@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"; cd $CURRDIR
 rm -r bin/main/java
 if [ ! -d bin/main/java/ ]; then
