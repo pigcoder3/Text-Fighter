@@ -1,0 +1,21 @@
+{
+
+    "name" : "Saves",
+
+    "Interface" : [
+
+        "--------=[SAVES]=-------",
+        "<saves>",
+        "------------------------"
+
+    ],
+
+    "Choices" : [
+
+        "newGame",
+        "loadGame"
+
+    ]
+
+
+}
