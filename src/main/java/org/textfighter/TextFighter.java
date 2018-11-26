@@ -23,7 +23,7 @@ public class TextFighter {
     static JSONParser parser = new JSONParser();
 
     static ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
-    static ArrayList<UiTag> interfaceTags = new ArrayList<String>();
+    static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
 
     public static boolean loadResources() {
         resourcesDir = new File("../res");
@@ -59,7 +59,7 @@ public class TextFighter {
             JSONObject tagsObject = (JSONObject) parser.parse(new FileReader(tagFile));
             JSONArray tagsArray = (JSONArray) tagsObject.get(0);
             for (int i = 0; i < tagsArray.size(); i++) {
-                interfaceTags.add((String)tagsObject.get(i));
+                interfaceTags.add(new UiTag((String)tagsObject.get(i), "ree"));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;

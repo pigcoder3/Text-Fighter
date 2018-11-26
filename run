@@ -2,12 +2,11 @@
 CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"; cd $CURRDIR
 rm -r bin/main/java
 if [ ! -d bin/main/java/ ]; then
-		mkdir -p bin/main/java
+	mkdir -p bin/main/java
 fi
-while IFS=  read -r -d $'\0'; do
-	javac -classpath ".:lib/json-simple-1.1.1.jar" -d bin/main/java $REPLY
-done < <(find src/main/java/org -name *.java -print0)
+find src/main/java/org -name *.java > sourceFiles.txt
+javac -classpath ".:lib/json-simple-1.1.1.jar" -d bin/main/java @sourceFiles.txt
 cp -r src/main/res bin/main/
 cd bin/main/java
 java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter
-cd ../../../
+rm sourceFiles.txt

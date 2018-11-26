@@ -1,7 +1,0 @@
-{
-    "tags" : [
-        { "tag" : "<saves>" , "function" : "TextFighter.getSaveFiles" },
-        { "tag" : "<coins>" , "function" : "player.coins" },
-        { "tag" : "<mana>", "function" : "player.getMana" }
-    ]
-}
