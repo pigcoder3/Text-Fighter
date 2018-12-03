@@ -14,7 +14,7 @@ import org.json.simple.parser.ParseException;
 
 public class TextFighter {
 
-    static Player player = new Player();
+    static Player player;
 
     static File resourcesDir;
     static File tagFile;
@@ -77,12 +77,44 @@ public class TextFighter {
 
     }
 
-    public static void newGame() {
-        //Copy the contents of a template file to a new file
+    public static void newGame(String name) {
+        //Creates the file that the save is in
+        File newGame = new File(savesDir.getAbsolutePath() + name + ".json");
+        //Write the basic things to the file
+        JSONObject base = new JSONObject();
+        base.put("Name", name);
+        
+        JSONObject stats = new JSONObject();
+        stats.put("level", "1");
+        stats.put("experience", "0");
+        stats.put("score", "0");
+        base.put("stats", stats);
+
+        JSONObject inventory = new JSONObject();
+        inventory.put("sword", "true");
+        inventory.put("bow", "false");
+        inventory.put("pickaxe", "false");
+        inventory.put("helmet", "false");
+        inventory.put("chestplate", "false");
+        inventory.put("leggings", "false");
+        inventory.put("boots", "false");
+        inventory.put("coins", "0");
+
+        JSONObject sword = new JSONObject();
+        sword.put("type", "0");
+        sword.put("level", "1");
+        sword.put("experience", "0");
+        inventory.put("sword", sword);
+
+        base.put("inventory", inventory);
+        
+        try (FileWriter w = new FileWriter(newGame.getAbsolutePath())) {
+            w.write(base.toJSONString());
+        }
     }
 
     public static boolean saveGame() {
-        //Write to /Saves directory
+        //Rewrite the whole file
 
 
         return true;
@@ -109,6 +141,7 @@ public class TextFighter {
             System.out.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(0);
         }
+        newGame("ree");
         // Display all saves
         // Ask if user want to load saves
         // if yes, then load

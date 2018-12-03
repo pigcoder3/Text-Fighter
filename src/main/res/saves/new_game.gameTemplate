@@ -4,7 +4,6 @@
 
     "Stats" : {
 
-        "Name" : "Bob",
         "Level" : "1",
         "Experience" : "0",
         "Score" : "0"
@@ -13,7 +12,6 @@
 
     "Inventory" : {
 
-        //Stuff to be added when obtained
         "Sword" : "true",
         "Pickaxe" : "false",
         "Bow" : "false",
