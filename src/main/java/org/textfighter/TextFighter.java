@@ -31,11 +31,11 @@ public class TextFighter {
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir + "/tags/tags.json");
         interfaceDir = new File(resourcesDir + "/interfaces");
-        savesDir = new File(resourcesDir + "/saves");
+        savesDir = new File("../../../saves");
         if (!loadInterfaces() || !loadParsingTags()) { return false; }
         if (!savesDir.exists()) {
             System.out.println("WARNING: The save directory does not exist!\nCreating a new saves directory...");
-            if (!new File(resourcesDir + "/saves/").mkdirs()) { System.out.println("Unable to create a new saves directory!"); return false; }
+            if (!new File("../../../saves/").mkdirs()) { System.out.println("Unable to create a new saves directory!"); return false; }
         }
         return true;
     }
@@ -79,16 +79,16 @@ public class TextFighter {
 
     public static void newGame(String name) {
         //Creates the file that the save is in
-        File newGame = new File(savesDir.getAbsolutePath() + name + ".json");
+        File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
+        try { newGameFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
+
         //Write the basic things to the file
         JSONObject base = new JSONObject();
-        base.put("Name", name);
-        
+
         JSONObject stats = new JSONObject();
         stats.put("level", "1");
         stats.put("experience", "0");
         stats.put("score", "0");
-        base.put("stats", stats);
 
         JSONObject inventory = new JSONObject();
         inventory.put("sword", "true");
@@ -107,10 +107,12 @@ public class TextFighter {
         inventory.put("sword", sword);
 
         base.put("inventory", inventory);
-        
-        try (FileWriter w = new FileWriter(newGame.getAbsolutePath())) {
+        base.put("stats", stats);
+        base.put("name", name);
+
+        try (FileWriter w = new FileWriter(newGameFile)) {
             w.write(base.toJSONString());
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     public static boolean saveGame() {
