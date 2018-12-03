@@ -1,6 +1,6 @@
 package org.textfighter;
 
-import org.textfighter.UserInterface;
+import org.textfighter.userinterface.UserInterface;
 
 public class Display {
 
