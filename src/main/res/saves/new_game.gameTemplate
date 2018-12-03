@@ -1,0 +1,46 @@
+{
+
+    "Name" : "New_Game"
+
+    "Stats" : {
+
+        "Name" : "Bob",
+        "Level" : "1",
+        "Experience" : "0",
+        "Score" : "0"
+
+    }
+
+    "Inventory" : {
+
+        //Stuff to be added when obtained
+        "Sword" : "true",
+        "Pickaxe" : "false",
+        "Bow" : "false",
+        "Helmet" : "false",
+        "Chestplate" : "false",
+        "Leggings" : "false",
+        "Boots" : "false",
+
+        "Arrows" : "0",
+        "Health_Potion" : "0",
+        "Super_Health_Potion" : "0",
+        "Strength_Potion" : "0",
+        "Super_Strength_Potion" : "0",
+        "Coins" : "0",
+        "Metal_Scraps" : "0"
+
+    },
+
+    "Sword" : {
+
+        "Type" : "0",
+        //0 : normal
+        //1 : N/A
+        //2 : N/A
+        "Level" : "1",
+        "Experience" : "0"
+
+    }
+
+}
