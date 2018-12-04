@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.io.*;
 
 import org.textfighter.Display;
-import org.textfighter.item.Item;
+import org.textfighter.item.*;
+import org.textfighter.item.armor.*;
+import org.textfighter.item.weapon.*;
 import org.textfighter.Player;
 import org.textfighter.userinterface.*;
 
@@ -13,6 +15,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class TextFighter {
+
+    static String gameName;
 
     static Player player;
 
@@ -110,7 +114,7 @@ public class TextFighter {
         base.put("stats", stats);
         base.put("name", name);
 
-        try (FileWriter w = new FileWriter(newGameFile)) {
+        try (FileWriter w = new FileWriter(newGameFile);) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
@@ -118,6 +122,38 @@ public class TextFighter {
     public static boolean saveGame() {
         //Rewrite the whole file
 
+        File gameFile = new File(savesDir.getPath() + "/" + gameName + ".json");
+        if(!gameFile.exists()) { try { gameFile.createNewFile(); } catch (IOException e) { System.out.println("Unable to save game!"); return false; }}
+
+        JSONObject base = new JSONObject();
+
+        JSONObject stats = new JSONObject();
+        stats.put("level", player.getLevel());
+        stats.put("experience", player.getExperience());
+        stats.put("score", player.getScore());
+
+        JSONObject inventory = new JSONObject();
+
+        //Puts these things if the player has them
+        if(player.isCarrying("Sword")>0) { inventory.put("sword", "true"); } else { inventory.put("sword", "false"); }
+        if(player.isCarrying("Bow")>0) { inventory.put("bow", "true"); } else { inventory.put("bow", "false"); }
+        if(player.isCarrying("Pickaxe")>0) { inventory.put("pickaxe", "true"); } else { inventory.put("pickaxe", "false");}
+        if(player.isCarrying("Helmet")>0) { inventory.put("helmet", "true"); } else {inventory.put("helmet", "false");}
+        if(player.isCarrying("Chestplate")>0) { inventory.put("chestplate", "true"); } else {inventory.put("chestplate", "false");}
+        if(player.isCarrying("Leggings")>0) { inventory.put("leggings", "true"); } else {inventory.put("leggings", "false");}
+        if(player.isCarrying("Boots")>0) { inventory.put("boots", "true"); } else { inventory.put("boots", "false"); }
+
+        inventory.put("coins", "0");
+
+        JSONObject sword = new JSONObject();
+        sword.put("type", "0");
+        sword.put("level", "1");
+        sword.put("experience", "0");
+        inventory.put("sword", sword);
+
+        base.put("inventory", inventory);
+        base.put("stats", stats);
+        base.put("name", gameName);
 
         return true;
 
