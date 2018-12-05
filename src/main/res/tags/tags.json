@@ -2,14 +2,17 @@
     "tags" : [
         {
             "tag" : "<saves>",
+            "class" : "org.textfighter.TextFighter",
             "function" : "getSaves"
         },
         {
             "tag" : "<coins>",
+            "class" : "org.textfighter.Player",
             "function" : "getCoins"
         },
         {
             "tag" : "<mana>",
+            "class" : "org.textfighter.Player",
             "function" : "getMagic"
         }
     ]
