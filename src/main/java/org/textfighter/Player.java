@@ -58,28 +58,28 @@ public class Player {
 
     public ArrayList<Item> getInventory() { return inventory; }
     public void addToInventory(Item item) { inventory.add(item); }
-    public void removeFromInventory(String classname) {
+    public void removeFromInventory(Class classname) {
         try {
             for(int i=0;i<inventory.size();i++) {
-                if(inventory.get(i).getClass().equals(Class.forName(classname))) { inventory.remove(i); }
+                if(inventory.get(i).getClass().equals(classname)) { inventory.remove(i); }
             }
         } catch (ClassNotFoundException e) { e.printStackTrace(); }
     }
 
-    public int isCarrying(String classname) {
+    public int isCarrying(Class classname) {
         int p=0;
         try {
             for(Item i : inventory) {
-                if(i.getClass().equals(Class.forName(classname))) { p++; }
+                if(i.getClass().equals(classname)) { p++; }
             }
         } catch (ClassNotFoundException e) { e.printStackTrace(); }
         return p;
     }
 
-    public Item getFromInventory(String classname) {
+    public Item getFromInventory(Class classname) {
         try {
             for(Item i : inventory) {
-                if(i.getClass().equals(Class.forName(classname))) { return i; }
+                if(i.getClass().equals(classname)) { return i; }
             }
         } catch (ClassNotFoundException e) { e.printStackTrace(); }
         return null;

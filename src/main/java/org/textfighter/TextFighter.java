@@ -134,23 +134,24 @@ public class TextFighter {
 
         JSONObject inventory = new JSONObject();
 
-        //Puts these things if the player has them
-        if(player.isCarrying("Sword")>0) { inventory.put("sword", "true"); } else { inventory.put("sword", "false"); }
-        if(player.isCarrying("Bow")>0) { inventory.put("bow", "true"); } else { inventory.put("bow", "false"); }
-        if(player.isCarrying("Pickaxe")>0) { inventory.put("pickaxe", "true"); } else { inventory.put("pickaxe", "false");}
-        if(player.isCarrying("Helmet")>0) { inventory.put("helmet", "true"); } else {inventory.put("helmet", "false");}
-        if(player.isCarrying("Chestplate")>0) { inventory.put("chestplate", "true"); } else {inventory.put("chestplate", "false");}
-        if(player.isCarrying("Leggings")>0) { inventory.put("leggings", "true"); } else {inventory.put("leggings", "false");}
-        if(player.isCarrying("Boots")>0) { inventory.put("boots", "true"); } else { inventory.put("boots", "false"); }
+        Class[] tools = {Pickaxe.class};
+        Class[] armor = {Helmet.class, Chestplate.class, Leggings.class, Boots.class};
+        Class[] weapons = {Sword.class, Bow.class};
+
+        //Tools
+        for(int i=0; i<tools.length(); i++) {
+            if(Player.isCarrying(i) != null) {
+                Item obj = player.getFromInventory(i);
+                inventory.put(i.getName(), "true");
+                JSONObject jsonobj = new JSONObject();
+                obj.put("type", obj.getType());
+                obj.put("level", obj.getLevel());
+                obj.put("experience", obj.getExperience());
+                base.add(i.getName(), obj);
+            } else { inventory.put(i.getName(), "false"); }
+        }
 
         inventory.put("coins", "0");
-
-        JSONObject sword = new JSONObject();
-        sword.put("type", "0");
-        sword.put("level", "1");
-        sword.put("experience", "0");
-        inventory.put("sword", sword);
-
         base.put("inventory", inventory);
         base.put("stats", stats);
         base.put("name", gameName);
