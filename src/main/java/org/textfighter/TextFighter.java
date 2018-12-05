@@ -5,6 +5,7 @@ import java.io.*;
 
 import org.textfighter.Display;
 import org.textfighter.item.*;
+import org.textfighter.item.tool.*;
 import org.textfighter.item.armor.*;
 import org.textfighter.item.weapon.*;
 import org.textfighter.Player;
@@ -139,16 +140,16 @@ public class TextFighter {
         Class[] weapons = {Sword.class, Bow.class};
 
         //Tools
-        for(int i=0; i<tools.length(); i++) {
-            if(Player.isCarrying(i) != null) {
-                Item obj = player.getFromInventory(i);
-                inventory.put(i.getName(), "true");
+        for(Class t : tools) {
+            if(Player.isCarrying(t).equals(null)) {
+                Item obj = player.getFromInventory(t);
+                inventory.put(t.getName(), "true");
                 JSONObject jsonobj = new JSONObject();
-                obj.put("type", obj.getType());
-                obj.put("level", obj.getLevel());
-                obj.put("experience", obj.getExperience());
-                base.add(i.getName(), obj);
-            } else { inventory.put(i.getName(), "false"); }
+                jsonobj.put("type", Integer.toString(obj.getType()));
+                jsonobj.put("level", Integer.toString(obj.getLevel()));
+                jsonobj.put("experience", Integer.toString(obj.getExperience()));
+                base.put(t.getName(), obj);
+            } else { inventory.put(t.getName(), "false"); }
         }
 
         inventory.put("coins", "0");

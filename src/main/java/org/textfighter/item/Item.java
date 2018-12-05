@@ -31,7 +31,7 @@ public class Item {
         //calculate it (Not sure about the equation to use yet)
     }
 
-    public int getTypeString(int index) { return typeString[index]; }
+    public String getTypeString(int index) { return typeStrings[index]; }
 
     public int getType(){ return type; }
     public int setType(int type){ this.type=type; }
