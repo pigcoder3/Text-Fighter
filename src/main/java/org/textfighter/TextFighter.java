@@ -31,6 +31,7 @@ public class TextFighter {
 
     static ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
     static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
+    static ArrayList<String> saves = new ArrayList<String>();
 
     public static boolean loadResources() {
         resourcesDir = new File("../res");
@@ -132,33 +133,52 @@ public class TextFighter {
         stats.put("level", player.getLevel());
         stats.put("experience", player.getExperience());
         stats.put("score", player.getScore());
+        stats.put("health", player.getHp());
+        stats.put("maxHealth", player.getMaxHp());
 
         JSONObject inventory = new JSONObject();
 
-        Class[] tools = {Pickaxe.class};
-        Class[] armor = {Helmet.class, Chestplate.class, Leggings.class, Boots.class};
-        Class[] weapons = {Sword.class, Bow.class};
+        Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
+        Class[] superclasses = {Armor.class, Weapon.class, Item.class};
 
-        //Tools
-        for(Class t : tools) {
-            if(Player.isCarrying(t).equals(null)) {
-                Item obj = player.getFromInventory(t);
-                inventory.put(t.getName(), "true");
+        //For all items
+        for(Class c : items) {
+            if(Player.isCarrying(c)>0) {
+                Item obj = player.getFromInventory(c);
+                inventory.put(c.getSimpleName(), "true");
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("type", Integer.toString(obj.getType()));
                 jsonobj.put("level", Integer.toString(obj.getLevel()));
                 jsonobj.put("experience", Integer.toString(obj.getExperience()));
-                base.put(t.getName(), obj);
-            } else { inventory.put(t.getName(), "false"); }
+                if(c.getSuperclass().equals(Armor.class)) {jsonobj.put("protectionAmount", String.valueOf(((Armor)obj).getProtectionAmount()));}
+                if(c.getSuperclass().equals(Weapon.class)) {jsonobj.put("damage", Integer.toString(((Weapon)obj).getDamage()));}
+                base.put(c.getName(), obj);
+            } else { inventory.put(c.getSimpleName(), "false"); }
         }
 
-        inventory.put("coins", "0");
+        inventory.put("coins", player.getCoins());
+        inventory.put("magic", player.getMagic());
+
         base.put("inventory", inventory);
         base.put("stats", stats);
         base.put("name", gameName);
 
+        try (FileWriter w = new FileWriter(gameFile);) {
+            w.write(base.toJSONString());
+        } catch (IOException e) { e.printStackTrace(); return false; }
+
         return true;
 
+    }
+
+    public static ArrayList<String> getSaves() { return saves; }
+    public static void addSave(String name) { saves.add(name); }
+    public static void removeSave(String name) {
+        for(int i=0;i<saves.size();i++){
+            if(saves.get(i).equals(name)) {
+                saves.remove(i);
+            }
+        }
     }
 
     public static void fight() {
@@ -182,6 +202,8 @@ public class TextFighter {
             System.exit(0);
         }
         newGame("ree");
+        player.gainCoins(1);
+        saveGame();
         // Display all saves
         // Ask if user want to load saves
         // if yes, then load

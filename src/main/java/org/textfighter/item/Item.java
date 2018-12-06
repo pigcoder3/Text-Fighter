@@ -13,7 +13,7 @@ public class Item {
     public int getLevel(){ return level; }
     public void increaseLevel() { level++; }
     public void decreaseLevel() { level--; }
-    public boolean checkForLevelUp() { if(experience > experienceRequirement) { return true; } }
+    public boolean checkForLevelUp() { if(experience > experienceRequirement) { return true; } else { return false; } }
 
     public int getExperience(){ return experience; }
     public void increaseExperience(int a) {
@@ -34,6 +34,6 @@ public class Item {
     public String getTypeString(int index) { return typeStrings[index]; }
 
     public int getType(){ return type; }
-    public int setType(int type){ this.type=type; }
+    public void setType(int t){ type=t; }
 
 }

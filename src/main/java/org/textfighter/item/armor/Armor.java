@@ -8,4 +8,7 @@ public class Armor extends Item {
 
     protected String[] typeStrings = {"normal"};
 
+    public double getProtectionAmount() { return protectionAmount; }
+    public void setProtectionAmount(int a) { protectionAmount=a; }
+
 }

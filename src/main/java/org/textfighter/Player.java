@@ -19,7 +19,6 @@ public class Player {
     private static String location;
 
     private static ArrayList<Item> inventory = new ArrayList<Item>();
-    private static ArrayList<String> saves = new ArrayList<String>();
 
     public static int getLevel() { return level; }
     public static void increaseLevel(int a) { level=+a; }
@@ -31,13 +30,16 @@ public class Player {
     public static void increaseScore(int a) { score=+a; }
     public static void decreaseScore(int a) { score=-a; }
 
-    public static int gethp() { return hp; }
+    public static int getHp() { return hp; }
     public static void damage(int a) { if (hp-a < 0) { hp = 0; } else { hp=-a; }}
     public static void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp=+a; } }
 
+    public static int getMaxHp() { return maxhp; }
+    public static void setMaxHp(int a) { maxhp=a; }
+
     public static int getCoins() { return coins; }
     public static void spendCoins(int a) { if (coins-a >= 0) { coins=-a; } else { coins=-a; } }
-    public static void gainCoins(int a) { magic=+a; }
+    public static void gainCoins(int a) { coins=+a; }
 
     public static int getMagic() { return magic; }
     public static void spendMagic(int a) { if (magic-a >= 0) { magic=-a; } else { magic=-a; } }
@@ -46,42 +48,32 @@ public class Player {
     public static String getLocation() { return location; }
     public static void setLocation(String loc) { location=loc; }
 
-    public static ArrayList<String> getSaves() { return saves; }
-    public static void addSave(String name) { saves.add(name); }
-    public static void removeSave(String name) {
-        for(int i=0;i<saves.size();i++){
-            if(saves.get(i).equals(name)) {
-                saves.remove(i);
-            }
-        }
-    }
-
     public static ArrayList<Item> getInventory() { return inventory; }
     public static void addToInventory(Item item) { inventory.add(item); }
     public static void removeFromInventory(Class classname) {
-        try {
+        //try{
             for(int i=0;i<inventory.size();i++) {
                 if(inventory.get(i).getClass().equals(classname)) { inventory.remove(i); }
             }
-        } catch (ClassNotFoundException e) { e.printStackTrace(); }
+        //} catch (ClassNotFoundException e) { e.printStackTrace(); }
     }
 
     public static int isCarrying(Class classname) {
         int p=0;
-        try {
+        //try {
             for(Item i : inventory) {
                 if(i.getClass().equals(classname)) { p++; }
             }
-        } catch (ClassNotFoundException e) { e.printStackTrace(); }
+        //} catch (ClassNotFoundException e) { e.printStackTrace(); }
         return p;
     }
 
     public static Item getFromInventory(Class classname) {
-        try {
+        //try {
             for(Item i : inventory) {
                 if(i.getClass().equals(classname)) { return i; }
             }
-        } catch (ClassNotFoundException e) { e.printStackTrace(); }
+        //} catch (ClassNotFoundException e) { e.printStackTrace(); }
         return null;
     }
 
