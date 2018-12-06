@@ -54,9 +54,14 @@ public class TextFighter {
                 JSONArray uiArray = (JSONArray)uiArrayFile.get("Interface");
                 String name = (String) uiArrayFile.get("name");
                 String uiString = "";
-                for (int u = 0; u < uiArray.size(); u++) { uiString = uiString + uiArray.get(u) + "\n"; }
-                userInterfaces.add(new UserInterface(name, uiString));
-                //TODO Load the choices
+                for (int i = 0; i < uiArray.size(); i++) { uiString = uiString + uiArray.get(i) + "\n"; }
+                JSONArray choiceArray = (JSONArray)uiArrayFile.get("Choices");
+                ArrayList<Choice> choices = new ArrayList<Choice>();
+                for (int i = 0; i < choiceArray.size(); i++) {
+                    JSONObject obj = (JSONObject)choiceArray.get(i);
+                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), (String)obj.get("requirement"), (String)obj.get("classname"), String.split(((String)obj.get("arguments")))));
+                }
+                userInterfaces.add(new UserInterface(name, uiString, choices));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -194,8 +199,6 @@ public class TextFighter {
         }
         return filteredSaves;
     }
-
-    public static void quitGame() { System.exit(); }
 
     public static void main(String[] args) {
         //System.out.println("\u001b[2J");

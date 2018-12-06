@@ -14,20 +14,29 @@
 
         {
             "name" : "new game",
+            "description" : "Creates a new game",
             "function" : "newGame",
-            "class" : "TextFighter"
+            "arguments" : "None",
+            "class" : "TextFighter",
+            "reequirement" : "None"
         },
 
         {
             "name" : "load game",
+            "description" : "Loads an existing game",
             "function" : "loadGame",
-            "class" : "TextFighter"
+            "arguments" : "None",
+            "class" : "TextFighter",
+            "requirement" : "None"
         },
 
         {
             "name" : "quit",
-            "function" : "quitGame",
-            "class" : "TextFighter"
+            "description" : "Quits the game",
+            "function" : "Exit",
+            "arguments" : "0",
+            "class" : "TextFighter",
+            "requirement" : "None"
         }
 
     ]

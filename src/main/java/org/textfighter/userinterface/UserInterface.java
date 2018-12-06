@@ -16,27 +16,24 @@ public class UserInterface {
     //All the choices the user can currently choose
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    public UserInterface(String name, String UI) {
+    public UserInterface(String name, String UI, ArrayList choices) {
         this.name = name;
         this.unParsedUI = UI;
+        this.allChoices = choices;
     }
 
     public String getParsedUI() { return parsedUI; }
 
     public void parseInterface() {
-        //This will add all things in the interfaces (such as money amounts, etc.)
-        //<tag> is used to indicate a place to be parsed
         String UI = parsedUI;
-        //Parse here
         parsedUI = UI;
-
     }
 
     public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
     public void setPossibleChoices() {
         for(Choice c : allChoices) {
-            
+                  
         }
     }
 
