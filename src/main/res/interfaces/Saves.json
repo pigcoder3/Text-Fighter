@@ -12,8 +12,23 @@
 
     "Choices" : [
 
-        "newGame",
-        "loadGame"
+        {
+            "name" : "new game",
+            "function" : "newGame",
+            "class" : "TextFighter"
+        },
+
+        {
+            "name" : "load game",
+            "function" : "loadGame",
+            "class" : "TextFighter"
+        },
+
+        {
+            "name" : "quit",
+            "function" : "quitGame",
+            "class" : "TextFighter"
+        }
 
     ]
 

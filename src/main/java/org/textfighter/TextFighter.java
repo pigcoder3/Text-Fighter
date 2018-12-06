@@ -195,6 +195,8 @@ public class TextFighter {
         return filteredSaves;
     }
 
+    public static void quitGame() { System.exit(); }
+
     public static void main(String[] args) {
         //System.out.println("\u001b[2J");
         if (!loadResources()) {
