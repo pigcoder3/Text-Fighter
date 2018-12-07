@@ -59,7 +59,7 @@ public class TextFighter {
                 ArrayList<Choice> choices = new ArrayList<Choice>();
                 for (int i = 0; i < choiceArray.size(); i++) {
                     JSONObject obj = (JSONObject)choiceArray.get(i);
-                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), (String)obj.get("requirement"), (String)obj.get("classname"), String.split(((String)obj.get("arguments")))));
+                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), (String)obj.get("requirement"), (String)obj.get("class")));
                 }
                 userInterfaces.add(new UserInterface(name, uiString, choices));
             }
@@ -80,7 +80,7 @@ public class TextFighter {
 
     }
 
-    public static boolean loadSave(String name) {
+    public static boolean loadGame() {
         //Read from /Saves directory
 
 
@@ -88,12 +88,30 @@ public class TextFighter {
 
     }
 
-    public static void newGame(String name) {
-        //Creates the file that the save is in
+    public static void newGame() {
+
+        String name = "";
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));) {
+            boolean valid = false;
+            while (!valid) {
+                System.out.println("What would you like this save to be called?\nDo not use names already used before.");
+                name = in.readLine();
+                for(String s : savesDir.list()) {
+                    if(!s.substring(0,s.indexOf(".")).equalsIgnoreCase(name)) {
+                        valid=true;
+                        break;
+                    } else {
+                        System.out.println("That name is not available!");
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) { System.out.println("An error occured while readin your input!"); e.printStackTrace(); System.exit(1); }
+
         File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
         try { newGameFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
 
-        //Write the basic things to the file
         JSONObject base = new JSONObject();
 
         JSONObject stats = new JSONObject();
@@ -186,10 +204,6 @@ public class TextFighter {
         }
     }
 
-    public static void fight() {
-
-    }
-
     public static ArrayList<String> getSaveFiles() {
         ArrayList<String> filteredSaves = new ArrayList<String>();
         for(String s : savesDir.list()) {
@@ -200,13 +214,19 @@ public class TextFighter {
         return filteredSaves;
     }
 
+    public static void quitGame() { System.exit(0); }
+
+    public static void fight() {
+
+    }
+
     public static void main(String[] args) {
         //System.out.println("\u001b[2J");
         if (!loadResources()) {
             System.out.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(0);
         }
-        newGame("ree");
+        newGame();
         player.gainCoins(1);
         saveGame();
         // Display all saves

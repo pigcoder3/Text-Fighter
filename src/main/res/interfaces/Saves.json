@@ -16,8 +16,7 @@
             "name" : "new game",
             "description" : "Creates a new game",
             "function" : "newGame",
-            "arguments" : "None",
-            "class" : "TextFighter",
+            "class" : "org.textfighter.TextFighter",
             "reequirement" : "None"
         },
 
@@ -25,17 +24,15 @@
             "name" : "load game",
             "description" : "Loads an existing game",
             "function" : "loadGame",
-            "arguments" : "None",
-            "class" : "TextFighter",
+            "class" : "org.textfighter.TextFighter",
             "requirement" : "None"
         },
 
         {
             "name" : "quit",
             "description" : "Quits the game",
-            "function" : "Exit",
-            "arguments" : "0",
-            "class" : "TextFighter",
+            "function" : "quitGame",
+            "class" : "org.textfighter.TextFighter",
             "requirement" : "None"
         }
 
