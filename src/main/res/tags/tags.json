@@ -3,17 +3,23 @@
         {
             "tag" : "<saves>",
             "class" : "org.textfighter.TextFighter",
-            "function" : "getSaves"
+            "function" : "getSaves",
+            "arguments" : [],
+            "argumentTypes" : []
         },
         {
             "tag" : "<coins>",
             "class" : "org.textfighter.Player",
-            "function" : "getCoins"
+            "function" : "getCoins",
+            "arguments" : [],
+            "argumentTypes" : []
         },
         {
             "tag" : "<mana>",
             "class" : "org.textfighter.Player",
-            "function" : "getMagic"
+            "function" : "getMagic",
+            "arguments" : [],
+            "argumentTypes" : []
         }
     ]
 }

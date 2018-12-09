@@ -16,6 +16,8 @@
             "name" : "new game",
             "description" : "Creates a new game",
             "function" : "newGame",
+            "arguments" : [],
+            "argumentTypes" : [],
             "class" : "org.textfighter.TextFighter",
             "reequirement" : "None"
         },
@@ -24,6 +26,8 @@
             "name" : "load game",
             "description" : "Loads an existing game",
             "function" : "loadGame",
+            "arguments" : [],
+            "argumentTypes" : [],
             "class" : "org.textfighter.TextFighter",
             "requirement" : "None"
         },
@@ -32,6 +36,8 @@
             "name" : "quit",
             "description" : "Quits the game",
             "function" : "quitGame",
+            "arguments" : [],
+            "argumentTypes" : [],
             "class" : "org.textfighter.TextFighter",
             "requirement" : "None"
         }

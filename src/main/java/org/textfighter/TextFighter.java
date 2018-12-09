@@ -59,7 +59,12 @@ public class TextFighter {
                 ArrayList<Choice> choices = new ArrayList<Choice>();
                 for (int i = 0; i < choiceArray.size(); i++) {
                     JSONObject obj = (JSONObject)choiceArray.get(i);
-                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), (String)obj.get("requirement"), (String)obj.get("class")));
+                    ArrayList<String> arguments = (JSONArray)obj.get("arguments");
+                    ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                    if(arguments.size() != argumentTypesString.size()) { System.exit(1); }
+                    if(arguments.size() > 0) { for (int p=0; i>argumentTypesString.size(); i++) { if(Integer.parseInt(argumentTypesString.get(p)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
+                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("requirement"), (String)obj.get("class")));
                 }
                 userInterfaces.add(new UserInterface(name, uiString, choices));
             }
@@ -72,8 +77,9 @@ public class TextFighter {
             JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
             JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
             for (int i = 0; i < tagsArray.size(); i++) {
-                JSONObject object = (JSONObject)tagsArray.get(i);
-                interfaceTags.add(new UiTag((String)object.get("tag"),(String)object.get("function"),(String)object.get("class")));
+                JSONObject obj = (JSONObject)tagsArray.get(i);
+                ArrayList<String> arguments = (JSONArray)obj.get("arguments");
+                interfaceTags.add(new UiTag((String)obj.get("tag"),(String)obj.get("function"),(String)obj.get("class")));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -99,6 +105,7 @@ public class TextFighter {
                 name = in.readLine();
                 for(String s : savesDir.list()) {
                     if(!s.substring(0,s.indexOf(".")).equalsIgnoreCase(name)) {
+                        gameName=name;
                         valid=true;
                         break;
                     } else {
