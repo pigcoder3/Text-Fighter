@@ -79,7 +79,9 @@ public class TextFighter {
             for (int i = 0; i < tagsArray.size(); i++) {
                 JSONObject obj = (JSONObject)tagsArray.get(i);
                 ArrayList<String> arguments = (JSONArray)obj.get("arguments");
-                interfaceTags.add(new UiTag((String)obj.get("tag"),(String)obj.get("function"),(String)obj.get("class")));
+                ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                interfaceTags.add(new UiTag((String)obj.get("tag"),(String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class")));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;

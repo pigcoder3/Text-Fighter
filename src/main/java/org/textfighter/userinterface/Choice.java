@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 public class Choice {
 
-    String name;
-    String description;
-    Method function;
-    String requirement;
-    ArrayList<Object> arguments;
-    Class classname;
+    private String name;
+    private String description;
+    private Method function;
+    private String requirement;
+    private ArrayList<Object> arguments;
+    private Class classname;
 
     public String getName() { return name; }
     public String getDescription() { return description; }
