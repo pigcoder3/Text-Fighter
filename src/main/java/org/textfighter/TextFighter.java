@@ -89,7 +89,28 @@ public class TextFighter {
     }
 
     public static boolean loadGame() {
-        //Read from /Saves directory
+
+        String name = "";
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));) {
+            boolean valid = false;
+            while (!valid) {
+                System.out.println("Which game would you like to load?");
+                name = in.readLine();
+                for (String s : savesDir.list()) {
+                    if(s.substring(0,s.indexOf(".")).equalsIgnoreCase(name)) {
+                        valid=true;
+                        break;
+                    } else {
+                        valid=false
+                    }
+                }
+                if(!valid) { System.out.println("There is no save with that name.")}
+            }
+        } catch (IOException e) { System.out.println("An error occured while reading your input!"); e.printStackTrace(); System.exit(1); }
+
+        File f = new File(savesDir.getPath() + "/" + name + ".json");
+        if(!f.exists()) { System.out.println("Unable to find the save file"); System.exit(0); }
 
 
         return true;
@@ -107,16 +128,16 @@ public class TextFighter {
                 name = in.readLine();
                 for(String s : savesDir.list()) {
                     if(!s.substring(0,s.indexOf(".")).equalsIgnoreCase(name)) {
-                        gameName=name;
-                        valid=true;
-                        break;
+                        valid=false;
                     } else {
-                        System.out.println("That name is not available!");
+                        valid=true;
                         break;
                     }
                 }
+                if(!valid) { System.out.println("That name is already used! Pick another.")}
             }
-        } catch (IOException e) { System.out.println("An error occured while readin your input!"); e.printStackTrace(); System.exit(1); }
+            gameName=name;
+        } catch (IOException e) { System.out.println("An error occured while reading your input!"); e.printStackTrace(); System.exit(1); }
 
         File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
         try { newGameFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
