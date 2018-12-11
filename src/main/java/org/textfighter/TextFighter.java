@@ -102,16 +102,32 @@ public class TextFighter {
                         valid=true;
                         break;
                     } else {
-                        valid=false
+                        valid=false;
                     }
                 }
-                if(!valid) { System.out.println("There is no save with that name.")}
+                if(!valid) { System.out.println("There is no save with that name.");}
             }
         } catch (IOException e) { System.out.println("An error occured while reading your input!"); e.printStackTrace(); System.exit(1); }
 
         File f = new File(savesDir.getPath() + "/" + name + ".json");
-        if(!f.exists()) { System.out.println("Unable to find the save file"); System.exit(0); }
+        if(!f.exists()) { System.out.println("Unable to find a save with that name (Or the file could not be found)"); System.exit(0); }
 
+        try {
+            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
+
+            JSONObject file = (JSONObject)parser.parse(new FileReader(f));
+            String saveName = (String)file.get("name");
+
+            JSONObject stats = (JSONObject)file.get("stats");
+            int level = Integer.parseInt((String)stats.get("level"));
+            int experience = Integer.parseInt((String)stats.get("experience"));
+            int score = Integer.parseInt((String)stats.get("score"));
+
+            JSONArray inventory = (JSONArray)file.get("inventory");
+
+            player = new Player();
+
+        } catch (IOException | ParseException e) { System.out.println("An error occured while reading the save file!"); e.printStackTrace(); System.exit(1);}
 
         return true;
 
@@ -127,14 +143,14 @@ public class TextFighter {
                 System.out.println("What would you like this save to be called?\nDo not use names already used before.");
                 name = in.readLine();
                 for(String s : savesDir.list()) {
-                    if(!s.substring(0,s.indexOf(".")).equalsIgnoreCase(name)) {
+                    if(s.substring(0,s.indexOf(".")).equalsIgnoreCase(name)) {
                         valid=false;
                     } else {
                         valid=true;
                         break;
                     }
                 }
-                if(!valid) { System.out.println("That name is already used! Pick another.")}
+                if(!valid) { System.out.println("That name is already used! Pick another.");}
             }
             gameName=name;
         } catch (IOException e) { System.out.println("An error occured while reading your input!"); e.printStackTrace(); System.exit(1); }
@@ -150,13 +166,6 @@ public class TextFighter {
         stats.put("score", "0");
 
         JSONObject inventory = new JSONObject();
-        inventory.put("sword", "true");
-        inventory.put("bow", "false");
-        inventory.put("pickaxe", "false");
-        inventory.put("helmet", "false");
-        inventory.put("chestplate", "false");
-        inventory.put("leggings", "false");
-        inventory.put("boots", "false");
         inventory.put("coins", "0");
 
         JSONObject sword = new JSONObject();
@@ -192,13 +201,11 @@ public class TextFighter {
         JSONObject inventory = new JSONObject();
 
         Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
-        Class[] superclasses = {Armor.class, Weapon.class, Item.class};
 
         //For all items
         for(Class c : items) {
             if(Player.isCarrying(c)>0) {
                 Item obj = player.getFromInventory(c);
-                inventory.put(c.getSimpleName(), "true");
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("type", Integer.toString(obj.getType()));
                 jsonobj.put("level", Integer.toString(obj.getLevel()));
