@@ -124,6 +124,13 @@ public class TextFighter {
             int score = Integer.parseInt((String)stats.get("score"));
 
             JSONArray inventory = (JSONArray)file.get("inventory");
+            ArrayList<Item> newInventory = new ArrayList<Item>();
+            for(int i=0; i<inventory.length(); i++) {
+               JSONObject obj = (JSONObject)JSONArray.get(i);
+               for(int i=0; i<items.length(); i++) {
+               }
+
+            }
 
             player = new Player();
 
