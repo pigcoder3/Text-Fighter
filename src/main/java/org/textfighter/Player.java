@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public class Player {
 
+    static int defaulthp = 50;
+
     private static int level;
     private static int experience;
     private static int score;

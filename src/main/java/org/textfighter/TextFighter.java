@@ -1,6 +1,7 @@
 package org.textfighter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.io.*;
 
 import org.textfighter.Display;
@@ -113,8 +114,6 @@ public class TextFighter {
         if(!f.exists()) { System.out.println("Unable to find a save with that name (Or the file could not be found)"); System.exit(0); }
 
         try {
-            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
-
             JSONObject file = (JSONObject)parser.parse(new FileReader(f));
             String saveName = (String)file.get("name");
 
@@ -123,14 +122,10 @@ public class TextFighter {
             int experience = Integer.parseInt((String)stats.get("experience"));
             int score = Integer.parseInt((String)stats.get("score"));
 
-            JSONArray inventory = (JSONArray)file.get("inventory");
+            JSONObject inventory = (JSONObject)file.get("inventory");
             ArrayList<Item> newInventory = new ArrayList<Item>();
-            for(int i=0; i<inventory.length(); i++) {
-               JSONObject obj = (JSONObject)JSONArray.get(i);
-               for(int i=0; i<items.length(); i++) {
-               }
 
-            }
+            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
 
             player = new Player();
 
@@ -171,9 +166,12 @@ public class TextFighter {
         stats.put("level", "1");
         stats.put("experience", "0");
         stats.put("score", "0");
+        stats.put("hp", Player.defaulthp);
+        stats.put("maxhp", Player.defaulthp);
 
         JSONObject inventory = new JSONObject();
         inventory.put("coins", "0");
+        inventory.put("magic", "0");
 
         JSONObject sword = new JSONObject();
         sword.put("type", "0");
@@ -274,7 +272,7 @@ public class TextFighter {
         player.gainCoins(1);
         saveGame();
         // Display all saves
-        // Ask if user want to load saves
+        // Ask if user wants to load saves
         // if yes, then load
         // else, make new
     }
