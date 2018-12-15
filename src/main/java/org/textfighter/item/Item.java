@@ -33,4 +33,10 @@ public class Item {
     public int getType(){ return type; }
     public void setType(int t){ type=t; }
 
+    public Item (int level, int experience, int type) {
+        this.level = level;
+        this.experience = experience;
+        this.type = type;
+    }
+
 }

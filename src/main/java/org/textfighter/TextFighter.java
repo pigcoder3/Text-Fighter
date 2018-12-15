@@ -121,13 +121,34 @@ public class TextFighter {
             int level = Integer.parseInt((String)stats.get("level"));
             int experience = Integer.parseInt((String)stats.get("experience"));
             int score = Integer.parseInt((String)stats.get("score"));
+            int hp = Integer.parseInt((String)stats.get("health"));
+            int maxhp = Integer.parseInt((String)stats.get("maxHealth"));
+            int coins = Integer.parseInt((String)stats.get("coins"));
+            int magic = Integer.parseInt((String)stats.get("magic"));
 
-            JSONObject inventory = (JSONObject)file.get("inventory");
+            JSONArray inventory = (JSONArray)file.get("inventory");
+
             ArrayList<Item> newInventory = new ArrayList<Item>();
 
-            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
+            //items
+            for (Object obj : inventory) {
+                JSONObject jsonobj = (JSONObject)obj;
+                int itemlevel = Integer.parseInt(((String)jsonobj.get("level")));
+                int itemexperience = Integer.parseInt(((String)jsonobj.get("experience")));
+                int itemtype = Integer.parseInt(((String)jsonobj.get("type")));
+                switch ((String)jsonobj.get("itemtype")) {
+                    case "pickaxe": newInventory.add(new Pickaxe(itemlevel, itemexperience, itemtype)); break;
+                    case "helmet": newInventory.add(new Helmet(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
+                    case "chestplate": newInventory.add(new Chestplate(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
+                    case "leggings": inventory.add(new Leggings(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
+                    case "boots": newInventory.add(new Boots(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
+                    case "sword": newInventory.add(new Sword(itemlevel, itemexperience, itemtype, Integer.parseInt(((String)jsonobj.get("damage"))))); break;
+                    case "bow": newInventory.add(new Bow(itemlevel, itemexperience, itemtype, Integer.parseInt(((String)jsonobj.get("damage"))))); break;
+                    default: break;
+                }
+            }
 
-            player = new Player();
+            player = new Player(hp, maxhp, coins, magic, level, experience, score, newInventory);
 
         } catch (IOException | ParseException e) { System.out.println("An error occured while reading the save file!"); e.printStackTrace(); System.exit(1);}
 
@@ -166,14 +187,15 @@ public class TextFighter {
         stats.put("level", "1");
         stats.put("experience", "0");
         stats.put("score", "0");
-        stats.put("hp", Player.defaulthp);
-        stats.put("maxhp", Player.defaulthp);
+        stats.put("hp", Integer.toString(Player.defaulthp));
+        stats.put("maxhp", Integer.toString(Player.defaulthp));
+        stats.put("coins", "0");
+        stats.put("magic", "0");
 
         JSONObject inventory = new JSONObject();
-        inventory.put("coins", "0");
-        inventory.put("magic", "0");
 
         JSONObject sword = new JSONObject();
+        sword.put("itemtype", "Sword");
         sword.put("type", "0");
         sword.put("level", "1");
         sword.put("experience", "0");
@@ -197,13 +219,15 @@ public class TextFighter {
         JSONObject base = new JSONObject();
 
         JSONObject stats = new JSONObject();
-        stats.put("level", player.getLevel());
-        stats.put("experience", player.getExperience());
-        stats.put("score", player.getScore());
-        stats.put("health", player.getHp());
-        stats.put("maxHealth", player.getMaxHp());
+        stats.put("level", Integer.toString(player.getLevel()));
+        stats.put("experience", Integer.toString(player.getExperience()));
+        stats.put("score", Integer.toString(player.getScore()));
+        stats.put("health", Integer.toString(player.getHp()));
+        stats.put("maxHealth", Integer.toString(player.getMaxHp()));
+        stats.put("coins", Integer.toString(player.getCoins()));
+        stats.put("magic", Integer.toString(player.getMagic()));
 
-        JSONObject inventory = new JSONObject();
+        JSONArray inventory = new JSONArray();
 
         Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
 
@@ -212,17 +236,19 @@ public class TextFighter {
             if(Player.isCarrying(c)>0) {
                 Item obj = player.getFromInventory(c);
                 JSONObject jsonobj = new JSONObject();
+                jsonobj.put("itemtype", obj.getClass().getSimpleName());
                 jsonobj.put("type", Integer.toString(obj.getType()));
                 jsonobj.put("level", Integer.toString(obj.getLevel()));
                 jsonobj.put("experience", Integer.toString(obj.getExperience()));
-                if(c.getSuperclass().equals(Armor.class)) {jsonobj.put("protectionAmount", String.valueOf(((Armor)obj).getProtectionAmount()));}
-                if(c.getSuperclass().equals(Weapon.class)) {jsonobj.put("damage", Integer.toString(((Weapon)obj).getDamage()));}
-                base.put(c.getName(), obj);
-            } else { inventory.put(c.getSimpleName(), "false"); }
+                if(c.getSuperclass().equals(Armor.class)) {
+                    jsonobj.put("protectionAmount", String.valueOf(((Armor)obj).getProtectionAmount()));
+                }
+                if(c.getSuperclass().equals(Weapon.class)) {
+                    jsonobj.put("damage", Integer.toString(((Weapon)obj).getDamage()));
+                }
+                base.put(c.getName(), jsonobj);
+            }
         }
-
-        inventory.put("coins", player.getCoins());
-        inventory.put("magic", player.getMagic());
 
         base.put("inventory", inventory);
         base.put("stats", stats);
@@ -268,7 +294,7 @@ public class TextFighter {
             System.out.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(0);
         }
-        newGame();
+        loadGame();
         player.gainCoins(1);
         saveGame();
         // Display all saves

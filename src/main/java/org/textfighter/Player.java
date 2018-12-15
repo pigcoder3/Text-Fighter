@@ -73,16 +73,15 @@ public class Player {
         return null;
     }
 
-    public Player(int hp, int maxhp, int magic, int level, int experience, int score, String location, ArrayList<Item> inventory) {
+    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, ArrayList<Item> inventory) {
         this.hp = hp;
         this.maxhp = maxhp;
+        this.coins = coins;
         this.magic = magic;
         this.level = level;
         this.experience = experience;
         this.score = score;
-        this.location = location;
         this.inventory = inventory;
     }
-    public Player() { }
 
 }

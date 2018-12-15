@@ -4,8 +4,7 @@ import org.textfighter.item.armor.Armor;
 
 public class Chestplate extends Armor {
 
-    public Chestplate() {
-
+    public Chestplate (int level, int experience, int type, double protectionAmount) {
+        super(level, experience, type, protectionAmount);
     }
-
 }

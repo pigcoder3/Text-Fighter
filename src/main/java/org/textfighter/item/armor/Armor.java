@@ -11,4 +11,9 @@ public class Armor extends Item {
     public double getProtectionAmount() { return protectionAmount; }
     public void setProtectionAmount(int a) { protectionAmount=a; }
 
+    public Armor (int level, int experience, int type, double protectionAmount) {
+        super(level, experience, type);
+        this.protectionAmount = protectionAmount;
+    }
+
 }
