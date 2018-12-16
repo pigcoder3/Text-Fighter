@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.*;
 
+import java.lang.reflect.*;
+
 import org.textfighter.Display;
 import org.textfighter.item.*;
 import org.textfighter.item.tool.*;
@@ -115,7 +117,7 @@ public class TextFighter {
 
         try {
             JSONObject file = (JSONObject)parser.parse(new FileReader(f));
-            String saveName = (String)file.get("name");
+            gameName = (String)file.get("name");
 
             JSONObject stats = (JSONObject)file.get("stats");
             int level = Integer.parseInt((String)stats.get("level"));
@@ -126,25 +128,29 @@ public class TextFighter {
             int coins = Integer.parseInt((String)stats.get("coins"));
             int magic = Integer.parseInt((String)stats.get("magic"));
 
-            JSONArray inventory = (JSONArray)file.get("inventory");
+            JSONObject inventory = (JSONObject)file.get("inventory");
 
             ArrayList<Item> newInventory = new ArrayList<Item>();
 
-            //items
-            for (Object obj : inventory) {
-                JSONObject jsonobj = (JSONObject)obj;
+            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
+
+            for (Object key : inventory.keySet()) {
+                System.out.println((String)key);
+                JSONObject jsonobj = (JSONObject)inventory.get(key);
                 int itemlevel = Integer.parseInt(((String)jsonobj.get("level")));
                 int itemexperience = Integer.parseInt(((String)jsonobj.get("experience")));
                 int itemtype = Integer.parseInt(((String)jsonobj.get("type")));
-                switch ((String)jsonobj.get("itemtype")) {
-                    case "pickaxe": newInventory.add(new Pickaxe(itemlevel, itemexperience, itemtype)); break;
-                    case "helmet": newInventory.add(new Helmet(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
-                    case "chestplate": newInventory.add(new Chestplate(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
-                    case "leggings": inventory.add(new Leggings(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
-                    case "boots": newInventory.add(new Boots(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))))); break;
-                    case "sword": newInventory.add(new Sword(itemlevel, itemexperience, itemtype, Integer.parseInt(((String)jsonobj.get("damage"))))); break;
-                    case "bow": newInventory.add(new Bow(itemlevel, itemexperience, itemtype, Integer.parseInt(((String)jsonobj.get("damage"))))); break;
-                    default: break;
+                for(Class c : items) {
+                    if(c.getSimpleName().equals(jsonobj.get("itemtype"))) {
+                        try {
+                            Item item = new Item(itemlevel, itemexperience, itemtype);
+                            Constructor cons = c.getConstructors()[0];
+                            if(c.getSuperclass().equals(Weapon.class)) {item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype, Integer.parseInt(((String)jsonobj.get("damage"))));}
+                            else if(c.getSuperclass().equals(Armor.class)) {item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))));}
+                            else{item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype);}
+                            newInventory.add(item);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); continue; }
+                    }
                 }
             }
 
@@ -205,6 +211,12 @@ public class TextFighter {
         base.put("stats", stats);
         base.put("name", name);
 
+        //This is temporary as I will create methods for calculation based on level
+        ArrayList<Item> newInventory = new ArrayList<Item>();
+        newInventory.add(new Sword(1,0,0,10));
+
+        player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, newInventory);
+
         try (FileWriter w = new FileWriter(newGameFile);) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
@@ -227,13 +239,13 @@ public class TextFighter {
         stats.put("coins", Integer.toString(player.getCoins()));
         stats.put("magic", Integer.toString(player.getMagic()));
 
-        JSONArray inventory = new JSONArray();
+        JSONObject inventory = new JSONObject();
 
         Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
 
         //For all items
         for(Class c : items) {
-            if(Player.isCarrying(c)>0) {
+            if(player.isCarrying(c)>0) {
                 Item obj = player.getFromInventory(c);
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("itemtype", obj.getClass().getSimpleName());
@@ -246,7 +258,7 @@ public class TextFighter {
                 if(c.getSuperclass().equals(Weapon.class)) {
                     jsonobj.put("damage", Integer.toString(((Weapon)obj).getDamage()));
                 }
-                base.put(c.getName(), jsonobj);
+                inventory.put(c.getSimpleName(), jsonobj);
             }
         }
 
