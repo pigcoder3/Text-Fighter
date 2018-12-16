@@ -1,6 +1,6 @@
 package org.textfighter.userinterface;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 import java.util.ArrayList;
 
@@ -18,6 +18,9 @@ public class Choice {
     public Method getFunction() { return function; }
     public String getRequirement() { return requirement; }
     public Class getClassname() { return classname; }
+    public void invokeMethod() {
+        try { function.invoke(arguments); } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+    }
 
     public Choice(String name, String description, String function, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String requirement, String classname) {
         this.name = name;

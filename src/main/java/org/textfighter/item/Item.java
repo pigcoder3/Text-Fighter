@@ -1,16 +1,21 @@
 package org.textfighter.item;
 
+import java.lang.reflect.*;
+
 public class Item {
 
     protected int level;
     protected int experience;
     protected int experienceRequirement;
+    protected int baseExperienceRequirement = 50;
     protected int type;
 
     protected String[] typeStrings;
 
+    protected String[] methodsForCalculations = {"calculateExperienceRequirement"};
+
     public int getLevel(){ return level; }
-    public void setLevel(int a){ level=a; }
+    public void setLevel(int a){ level=a; calculateVariables(); }
     public boolean checkForLevelUp() { if(experience > experienceRequirement) { return true; } else { return false; } }
 
     public int getExperience(){ return experience; }
@@ -24,19 +29,26 @@ public class Item {
 
     public int getExperienceRequirement(){ return experienceRequirement; }
     public void setExperienceRequirement(int a){ experienceRequirement=a; }
-    public void calculateExperienceRequirement(){
-        //calculate it (Not sure about the equation to use yet)
-    }
+    public void calculateExperienceRequirement(){ experienceRequirement=(baseExperienceRequirement*level)*(baseExperienceRequirement*level); }
 
     public String getTypeString(int index) { return typeStrings[index]; }
 
     public int getType(){ return type; }
     public void setType(int t){ type=t; }
 
+    public void calculateVariables() {
+        if(methodsForCalculations.length > 1) {
+            for(String m : methodsForCalculations) {
+                try{ this.getClass().getMethod(m).invoke(new Object[0]); } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) { e.printStackTrace(); }
+            }
+        }
+    }
+
     public Item (int level, int experience, int type) {
         this.level = level;
         this.experience = experience;
         this.type = type;
+        calculateVariables();
     }
 
 }

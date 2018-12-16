@@ -1,6 +1,8 @@
 package org.textfighter.userinterface;
 
 import org.textfighter.userinterface.Choice;
+import org.textfighter.TextFighter;
+import org.textfighter.userinterface.UiTag;
 
 import java.util.ArrayList;
 
@@ -25,7 +27,29 @@ public class UserInterface {
     public String getParsedUI() { return parsedUI; }
 
     public void parseInterface() {
-        String UI = parsedUI;
+        String UI = "";
+        String currentTag = "";
+        int beginningIndex = 0;
+        boolean inTag = false;
+        for(int i=0; i<unParsedUI.length(); i++) {
+            if(unParsedUI.charAt(i) == '<') {
+                currentTag="<";
+                inTag = true;
+            } else if (unParsedUI.charAt(i) == '>' & inTag) {
+                currentTag+=">";
+                ArrayList<UiTag> tags = TextFighter.getInterfaceTags();
+                for(UiTag t : tags) {
+                    if(t.equals(currentTag)) {
+                        UI+=t.invokeMethod();
+                    }
+                }
+                inTag=false;
+            } else if (inTag){
+                currentTag+=unParsedUI.charAt(i);
+            } else {
+                UI+=unParsedUI.charAt(i);
+            }
+        }
         parsedUI = UI;
     }
 
@@ -33,7 +57,7 @@ public class UserInterface {
 
     public void setPossibleChoices() {
         for(Choice c : allChoices) {
-                  
+
         }
     }
 

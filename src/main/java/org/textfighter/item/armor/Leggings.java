@@ -4,8 +4,10 @@ import org.textfighter.item.armor.Armor;
 
 public class Leggings extends Armor {
 
-    public Leggings (int level, int experience, int type, double protectionAmount) {
-        super(level, experience, type, protectionAmount);
+    private double baseProtection = 2.25;
+
+    public Leggings (int level, int experience, int type) {
+        super(level, experience, type);
     }
 
 }

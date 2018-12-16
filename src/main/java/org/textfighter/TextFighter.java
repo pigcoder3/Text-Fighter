@@ -135,7 +135,6 @@ public class TextFighter {
             Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
 
             for (Object key : inventory.keySet()) {
-                System.out.println((String)key);
                 JSONObject jsonobj = (JSONObject)inventory.get(key);
                 int itemlevel = Integer.parseInt(((String)jsonobj.get("level")));
                 int itemexperience = Integer.parseInt(((String)jsonobj.get("experience")));
@@ -145,9 +144,7 @@ public class TextFighter {
                         try {
                             Item item = new Item(itemlevel, itemexperience, itemtype);
                             Constructor cons = c.getConstructors()[0];
-                            if(c.getSuperclass().equals(Weapon.class)) {item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype, Integer.parseInt(((String)jsonobj.get("damage"))));}
-                            else if(c.getSuperclass().equals(Armor.class)) {item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype, Double.parseDouble(((String)jsonobj.get("protectionAmount"))));}
-                            else{item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype);}
+                            item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype);
                             newInventory.add(item);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); continue; }
                     }
@@ -213,7 +210,7 @@ public class TextFighter {
 
         //This is temporary as I will create methods for calculation based on level
         ArrayList<Item> newInventory = new ArrayList<Item>();
-        newInventory.add(new Sword(1,0,0,10));
+        newInventory.add(new Sword(1,0,0));
 
         player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, newInventory);
 
@@ -293,6 +290,8 @@ public class TextFighter {
         }
         return filteredSaves;
     }
+
+    public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
 
     public static void quitGame() { System.exit(0); }
 

@@ -1,8 +1,9 @@
 package org.textfighter.userinterface;
 
 import org.textfighter.Player;
+import org.textfighter.item.Item;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 import java.util.ArrayList;
 
@@ -12,6 +13,15 @@ public class UiTag {
     private Class classname;
     private Method function;
     private ArrayList<Object> arguments;
+
+    public String getTag() { return tag; }
+    public Method getFunction() { return function; }
+    public Class getClassname() { return classname; }
+    public ArrayList<Object> getArguments() { return arguments; }
+    public String invokeMethod() {
+        try { return((String)function.invoke(arguments)); } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        return null;
+    }
 
     public UiTag(String tag, String function, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String classname) {
         this.tag = tag;
