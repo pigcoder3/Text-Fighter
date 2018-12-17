@@ -18,7 +18,7 @@ public class UserInterface {
     //All the choices the user can currently choose
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    public UserInterface(String name, String UI, ArrayList choices) {
+    public UserInterface(String name, String UI, ArrayList<Choice> choices) {
         this.name = name;
         this.unParsedUI = UI;
         this.allChoices = choices;

@@ -1,7 +1,7 @@
 package org.textfighter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.io.*;
 
 import java.lang.reflect.*;
@@ -13,10 +13,13 @@ import org.textfighter.item.armor.*;
 import org.textfighter.item.weapon.*;
 import org.textfighter.Player;
 import org.textfighter.userinterface.*;
+import org.textfighter.enemy.Enemy;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+@SuppressWarnings("unchecked")
 
 public class TextFighter {
 
@@ -35,13 +38,15 @@ public class TextFighter {
     static ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
     static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
     static ArrayList<String> saves = new ArrayList<String>();
+    static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
     public static boolean loadResources() {
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir + "/tags/tags.json");
         interfaceDir = new File(resourcesDir + "/interfaces");
         savesDir = new File("../../../saves");
-        if (!loadInterfaces() || !loadParsingTags()) { return false; }
+        enemyDir = new File(resourcesDir + "/enemies");
+        if (!loadInterfaces() || !loadParsingTags() || !loadEnemies()) { return false; }
         if (!savesDir.exists()) {
             System.out.println("WARNING: The save directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { System.out.println("Unable to create a new saves directory!"); return false; }
@@ -65,11 +70,21 @@ public class TextFighter {
                     ArrayList<String> arguments = (JSONArray)obj.get("arguments");
                     ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
                     ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                    if(arguments.size() != argumentTypesString.size()) { System.exit(1); }
-                    if(arguments.size() > 0) { for (int p=0; i>argumentTypesString.size(); i++) { if(Integer.parseInt(argumentTypesString.get(p)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
+                    if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choices have become corrupted!"); System.exit(1); }
+                    if(arguments.size() > 0) { for (int p=0; p<argumentTypesString.size(); p++) { if(Integer.parseInt(argumentTypesString.get(p)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
                     choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("requirement"), (String)obj.get("class")));
                 }
                 userInterfaces.add(new UserInterface(name, uiString, choices));
+            }
+        } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
+        return true;
+    }
+
+    public static boolean loadEnemies() {
+        try {
+            for(String f : enemyDir.list()) {
+                JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
+                enemies.add(new Enemy((String)enemyFile.get("name"), Integer.parseInt((String)enemyFile.get("health")), Integer.parseInt((String)enemyFile.get("maxhealth")), Integer.parseInt((String)enemyFile.get("strength"))));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -81,8 +96,8 @@ public class TextFighter {
             JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
             for (int i = 0; i < tagsArray.size(); i++) {
                 JSONObject obj = (JSONObject)tagsArray.get(i);
-                ArrayList<String> arguments = (JSONArray)obj.get("arguments");
-                ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+                ArrayList<String> arguments = (ArrayList<String>)obj.get("arguments");
+                ArrayList<String> argumentTypesString = (ArrayList<String>)obj.get("argumentTypes");
                 ArrayList<Class> argumentTypes = new ArrayList<Class>();
                 interfaceTags.add(new UiTag((String)obj.get("tag"),(String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class")));
             }
@@ -113,7 +128,7 @@ public class TextFighter {
         } catch (IOException e) { System.out.println("An error occured while reading your input!"); e.printStackTrace(); System.exit(1); }
 
         File f = new File(savesDir.getPath() + "/" + name + ".json");
-        if(!f.exists()) { System.out.println("Unable to find a save with that name (Or the file could not be found)"); System.exit(0); }
+        if(!f.exists()) { System.out.println("Unable to find a save with that name (Or the file could not be found)"); System.exit(1); }
 
         try {
             JSONObject file = (JSONObject)parser.parse(new FileReader(f));
@@ -259,7 +274,7 @@ public class TextFighter {
             }
         }
 
-        base.put("inventory", inventory);
+        base.put("inventory", "inventory");
         base.put("stats", stats);
         base.put("name", gameName);
 
@@ -293,8 +308,6 @@ public class TextFighter {
 
     public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
 
-    public static void quitGame() { System.exit(0); }
-
     public static void fight() {
 
     }
@@ -303,7 +316,7 @@ public class TextFighter {
         //System.out.println("\u001b[2J");
         if (!loadResources()) {
             System.out.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
-            System.exit(0);
+            System.exit(1);
         }
         loadGame();
         player.gainCoins(1);

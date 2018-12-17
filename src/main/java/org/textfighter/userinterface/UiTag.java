@@ -7,6 +7,8 @@ import java.lang.reflect.*;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("unchecked")
+
 public class UiTag {
 
     private String tag;

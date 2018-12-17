@@ -35,10 +35,10 @@
         {
             "name" : "quit",
             "description" : "Quits the game",
-            "function" : "quitGame",
-            "arguments" : [],
-            "argumentTypes" : [],
-            "class" : "org.textfighter.TextFighter",
+            "function" : "exit",
+            "arguments" : ["0"],
+            "argumentTypes" : ["1"],
+            "class" : "java.lang.System",
             "requirement" : "None"
         }
 
