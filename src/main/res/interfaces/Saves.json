@@ -19,7 +19,6 @@
             "arguments" : [],
             "argumentTypes" : [],
             "class" : "org.textfighter.TextFighter",
-            "reequirement" : "None"
         },
 
         {
@@ -29,7 +28,7 @@
             "arguments" : [],
             "argumentTypes" : [],
             "class" : "org.textfighter.TextFighter",
-            "requirement" : "None"
+
         },
 
         {
@@ -39,7 +38,6 @@
             "arguments" : ["0"],
             "argumentTypes" : ["1"],
             "class" : "java.lang.System",
-            "requirement" : "None"
         }
 
     ]

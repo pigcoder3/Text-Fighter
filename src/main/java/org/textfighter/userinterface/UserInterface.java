@@ -55,9 +55,12 @@ public class UserInterface {
 
     public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
-    public void setPossibleChoices() {
+    public void filterPossibleChoices() {
+        possibleChoices.clear();
         for(Choice c : allChoices) {
-
+            if(c.invokerequirement()) {
+                possibleChoices.add(c);
+            }
         }
     }
 
