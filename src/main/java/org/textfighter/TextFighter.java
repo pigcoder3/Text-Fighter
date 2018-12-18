@@ -12,7 +12,8 @@ import org.textfighter.item.tool.*;
 import org.textfighter.item.armor.*;
 import org.textfighter.item.weapon.*;
 import org.textfighter.Player;
-import org.textfighter.userinterface.*;
+import org.textfighter.location.*;
+import org.textfighter.location.UiTag;
 import org.textfighter.enemy.Enemy;
 
 import org.json.simple.*;
@@ -29,13 +30,13 @@ public class TextFighter {
 
     static File resourcesDir;
     static File tagFile;
-    static File interfaceDir;
+    static File locationDir;
     static File enemyDir;
     static File savesDir;
 
     static JSONParser parser = new JSONParser();
 
-    static ArrayList<UserInterface> userInterfaces = new ArrayList<UserInterface>();
+    static ArrayList<Location> locations = new ArrayList<Location>();
     static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
     static ArrayList<String> saves = new ArrayList<String>();
     static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
@@ -43,10 +44,10 @@ public class TextFighter {
     public static boolean loadResources() {
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir + "/tags/tags.json");
-        interfaceDir = new File(resourcesDir + "/interfaces");
+        locationDir = new File(resourcesDir + "/locations");
         savesDir = new File("../../../saves");
         enemyDir = new File(resourcesDir + "/enemies");
-        if (!loadInterfaces() || !loadParsingTags() || !loadEnemies()) { return false; }
+        if (!loadLocations() || !loadParsingTags() || !loadEnemies()) { return false; }
         if (!savesDir.exists()) {
             System.out.println("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { System.out.println("Unable to create a new saves directory!"); return false; }
@@ -54,12 +55,12 @@ public class TextFighter {
         return true;
     }
 
-    public static boolean loadInterfaces() {
+    public static boolean loadLocations() {
         try {
-            //Searched through the saves directory for any interfaces
-            for (String f : interfaceDir.list()) {
+            //Search through the locations directory for all locations
+            for (String f : locationDir.list()) {
                 if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                JSONObject uiArrayFile = (JSONObject) parser.parse(new FileReader(new File(interfaceDir.getAbsolutePath() + "/" + f)));
+                JSONObject uiArrayFile = (JSONObject) parser.parse(new FileReader(new File(locationDir.getAbsolutePath() + "/" + f)));
                 JSONArray uiArray = (JSONArray)uiArrayFile.get("Interface");
                 String name = (String) uiArrayFile.get("name");
                 String uiString = "";
@@ -90,7 +91,7 @@ public class TextFighter {
                     }
                     choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), (String)obj.get("field"), requirements));
                 }
-                userInterfaces.add(new UserInterface(name, uiString, choices));
+                locations.add(new Location(name, uiString, choices));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;

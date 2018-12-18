@@ -1,59 +1,53 @@
-package org.textfighter.userinterface;
+package org.textfighter.location;
 
-import org.textfighter.userinterface.Choice;
+import org.textfighter.location.*;
 import org.textfighter.TextFighter;
-import org.textfighter.userinterface.UiTag;
 
 import java.util.ArrayList;
 
-public class UserInterface {
-
-    private String unParsedUI;
-    private String parsedUI;
+public class Location {
 
     private String name;
 
-    //All choices possible for this interface
+    private String unparsedui;
+    private String ui;
+
     private ArrayList<Choice> allChoices = new ArrayList<Choice>();
-    //All the choices the user can currently choose
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    public UserInterface(String name, String UI, ArrayList<Choice> choices) {
-        this.name = name;
-        this.unParsedUI = UI;
-        this.allChoices = choices;
-    }
-
-    public String getParsedUI() { return parsedUI; }
+    public String getName() { return name; }
+    public String getUnparsedui() { return unparsedui; }
+    public String getui() { return ui; }
+    public ArrayList<Choice> getAllChoices() { return allChoices; }
+    public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
+    public String getParsedUI() { return ui; }
 
     public void parseInterface() {
-        String UI = "";
+        String uiInProgress = "";
         String currentTag = "";
         int beginningIndex = 0;
         boolean inTag = false;
-        for(int i=0; i<unParsedUI.length(); i++) {
-            if(unParsedUI.charAt(i) == '<') {
+        for(int i=0; i<unparsedui.length(); i++) {
+            if(unparsedui.charAt(i) == '<') {
                 currentTag="<";
                 inTag = true;
-            } else if (unParsedUI.charAt(i) == '>' & inTag) {
+            } else if (unparsedui.charAt(i) == '>' & inTag) {
                 currentTag+=">";
                 ArrayList<UiTag> tags = TextFighter.getInterfaceTags();
                 for(UiTag t : tags) {
                     if(t.equals(currentTag)) {
-                        UI+=t.invokeMethod();
+                        uiInProgress+=t.invokeMethod();
                     }
                 }
                 inTag=false;
             } else if (inTag){
-                currentTag+=unParsedUI.charAt(i);
+                currentTag+=unparsedui.charAt(i);
             } else {
-                UI+=unParsedUI.charAt(i);
+                uiInProgress+=unparsedui.charAt(i);
             }
         }
-        parsedUI = UI;
+        ui = uiInProgress;
     }
-
-    public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
     public void filterPossibleChoices() {
         possibleChoices.clear();
@@ -69,4 +63,9 @@ public class UserInterface {
         }
     }
 
+    public Location(String name, String ui, ArrayList<Choice> choices) {
+        this.name = name;
+        this.ui = ui;
+        this.allChoices = choices;
+    }
 }

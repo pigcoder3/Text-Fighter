@@ -1,4 +1,4 @@
-package org.textfighter.userinterface;
+package org.textfighter.location;
 
 import org.textfighter.Player;
 import org.textfighter.item.Item;

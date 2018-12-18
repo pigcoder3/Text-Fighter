@@ -1,6 +1,6 @@
-package org.textfighter.userinterface;
+package org.textfighter.location;
 
-import org.textfighter.userinterface.ChoiceRequirement;
+import org.textfighter.location.ChoiceRequirement;
 
 import java.lang.reflect.*;
 

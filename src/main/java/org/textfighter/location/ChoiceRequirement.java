@@ -1,4 +1,4 @@
-package org.textfighter.userinterface;
+package org.textfighter.location;
 
 import java.lang.reflect.*;
 
