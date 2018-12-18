@@ -58,9 +58,14 @@ public class UserInterface {
     public void filterPossibleChoices() {
         possibleChoices.clear();
         for(Choice c : allChoices) {
-            if(c.invokerequirement()) {
-                possibleChoices.add(c);
+            boolean valid = true;
+            for(ChoiceRequirement r : c.getRequirements()) {
+                if(!r.invokeRequirement()) {
+                    valid=false;
+                    break;
+                }
             }
+            if(valid) {possibleChoices.add(c);}
         }
     }
 

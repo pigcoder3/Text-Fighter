@@ -75,17 +75,20 @@ public class TextFighter {
                     if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choices have become corrupted! ( " + name + " )"); System.exit(1); }
                     if(arguments.size() > 0) { for (int p=0; p<argumentTypesString.size(); p++) { if(Integer.parseInt(argumentTypesString.get(p)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
                     //Gets requirement if there is one
-                    if(((String)obj.get("requirement")) != null && !((String)obj.get("requirement")).trim().isEmpty()) {
-                        ArrayList<String> requirementArgs = (JSONArray)obj.get("requirementArgs");
-                        ArrayList<String> requirementArgTypesString = (JSONArray)obj.get("requirementArgTypes");
-                        ArrayList<Class> requirementArgTypes = new ArrayList<Class>();
-                        if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choices have become corrupted! ( " + name + " )"); System.exit(1); }
-                        if(arguments.size() > 0) { for (int p=0; p<argumentTypesString.size(); p++) { if(Integer.parseInt(argumentTypesString.get(p)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
-                        choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), (String)obj.get("requirement"), requirementArgs, requirementArgTypes, (String)obj.get("requirementClass")));
-                    } else {
-                        //If no requirement, use this constructor
-                        choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class")));
+                    JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
+                    ArrayList<ChoiceRequirement> requirements = new ArrayList<ChoiceRequirement>();
+                    if(requirementsJArray != null) {
+                        for(int p=0; i<requirementsJArray.size(); i++) {
+                            JSONObject ro = (JSONObject)requirementsJArray.get(p);
+                            ArrayList<String> requirementArgs = (JSONArray)ro.get("requirementArgs");
+                            ArrayList<String> requirementArgTypesString = (JSONArray)ro.get("requirementArgTypes");
+                            ArrayList<Class> requirementArgTypes = new ArrayList<Class>();
+                            if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choice requirements have become corrupted! ( " + name + " )"); System.exit(1); }
+                            if(arguments.size() > 0) { for (int g=0; p<argumentTypesString.size(); g++) { if(Integer.parseInt(argumentTypesString.get(g)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
+                            requirements.add(new ChoiceRequirement((String)ro.get("function"), arguments, argumentTypes, (String)ro.get("class")));
+                        }
                     }
+                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), requirements));
                 }
                 userInterfaces.add(new UserInterface(name, uiString, choices));
             }
@@ -274,8 +277,8 @@ public class TextFighter {
 
         //For all items
         for(Class c : items) {
-            if(player.isCarrying(c.getSimpleName())) {
-                Item obj = player.getFromInventory(c.getSimpleName());
+            if(player.isCarrying(c.getName())) {
+                Item obj = player.getFromInventory(c.getName());
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("itemtype", obj.getClass().getSimpleName());
                 jsonobj.put("type", Integer.toString(obj.getType()));
@@ -335,7 +338,7 @@ public class TextFighter {
             System.out.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
-        loadGame();
+        newGame();
         player.gainCoins(1);
         saveGame();
         // Display all saves

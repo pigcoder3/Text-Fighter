@@ -27,8 +27,7 @@
             "function" : "loadGame",
             "arguments" : [],
             "argumentTypes" : [],
-            "class" : "org.textfighter.TextFighter",
-
+            "class" : "org.textfighter.TextFighter"
         },
 
         {
@@ -39,8 +38,5 @@
             "argumentTypes" : ["1"],
             "class" : "java.lang.System",
         }
-
     ]
-
-
 }
