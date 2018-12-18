@@ -85,10 +85,10 @@ public class TextFighter {
                             ArrayList<Class> requirementArgTypes = new ArrayList<Class>();
                             if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choice requirements have become corrupted! ( " + name + " )"); System.exit(1); }
                             if(arguments.size() > 0) { for (int g=0; p<argumentTypesString.size(); g++) { if(Integer.parseInt(argumentTypesString.get(g)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
-                            requirements.add(new ChoiceRequirement((String)ro.get("function"), arguments, argumentTypes, (String)ro.get("class")));
+                            requirements.add(new ChoiceRequirement((String)ro.get("function"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
                         }
                     }
-                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), requirements));
+                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), (String)obj.get("field"), requirements));
                 }
                 userInterfaces.add(new UserInterface(name, uiString, choices));
             }

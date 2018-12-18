@@ -5,21 +5,24 @@
             "class" : "org.textfighter.TextFighter",
             "function" : "getSaves",
             "arguments" : [],
-            "argumentTypes" : []
+            "argumentTypes" : [],
+            "field" : "player"
         },
         {
             "tag" : "<coins>",
             "class" : "org.textfighter.Player",
             "function" : "getCoins",
             "arguments" : [],
-            "argumentTypes" : []
+            "argumentTypes" : [],
+            "field" : "player"
         },
         {
             "tag" : "<mana>",
             "class" : "org.textfighter.Player",
             "function" : "getMagic",
             "arguments" : [],
-            "argumentTypes" : []
+            "argumentTypes" : [],
+            "field" : "player"
         }
     ]
 }
