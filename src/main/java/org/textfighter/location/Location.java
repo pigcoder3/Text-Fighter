@@ -48,7 +48,9 @@ public class Location {
                             uiInProgress+=output;
                         } else if (output instanceof ArrayList) {
                             if(((ArrayList)output).get(i) instanceof String) {
-
+                                for(int p=0; p<((ArrayList)output).size(); p++) {
+                                    uiInProgress+=((ArrayList)output).get(i);
+                                }
                             }
                         }
 
