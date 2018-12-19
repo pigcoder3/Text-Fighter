@@ -137,7 +137,7 @@ public class TextFighter {
                 System.out.println("Which game would you like to load?");
                 name = in.readLine();
                 for (String s : savesDir.list()) {
-                    if(s.substring(0,s.lastIndexOf(".")).equalsIgnoreCase(name)) {
+                    if(s.substring(0,s.lastIndexOf(".")).equals(name)) {
                         valid=true;
                         break;
                     } else {
@@ -200,12 +200,12 @@ public class TextFighter {
         String name = "";
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));) {
-            boolean valid = false;
+            boolean valid = true;
             while (!valid) {
                 System.out.println("What would you like this save to be called?\nDo not use names already used before.");
                 name = in.readLine();
                 for(String s : savesDir.list()) {
-                    if(s.substring(0,s.lastIndexOf(".")).equalsIgnoreCase(name)) {
+                    if(s.substring(0,s.lastIndexOf(".")-1).equals(name)) {
                         valid=false;
                     } else {
                         valid=true;
@@ -219,6 +219,8 @@ public class TextFighter {
 
         File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
         try { newGameFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
+
+        System.out.println("Creating new game: \""+ name + "\"");
 
         JSONObject base = new JSONObject();
 
