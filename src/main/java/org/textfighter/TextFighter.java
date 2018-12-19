@@ -89,7 +89,7 @@ public class TextFighter {
                             requirements.add(new ChoiceRequirement((String)ro.get("function"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
                         }
                     }
-                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), (String)obj.get("field"), requirements));
+                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), (String)obj.get("field"), requirements));
                 }
                 locations.add(new Location(name, uiString, choices));
             }

@@ -6,28 +6,30 @@
 
         "--------=[SAVES]=-------",
         "<saves>",
-        "------------------------"
-
+        "--------=Options=-------",
+        " - <allOptionOutput>"
     ],
 
     "Choices" : [
 
         {
-            "name" : "new game",
+            "name" : "newGame",
             "description" : "Creates a new game",
             "function" : "newGame",
             "arguments" : [],
             "argumentTypes" : [],
             "class" : "org.textfighter.TextFighter",
+            "usage" : "newGame <name>"
         },
 
         {
-            "name" : "load game",
+            "name" : "loadGame",
             "description" : "Loads an existing game",
             "function" : "loadGame",
             "arguments" : [],
             "argumentTypes" : [],
-            "class" : "org.textfighter.TextFighter"
+            "class" : "org.textfighter.TextFighter",
+            "usage" : "loadGame <name>"
         },
 
         {
@@ -37,6 +39,7 @@
             "arguments" : ["0"],
             "argumentTypes" : ["1"],
             "class" : "java.lang.System",
+            "usage" : "quit"
         }
     ]
 }

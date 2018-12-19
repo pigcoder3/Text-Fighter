@@ -33,10 +33,22 @@ public class Location {
                 inTag = true;
             } else if (unparsedui.charAt(i) == '>' & inTag) {
                 currentTag+=">";
+                if(currentTag == "<choices>") {
+                    for(Choice c : possibleChoices) {
+                        uiInProgess+=t.invokeMethod();
+                    }
+                }
                 ArrayList<UiTag> tags = TextFighter.getInterfaceTags();
                 for(UiTag t : tags) {
                     if(t.equals(currentTag)) {
-                        uiInProgress+=t.invokeMethod();
+                        Object output = t.invokeMethod();
+                        if(output.getClass() == ArrayList.class) {
+                            for(int p=0; p<output.size(); p++) {
+                                uiInProgress+=output.get();
+                            }
+                        } else if (output.getClass() == String.class) {
+                            uiInProgress+=output;
+                        }
                     }
                 }
                 inTag=false;
@@ -67,5 +79,12 @@ public class Location {
         this.name = name;
         this.ui = ui;
         this.allChoices = choices;
+        for(int i=0; i<allChoices.size(); i++) {
+            for(Class c : i.method.getParameterTypes()) {
+                if(c != int.class || c != String.class) {
+                    allChoices.remove(i);
+                }
+            }
+        }
     }
 }

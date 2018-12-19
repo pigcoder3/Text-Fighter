@@ -20,8 +20,8 @@ public class UiTag {
     public Method getFunction() { return function; }
     public Class getClassname() { return classname; }
     public ArrayList<Object> getArguments() { return arguments; }
-    public String invokeMethod() {
-        try { return((String)function.invoke(arguments)); } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+    public Object invokeMethod() {
+        try { return(function.invoke(arguments)); } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return null;
     }
 
