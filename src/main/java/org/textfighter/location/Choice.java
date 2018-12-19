@@ -13,7 +13,7 @@ public class Choice {
     private String name;
     private String description;
     private String usage;
-    private String outputString;
+    private String output;
 
     private Method method;
     private ArrayList<Object> arguments;
@@ -27,14 +27,15 @@ public class Choice {
     public Method getMethod() { return method; }
     public ArrayList<ChoiceRequirement> getRequirements() { return requirements; }
     public Class getClazz() { return clazz; }
-    
+    public String getOutput() { return output; }
+
     public boolean invokeMethod(ArrayList<String> inputArgs) {
         if(arguments.size() + inputArgs.size() != method.getParameterTypes().length) { System.out.println("incorrect usage! usage - " + usage); return false; }
-        for(int i=0; i<inputArgs.length(); i++) {
-            if(method.getParameterTypes[i] == int.class) {
-                arguments.add(Integer.parseInt(inputArgs[i]));
+        for(int i=0; i<inputArgs.size(); i++) {
+            if(method.getParameterTypes()[i] == int.class) {
+                arguments.add(Integer.parseInt(inputArgs.get(i)));
             } else {
-                arguments.add(inputArgs[i]);
+                arguments.add(inputArgs.get(i));
             }
         }
         try {
@@ -52,7 +53,7 @@ public class Choice {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        this.outputString = "- " + name + " :|: " + usage + " :|: " + description;
+        this.output = "- " + name + " :|: " + usage + " :|: " + description;
         this.requirements = requirements;
         //Creates the method
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }

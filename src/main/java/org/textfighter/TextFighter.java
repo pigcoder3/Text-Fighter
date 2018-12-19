@@ -200,12 +200,12 @@ public class TextFighter {
         String name = "";
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));) {
-            boolean valid = true;
+            boolean valid = false;
             while (!valid) {
                 System.out.println("What would you like this save to be called?\nDo not use names already used before.");
                 name = in.readLine();
                 for(String s : savesDir.list()) {
-                    if(s.substring(0,s.lastIndexOf(".")-1).equals(name)) {
+                    if(s.substring(0,s.lastIndexOf(".")).equals(name)) {
                         valid=false;
                     } else {
                         valid=true;
@@ -216,6 +216,7 @@ public class TextFighter {
             }
             gameName=name;
         } catch (IOException e) { System.out.println("An error occured while reading your input!"); e.printStackTrace(); System.exit(1); }
+
 
         File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
         try { newGameFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); }

@@ -35,20 +35,23 @@ public class Location {
                 currentTag+=">";
                 if(currentTag == "<choices>") {
                     for(Choice c : possibleChoices) {
-                        uiInProgess+=t.invokeMethod();
+                        uiInProgress+=c.getOutput();
                     }
                 }
                 ArrayList<UiTag> tags = TextFighter.getInterfaceTags();
                 for(UiTag t : tags) {
                     if(t.equals(currentTag)) {
                         Object output = t.invokeMethod();
-                        if(output.getClass() == ArrayList.class) {
-                            for(int p=0; p<output.size(); p++) {
-                                uiInProgress+=output.get();
-                            }
-                        } else if (output.getClass() == String.class) {
+                        if(output instanceof Integer) {
+                            uiInProgress+=Integer.parseInt((String)output);
+                        } else if (output instanceof String) {
                             uiInProgress+=output;
+                        } else if (output instanceof ArrayList) {
+                            if(((ArrayList)output).get(i) instanceof String) {
+
+                            }
                         }
+
                     }
                 }
                 inTag=false;
@@ -80,7 +83,7 @@ public class Location {
         this.ui = ui;
         this.allChoices = choices;
         for(int i=0; i<allChoices.size(); i++) {
-            for(Class c : i.method.getParameterTypes()) {
+            for(Class c : allChoices.get(i).getMethod().getParameterTypes()) {
                 if(c != int.class || c != String.class) {
                     allChoices.remove(i);
                 }
