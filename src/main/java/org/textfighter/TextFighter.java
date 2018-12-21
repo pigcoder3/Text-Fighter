@@ -73,7 +73,7 @@ public class TextFighter {
                     ArrayList<String> arguments = (JSONArray)obj.get("arguments");
                     ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
                     ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                    if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choices have become corrupted! ( " + name + " )"); System.exit(1); }
+                    if(arguments.size() != argumentTypesString.size()) { System.out.println("WARNING: The interface choices have become corrupted! ( " + name + " ). Omitting interface."); continue;}
                     if(arguments.size() > 0) { for (int p=0; p<argumentTypesString.size(); p++) { if(Integer.parseInt(argumentTypesString.get(p)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
                     //Gets requirement if there is one
                     JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
@@ -84,9 +84,9 @@ public class TextFighter {
                             ArrayList<String> requirementArgs = (JSONArray)ro.get("requirementArgs");
                             ArrayList<String> requirementArgTypesString = (JSONArray)ro.get("requirementArgTypes");
                             ArrayList<Class> requirementArgTypes = new ArrayList<Class>();
-                            if(arguments.size() != argumentTypesString.size()) { System.out.println("The interface choice requirements have become corrupted! ( " + name + " )"); System.exit(1); }
+                            if(arguments.size() != argumentTypesString.size()) { System.out.println("WARNING: The interface choice requirements have become corrupted! ( " + name + " )"); continue;}
                             if(arguments.size() > 0) { for (int g=0; p<argumentTypesString.size(); g++) { if(Integer.parseInt(argumentTypesString.get(g)) == 1) { argumentTypes.add(int.class); } else { argumentTypes.add(String.class); }}}
-                            requirements.add(new ChoiceRequirement((String)ro.get("function"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
+                            requirements.add(new ChoiceRequirement((String)obj.get("function"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
                         }
                     }
                     choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), (String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class"), (String)obj.get("field"), requirements));
@@ -116,7 +116,34 @@ public class TextFighter {
                 ArrayList<String> arguments = (ArrayList<String>)obj.get("arguments");
                 ArrayList<String> argumentTypesString = (ArrayList<String>)obj.get("argumentTypes");
                 ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                interfaceTags.add(new UiTag((String)obj.get("tag"),(String)obj.get("function"), arguments, argumentTypes, (String)obj.get("class")));
+                Method method;
+                Class clazz;
+                try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("WARNING: Class not found '" + Class.forName((String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
+                    continue;
+                }
+                if(arguments.size() > 0) {
+                    for (int g=0; g<argumentTypesString.size(); g++) {
+                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                            argumentTypes.add(int.class);
+                        } else {
+                            argumentTypes.add(String.class);
+                        }
+                    }
+                }
+                try { method = clazz.getMethod((String)obj.get("function"), argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
+                    System.out.println("WARNING: Omitting tag '" + (String)obj.get("tag") + "'")e.printStackTrace(); continue;}
+                Class returnType = method.getReturnType();
+                if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
+                    System.out.println("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
+                    continue;
+                }
+                if(argumentTypes.size() != arguments.size()) {
+                    System.out.println("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
+                    continue;
+                }
+                interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
