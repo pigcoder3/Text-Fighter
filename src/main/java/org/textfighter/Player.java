@@ -2,11 +2,16 @@ package org.textfighter;
 
 import org.textfighter.item.*;
 
+import org.textfighter.location.Location;
+
 import java.util.ArrayList;
 
 public class Player {
 
     static int defaulthp = 50;
+
+    private static boolean alive = true;
+    private static boolean inFight = false;
 
     private static int level;
     private static int experience;
@@ -18,9 +23,14 @@ public class Player {
     private static int coins;
     private static int magic;
 
-    private static String location;
+    private static Location location;
 
     private static ArrayList<Item> inventory = new ArrayList<Item>();
+
+    public static boolean getAlive() { return alive; }
+    public static void setAlive(boolean b) { alive=b; }
+    public static boolean getInFight() { return inFight; }
+    public static void setInFight(boolean b) { inFight=b; }
 
     public static int getLevel() { return level; }
     public static void increaseLevel(int a) { level=+a; }
@@ -47,8 +57,14 @@ public class Player {
     public static void spendMagic(int a) { if (magic-a >= 0) { magic=-a; } else { magic=-a; } }
     public static void gainMagic(int a) { magic=+a; }
 
-    public static String getLocation() { return location; }
-    public static void setLocation(String loc) { location=loc; }
+    public static Location getLocation() { return location; }
+    public static void setLocation(String loc) {
+        for(Location l : TextFighter.locations) {
+            if(l.getName().equals(loc)) {
+                location = l;
+            }
+        }
+    }
 
     public static ArrayList<Item> getInventory() { return inventory; }
     public static void addToInventory(Item item) { inventory.add(item); }
@@ -60,7 +76,7 @@ public class Player {
         }
     }
 
-    public static boolean isCarrying(String classname) {
+    public  boolean isCarrying(String classname) {
         for(Item i : inventory) {
             try {
                 if(i.getClass().equals(Class.forName(classname))) { return true; }
@@ -88,5 +104,7 @@ public class Player {
         this.score = score;
         this.inventory = inventory;
     }
+
+    public Player() { }
 
 }

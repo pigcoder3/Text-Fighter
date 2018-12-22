@@ -33,27 +33,32 @@ public class Location {
                 inTag = true;
             } else if (unparsedui.charAt(i) == '>' & inTag) {
                 currentTag+=">";
-                if(currentTag == "<choices>") {
+                if(currentTag.equals("<choices>")) {
                     for(Choice c : possibleChoices) {
-                        uiInProgress+=c.getOutput();
+                        uiInProgress+=c.getOutput()+"\n";
                     }
                 }
                 ArrayList<UiTag> tags = TextFighter.getInterfaceTags();
                 for(UiTag t : tags) {
-                    if(t.equals(currentTag)) {
+                    if(t.getTag().equals(currentTag)) {
                         Object output = t.invokeMethod();
                         if(output instanceof Integer) {
                             uiInProgress+=Integer.parseInt((String)output);
                         } else if (output instanceof String) {
                             uiInProgress+=output;
                         } else if (output instanceof ArrayList) {
-                            if(((ArrayList)output).get(i) instanceof String) {
-                                for(int p=0; p<((ArrayList)output).size(); p++) {
-                                    uiInProgress+=((ArrayList)output).get(i);
+                            if(((ArrayList)output).size() > 0 && ((ArrayList)output).get(0) instanceof String) {
+                                if(t.getTag().substring(t.getTag().length()-2, t.getTag().length()-1).equals("\\n")){
+                                    for(int p=0; p<((ArrayList)output).size(); p++) {
+                                        uiInProgress+=((ArrayList)output).get(p);
+                                    }
+                                } else {
+                                    for(int p=0; p<((ArrayList)output).size(); p++) {
+                                        uiInProgress+=((ArrayList)output).get(p) + "\n";
+                                    }
                                 }
                             }
                         }
-
                     }
                 }
                 inTag=false;
@@ -82,12 +87,14 @@ public class Location {
 
     public Location(String name, String ui, ArrayList<Choice> choices) {
         this.name = name;
-        this.ui = ui;
+        this.unparsedui = ui;
         this.allChoices = choices;
         for(int i=0; i<allChoices.size(); i++) {
-            for(Class c : allChoices.get(i).getMethod().getParameterTypes()) {
-                if(c != int.class || c != String.class) {
-                    allChoices.remove(i);
+            for(ChoiceMethod m : allChoices.get(i).getMethods()) {
+                for(Class c : m.getMethod().getParameterTypes()) {
+                    if(c != int.class && c != String.class) {
+                        allChoices.remove(i);
+                    }
                 }
             }
         }

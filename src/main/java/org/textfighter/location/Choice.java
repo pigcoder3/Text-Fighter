@@ -4,9 +4,7 @@ import org.textfighter.location.ChoiceRequirement;
 
 import java.lang.reflect.*;
 
-import java.util.ArrayList;
-
-@SuppressWarnings("unchecked")
+import java.util.*;
 
 public class Choice {
 
@@ -15,60 +13,58 @@ public class Choice {
     private String usage;
     private String output;
 
-    private Method method;
-    private ArrayList<Object> arguments;
-    private Class clazz;
-    private Field field;
+    private ArrayList<ChoiceMethod> methods;
 
     private ArrayList<ChoiceRequirement> requirements;
 
     public String getName() { return name; }
     public String getDescription() { return description; }
-    public Method getMethod() { return method; }
-    public ArrayList<ChoiceRequirement> getRequirements() { return requirements; }
-    public Class getClazz() { return clazz; }
+    public String getUsage() { return usage; }
     public String getOutput() { return output; }
+    public ArrayList<ChoiceMethod> getMethods() { return methods; }
+    public ArrayList<ChoiceRequirement> getRequirements() { return requirements; }
 
-    public boolean invokeMethod(ArrayList<String> inputArgs) {
-        if(arguments.size() + inputArgs.size() != method.getParameterTypes().length) { System.out.println("incorrect usage! usage - " + usage); return false; }
-        for(int i=0; i<inputArgs.size(); i++) {
-            if(method.getParameterTypes()[i] == int.class) {
-                arguments.add(Integer.parseInt(inputArgs.get(i)));
-            } else {
-                arguments.add(inputArgs.get(i));
+    public boolean invokeMethods(ArrayList<String> inputArgs) {
+        int inputArgsIndex = 0;
+        for(ChoiceMethod m : methods) {
+            ArrayList<Object> methodArgs = new ArrayList<Object>();
+            int startingIndex = 0;
+            if(m.getArguments() != null) {
+                methodArgs = m.getArguments();
+                startingIndex=m.getArguments().size();
+            }
+            for(int i=startingIndex; i<m.getArgumentTypes().size(); i++) {
+                if(inputArgsIndex < inputArgs.size()) {
+                    if(m.getArgumentTypes().get(i).equals(int.class)) {
+                        methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
+                    } else if(m.getArgumentTypes().get(i).equals(String.class)) {
+                        methodArgs.add(inputArgs.get(inputArgsIndex));
+                    }
+                    inputArgsIndex++;
+                } else {
+                    if(m.getArgumentTypes().size() != m.getArgumentTypes().size()) {
+                        System.out.println(usage);
+                        return false;
+                    }
+                }
+            }
+            m.setArguments(methodArgs);
+        }
+        for(ChoiceMethod m : methods) {
+            if(!m.invokeMethod()) {
+                System.out.println(usage);
+                return false;
             }
         }
-        try {
-            if(field != null ) {
-                method.invoke(field, arguments);
-            } else {
-                method.invoke(arguments);
-            }
-            return true;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
-        return false;
+        return true;
     }
 
-    public Choice(String name, String description, String usage, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<ChoiceRequirement> requirements) {
+    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<ChoiceRequirement> requirements) {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        this.output = "- " + name + " :|: " + usage + " :|: " + description;
+        this.methods = methods;
         this.requirements = requirements;
-        //Creates the method
-        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
-        try {
-            if(field != null) {
-                this.field = this.clazz.getField(field);
-            }
-        } catch (NoSuchFieldException | SecurityException e) { e.printStackTrace(); System.exit(1);}
-        try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[arguments.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
-        Class[] parameterTypes = this.method.getParameterTypes();
-        for (int i=0; i<arguments.size(); i++) {
-            if(parameterTypes[i].equals(Integer.class)) {
-                this.arguments.add(Integer.parseInt(arguments.get(i)));
-            }
-        }
+        this.output = "- " + name + "   \t:|:   " + usage + "   \t:|:   " + description;
     }
-
 }

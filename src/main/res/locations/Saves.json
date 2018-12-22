@@ -1,13 +1,13 @@
 {
 
-    "name" : "Saves",
+    "name" : "saves",
 
     "Interface" : [
 
         "--------=[SAVES]=-------",
         "<saves>",
         "--------=Options=-------",
-        " - <allOptionOutput>"
+        "<choices>"
     ],
 
     "Choices" : [
@@ -15,30 +15,43 @@
         {
             "name" : "newGame",
             "description" : "Creates a new game",
-            "function" : "newGame",
-            "arguments" : [],
-            "argumentTypes" : [],
-            "class" : "org.textfighter.TextFighter",
+            "methods" : [
+                {
+                    "method" : "newGame",
+                    "arguments" : [],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
             "usage" : "newGame <name>"
         },
 
         {
             "name" : "loadGame",
             "description" : "Loads an existing game",
-            "function" : "loadGame",
-            "arguments" : [],
-            "argumentTypes" : [],
-            "class" : "org.textfighter.TextFighter",
+            "methods" : [
+                {
+                    "method" : "loadGame",
+                    "arguments" : [],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
             "usage" : "loadGame <name>"
+
         },
 
         {
             "name" : "quit",
             "description" : "Quits the game",
-            "function" : "exit",
-            "arguments" : ["0"],
-            "argumentTypes" : ["1"],
-            "class" : "java.lang.System",
+            "methods" : [
+                {
+                    "method" : "exit",
+                    "arguments" : ["0"],
+                    "argumentTypes" : ["1"],
+                    "class" : "java.lang.System"
+                }
+            ],
             "usage" : "quit"
         }
     ]

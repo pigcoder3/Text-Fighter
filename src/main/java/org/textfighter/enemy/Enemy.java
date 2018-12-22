@@ -1,6 +1,6 @@
 package org.textfighter.enemy;
 
-public class Enemy {
+public class Enemy implements Cloneable {
 
     protected String name;
     protected int maxhp;
@@ -16,7 +16,7 @@ public class Enemy {
         if(maxhp<1) { maxhp=1; }
     }
 
-    public int gethp() { return hp; }
+    public int getHp() { return hp; }
     public void damaged(int a) {
         hp = hp - a;
         if (hp < 1) { hp = 0; }
@@ -32,11 +32,17 @@ public class Enemy {
         if(strength < 0) { strength = 0; }
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public Enemy(String name, int maxhp, int hp, int str) {
         this.name = name;
         this.maxhp = maxhp;
         this.hp = hp;
         this.strength = str;
     }
+
+    public Enemy() { }
 
 }
