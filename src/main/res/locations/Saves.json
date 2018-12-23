@@ -40,16 +40,29 @@
             "usage" : "loadGame <name>"
 
         },
+        {
+            "name" : "removeSave",
+            "description" : "Loads an existing game",
+            "methods" : [
+                {
+                    "method" : "removeSave",
+                    "arguments" : [],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "loadGame <name>"
+        },
 
         {
             "name" : "quit",
             "description" : "Quits the game",
             "methods" : [
                 {
-                    "method" : "exit",
+                    "method" : "exitGame",
                     "arguments" : ["0"],
                     "argumentTypes" : ["1"],
-                    "class" : "java.lang.System"
+                    "class" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "quit"

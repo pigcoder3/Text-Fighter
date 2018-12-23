@@ -1,7 +1,7 @@
 package org.textfighter.location;
 
 import org.textfighter.location.*;
-import org.textfighter.TextFighter;
+import org.textfighter.*;
 
 import java.util.ArrayList;
 
@@ -75,8 +75,8 @@ public class Location {
         possibleChoices.clear();
         for(Choice c : allChoices) {
             boolean valid = true;
-            for(ChoiceRequirement r : c.getRequirements()) {
-                if(!r.invokeRequirement()) {
+            for(Requirement r : c.getRequirements()) {
+                if(!r.invokeMethod()) {
                     valid=false;
                     break;
                 }

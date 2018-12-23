@@ -1,6 +1,8 @@
 package org.textfighter.location;
 
-import org.textfighter.location.ChoiceRequirement;
+import org.textfighter.Requirement;
+
+import org.textfighter.TextFighter;
 
 import java.lang.reflect.*;
 
@@ -15,14 +17,14 @@ public class Choice {
 
     private ArrayList<ChoiceMethod> methods;
 
-    private ArrayList<ChoiceRequirement> requirements;
+    private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getUsage() { return usage; }
     public String getOutput() { return output; }
     public ArrayList<ChoiceMethod> getMethods() { return methods; }
-    public ArrayList<ChoiceRequirement> getRequirements() { return requirements; }
+    public ArrayList<Requirement> getRequirements() { return requirements; }
 
     public boolean invokeMethods(ArrayList<String> inputArgs) {
         int inputArgsIndex = 0;
@@ -34,7 +36,7 @@ public class Choice {
                 startingIndex=m.getArguments().size();
             }
             for(int i=startingIndex; i<m.getArgumentTypes().size(); i++) {
-                if(inputArgsIndex < inputArgs.size()) {
+                if(inputArgsIndex <= inputArgs.size() - 1) {
                     if(m.getArgumentTypes().get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
                     } else if(m.getArgumentTypes().get(i).equals(String.class)) {
@@ -42,8 +44,8 @@ public class Choice {
                     }
                     inputArgsIndex++;
                 } else {
-                    if(m.getArgumentTypes().size() != m.getArgumentTypes().size()) {
-                        System.out.println(usage);
+                    if(m.getArgumentTypes().size() != m.getMethod().getParameterTypes().length) {
+                        TextFighter.addToOutput(usage);
                         return false;
                     }
                 }
@@ -52,19 +54,19 @@ public class Choice {
         }
         for(ChoiceMethod m : methods) {
             if(!m.invokeMethod()) {
-                System.out.println(usage);
+                TextFighter.addToOutput(usage);
                 return false;
             }
         }
         return true;
     }
 
-    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<ChoiceRequirement> requirements) {
+    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<Requirement> requirements) {
         this.name = name;
         this.description = description;
         this.usage = usage;
         this.methods = methods;
         this.requirements = requirements;
-        this.output = "- " + name + "   \t:|:   " + usage + "   \t:|:   " + description;
+        this.output = "- " + name + " \t:|: " + usage + " \t:|: " + description;
     }
 }

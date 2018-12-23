@@ -1,4 +1,4 @@
-package org.textfighter.location;
+package org.textfighter;
 
 import java.lang.reflect.*;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings("unchecked")
 
-public class ChoiceRequirement {
+public class Requirement {
 
     private ArrayList<Object> arguments;
     private Class clazz;
@@ -17,7 +17,7 @@ public class ChoiceRequirement {
     public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
 
-    public boolean invokeRequirement() {
+    public boolean invokeMethod() {
         try {
             if(field != null ) {
                 return((boolean)method.invoke(field, arguments));
@@ -28,7 +28,7 @@ public class ChoiceRequirement {
         return false;
     }
 
-    public ChoiceRequirement(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
+    public Requirement(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
         try {
             if(!field.isEmpty()) {
@@ -36,7 +36,7 @@ public class ChoiceRequirement {
             }
         } catch (NoSuchFieldException | SecurityException e) { e.printStackTrace(); System.exit(1);}
         try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[arguments.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
-        if(this.method.getParameterTypes().length != arguments.size()) { System.out.println("There is an incorrect number of arguments for this choice's function parameters!"); System.exit(1); }
+        if(this.method.getParameterTypes().length != arguments.size()) { System.err.println("There is an incorrect number of arguments for this choice's function parameters!"); }
         Class[] parameterTypes = this.method.getParameterTypes();
         for (int i=0; i<arguments.size(); i++) {
             if(parameterTypes[i].equals(Integer.class)) {

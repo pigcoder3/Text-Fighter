@@ -1,11 +1,20 @@
 package org.textfighter.enemy;
 
+import org.textfighter.Requirement;
+
+import java.util.ArrayList;
+
 public class Enemy implements Cloneable {
 
-    protected String name;
-    protected int maxhp;
-    protected int hp;
-    protected int strength;
+    private String name;
+    private int maxhp;
+    private int hp;
+    private int strength;
+    private int difficulty;
+    private String output;
+
+    private int levelRequirement;
+    private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     public String getName() { return name; }
     public void setName(String n) { name=n; }
@@ -32,15 +41,26 @@ public class Enemy implements Cloneable {
         if(strength < 0) { strength = 0; }
     }
 
+    public int getDifficulty() { return difficulty; }
+
+    public String getOutput() { return output; }
+
+    public int getLevelRequirement() { return levelRequirement; }
+    public ArrayList<Requirement> getRequirements() { return requirements; }
+
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-    public Enemy(String name, int maxhp, int hp, int str) {
+    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements) {
         this.name = name;
-        this.maxhp = maxhp;
+        this.maxhp = hp;
         this.hp = hp;
         this.strength = str;
+        this.levelRequirement = levelRequirement;
+        this.difficulty = hp * str * levelRequirement;
+        this.output = " - " + name + " \t:|: " + Integer.toString(difficulty) + " \t:|: " + levelRequirement;
+        this.requirements = requirements;
     }
 
     public Enemy() { }

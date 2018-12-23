@@ -2,6 +2,7 @@ package org.textfighter;
 
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 
 import java.lang.reflect.*;
 
@@ -26,6 +27,11 @@ public class TextFighter {
     static String gameName;
 
     static Player player = new Player();
+    static Enemy currentEnemy = new Enemy();
+
+    static File currentSaveFile;
+
+    static String output = "";
 
     static File resourcesDir;
     static File tagFile;
@@ -39,9 +45,14 @@ public class TextFighter {
     static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
     static ArrayList<String> saves = new ArrayList<String>();
     static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
+
+    public static void addToOutput(String msg) {
+        output+=msg + "\n";
+    }
 
     public static boolean loadResources() {
-        System.out.println("Loading the resources...");
+        System.err.println("Loading the resources...");
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir + "/tags/tags.json");
         locationDir = new File(resourcesDir + "/locations");
@@ -49,8 +60,8 @@ public class TextFighter {
         enemyDir = new File(resourcesDir + "/enemies");
         if (!loadLocations() || !loadParsingTags() || !loadEnemies()) { return false; }
         if (!savesDir.exists()) {
-            System.out.println("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
-            if (!new File("../../../saves/").mkdirs()) { System.out.println("Unable to create a new saves directory!"); return false; }
+            System.err.println("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
+            if (!new File("../../../saves/").mkdirs()) { System.err.println("Unable to create a new saves directory!"); return false; }
         }
         return true;
     }
@@ -93,8 +104,8 @@ public class TextFighter {
                     }
                     //Gets requirements if there is any
                     JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
-                    ArrayList<ChoiceRequirement> requirements = new ArrayList<ChoiceRequirement>();
-                    if(requirementsJArray != null) {
+                    ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                    if(requirementsJArray != null && requirementsJArray.size() > 0) {
                         for(int p=0; p<requirementsJArray.size(); p++) {
                             JSONObject ro = (JSONObject)requirementsJArray.get(p);
                             ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
@@ -109,7 +120,7 @@ public class TextFighter {
                                     }
                                 }
                             }
-                            requirements.add(new ChoiceRequirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
+                            requirements.add(new Requirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
                         }
                     }
                     choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), methods, requirements));
@@ -119,17 +130,35 @@ public class TextFighter {
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
     }
-
     public static boolean loadEnemies() {
         try {
             for(String f : enemyDir.list()) {
                 JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
-                enemies.add(new Enemy((String)enemyFile.get("name"), Integer.parseInt((String)enemyFile.get("health")), Integer.parseInt((String)enemyFile.get("maxhealth")), Integer.parseInt((String)enemyFile.get("strength"))));
+                JSONArray requirementsJArray = (JSONArray)enemyFile.get("requirements");
+                ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                if(requirements != null && requirementsJArray.size() > 0) {
+                    for(int p=0; p<requirementsJArray.size(); p++) {
+                        JSONObject ro = (JSONObject)requirementsJArray.get(p);
+                        ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                        ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                        ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                        if(argumentTypesString.size() > 0) {
+                            for (int g=0; g<argumentTypesString.size(); g++) {
+                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                    argumentTypes.add(int.class);
+                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                    argumentTypes.add(String.class);
+                                }
+                            }
+                        }
+                    requirements.add(new Requirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
+                    }
+                }
+                enemies.add(new Enemy((String)enemyFile.get("name"), Integer.parseInt((String)enemyFile.get("health")), Integer.parseInt((String)enemyFile.get("strength")), Integer.parseInt((String)enemyFile.get("levelRequirement")), requirements));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
     }
-
     public static boolean loadParsingTags() {
         try {
             JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
@@ -143,7 +172,7 @@ public class TextFighter {
                 Class clazz;
                 try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                    System.out.println("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
+                    System.err.println("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
                     continue;
                 }
                 if(arguments.size() > 0) {
@@ -156,14 +185,14 @@ public class TextFighter {
                     }
                 }
                 try { method = clazz.getMethod((String)obj.get("function"), argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
-                    System.out.println("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
+                    System.err.println("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
                 Class returnType = method.getReturnType();
                 if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
-                    System.out.println("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
+                    System.err.println("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
                     continue;
                 }
                 if(argumentTypes.size() != arguments.size()) {
-                    System.out.println("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
+                    System.err.println("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
                     continue;
                 }
                 interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
@@ -177,10 +206,12 @@ public class TextFighter {
 
         boolean areThereAnySaves = false;
         for(String s : savesDir.list()) { if(s.substring(s.lastIndexOf("."),s.length()).equals(".json")) { areThereAnySaves=true; continue; } }
-        if(!areThereAnySaves){ System.out.println("There are no saves, create one."); return true;}
+        if(!areThereAnySaves){ addToOutput("There are no saves, create one."); return false;}
 
         File f = new File(savesDir.getPath() + "/" + name + ".json");
-        if(!f.exists()) { System.out.println("Unable to find a save with that name (Or the file could not be found)"); return false; }
+        if(!f.exists()) { addToOutput("Unable to find a save with that name."); return false; }
+
+        currentSaveFile = f;
 
         try {
             JSONObject file = (JSONObject)parser.parse(new FileReader(f));
@@ -219,19 +250,28 @@ public class TextFighter {
             }
 
             player = new Player(hp, maxhp, coins, magic, level, experience, score, newInventory);
+            addToOutput("Loaded save '" + name + "'");
 
-        } catch (IOException | ParseException e) { System.out.println("An error occured while reading the save file!"); e.printStackTrace(); return false; }
+        } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
 
         return true;
 
     }
-
     public static void newGame(String name) {
 
-        File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
-        try { newGameFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
+        if(getSaves().contains(name)) {
+            addToOutput("There is already a save with that name. Pick another.");
+            return;
+        }
 
-        System.out.println("Creating new game: \""+ name + "\"");
+        File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
+        try { newGameFile.createNewFile(); } catch (IOException e) {
+            addToOutput("Failed to create new file");
+            e.printStackTrace();
+            return;
+        }
+
+        currentSaveFile = newGameFile;
 
         JSONObject base = new JSONObject();
 
@@ -263,16 +303,17 @@ public class TextFighter {
 
         player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, newInventory);
 
+        addToOutput("Added new save '" + name + "'");
+
         try (FileWriter w = new FileWriter(newGameFile);) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
-
     public static boolean saveGame(String name) {
         //Rewrite the whole file
 
         File gameFile = new File(savesDir.getPath() + "/" + gameName + ".json");
-        if(!gameFile.exists()) { try { gameFile.createNewFile(); } catch (IOException e) { System.out.println("Unable to save game!"); return false; }}
+        if(!gameFile.exists()) { try { gameFile.createNewFile(); } catch (IOException e) { addToOutput("Unable to save game!"); return false; }}
 
         JSONObject base = new JSONObject();
 
@@ -323,24 +364,67 @@ public class TextFighter {
     public static ArrayList<String> getSaves() { saves = getSaveFiles(); return saves; }
     public static void addSave(String name) { saves.add(name); }
     public static void removeSave(String name) {
+        boolean saveExists = false;
         for(int i=0;i<saves.size();i++){
             if(saves.get(i).equals(name)) {
+                saveExists = true;
+                new File(savesDir.getAbsolutePath() + "/" + saves.get(i) + ".json").delete();
                 saves.remove(i);
+                addToOutput("Removed save '" + name + "'");
             }
         }
+        if(!saveExists) {
+            addToOutput("File with that name not found. No action performed");
+        }
     }
+
+    public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
 
     public static ArrayList<String> getSaveFiles() {
         ArrayList<String> filteredSaves = new ArrayList<String>();
         for(String s : savesDir.list()) {
             if(s.substring(s.lastIndexOf(".")).equals(".json")) {
-                filteredSaves.add(s);
+                filteredSaves.add(s.substring(0,s.lastIndexOf(".")));
             }
         }
         return filteredSaves;
     }
-
-    public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
+    public static void setPossibleEnemies() {
+        sortEnemies();
+        ArrayList<Enemy> possible = new ArrayList<Enemy>();
+        for(Enemy e : enemies) {
+            boolean valid = true;
+            if(e.getLevelRequirement() >= player.getLevel()) {
+                for(Requirement r : e.getRequirements()) {
+                    if(!r.invokeMethod()) {
+                        valid=false;
+                        break;
+                    }
+                }
+                if(valid) {
+                    possible.add(e);
+                }
+            }
+        }
+        possibleEnemies = possible;
+    }
+    public static void sortEnemies() {
+        ArrayList<Enemy> sortedList = new ArrayList<Enemy>();
+        int highestDifficulty = 0;
+        for(Enemy e : enemies) {
+            if(e.getDifficulty() > highestDifficulty) {
+                sortedList.add(e);
+            }
+        }
+        enemies=sortedList;
+    }
+    public static ArrayList<String> getPossibleEnemyOutputs() {
+        ArrayList<String> outputs = new ArrayList<String>();
+        for(Enemy e : possibleEnemies) {
+            outputs.add(e.getOutput());
+        }
+        return outputs;
+    }
 
     public static boolean movePlayer(String location) {
         for(Location l : locations) {
@@ -382,14 +466,14 @@ public class TextFighter {
                     }
                 } else {
                     if(input.indexOf(" ") != -1) {
-                        System.out.println("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
+                        addToOutput("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
                     } else {
-                        System.out.println("Invalid choice - '" + input + "'");
+                        addToOutput("Invalid choice - '" + input + "'");
                     }
                 }
-            } else { System.out.println("Pick one of the choices shown above.");}
+            } else {addToOutput("Pick one of the choices shown.");}
         } catch (IOException e) {
-            System.out.println("An error occured while reading input!");
+            System.err.println("An error occured while reading input!");
             e.printStackTrace();
             System.exit(1);
         }
@@ -397,11 +481,10 @@ public class TextFighter {
 
     public static boolean fight(String en) {
         boolean validEnemy = false;
-        Enemy enemy = new Enemy();
         for(int i=0; i<enemies.size(); i++) {
             if (enemies.get(i).getName().equals(en)) {
                 validEnemy = true;
-                try { enemy = (Enemy)enemies.get(i).clone(); } catch (CloneNotSupportedException e) { System.out.println("Could not create an enemy of that type! ('" + e + "')"); e.printStackTrace(); return false; }
+                try { currentEnemy = (Enemy)enemies.get(i).clone(); } catch (CloneNotSupportedException e) { addToOutput("Could not create an enemy of that type! ('" + e + "')"); e.printStackTrace(); return false; }
                 break;
             }
         }
@@ -411,32 +494,42 @@ public class TextFighter {
                 if(player.getHp() < 1) {
                     player.setAlive(false);
                     player.setInFight(false);
-                } else if(enemy.getHp() < 1) {
+                } else if(currentEnemy.getHp() < 1) {
                     player.setInFight(false);
                     return true;
                 }
             }
         } else {
-            System.out.println("Invalid enemy: '" + en + "'");
+            addToOutput("Invalid enemy: '" + en + "'");
             return false;
         }
         return false;
+    }
+
+    public static void exitGame(int code) {
+        System.exit(code);
     }
 
     public static void playGame() {
         //Display the interface for the user
         Display.displayInterface(player.getLocation());
         invokePlayerInput();
+        System.out.println("\u001b[H \u001b[2J");
+        if(output != null) {
+            System.out.println(output);
+        }
+        output="";
     }
 
     public static void main(String[] args) {
-        //System.out.println("\u001b[2J");
+        System.out.println("\u001b[H \u001b[2J");
         if (!loadResources()) {
-            System.out.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
+            System.err.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
+        getSaveFiles();
         player.setLocation("saves");
-        while(true) {
+        while(player.getAlive()) {
             playGame();
         }
     }

@@ -11,9 +11,9 @@ public class ChoiceMethod {
     private Method method;
     private Class clazz;
     private Field field;
-    private ArrayList<Object> originalArguments;
-    private ArrayList<Object> arguments;
-    private ArrayList<Class> argumentTypes;
+    private ArrayList<Object> originalArguments = new ArrayList<Object>();
+    private ArrayList<Object> arguments = new ArrayList<Object>();
+    private ArrayList<Class> argumentTypes = new ArrayList<Class>();
 
     public Method getMethod() { return method; }
     public Class getClazz() { return clazz; }
@@ -62,8 +62,10 @@ public class ChoiceMethod {
             System.exit(1);
         }
         for (int i=0; i<arguments.size(); i++) {
-            if(this.method.getParameterTypes()[i].equals(Integer.class)) {
+            if(this.method.getParameterTypes()[i].equals(int.class)) {
                 this.arguments.add(Integer.parseInt(arguments.get(i)));
+            } else if (this.method.getParameterTypes()[i].equals(String.class)) {
+                this.arguments.add(arguments.get(i));
             }
         }
         this.originalArguments = this.arguments;

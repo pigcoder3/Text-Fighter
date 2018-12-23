@@ -1,8 +1,8 @@
 package org.textfighter;
 
 import org.textfighter.item.*;
-
 import org.textfighter.location.Location;
+import org.textfighter.TextFighter;
 
 import java.util.ArrayList;
 
@@ -29,6 +29,10 @@ public class Player {
 
     public static boolean getAlive() { return alive; }
     public static void setAlive(boolean b) { alive=b; }
+    public static void died(String cause) {
+        TextFighter.addToOutput("You died!");
+        TextFighter.addToOutput(cause);
+    }
     public static boolean getInFight() { return inFight; }
     public static void setInFight(boolean b) { inFight=b; }
 
@@ -76,7 +80,7 @@ public class Player {
         }
     }
 
-    public  boolean isCarrying(String classname) {
+    public static boolean isCarrying(String classname) {
         for(Item i : inventory) {
             try {
                 if(i.getClass().equals(Class.forName(classname))) { return true; }
@@ -93,6 +97,8 @@ public class Player {
         }
         return null;
     }
+
+
 
     public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, ArrayList<Item> inventory) {
         this.hp = hp;
