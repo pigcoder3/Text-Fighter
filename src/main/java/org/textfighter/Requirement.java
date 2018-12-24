@@ -4,7 +4,7 @@ import java.lang.reflect.*;
 
 import java.util.ArrayList;
 
-import org.textfighter.Display;
+import org.textfighter.display.Display;
 
 @SuppressWarnings("unchecked")
 
@@ -38,7 +38,7 @@ public class Requirement {
             }
         } catch (NoSuchFieldException | SecurityException e) { e.printStackTrace(); System.exit(1);}
         try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[arguments.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
-        if(this.method.getParameterTypes().length != arguments.size()) { Display.displayErrorWarning("There is an incorrect number of arguments for this choice's requirement's function parameters!"); }
+        if(this.method.getParameterTypes().length != arguments.size()) { Display.displayWarning("There is an incorrect number of arguments for this choice's requirement's function parameters!"); }
         Class[] parameterTypes = this.method.getParameterTypes();
         for (int i=0; i<arguments.size(); i++) {
             if(parameterTypes[i].equals(Integer.class)) {

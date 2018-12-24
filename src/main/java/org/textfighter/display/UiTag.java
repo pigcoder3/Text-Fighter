@@ -1,4 +1,4 @@
-package org.textfighter.location;
+package org.textfighter.display;
 
 import org.textfighter.*;
 import org.textfighter.item.Item;
@@ -29,7 +29,7 @@ public class UiTag {
         this.tag = tag;
         this.method = method;
         this.clazz = classname;
-        if(argumentTypes.size() != arguments.size()) { Display.displayErrorWarning("There is an incorrect number of arguments for this tag's function parameters!");}
+        if(argumentTypes.size() != arguments.size()) { Display.displayWarning("There is an incorrect number of arguments for this tag's function parameters!");}
         Class[] parameterTypes = method.getParameterTypes();
         for (int i=0; i<arguments.size(); i++) { if(parameterTypes[i].equals(int.class)) {this.arguments.add(Integer.parseInt(arguments.get(i)));} }
     }

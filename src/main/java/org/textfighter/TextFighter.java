@@ -6,14 +6,13 @@ import java.nio.file.*;
 
 import java.lang.reflect.*;
 
-import org.textfighter.Display;
+import org.textfighter.display.*;
 import org.textfighter.item.*;
 import org.textfighter.item.tool.*;
 import org.textfighter.item.armor.*;
 import org.textfighter.item.weapon.*;
 import org.textfighter.Player;
 import org.textfighter.location.*;
-import org.textfighter.location.UiTag;
 import org.textfighter.enemy.Enemy;
 
 import org.json.simple.*;
@@ -24,29 +23,29 @@ import org.json.simple.parser.ParseException;
 
 public class TextFighter {
 
-    static String gameName;
+    public static String gameName;
 
-    static Player player = new Player();
-    static Enemy currentEnemy = new Enemy();
+    public static Player player = new Player();
+    public static Enemy currentEnemy = new Enemy();
 
-    static File currentSaveFile;
+    public static File currentSaveFile;
 
-    static String output = "";
+    public static String output = "";
 
-    static File resourcesDir;
-    static File tagFile;
-    static File locationDir;
-    static File enemyDir;
-    static File savesDir;
-    static File configDir;
+    public static File resourcesDir;
+    public static File tagFile;
+    public static File interfaceDir;
+    public static File locationDir;
+    public static File enemyDir;
+    public static File savesDir;
+    public static File configDir;
 
-    static JSONParser parser = new JSONParser();
+    public static JSONParser parser = new JSONParser();
 
-    static ArrayList<Location> locations = new ArrayList<Location>();
-    static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
-    static ArrayList<String> saves = new ArrayList<String>();
-    static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
+    public static ArrayList<Location> locations = new ArrayList<Location>();
+    public static ArrayList<String> saves = new ArrayList<String>();
+    public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    public static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
 
     public static void addToOutput(String msg) {
         output+=msg + "\n";
@@ -56,30 +55,60 @@ public class TextFighter {
         Display.displayProgressMessage("Loading the resources...");
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir + "/tags/tags.json");
+        interfaceDir = new File(resourcesDir + "/userinterfaces/");
         locationDir = new File(resourcesDir + "/locations");
         savesDir = new File("../../../saves");
         enemyDir = new File(resourcesDir + "/enemies");
-        configDir = new File("../../../config");
-        if (!loadLocations() || !loadParsingTags() || !loadEnemies()) { return false; }
+        configDir = new File("../../../.config");
+        if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
         loadConfig();
         if (!savesDir.exists()) {
-            Display.displayErrorWarning("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
-            if (!new File("../../../saves/").mkdirs()) { Display.displayErrorWarning("Unable to create a new saves directory!"); return false; }
+            Display.displayWarning("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
+            if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
         }
         return true;
     }
 
+    public static boolean loadInterfaces() {
+        try {
+            for (String f : interfaceDir.list()) {
+                if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
+                JSONObject interfaceFile = (JSONObject) parser.parse(new FileReader(new File(interfaceDir.getPath() + "/" + f)));
+                JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
+                if(interfaceArray == null) { continue; }
+                String uiString = "";
+                for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
+                Display.interfaces.add(new UserInterface((String)interfaceFile.get("name"), uiString));
+            }
+            return true;
+        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file.\nIt was likely deleted after the program got all files in the resources directory."); return false; }
+        catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces.\nThe permissions are likely set to be unreadable."); return false;}
+        catch (ParseException e) { Display.displayError("Having trouble parsing the interface files.\nWill continue as expected though."); return false; }
+    }
     public static boolean loadLocations() {
         try {
             //Search through the locations directory for all locations
             for (String f : locationDir.list()) {
                 if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                JSONObject uiArrayFile = (JSONObject) parser.parse(new FileReader(new File(locationDir.getAbsolutePath() + "/" + f)));
-                JSONArray uiArray = (JSONArray)uiArrayFile.get("Interface");
-                String name = (String) uiArrayFile.get("name");
-                String uiString = "";
-                for (int i = 0; i < uiArray.size(); i++) { uiString += uiArray.get(i) + "\n"; }
-                JSONArray choiceArray = (JSONArray)uiArrayFile.get("Choices");
+                JSONObject locationFile = (JSONObject) parser.parse(new FileReader(new File(locationDir.getAbsolutePath() + "/" + f)));
+                JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
+                if(interfaceJArray == null) { continue; }
+                ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+                boolean hasChoiceInterface = false;
+                for(int i=0; i<interfaceJArray.size(); i++) {
+                    for(UserInterface ui : Display.interfaces) {
+                        if(ui.getName().equals(interfaceJArray.get(i))) {
+                            if(interfaceJArray.get(i).equals("choices")) {
+                                hasChoiceInterface = true;
+                            }
+                            interfaces.add(ui);
+                        }
+                    }
+                }
+                if(!hasChoiceInterface) {
+                    Display.displayWarning("The interface '" + locationFile.get("name") + "' does not have the choices interface. Omitting...");
+                }
+                JSONArray choiceArray = (JSONArray)locationFile.get("choices");
                 ArrayList<Choice> choices = new ArrayList<Choice>();
                 //Loads the choices from the file
                 for (int i=0; i<choiceArray.size(); i++) {
@@ -104,7 +133,7 @@ public class TextFighter {
                             }
                             methods.add(new ChoiceMethod((String)o.get("method"), arguments, argumentTypes, (String)o.get("class"), (String)o.get("field")));
                         }
-                    }
+                    } else { Display.displayError("The interface '" + locationFile.get("name") + "' does not have any choices"); }
                     //Gets requirements if there is any
                     JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
                     ArrayList<Requirement> requirements = new ArrayList<Requirement>();
@@ -128,7 +157,7 @@ public class TextFighter {
                     }
                     choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), methods, requirements));
                 }
-                locations.add(new Location(name, uiString, choices));
+                locations.add(new Location((String)locationFile.get("name"), interfaces, choices));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -175,7 +204,7 @@ public class TextFighter {
                 Class clazz;
                 try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                    Display.displayErrorWarning("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
+                    Display.displayWarning("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
                     continue;
                 }
                 if(arguments.size() > 0) {
@@ -188,17 +217,17 @@ public class TextFighter {
                     }
                 }
                 try { method = clazz.getMethod((String)obj.get("function"), argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
-                    Display.displayErrorWarning("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
+                    Display.displayWarning("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
                 Class returnType = method.getReturnType();
                 if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
-                    Display.displayErrorWarning("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
+                    Display.displayWarning("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
                     continue;
                 }
                 if(argumentTypes.size() != arguments.size()) {
-                    Display.displayErrorWarning("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
+                    Display.displayWarning("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
                     continue;
                 }
-                interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
+                Display.interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -209,7 +238,7 @@ public class TextFighter {
         if(configDir.exists()) {
             Display.loadDesiredColors();
         } else {
-            Display.displayErrorWarning("The config directory could not be found!\n Creating new config directory.");
+            Display.displayWarning("The config directory could not be found!\n Creating new config directory.");
             configDir.mkdirs();
         }
     }
@@ -390,8 +419,6 @@ public class TextFighter {
         }
     }
 
-    public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
-
     public static ArrayList<String> getSaveFiles() {
         ArrayList<String> filteredSaves = new ArrayList<String>();
         for(String s : savesDir.list()) {
@@ -492,7 +519,7 @@ public class TextFighter {
                 }
             } else {addToOutput("Pick one of the choices shown.");}
         } catch (IOException e) {
-            Display.displayErrorWarning("An error occured while reading input!");
+            Display.displayError("An error occured while reading input!");
             e.printStackTrace();
             System.exit(1);
         }
@@ -531,7 +558,7 @@ public class TextFighter {
 
     public static void playGame() {
         //Display the interface for the user
-        Display.displayInterface(player.getLocation());
+        Display.displayInterfaces(player.getLocation());
         invokePlayerInput();
         System.out.println("\u001b[H \u001b[2J");
         Display.displayPreviousCommand();
@@ -544,7 +571,7 @@ public class TextFighter {
     public static void main(String[] args) {
         System.out.println("\u001b[H\u001b[2J");
         if (!loadResources()) {
-            Display.displayErrorWarning("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
+            Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
         getSaveFiles();

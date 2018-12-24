@@ -1,7 +1,10 @@
-package org.textfighter;
+package org.textfighter.display;
 
 import org.textfighter.location.Location;
 import org.textfighter.TextFighter;
+import org.textfighter.display.*;
+
+import java.util.ArrayList;
 
 import java.io.*;
 
@@ -19,23 +22,35 @@ public class Display {
 
     public static String previousCommand = colorCodes[2];
     public static String error = colorCodes[1];
-    public static String progress = colorCodes[2];
+    public static String warning = colorCodes[3];
+    public static String progress = colorCodes[4];
     public static String output = colorCodes[3];
     public static String prompt = colorCodes[2];
 
-    public static void displayErrorWarning(String e) {
+    public static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
+    public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+    public static UserInterface choiceInterface;
+
+    public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
+    public static ArrayList<UserInterface> getInterfaces() { return interfaces; }
+
+    public static void displayError(String e) {
         // Used for displaying errors such as something could not be found
         System.err.println(error + e + RESET);
     }
 
+    public static void displayWarning(String e) {
+        System.err.println(warning + e + RESET);
+    }
+
     public static void displayOutputMessage(String e) {
         // Used for displaying messages that explain loading resource progess or something like that
-        System.err.println(progress + e + RESET);
+        System.err.println(output + e + RESET);
     }
 
     public static void displayProgressMessage(String e) {
         // Used for displaying the output field in TextFighter class
-        System.out.println(output + e + RESET);
+        System.out.println(progress + e + RESET);
     }
 
     public static void displayPreviousCommand() {
@@ -52,17 +67,19 @@ public class Display {
         System.err.println(RESET);
     }
 
-    public static void displayInterface(Location i) {
-        i.filterPossibleChoices();
-        i.parseInterface();
-        System.out.println(i.getParsedUI());
+    public static void displayInterfaces(Location l) {
+        l.filterPossibleChoices();
+        for(UserInterface ui : l.getInterfaces()) {
+            ui.parseInterface();
+            System.out.println(ui.getParsedUI());
+        }
     }
 
     public static void loadDesiredColors() {
         File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/displayColors");
         if(!displayColors.exists()) {
-            displayErrorWarning("Could not find the displayColors config file.\nCreating a new one.");
-            try { displayColors.createNewFile(); } catch (IOException e) { Display.displayErrorWarning("Could not create a new displayColors config file!"); }
+            displayWarning("Could not find the displayColors config file.\nCreating a new one.");
+            try { displayColors.createNewFile(); } catch (IOException e) { Display.displayWarning("Could not create a new displayColors config file! Continuing anyway."); return; }
         }
         try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {
             String line;
@@ -100,11 +117,17 @@ public class Display {
                             previousCommand = colorCodes[i];
                         }
                     }
+                } else if(key.equals("warning")) {
+                    for(int i=0; i<colorNames.length; i++) {
+                        if(colorNames[i].equals(value)) {
+                            warning = colorCodes[i];
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            displayErrorWarning("Unable to read the colors in the displayColors");
+            displayError("Unable to read the colors in the displayColors");
         }
     }
 }

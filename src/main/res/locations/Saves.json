@@ -2,15 +2,14 @@
 
     "name" : "saves",
 
-    "Interface" : [
+    "interfaces" : [
 
-        "--------=[SAVES]=-------",
-        "<saves>",
-        "--------=Options=-------",
-        "<choices>"
+        "saves",
+        "choices"
+
     ],
 
-    "Choices" : [
+    "choices" : [
 
         {
             "name" : "newGame",
