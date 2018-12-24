@@ -38,6 +38,7 @@ public class TextFighter {
     static File locationDir;
     static File enemyDir;
     static File savesDir;
+    static File configDir;
 
     static JSONParser parser = new JSONParser();
 
@@ -52,16 +53,18 @@ public class TextFighter {
     }
 
     public static boolean loadResources() {
-        System.err.println("Loading the resources...");
+        Display.displayProgressMessage("Loading the resources...");
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir + "/tags/tags.json");
         locationDir = new File(resourcesDir + "/locations");
         savesDir = new File("../../../saves");
         enemyDir = new File(resourcesDir + "/enemies");
+        configDir = new File("../../../config");
         if (!loadLocations() || !loadParsingTags() || !loadEnemies()) { return false; }
+        loadConfig();
         if (!savesDir.exists()) {
-            System.err.println("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
-            if (!new File("../../../saves/").mkdirs()) { System.err.println("Unable to create a new saves directory!"); return false; }
+            Display.displayErrorWarning("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
+            if (!new File("../../../saves/").mkdirs()) { Display.displayErrorWarning("Unable to create a new saves directory!"); return false; }
         }
         return true;
     }
@@ -172,7 +175,7 @@ public class TextFighter {
                 Class clazz;
                 try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                    System.err.println("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
+                    Display.displayErrorWarning("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
                     continue;
                 }
                 if(arguments.size() > 0) {
@@ -185,14 +188,14 @@ public class TextFighter {
                     }
                 }
                 try { method = clazz.getMethod((String)obj.get("function"), argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
-                    System.err.println("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
+                    Display.displayErrorWarning("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
                 Class returnType = method.getReturnType();
                 if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
-                    System.err.println("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
+                    Display.displayErrorWarning("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
                     continue;
                 }
                 if(argumentTypes.size() != arguments.size()) {
-                    System.err.println("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
+                    Display.displayErrorWarning("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
                     continue;
                 }
                 interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
@@ -200,6 +203,15 @@ public class TextFighter {
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
 
+    }
+
+    public static void loadConfig() {
+        if(configDir.exists()) {
+            Display.loadDesiredColors();
+        } else {
+            Display.displayErrorWarning("The config directory could not be found!\n Creating new config directory.");
+            configDir.mkdirs();
+        }
     }
 
     public static boolean loadGame(String name) {
@@ -439,8 +451,10 @@ public class TextFighter {
     public static void invokePlayerInput() {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         try {
-            System.out.print(" > ");
+            Display.promptUser();
             String input = in.readLine();
+            Display.resetColors();
+            Display.previousCommandString = input;
             if(input != null) {
                 boolean validChoice = false;
                 for(Choice c : player.getLocation().getPossibleChoices()){
@@ -458,10 +472,15 @@ public class TextFighter {
                 }
                 if(validChoice) {
                     ArrayList<String> inputArrayList = new ArrayList<String>(Arrays.asList(input.split(" ")));
+                    String commandName = inputArrayList.get(0);
+                    inputArrayList.remove(0);
                     for(Choice c : player.getLocation().getPossibleChoices()) {
-                        if(c.getName().equals(inputArrayList.get(0))) {
-                            inputArrayList.remove(0);
-                            c.invokeMethods(inputArrayList);
+                        if(c.getName().equals(commandName)) {
+                            if(inputArrayList != null) {
+                                c.invokeMethods(inputArrayList);
+                            } else {
+                                c.invokeMethods(new ArrayList<String>());
+                            }
                         }
                     }
                 } else {
@@ -473,7 +492,7 @@ public class TextFighter {
                 }
             } else {addToOutput("Pick one of the choices shown.");}
         } catch (IOException e) {
-            System.err.println("An error occured while reading input!");
+            Display.displayErrorWarning("An error occured while reading input!");
             e.printStackTrace();
             System.exit(1);
         }
@@ -515,16 +534,17 @@ public class TextFighter {
         Display.displayInterface(player.getLocation());
         invokePlayerInput();
         System.out.println("\u001b[H \u001b[2J");
+        Display.displayPreviousCommand();
         if(output != null) {
-            System.out.println(output);
+            Display.displayOutputMessage(output);
         }
         output="";
     }
 
     public static void main(String[] args) {
-        System.out.println("\u001b[H \u001b[2J");
+        System.out.println("\u001b[H\u001b[2J");
         if (!loadResources()) {
-            System.err.println("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
+            Display.displayErrorWarning("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
         getSaveFiles();

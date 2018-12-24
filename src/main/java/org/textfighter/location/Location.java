@@ -35,6 +35,9 @@ public class Location {
                 currentTag+=">";
                 if(currentTag.equals("<choices>")) {
                     for(Choice c : possibleChoices) {
+                        c.setOutput(c.getName() + "\n" +
+                                    "    desc  - " + c.getDescription() + "\n" +
+                                    "    usage - " + c.getUsage());
                         uiInProgress+=c.getOutput()+"\n";
                     }
                 }

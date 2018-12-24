@@ -11,7 +11,7 @@ public class ChoiceMethod {
     private Method method;
     private Class clazz;
     private Field field;
-    private ArrayList<Object> originalArguments = new ArrayList<Object>();
+    private int originalArgumentsNumber;
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
 
@@ -21,19 +21,27 @@ public class ChoiceMethod {
     public ArrayList<Object> getArguments() { return arguments; }
     public void setArguments(ArrayList<Object> args) { arguments=args; }
     public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
+    public int getOriginalArgumentsNumber() { return originalArgumentsNumber; }
 
     public boolean invokeMethod() {
-        if(arguments.size() != method.getParameterTypes().length) {
+        if(arguments.size() != argumentTypes.size()) {
+            removeAllAfterIndex();
             return false;
         } else {
             try {
                 method.invoke(field, arguments.toArray());
-                arguments = originalArguments;
+                removeAllAfterIndex();
                 return true;
             } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         }
-        arguments = originalArguments;
+        removeAllAfterIndex();
         return false;
+    }
+
+    public void removeAllAfterIndex() {
+        for(int i=originalArgumentsNumber; i<arguments.size(); i++) {
+            arguments.remove(i);
+        }
     }
 
     public ChoiceMethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
@@ -68,6 +76,6 @@ public class ChoiceMethod {
                 this.arguments.add(arguments.get(i));
             }
         }
-        this.originalArguments = this.arguments;
+        this.originalArgumentsNumber = this.arguments.size();
     }
 }

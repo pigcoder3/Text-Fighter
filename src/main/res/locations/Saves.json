@@ -42,7 +42,7 @@
         },
         {
             "name" : "removeSave",
-            "description" : "Loads an existing game",
+            "description" : "Removes an existing save",
             "methods" : [
                 {
                     "method" : "removeSave",
@@ -51,7 +51,7 @@
                     "class" : "org.textfighter.TextFighter"
                 }
             ],
-            "usage" : "loadGame <name>"
+            "usage" : "removeSave <name>"
         },
 
         {

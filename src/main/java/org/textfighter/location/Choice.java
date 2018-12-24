@@ -23,6 +23,7 @@ public class Choice {
     public String getDescription() { return description; }
     public String getUsage() { return usage; }
     public String getOutput() { return output; }
+    public void setOutput(String o) { output = o;}
     public ArrayList<ChoiceMethod> getMethods() { return methods; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
@@ -40,12 +41,12 @@ public class Choice {
                     if(m.getArgumentTypes().get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
                     } else if(m.getArgumentTypes().get(i).equals(String.class)) {
-                        methodArgs.add(inputArgs.get(inputArgsIndex));
+                        methodArgs.add(inputArgs.get(inputArgsIndex)); //This is adding it to the originalArguments arrayList somehow. It makes no sense that it could
                     }
                     inputArgsIndex++;
                 } else {
                     if(m.getArgumentTypes().size() != m.getMethod().getParameterTypes().length) {
-                        TextFighter.addToOutput(usage);
+                        TextFighter.addToOutput("Usage: " + usage);
                         return false;
                     }
                 }
@@ -54,7 +55,7 @@ public class Choice {
         }
         for(ChoiceMethod m : methods) {
             if(!m.invokeMethod()) {
-                TextFighter.addToOutput(usage);
+                TextFighter.addToOutput("Usage: " + usage);
                 return false;
             }
         }
