@@ -39,6 +39,10 @@ public class TextFighter {
     public static File enemyDir;
     public static File savesDir;
     public static File configDir;
+    public static File packFile;
+    public static File packDir;
+    public static File modpackDir;
+    public static File intpackDir;
 
     public static JSONParser parser = new JSONParser();
 
@@ -59,7 +63,14 @@ public class TextFighter {
         locationDir = new File(resourcesDir + "/locations");
         savesDir = new File("../../../saves");
         enemyDir = new File(resourcesDir + "/enemies");
-        configDir = new File("../../../.config");
+        configDir = new File("../../../config");
+        //Place where desired packs are defined
+        packFile = new File(configDir + "/packs");
+        packDir = new File("../../../packs");
+        //Place where all the modPacks are
+        modpackDir = new File(packDir + "/modpacks");
+        //Place where all the interfacePacks are
+        intpackDir = new File(packDir + "/intpacks");
         if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
         loadConfig();
         if (!savesDir.exists()) {
@@ -71,93 +82,161 @@ public class TextFighter {
 
     public static boolean loadInterfaces() {
         try {
-            for (String f : interfaceDir.list()) {
-                if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                JSONObject interfaceFile = (JSONObject) parser.parse(new FileReader(new File(interfaceDir.getPath() + "/" + f)));
-                JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
-                if(interfaceArray == null) { continue; }
-                String uiString = "";
-                for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
-                Display.interfaces.add(new UserInterface((String)interfaceFile.get("name"), uiString));
+            Display.displayProgressMessage("Loading the interfaces...");
+            ArrayList<String> usedNames = new ArrayList<String>();
+            boolean parsingPack = false;
+            File directory = interfaceDir;
+            if(packFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String key = line.substring(0,line.indexOf("="));
+                        String value = line.substring(line.indexOf("=") + 1,line.length()).trim();
+                        if(line.indexOf("=") != -1) {
+                            key = line.substring(0,line.indexOf("="));
+                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
+                        }
+                        if(value.trim() == null || key.trim() == null || ! key.equals("intpack")) { continue; }
+                        File intpack = new File(intpackDir + "/" + value);
+                        if(new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
+                            directory = intpack;
+                            Display.displayProgressMessage("loading interfaces from interfacepack '" + value + "'");
+                            parsingPack = true;
+                        } else {
+                            Display.displayWarning("Interface pack '" + value + "' not found.\nFalling back to default interfaces.");
+                        }
+                    }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist).\nFalling back to default interfaces."); }
+            }
+
+            for(int num=0; num<2; num++) {
+                if(!parsingPack) { num++; }
+                for (String f : directory.list()) {
+                    if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
+                    JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
+                    JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
+                    String name = (String)interfaceFile.get("name");
+                    if(interfaceArray == null || name == null || usedNames.contains(name)) { continue; }
+                    String uiString = "";
+                    for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
+                    Display.interfaces.add(new UserInterface(name, uiString));
+                    usedNames.add(name);
+                }
+                directory = interfaceDir;
+                parsingPack = false;
             }
             return true;
-        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file.\nIt was likely deleted after the program got all files in the resources directory."); return false; }
+        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file.\nIt was likely deleted after the program got all files in the interfaces directory."); return false; }
         catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces.\nThe permissions are likely set to be unreadable."); return false;}
         catch (ParseException e) { Display.displayError("Having trouble parsing the interface files.\nWill continue as expected though."); return false; }
     }
     public static boolean loadLocations() {
         try {
+            Display.displayProgressMessage("Loading the locations...");
             //Search through the locations directory for all locations
-            for (String f : locationDir.list()) {
-                if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                JSONObject locationFile = (JSONObject) parser.parse(new FileReader(new File(locationDir.getAbsolutePath() + "/" + f)));
-                JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
-                if(interfaceJArray == null) { continue; }
-                ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
-                boolean hasChoiceInterface = false;
-                for(int i=0; i<interfaceJArray.size(); i++) {
-                    for(UserInterface ui : Display.interfaces) {
-                        if(ui.getName().equals(interfaceJArray.get(i))) {
-                            if(interfaceJArray.get(i).equals("choices")) {
-                                hasChoiceInterface = true;
-                            }
-                            interfaces.add(ui);
+            ArrayList<String> usedNames = new ArrayList<String>();
+            boolean parsingPack = false;
+            File directory = locationDir;
+            if(packFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String key = " ";
+                        String value = " ";
+                        if(line.indexOf("=") != -1) {
+                            key = line.substring(0,line.indexOf("="));
+                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
+                        }
+                        if(value.trim() == null || key.trim() == null || ! key.equals("modpack")) { continue; }
+                        File modpack = new File(modpackDir + "/" + value);
+                        if(new ArrayList<>(Arrays.asList(modpackDir.list())).contains(value) && modpack.isDirectory()) {
+                            directory = modpack;
+                            Display.displayProgressMessage("loading locations from modpack '" + value + "'");
+                            parsingPack = true;
+                        } else {
+                            Display.displayWarning("Mod pack '" + value + "' not found.\nFalling back to default locations.");
                         }
                     }
-                }
-                if(!hasChoiceInterface) {
-                    Display.displayWarning("The interface '" + locationFile.get("name") + "' does not have the choices interface. Omitting...");
-                }
-                JSONArray choiceArray = (JSONArray)locationFile.get("choices");
-                ArrayList<Choice> choices = new ArrayList<Choice>();
-                //Loads the choices from the file
-                for (int i=0; i<choiceArray.size(); i++) {
-                    JSONObject obj = (JSONObject)choiceArray.get(i);
-                    JSONArray methodJSONArray = (JSONArray)obj.get("methods");
-                    ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
-                    //Gets the methods
-                    if(methodJSONArray != null && methodJSONArray.size() > 0) {
-                        for(int p=0; p<methodJSONArray.size(); p++) {
-                            JSONObject o = (JSONObject)methodJSONArray.get(p);
-                            ArrayList<String> arguments = (JSONArray)o.get("arguments");
-                            ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
-                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                            if(argumentTypesString.size() > 0) {
-                                for (int g=0; g<argumentTypesString.size(); g++) {
-                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(int.class);
-                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
-                                        argumentTypes.add(String.class);
-                                    }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist).\nFalling back to default locations."); }
+            }
+            for(int num=0; num<2; num++) {
+                if(!parsingPack) { num++; }
+                for (String f : directory.list()) {
+                    if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
+                    JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
+                    JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
+                    String name = (String)locationFile.get("name");
+                    if(interfaceJArray == null || name == null || usedNames.contains("name")) { continue; }
+                    ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+                    boolean hasChoiceInterface = false;
+                    for(int i=0; i<interfaceJArray.size(); i++) {
+                        for(UserInterface ui : Display.interfaces) {
+                            if(ui.getName().equals(interfaceJArray.get(i))) {
+                                if(interfaceJArray.get(i).equals("choices")) {
+                                    hasChoiceInterface = true;
                                 }
+                                interfaces.add(ui);
                             }
-                            methods.add(new ChoiceMethod((String)o.get("method"), arguments, argumentTypes, (String)o.get("class"), (String)o.get("field")));
-                        }
-                    } else { Display.displayError("The interface '" + locationFile.get("name") + "' does not have any choices"); }
-                    //Gets requirements if there is any
-                    JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
-                    ArrayList<Requirement> requirements = new ArrayList<Requirement>();
-                    if(requirementsJArray != null && requirementsJArray.size() > 0) {
-                        for(int p=0; p<requirementsJArray.size(); p++) {
-                            JSONObject ro = (JSONObject)requirementsJArray.get(p);
-                            ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
-                            ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                            if(argumentTypesString.size() > 0) {
-                                for (int g=0; g<argumentTypesString.size(); g++) {
-                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(int.class);
-                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(String.class);
-                                    }
-                                }
-                            }
-                            requirements.add(new Requirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
                         }
                     }
-                    choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), methods, requirements));
+                    if(!hasChoiceInterface) {
+                        Display.displayWarning("The location '" + name + "' does not have the choices interface. Omitting...");
+                        continue;
+                    }
+                    JSONArray choiceArray = (JSONArray)locationFile.get("choices");
+                    ArrayList<Choice> choices = new ArrayList<Choice>();
+                    //Loads the choices from the file
+                    for (int i=0; i<choiceArray.size(); i++) {
+                        JSONObject obj = (JSONObject)choiceArray.get(i);
+                        JSONArray methodJSONArray = (JSONArray)obj.get("methods");
+                        ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
+                        //Gets the methods
+                        if(methodJSONArray != null && methodJSONArray.size() > 0) {
+                            for(int p=0; p<methodJSONArray.size(); p++) {
+                                JSONObject o = (JSONObject)methodJSONArray.get(p);
+                                ArrayList<String> arguments = (JSONArray)o.get("arguments");
+                                ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
+                                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                if(argumentTypesString.size() > 0) {
+                                    for (int g=0; g<argumentTypesString.size(); g++) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                            argumentTypes.add(String.class);
+                                        }
+                                    }
+                                }
+                                methods.add(new ChoiceMethod((String)o.get("method"), arguments, argumentTypes, (String)o.get("class"), (String)o.get("field")));
+                            }
+                        } else { Display.displayWarning("The location '" + locationFile.get("name") + "' does not have any choices. Omitting."); continue; }
+                        //Gets requirements if there is any
+                        JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
+                        ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                        if(requirementsJArray != null && requirementsJArray.size() > 0) {
+                            for(int p=0; p<requirementsJArray.size(); p++) {
+                                JSONObject ro = (JSONObject)requirementsJArray.get(p);
+                                ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                                ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                if(argumentTypesString.size() > 0) {
+                                    for (int g=0; g<argumentTypesString.size(); g++) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(String.class);
+                                        }
+                                    }
+                                }
+                                requirements.add(new Requirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
+                            }
+                        }
+                        choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), methods, requirements));
+                    }
+                    locations.add(new Location(name, interfaces, choices));
+                    usedNames.add(name);
                 }
-                locations.add(new Location((String)locationFile.get("name"), interfaces, choices));
+                directory = locationDir;
+                parsingPack = false;
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;

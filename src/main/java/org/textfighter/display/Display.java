@@ -36,11 +36,11 @@ public class Display {
 
     public static void displayError(String e) {
         // Used for displaying errors such as something could not be found
-        System.err.println(error + e + RESET);
+        System.err.println(error + "[Error] " + e + RESET);
     }
 
     public static void displayWarning(String e) {
-        System.err.println(warning + e + RESET);
+        System.err.println(warning + "[Warning] " + e + RESET);
     }
 
     public static void displayOutputMessage(String e) {
@@ -50,7 +50,7 @@ public class Display {
 
     public static void displayProgressMessage(String e) {
         // Used for displaying the output field in TextFighter class
-        System.out.println(progress + e + RESET);
+        System.out.println(progress + "[Progress] " + e + RESET);
     }
 
     public static void displayPreviousCommand() {
@@ -76,17 +76,19 @@ public class Display {
     }
 
     public static void loadDesiredColors() {
+        displayProgressMessage("Loading the display colors");
         File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/displayColors");
-        if(!displayColors.exists()) {
-            displayWarning("Could not find the displayColors config file.\nCreating a new one.");
-            try { displayColors.createNewFile(); } catch (IOException e) { Display.displayWarning("Could not create a new displayColors config file! Continuing anyway."); return; }
-        }
+        if(!displayColors.exists()) { return; }
         try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {
             String line;
 
             while ((line = br.readLine()) != null) {
-                String key = line.substring(0,line.indexOf(" "));
-                String value = line.substring(line.indexOf(" "),line.length()-1).trim();
+                String key = " ";
+                String value = " ";
+                if(line.indexOf("=") != -1) {
+                    key = line.substring(0,line.indexOf("="));
+                    value = line.substring(line.indexOf("=")+1,line.length()).trim();
+                }
                 if(key.equals("error")) {
                     for(int i=0; i<colorNames.length; i++) {
                         if(colorNames[i].equals(value)) {
@@ -127,7 +129,7 @@ public class Display {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            displayError("Unable to read the colors in the displayColors");
+            displayError("Unable to read the colors in the displayColors (The file does exist).");
         }
     }
 }
