@@ -712,7 +712,16 @@ public class TextFighter {
                 player.setLocation(location);
                 addToOutput("Moved to " + location);
                 for(Premethod m : l.getPremethods()) {
-                    m.invokeMethod();
+                    boolean validMethod = true;
+                    for(Requirement r : m.getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        m.invokeMethod();
+                    }
                 }
                 return true;
             }
