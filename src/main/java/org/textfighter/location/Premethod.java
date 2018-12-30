@@ -2,6 +2,7 @@ package org.textfighter.location;
 
 import org.textfighter.location.Location;
 import org.textfighter.display.Display;
+import org.textfighter.Requirement;
 
 import java.util.ArrayList;
 
@@ -16,10 +17,12 @@ public class Premethod {
     private Class clazz;
     private Method method;
     private Field field;
+    private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     public ArrayList<Object> getArguments() { return arguments; }
     public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
+    public ArrayList<Requirement> getRequirements() { return requirements; }
 
     public void invokeMethod() {
         try {
@@ -31,7 +34,7 @@ public class Premethod {
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
     }
 
-    public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
+    public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<Requirement> requirements) {
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
         try {
             if(field != null && !field.isEmpty()) {
@@ -53,6 +56,7 @@ public class Premethod {
                 }
             }
         }
+        this.requirements = requirements;
     }
 
 }

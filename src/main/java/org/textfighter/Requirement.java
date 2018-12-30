@@ -5,6 +5,7 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 
 import org.textfighter.display.Display;
+import org.textfighter.location.Premethod;
 import org.textfighter.location.Choice;
 import org.textfighter.enemy.Enemy;
 
@@ -51,8 +52,9 @@ public class Requirement {
         }
 
         if(this.method.getParameterTypes().length != argumentTypes.size()) {
-            if(parentType == Choice.class) { Display.displayWarning("There is an incorrect number of arguments for the choice '" + parentName + "' requirement's function parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
-            else { Display.displayWarning("There is an incorrect number of arguments for the " + parentType.getSimpleName() + " '" + parentName + "' requirement's function parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
+            if(parentType == Choice.class) { Display.displayWarning("There is an incorrect number of arguments for the choice '" + parentName + "' requirement's method parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
+            else if(parentType == Enemy.class) { Display.displayWarning("There is an incorrect number of arguments for the enemy'" + parentName + "' requirement's method parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
+            else if(parentType == Premethod.class) { Display.displayWarning("There is an incorrect number of arguments for a premethod requirement's method parameters. Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
         }
         if(arguments != null) {
             Class[] parameterTypes = this.method.getParameterTypes();
