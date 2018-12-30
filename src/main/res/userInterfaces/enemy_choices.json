@@ -1,0 +1,10 @@
+{
+    "name" : "enemy_choices",
+
+    "interface" : [
+
+        "-------[Enemy Choices]-------",
+        "<enemies>"
+
+    ]
+}

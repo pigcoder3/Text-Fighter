@@ -58,8 +58,8 @@ public class Enemy implements Cloneable {
         this.hp = hp;
         this.strength = str;
         this.levelRequirement = levelRequirement;
-        this.difficulty = hp * str * levelRequirement;
-        this.output = name + " - " + difficulty;  
+        this.difficulty = Math.round(hp * str * levelRequirement / 100);
+        this.output = name + " - " + difficulty;
         this.requirements = requirements;
     }
 

@@ -76,7 +76,7 @@ public class Display {
     }
 
     public static void loadDesiredColors() {
-        displayProgressMessage("Loading the display colors");
+        displayProgressMessage("Loading the display colors...");
         File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/displayColors");
         if(!displayColors.exists()) { return; }
         try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {

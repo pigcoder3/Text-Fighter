@@ -20,11 +20,16 @@
                     "arguments" : [],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "newGame <name>"
         },
-
         {
             "name" : "loadGame",
             "description" : "Loads an existing game",
@@ -34,10 +39,15 @@
                     "arguments" : [],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "loadGame <name>"
-
         },
         {
             "name" : "removeSave",

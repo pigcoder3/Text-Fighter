@@ -43,6 +43,7 @@ public class TextFighter {
     public static File packDir;
     public static File modpackDir;
     public static File intpackDir;
+    public static File enemypackDir;
 
     public static JSONParser parser = new JSONParser();
 
@@ -71,10 +72,12 @@ public class TextFighter {
         modpackDir = new File(packDir + "/modpacks");
         //Place where all the interfacePacks are
         intpackDir = new File(packDir + "/intpacks");
+        //Place where all the enemyPacks are
+        enemypackDir = new File(packDir + "/enemypacks");
         if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
         loadConfig();
         if (!savesDir.exists()) {
-            Display.displayWarning("WARNING: The saves directory does not exist!\nCreating a new saves directory...");
+            Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
         }
         return true;
@@ -98,15 +101,15 @@ public class TextFighter {
                         }
                         if(value.trim() == null || key.trim() == null || ! key.equals("intpack")) { continue; }
                         File intpack = new File(intpackDir + "/" + value);
-                        if(new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
+                        if(intpackDir.list() != null && new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
                             directory = intpack;
                             Display.displayProgressMessage("loading interfaces from interfacepack '" + value + "'");
                             parsingPack = true;
                         } else {
-                            Display.displayWarning("Interface pack '" + value + "' not found.\nFalling back to default interfaces.");
+                            Display.displayWarning("Interface pack '" + value + "' not found. Falling back to default interfaces.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist).\nFalling back to default interfaces."); }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default interfaces."); }
             }
 
             for(int num=0; num<2; num++) {
@@ -126,9 +129,9 @@ public class TextFighter {
                 parsingPack = false;
             }
             return true;
-        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file.\nIt was likely deleted after the program got all files in the interfaces directory."); return false; }
-        catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces.\nThe permissions are likely set to be unreadable."); return false;}
-        catch (ParseException e) { Display.displayError("Having trouble parsing the interface files.\nWill continue as expected though."); return false; }
+        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file. It was likely deleted after the program got all files in the interfaces directory."); return false; }
+        catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces. The permissions are likely set to be unreadable."); return false;}
+        catch (ParseException e) { Display.displayError("Having trouble parsing the interface files. Will continue as expected though."); return false; }
     }
     public static boolean loadLocations() {
         try {
@@ -149,15 +152,15 @@ public class TextFighter {
                         }
                         if(value.trim() == null || key.trim() == null || ! key.equals("modpack")) { continue; }
                         File modpack = new File(modpackDir + "/" + value);
-                        if(new ArrayList<>(Arrays.asList(modpackDir.list())).contains(value) && modpack.isDirectory()) {
+                        if(modpackDir.list() != null && new ArrayList<>(Arrays.asList(modpackDir.list())).contains(value) && modpack.isDirectory()) {
                             directory = modpack;
                             Display.displayProgressMessage("loading locations from modpack '" + value + "'");
                             parsingPack = true;
                         } else {
-                            Display.displayWarning("Mod pack '" + value + "' not found.\nFalling back to default locations.");
+                            Display.displayWarning("Mod pack '" + value + "' not found. Falling back to default locations.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist).\nFalling back to default locations."); }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default locations."); }
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
@@ -166,7 +169,7 @@ public class TextFighter {
                     JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                     JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
                     String name = (String)locationFile.get("name");
-                    if(interfaceJArray == null || name == null || usedNames.contains("name")) { continue; }
+                    if(interfaceJArray == null || name == null || usedNames.contains(name)) { continue; }
                     ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                     boolean hasChoiceInterface = false;
                     for(int i=0; i<interfaceJArray.size(); i++) {
@@ -190,6 +193,10 @@ public class TextFighter {
                         JSONObject obj = (JSONObject)choiceArray.get(i);
                         JSONArray methodJSONArray = (JSONArray)obj.get("methods");
                         ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
+                        String choicename = (String)obj.get("name");
+                        String desc = (String)obj.get("description");
+                        String usage = (String)obj.get("usage");
+                        if(name == null) { continue; }
                         //Gets the methods
                         if(methodJSONArray != null && methodJSONArray.size() > 0) {
                             for(int p=0; p<methodJSONArray.size(); p++) {
@@ -197,6 +204,11 @@ public class TextFighter {
                                 ArrayList<String> arguments = (JSONArray)o.get("arguments");
                                 ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
                                 ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                String method = (String)o.get("method");
+                                String clazz = (String)o.get("class");
+                                String field = (String)o.get("field");
+                                if(method == null || clazz == null) { continue; }
+                                //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
                                         if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
@@ -206,7 +218,7 @@ public class TextFighter {
                                         }
                                     }
                                 }
-                                methods.add(new ChoiceMethod((String)o.get("method"), arguments, argumentTypes, (String)o.get("class"), (String)o.get("field")));
+                                methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field));
                             }
                         } else { Display.displayWarning("The location '" + locationFile.get("name") + "' does not have any choices. Omitting."); continue; }
                         //Gets requirements if there is any
@@ -218,6 +230,11 @@ public class TextFighter {
                                 ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
                                 ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
                                 ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                String method = (String)ro.get("method");
+                                String clazz = (String)ro.get("class");
+                                String field = (String)ro.get("field");
+                                if(method == null || clazz == null) { continue; }
+                                //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
                                         if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
@@ -227,10 +244,10 @@ public class TextFighter {
                                         }
                                     }
                                 }
-                                requirements.add(new Requirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
+                                requirements.add(new Requirement(method, arguments, argumentTypes, clazz, field));
                             }
                         }
-                        choices.add(new Choice((String)obj.get("name"), (String)obj.get("description"), (String)obj.get("usage"), methods, requirements));
+                        choices.add(new Choice(choicename, desc, usage, methods, requirements));
                     }
                     locations.add(new Location(name, interfaces, choices));
                     usedNames.add(name);
@@ -243,35 +260,79 @@ public class TextFighter {
     }
     public static boolean loadEnemies() {
         try {
-            for(String f : enemyDir.list()) {
-                JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
-                JSONArray requirementsJArray = (JSONArray)enemyFile.get("requirements");
-                ArrayList<Requirement> requirements = new ArrayList<Requirement>();
-                if(requirements != null && requirementsJArray.size() > 0) {
-                    for(int p=0; p<requirementsJArray.size(); p++) {
-                        JSONObject ro = (JSONObject)requirementsJArray.get(p);
-                        ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
-                        ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                        ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                        if(argumentTypesString.size() > 0) {
-                            for (int g=0; g<argumentTypesString.size(); g++) {
-                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                    argumentTypes.add(int.class);
-                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                    argumentTypes.add(String.class);
+            Display.displayProgressMessage("Loading the enemies...");
+            ArrayList<String> usedNames = new ArrayList<String>();
+            boolean parsingPack = false;
+            File directory = enemyDir;
+            if(packFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String key = "";
+                        String value = "";
+                        if(line.indexOf("=") != -1) {
+                            key = line.substring(0,line.indexOf("="));
+                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
+                        }
+                        if(value.trim() == null || key.trim() == null || ! key.equals("enemypack")) { continue; }
+                        File enemypack = new File(enemypackDir + "/" + value);
+                        if(enemypackDir.list() != null && new ArrayList<>(Arrays.asList(enemypackDir.list())).contains(value) && enemypack.isDirectory()) {
+                            directory = enemypack;
+                            Display.displayProgressMessage("loading enemies from enemypack '" + value + "'");
+                            parsingPack = true;
+                        } else {
+                            Display.displayWarning("Enemy pack '" + value + "' not found. Falling back to default enemies.");
+                        }
+                    }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default locations."); }
+            }
+            for(int num=0; num<2; num++) {
+                if(!parsingPack) { num++; }
+                for(String f : directory.list()) {
+                    JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
+                    JSONArray requirementsJArray = (JSONArray)enemyFile.get("requirements");
+                    ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                    String name = (String)enemyFile.get("name");
+                    int health = Integer.parseInt((String)enemyFile.get("health"));
+                    int strength = Integer.parseInt((String)enemyFile.get("strength"));
+                    int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
+                    if(health < 1 || strength < 1 || name == null || usedNames.contains(name)) { continue; }
+                    if(levelRequirement < 1) { levelRequirement=1; }
+                    if(requirements != null && requirementsJArray.size() > 0) {
+                        for(int p=0; p<requirementsJArray.size(); p++) {
+                            JSONObject ro = (JSONObject)requirementsJArray.get(p);
+                            ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                            ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                            String method = (String)ro.get("method");
+                            String clazz = (String)ro.get("class");
+                            String field = (String)ro.get("field");
+                            if(method == null || clazz == null) { continue; }
+                            //Fields can be null (Which just means the method does not act upon a field)
+                            if(argumentTypesString.size() > 0) {
+                                for (int g=0; g<argumentTypesString.size(); g++) {
+                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                        argumentTypes.add(int.class);
+                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                        argumentTypes.add(String.class);
+                                    }
                                 }
                             }
+                        requirements.add(new Requirement(method, arguments, argumentTypes, clazz, field));
                         }
-                    requirements.add(new Requirement((String)ro.get("method"), arguments, argumentTypes, (String)ro.get("class"), (String)ro.get("field")));
                     }
+                    enemies.add(new Enemy(name, health, strength, levelRequirement, requirements));
+                    usedNames.add(name);
+                    directory=enemyDir;
+                    parsingPack=false;
                 }
-                enemies.add(new Enemy((String)enemyFile.get("name"), Integer.parseInt((String)enemyFile.get("health")), Integer.parseInt((String)enemyFile.get("strength")), Integer.parseInt((String)enemyFile.get("levelRequirement")), requirements));
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
     }
     public static boolean loadParsingTags() {
         try {
+            ArrayList<String> usedNames = new ArrayList<String>();
             JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
             JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
             for (int i = 0; i < tagsArray.size(); i++) {
@@ -279,11 +340,13 @@ public class TextFighter {
                 ArrayList<String> arguments = (ArrayList<String>)obj.get("arguments");
                 ArrayList<String> argumentTypesString = (ArrayList<String>)obj.get("argumentTypes");
                 ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                String tag = (String)obj.get("tag");
+                if(usedNames.contains(tag)) { continue; }
                 Method method;
                 Class clazz;
                 try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                    Display.displayWarning("WARNING: Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
+                    Display.displayWarning("Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
                     continue;
                 }
                 if(arguments.size() > 0) {
@@ -296,17 +359,18 @@ public class TextFighter {
                     }
                 }
                 try { method = clazz.getMethod((String)obj.get("function"), argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
-                    Display.displayWarning("WARNING: Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
+                    Display.displayWarning("Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
                 Class returnType = method.getReturnType();
                 if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
-                    Display.displayWarning("WARNING: UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
+                    Display.displayWarning("UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
                     continue;
                 }
                 if(argumentTypes.size() != arguments.size()) {
-                    Display.displayWarning("WARNING: There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
+                    Display.displayWarning("There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
                     continue;
                 }
                 Display.interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
+                usedNames.add(tag);
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -534,9 +598,11 @@ public class TextFighter {
                 sortedList.add(e);
             }
         }
+        System.out.println(sortedList.size());
         enemies=sortedList;
     }
     public static ArrayList<String> getPossibleEnemyOutputs() {
+        setPossibleEnemies();
         ArrayList<String> outputs = new ArrayList<String>();
         for(Enemy e : possibleEnemies) {
             outputs.add(e.getOutput());
@@ -548,6 +614,7 @@ public class TextFighter {
         for(Location l : locations) {
             if(l.getName().equals(location)) {
                 player.setLocation(location);
+                addToOutput("Moved to " + location);
                 return true;
             }
         }
@@ -561,7 +628,7 @@ public class TextFighter {
             String input = in.readLine();
             Display.resetColors();
             Display.previousCommandString = input;
-            if(input != null) {
+            if(input.trim() != null) {
                 boolean validChoice = false;
                 for(Choice c : player.getLocation().getPossibleChoices()){
                     if(input.indexOf(" ") != -1) {
@@ -605,6 +672,7 @@ public class TextFighter {
     }
 
     public static boolean fight(String en) {
+        System.out.println(en);
         boolean validEnemy = false;
         for(int i=0; i<enemies.size(); i++) {
             if (enemies.get(i).getName().equals(en)) {

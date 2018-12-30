@@ -2,11 +2,41 @@
 
     "name" : "menu",
 
-    "interface" : [
+    "interfaces" : [
 
-        "-------=[Places]=-------",
-        ""
-        ""
+        "menu",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "fight",
+            "description" : "shows a list of enemies to fight",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["enemy_choices"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "fight"
+        },
+        {
+            "name" : "quit",
+            "description" : "Quits the game",
+            "methods" : [
+                {
+                    "method" : "exitGame",
+                    "arguments" : ["0"],
+                    "argumentTypes" : ["1"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "quit"
+        }
 
     ]
 

@@ -1,0 +1,43 @@
+{
+
+    "name" : "enemy_choices",
+
+    "interfaces" : [
+
+        "enemy_choices",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "quit",
+            "description" : "Quits the game",
+            "methods" : [
+                {
+                    "method" : "exitGame",
+                    "arguments" : ["0"],
+                    "argumentTypes" : ["1"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "quit"
+        },
+        {
+            "name" : "fight",
+            "description" : "fights the enemy specified",
+            "methods" : [
+                {
+                    "method" : "fight",
+                    "arguments" : [],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "fight <name>"
+        }
+
+    ]
+
+}
