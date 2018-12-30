@@ -33,16 +33,23 @@ public class Requirement {
     public Requirement(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
         try {
-            if(!field.isEmpty()) {
+            if(field != null && !field.isEmpty()) {
                 this.field = this.clazz.getField(field);
             }
         } catch (NoSuchFieldException | SecurityException e) { e.printStackTrace(); System.exit(1);}
-        try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[arguments.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
-        if(this.method.getParameterTypes().length != arguments.size()) { Display.displayWarning("There is an incorrect number of arguments for this choice's requirement's function parameters!"); }
-        Class[] parameterTypes = this.method.getParameterTypes();
-        for (int i=0; i<arguments.size(); i++) {
-            if(parameterTypes[i].equals(Integer.class)) {
-                this.arguments.add(Integer.parseInt((String)arguments.get(i)));
+        if(argumentTypes != null ) {
+            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
+        } else {
+            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
+        }
+
+        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for this choice's requirement's function parameters!"); }
+        if(arguments != null) {
+            Class[] parameterTypes = this.method.getParameterTypes();
+            for (int i=0; i<arguments.size(); i++) {
+                if(parameterTypes[i].equals(Integer.class)) {
+                    this.arguments.add(Integer.parseInt((String)arguments.get(i)));
+                }
             }
         }
     }

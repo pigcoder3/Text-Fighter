@@ -240,7 +240,7 @@ public class TextFighter {
                                 String field = (String)ro.get("field");
                                 if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
                                 //Fields can be null (Which just means the method does not act upon a field)
-                                if(argumentTypesString.size() > 0) {
+                                if(argumentTypesString != null && argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
                                         if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
                                             argumentTypes.add(int.class);
@@ -743,6 +743,14 @@ public class TextFighter {
 
     public static void exitGame(int code) {
         System.exit(code);
+    }
+
+    public static boolean gameLoaded() {
+        if(currentSaveFile != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static void playGame() {

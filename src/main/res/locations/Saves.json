@@ -20,12 +20,6 @@
                     "arguments" : [],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
-                },
-                {
-                    "method" : "movePlayer",
-                    "arguments" : ["menu"],
-                    "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "newGame <name>"
@@ -37,12 +31,6 @@
                 {
                     "method" : "loadGame",
                     "arguments" : [],
-                    "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
-                },
-                {
-                    "method" : "movePlayer",
-                    "arguments" : ["menu"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 }
@@ -62,7 +50,27 @@
             ],
             "usage" : "removeSave <name>"
         },
-
+        {
+            "name" : "menu",
+            "description" : "Moves you to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "menu",
+            "requirements" : [
+                {
+                    "method" : "gameLoaded",
+                    "arguments" : [],
+                    "argumentTypes" : [],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ]
+        }
         {
             "name" : "quit",
             "description" : "Quits the game",
@@ -75,6 +83,6 @@
                 }
             ],
             "usage" : "quit"
-        }
+        },
     ]
 }
