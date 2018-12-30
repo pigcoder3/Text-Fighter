@@ -112,6 +112,19 @@ public class TextFighter {
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default interfaces."); }
             }
 
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            if(parsingPack) {
+                File omissionFile = new File(directory + "/" + "omit.txt");
+                if(omissionFile.exists()) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            namesToBeOmitted.add(line);
+                        }
+                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the interfacepack's omit file (The file does exist). Continuing normally..."); }
+                }
+            }
+
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
                 for (String f : directory.list()) {
@@ -120,9 +133,9 @@ public class TextFighter {
                     JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
                     JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
                     String name = (String)interfaceFile.get("name");
+                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
                     if(name == null) { Display.displayPackError("An interface does not have a name. Omitting..."); continue; }
                     if(interfaceArray == null) { Display.displayPackError("Interface '" + name + "' does not have an interface array. Omitting..."); continue; }
-                    if(usedNames.contains(name)) { continue; }
                     String uiString = "";
                     for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
                     Display.interfaces.add(new UserInterface(name, uiString));
@@ -165,6 +178,18 @@ public class TextFighter {
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default locations."); }
             }
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            if(parsingPack) {
+                File omissionFile = new File(directory + "/" + "omit.txt");
+                if(omissionFile.exists()) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            namesToBeOmitted.add(line);
+                        }
+                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the modpack's omit file (The file does exist). Continuing normally..."); }
+                }
+            }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
                 for (String f : directory.list()) {
@@ -172,9 +197,9 @@ public class TextFighter {
                     JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                     JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
                     String name = (String)locationFile.get("name");
+                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
                     if(name == null) { Display.displayPackError("A location does not have a name."); continue; }
                     if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces."); continue; }
-                    if(usedNames.contains(name)) { continue; }
                     ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                     boolean hasChoiceInterface = false;
                     for(int i=0; i<interfaceJArray.size(); i++) {
@@ -343,7 +368,19 @@ public class TextFighter {
                             Display.displayWarning("Enemy pack '" + value + "' not found. Falling back to default enemies.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default locations."); }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the enemypack's file (The file does exist). Falling back to default locations."); }
+            }
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            if(parsingPack) {
+                File omissionFile = new File(directory + "/" + "omit.txt");
+                if(omissionFile.exists()) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            namesToBeOmitted.add(line);
+                        }
+                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally..."); }
+                }
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
@@ -356,7 +393,7 @@ public class TextFighter {
                     int strength = Integer.parseInt((String)enemyFile.get("strength"));
                     int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
                     if(name == null) { Display.displayPackError("An enemy does not have a name. Omitting..."); continue; }
-                    if(usedNames.contains(name)) { continue; }
+                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
                     if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
                     if(levelRequirement < 1) { levelRequirement=1; }
                     if(requirements != null && requirementsJArray.size() > 0) {
@@ -396,6 +433,7 @@ public class TextFighter {
             Display.displayProgressMessage("Loading the parsing tags...");
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
+            File directory = intpackDir;
             File file = tagFile;
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
@@ -411,6 +449,7 @@ public class TextFighter {
                         File intpack = new File(intpackDir + "/" + value);
                         if(intpackDir.list() != null && new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
                             if(new ArrayList<>(Arrays.asList(intpack.list())).contains("tags.json")) {
+                                directory = intpack;
                                 file = new File(intpack + "/tags.json");
                                 Display.displayProgressMessage("loading tags from intpack '" + value + "'");
                                 parsingPack = true;
@@ -420,6 +459,18 @@ public class TextFighter {
                         }
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default tags."); }
+            }
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            if(parsingPack) {
+                File omissionFile = new File(directory + "/" + "omittags.txt");
+                if(omissionFile.exists()) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            namesToBeOmitted.add(line);
+                        }
+                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the interfacepack's omittags file (The file does exist). Continuing normally..."); }
+                }
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
@@ -435,7 +486,7 @@ public class TextFighter {
                     String classname = (String)obj.get("class");
                     String methodname = (String)obj.get("method");
                     if(tag == null) { Display.displayPackError("A tag does not have a name. Omitting tag..."); continue; }
-                    if(usedNames.contains(tag)) { continue; }
+                    if(usedNames.contains(tag) || namesToBeOmitted.contains(tag)) { continue; }
                     if(classname == null || methodname == null) { Display.displayPackError("Tag '" + tag + "' does not have a class or method. Omitting tag..."); continue; }
                     Method method;
                     Class clazz;
@@ -715,11 +766,11 @@ public class TextFighter {
                     boolean validMethod = true;
                     for(Requirement r : m.getRequirements()) {
                         if(!r.invokeMethod()) {
-                            valid = false;
+                            validMethod = false;
                             break;
                         }
                     }
-                    if(valid) {
+                    if(validMethod) {
                         m.invokeMethod();
                     }
                 }
