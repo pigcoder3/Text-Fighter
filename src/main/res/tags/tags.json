@@ -3,7 +3,7 @@
         {
             "tag" : "<saves>",
             "class" : "org.textfighter.TextFighter",
-            "function" : "getSaves",
+            "method" : "getSaves",
             "arguments" : [],
             "argumentTypes" : [],
             "field" : "player"
@@ -11,7 +11,7 @@
         {
             "tag" : "<coins>",
             "class" : "org.textfighter.Player",
-            "function" : "getCoins",
+            "method" : "getCoins",
             "arguments" : [],
             "argumentTypes" : [],
             "field" : "player"
@@ -19,7 +19,7 @@
         {
             "tag" : "<mana>",
             "class" : "org.textfighter.Player",
-            "function" : "getMagic",
+            "method" : "getMagic",
             "arguments" : [],
             "argumentTypes" : [],
             "field" : "player"
@@ -27,7 +27,7 @@
         {
             "tag" : "<enemies>",
             "class" : "org.textfighter.TextFighter",
-            "function" : "getPossibleEnemyOutputs",
+            "method" : "getPossibleEnemyOutputs",
             "arguments" : [],
             "argumentTypes" : []
         }

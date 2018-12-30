@@ -39,6 +39,10 @@ public class Display {
         System.err.println(error + "[Error] " + e + RESET);
     }
 
+    public static void displayPackError(String e) {
+        System.err.println(error + "[PackError] " + e + RESET);
+    }
+
     public static void displayWarning(String e) {
         System.err.println(warning + "[Warning] " + e + RESET);
     }

@@ -93,13 +93,13 @@ public class TextFighter {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
                     String line;
                     while ((line = br.readLine()) != null) {
-                        String key = line.substring(0,line.indexOf("="));
-                        String value = line.substring(line.indexOf("=") + 1,line.length()).trim();
+                        String key = "";
+                        String value = "";
                         if(line.indexOf("=") != -1) {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
                         }
-                        if(value.trim() == null || key.trim() == null || ! key.equals("intpack")) { continue; }
+                        if(value == null || key == null || ! key.equals("intpack") || key.substring(0,1).equals("#")) { continue; }
                         File intpack = new File(intpackDir + "/" + value);
                         if(intpackDir.list() != null && new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
                             directory = intpack;
@@ -115,11 +115,14 @@ public class TextFighter {
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
                 for (String f : directory.list()) {
+                    if(f.equals("tags.json")) { continue; }
                     if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
                     JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
                     JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
                     String name = (String)interfaceFile.get("name");
-                    if(interfaceArray == null || name == null || usedNames.contains(name)) { continue; }
+                    if(name == null) { Display.displayPackError("An interface does not have a name. Omitting..."); continue; }
+                    if(interfaceArray == null) { Display.displayPackError("Interface '" + name + "' does not have an interface array. Omitting..."); continue; }
+                    if(usedNames.contains(name)) { continue; }
                     String uiString = "";
                     for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
                     Display.interfaces.add(new UserInterface(name, uiString));
@@ -150,7 +153,7 @@ public class TextFighter {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
                         }
-                        if(value.trim() == null || key.trim() == null || ! key.equals("modpack")) { continue; }
+                        if(value == null || key == null || ! key.equals("modpack")) { continue; }
                         File modpack = new File(modpackDir + "/" + value);
                         if(modpackDir.list() != null && new ArrayList<>(Arrays.asList(modpackDir.list())).contains(value) && modpack.isDirectory()) {
                             directory = modpack;
@@ -169,7 +172,9 @@ public class TextFighter {
                     JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                     JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
                     String name = (String)locationFile.get("name");
-                    if(interfaceJArray == null || name == null || usedNames.contains(name)) { continue; }
+                    if(name == null) { Display.displayPackError("A location does not have a name."); continue; }
+                    if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces."); continue; }
+                    if(usedNames.contains(name)) { continue; }
                     ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                     boolean hasChoiceInterface = false;
                     for(int i=0; i<interfaceJArray.size(); i++) {
@@ -196,7 +201,7 @@ public class TextFighter {
                         String choicename = (String)obj.get("name");
                         String desc = (String)obj.get("description");
                         String usage = (String)obj.get("usage");
-                        if(name == null) { continue; }
+                        if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
                         //Gets the methods
                         if(methodJSONArray != null && methodJSONArray.size() > 0) {
                             for(int p=0; p<methodJSONArray.size(); p++) {
@@ -207,7 +212,7 @@ public class TextFighter {
                                 String method = (String)o.get("method");
                                 String clazz = (String)o.get("class");
                                 String field = (String)o.get("field");
-                                if(method == null || clazz == null) { continue; }
+                                if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
                                 //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
@@ -220,7 +225,7 @@ public class TextFighter {
                                 }
                                 methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field));
                             }
-                        } else { Display.displayWarning("The location '" + locationFile.get("name") + "' does not have any choices. Omitting."); continue; }
+                        } else { Display.displayPackError("The location '" + name + "' does not have any choices. Omitting."); continue; }
                         //Gets requirements if there is any
                         JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
                         ArrayList<Requirement> requirements = new ArrayList<Requirement>();
@@ -233,7 +238,7 @@ public class TextFighter {
                                 String method = (String)ro.get("method");
                                 String clazz = (String)ro.get("class");
                                 String field = (String)ro.get("field");
-                                if(method == null || clazz == null) { continue; }
+                                if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
                                 //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
@@ -274,7 +279,7 @@ public class TextFighter {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
                         }
-                        if(value.trim() == null || key.trim() == null || ! key.equals("enemypack")) { continue; }
+                        if(value == null || key == null || ! key.equals("enemypack")) { continue; }
                         File enemypack = new File(enemypackDir + "/" + value);
                         if(enemypackDir.list() != null && new ArrayList<>(Arrays.asList(enemypackDir.list())).contains(value) && enemypack.isDirectory()) {
                             directory = enemypack;
@@ -296,7 +301,9 @@ public class TextFighter {
                     int health = Integer.parseInt((String)enemyFile.get("health"));
                     int strength = Integer.parseInt((String)enemyFile.get("strength"));
                     int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
-                    if(health < 1 || strength < 1 || name == null || usedNames.contains(name)) { continue; }
+                    if(name == null) { Display.displayPackError("An enemy does not have a name. Omitting..."); continue; }
+                    if(usedNames.contains(name)) { continue; }
+                    if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
                     if(levelRequirement < 1) { levelRequirement=1; }
                     if(requirements != null && requirementsJArray.size() > 0) {
                         for(int p=0; p<requirementsJArray.size(); p++) {
@@ -307,7 +314,7 @@ public class TextFighter {
                             String method = (String)ro.get("method");
                             String clazz = (String)ro.get("class");
                             String field = (String)ro.get("field");
-                            if(method == null || clazz == null) { continue; }
+                            if(method == null || clazz == null) { Display.displayPackError("A requirement in enemy '" + name + "' does not have a class or field. Omitting..."); continue; }
                             //Fields can be null (Which just means the method does not act upon a field)
                             if(argumentTypesString.size() > 0) {
                                 for (int g=0; g<argumentTypesString.size(); g++) {
@@ -332,45 +339,81 @@ public class TextFighter {
     }
     public static boolean loadParsingTags() {
         try {
+            Display.displayProgressMessage("Loading the parsing tags...");
             ArrayList<String> usedNames = new ArrayList<String>();
-            JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
-            JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
-            for (int i = 0; i < tagsArray.size(); i++) {
-                JSONObject obj = (JSONObject)tagsArray.get(i);
-                ArrayList<String> arguments = (ArrayList<String>)obj.get("arguments");
-                ArrayList<String> argumentTypesString = (ArrayList<String>)obj.get("argumentTypes");
-                ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                String tag = (String)obj.get("tag");
-                if(usedNames.contains(tag)) { continue; }
-                Method method;
-                Class clazz;
-                try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                    Display.displayWarning("Class not found '" + (String)obj.get("class") + "' Omitting tag '" + (String)obj.get("name") + "'");
-                    continue;
-                }
-                if(arguments.size() > 0) {
-                    for (int g=0; g<argumentTypesString.size(); g++) {
-                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                            argumentTypes.add(int.class);
+            boolean parsingPack = false;
+            File file = tagFile;
+            if(packFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String key = " ";
+                        String value = " ";
+                        if(line.indexOf("=") != -1) {
+                            key = line.substring(0,line.indexOf("="));
+                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
+                        }
+                        if(value == null || key == null || ! key.equals("intpack")) { continue; }
+                        File intpack = new File(intpackDir + "/" + value);
+                        if(intpackDir.list() != null && new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
+                            if(new ArrayList<>(Arrays.asList(intpack.list())).contains("tags.json")) {
+                                file = new File(intpack + "/tags.json");
+                                Display.displayProgressMessage("loading tags from intpack '" + value + "'");
+                                parsingPack = true;
+                            }
                         } else {
-                            argumentTypes.add(String.class);
+                            Display.displayWarning("Interface pack '" + value + "' not found. Falling back to default tags.");
                         }
                     }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default tags."); }
+            }
+            for(int num=0; num<2; num++) {
+                if(!parsingPack) { num++; }
+                JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
+                JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
+                if(tagsArray == null) { continue; }
+                for (int i = 0; i < tagsArray.size(); i++) {
+                    JSONObject obj = (JSONObject)tagsArray.get(i);
+                    ArrayList<String> arguments = (ArrayList<String>)obj.get("arguments");
+                    ArrayList<String> argumentTypesString = (ArrayList<String>)obj.get("argumentTypes");
+                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                    String tag = (String)obj.get("tag");
+                    String classname = (String)obj.get("class");
+                    String methodname = (String)obj.get("method");
+                    if(tag == null) { Display.displayPackError("A tag does not have a name. Omitting tag..."); continue; }
+                    if(usedNames.contains(tag)) { continue; }
+                    if(classname == null || methodname == null) { Display.displayPackError("Tag '" + tag + "' does not have a class or method. Omitting tag..."); continue; }
+                    Method method;
+                    Class clazz;
+                    try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
+                        Display.displayWarning("Class not found '" + classname + "' Omitting tag '" + tag + "'");
+                        continue;
+                    }
+                    if(arguments.size() > 0) {
+                        for (int g=0; g<argumentTypesString.size(); g++) {
+                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                argumentTypes.add(int.class);
+                            } else {
+                                argumentTypes.add(String.class);
+                            }
+                        }
+                    }
+                    try { method = clazz.getMethod(methodname, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
+                        Display.displayWarning("Method '" + methodname + "' of class '" + classname + "' does not exist. Omitting tag '" + tag + "'..."); e.printStackTrace(); continue;}
+                    Class returnType = method.getReturnType();
+                    if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
+                        Display.displayWarning("Tag '" + tag + "' method does not return String, int, or ArrayList! Omitting tag...");
+                        continue;
+                    }
+                    if(argumentTypes.size() != arguments.size()) {
+                        Display.displayWarning("Incorrect number of arguments for tag '" + tag + "'s method parameters! Omitting tag...");
+                        continue;
+                    }
+                    Display.interfaceTags.add(new UiTag(tag, method, arguments, argumentTypes, clazz));
+                    usedNames.add(tag);
+                    parsingPack = false;
+                    file = tagFile;
                 }
-                try { method = clazz.getMethod((String)obj.get("function"), argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
-                    Display.displayWarning("Omitting tag '" + (String)obj.get("tag") + "'"); e.printStackTrace(); continue;}
-                Class returnType = method.getReturnType();
-                if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
-                    Display.displayWarning("UiTag '" + (String)obj.get("tag") + "' method does not return String, int, or ArrayList! Omitting tag.");
-                    continue;
-                }
-                if(argumentTypes.size() != arguments.size()) {
-                    Display.displayWarning("There is an incorrect number of arguments for this tag's function parameters! Omitting tag.");
-                    continue;
-                }
-                Display.interfaceTags.add(new UiTag((String)obj.get("tag"), method, arguments, argumentTypes, clazz));
-                usedNames.add(tag);
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -598,7 +641,6 @@ public class TextFighter {
                 sortedList.add(e);
             }
         }
-        System.out.println(sortedList.size());
         enemies=sortedList;
     }
     public static ArrayList<String> getPossibleEnemyOutputs() {
