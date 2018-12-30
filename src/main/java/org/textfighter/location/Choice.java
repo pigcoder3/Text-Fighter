@@ -15,7 +15,7 @@ public class Choice {
     private String usage;
     private String output;
 
-    private ArrayList<ChoiceMethod> methods;
+    private ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
 
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 

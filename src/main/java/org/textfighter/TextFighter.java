@@ -193,6 +193,7 @@ public class TextFighter {
                     }
                     JSONArray choiceArray = (JSONArray)locationFile.get("choices");
                     ArrayList<Choice> choices = new ArrayList<Choice>();
+                    ArrayList<Premethod> premethods = new ArrayList<Premethod>();
                     //Loads the choices from the file
                     for (int i=0; i<choiceArray.size(); i++) {
                         JSONObject obj = (JSONObject)choiceArray.get(i);
@@ -249,16 +250,38 @@ public class TextFighter {
                                         }
                                     }
                                 }
-                                requirements.add(new Requirement(method, arguments, argumentTypes, clazz, field));
+                                requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
                             }
                         }
                         choices.add(new Choice(choicename, desc, usage, methods, requirements));
+                        //Premethods - Run when the player enters the location
+                        for(int p=0; p<methodJSONArray.size(); p++) {
+                            JSONObject o = (JSONObject)methodJSONArray.get(p);
+                            ArrayList<String> arguments = (JSONArray)o.get("arguments");
+                            ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
+                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                            String method = (String)o.get("method");
+                            String clazz = (String)o.get("class");
+                            String field = (String)o.get("field");
+                            if(method == null || clazz == null) { Display.displayPackError("A premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
+                            //Fields can be null (Which just means the method does not act upon a field)
+                            if(argumentTypesString.size() > 0) {
+                                for (int g=0; g<argumentTypesString.size(); g++) {
+                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                        argumentTypes.add(int.class);
+                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                        argumentTypes.add(String.class);
+                                    }
+                                }
+                            }
+                            premethods.add(new Premethod(method, arguments, argumentTypes, clazz, field));
+                        }
                     }
-                    locations.add(new Location(name, interfaces, choices));
+                    locations.add(new Location(name, interfaces, choices, premethods));
                     usedNames.add(name);
+                    directory = locationDir;
+                    parsingPack = false;
                 }
-                directory = locationDir;
-                parsingPack = false;
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -325,7 +348,7 @@ public class TextFighter {
                                     }
                                 }
                             }
-                        requirements.add(new Requirement(method, arguments, argumentTypes, clazz, field));
+                        requirements.add(new Requirement(name, Enemy.class, method, arguments, argumentTypes, clazz, field));
                         }
                     }
                     enemies.add(new Enemy(name, health, strength, levelRequirement, requirements));
@@ -657,6 +680,9 @@ public class TextFighter {
             if(l.getName().equals(location)) {
                 player.setLocation(location);
                 addToOutput("Moved to " + location);
+                for(Premethod m : l.getPremethods()) {
+                    m.invokeMethod();
+                }
                 return true;
             }
         }

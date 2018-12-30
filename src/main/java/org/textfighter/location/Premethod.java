@@ -1,20 +1,17 @@
-package org.textfighter;
+package org.textfighter.location;
 
-import java.lang.reflect.*;
+import org.textfighter.location.Location;
+import org.textfighter.display.Display;
 
 import java.util.ArrayList;
 
-import org.textfighter.display.Display;
-import org.textfighter.location.Choice;
-import org.textfighter.enemy.Enemy;
+import java.lang.reflect.*;
 
 @SuppressWarnings("unchecked")
 
-public class Requirement {
+public class Premethod {
 
-    private String parentName;
-    private Class parentType;
-
+    private Location location;
     private ArrayList<Object> arguments;
     private Class clazz;
     private Method method;
@@ -24,20 +21,17 @@ public class Requirement {
     public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
 
-    public boolean invokeMethod() {
+    public void invokeMethod() {
         try {
             if(field != null ) {
-                return((boolean)method.invoke(field, arguments));
+                method.invoke(field, arguments);
             } else {
-                return((boolean)method.invoke(arguments));
+                method.invoke(arguments);
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
-        return false;
     }
 
-    public Requirement(String parentName, Class parentType, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
-        this.parentName = parentName;
-        this.parentType = parentType;
+    public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
         try {
             if(field != null && !field.isEmpty()) {
@@ -50,10 +44,7 @@ public class Requirement {
             try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
         }
 
-        if(this.method.getParameterTypes().length != argumentTypes.size()) {
-            if(parentType == Choice.class) { Display.displayWarning("There is an incorrect number of arguments for the choice '" + parentName + "' requirement's function parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
-            else { Display.displayWarning("There is an incorrect number of arguments for the " + parentType.getSimpleName() + " '" + parentName + "' requirement's function parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
-        }
+        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for the location '" + location.getName() + "' premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
         if(arguments != null) {
             Class[] parameterTypes = this.method.getParameterTypes();
             for (int i=0; i<arguments.size(); i++) {
