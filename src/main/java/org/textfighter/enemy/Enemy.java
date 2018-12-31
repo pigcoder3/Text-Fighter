@@ -1,6 +1,8 @@
 package org.textfighter.enemy;
 
 import org.textfighter.Requirement;
+import org.textfighter.enemy.Reward;
+import org.textfighter.Postmethod;
 
 import java.util.ArrayList;
 
@@ -15,6 +17,11 @@ public class Enemy implements Cloneable {
 
     private int levelRequirement;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+
+    private ArrayList<Postmethod> postMethods = new ArrayList<Postmethod>();
+    private ArrayList<Reward> rewardMethods = new ArrayList<Reward>();
+
+    private boolean finalBoss;
 
     public String getName() { return name; }
     public void setName(String n) { name=n; }
@@ -48,11 +55,43 @@ public class Enemy implements Cloneable {
     public int getLevelRequirement() { return levelRequirement; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
+    public boolean getIsFinalBoss() { return finalBoss; }
+
+    public void invokePostMethods() {
+        for(Postmethod pm : postMethods) {
+            boolean valid = true;
+            for(Requirement r : pm.getRequirements()) {
+                if (!r.invokeMethod()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid) {
+                pm.invokeMethod();
+            }
+        }
+    }
+
+    public void invokeRewardMethods() {
+        for(Reward pm : rewardMethods) {
+            boolean valid = true;
+            for(Requirement r : pm.getRequirements()) {
+                if (!r.invokeMethod()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid) {
+                pm.invokeMethod();
+            }
+        }
+    }
+
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements) {
+    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<Postmethod> postMethods, ArrayList<Reward> rewardMethods) {
         this.name = name;
         this.maxhp = hp;
         this.hp = hp;
@@ -61,6 +100,9 @@ public class Enemy implements Cloneable {
         this.difficulty = Math.round(hp * str * levelRequirement / 100);
         this.output = name + " - " + difficulty;
         this.requirements = requirements;
+        this.finalBoss = finalBoss;
+        this.postMethods = postMethods;
+        this.rewardMethods = rewardMethods;
     }
 
     public Enemy() { }

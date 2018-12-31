@@ -15,7 +15,7 @@ public class Location {
     private ArrayList<Choice> allChoices = new ArrayList<Choice>();
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    private ArrayList<Premethod> premethods = new ArrayList<Premethod>();
+    private ArrayList<Premethod> preMethods = new ArrayList<Premethod>();
 
     public String getName() { return name; }
 
@@ -24,7 +24,22 @@ public class Location {
     public ArrayList<Choice> getAllChoices() { return allChoices; }
     public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
-    public ArrayList<Premethod> getPremethods() { return premethods; }
+    public ArrayList<Premethod> getPremethods() { return preMethods; }
+
+    public void invokePremethods() {
+        for(Premethod pm : preMethods) {
+            boolean valid = true;
+            for(Requirement r : pm.getRequirements()) {
+                if (!r.invokeMethod()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid) {
+                pm.invokeMethod();
+            }
+        }
+    }
 
     public void filterPossibleChoices() {
         possibleChoices.clear();
@@ -44,7 +59,7 @@ public class Location {
         this.name = name;
         this.interfaces = interfaces;
         this.allChoices = choices;
-        this.premethods = premethods;
+        this.preMethods = preMethods;
         for(int i=0; i<allChoices.size(); i++) {
             for(ChoiceMethod m : allChoices.get(i).getMethods()) {
                 for(Class c : m.getMethod().getParameterTypes()) {
@@ -55,7 +70,7 @@ public class Location {
                 }
             }
         }
-        for(int i=0; i<this.premethods.size(); i++) {
+        for(int i=0; i<this.preMethods.size(); i++) {
             for(Class c : premethods.get(i).getMethod().getParameterTypes()) {
                 if(c != int.class && c != String.class) {
                     premethods.remove(i);

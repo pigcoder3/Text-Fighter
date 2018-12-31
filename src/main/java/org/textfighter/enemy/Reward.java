@@ -1,23 +1,28 @@
-package org.textfighter.location;
+package org.textfighter.enemy;
 
 import org.textfighter.location.Location;
 import org.textfighter.display.Display;
 import org.textfighter.Requirement;
+import org.textfighter.TextFighter;
 
 import java.util.ArrayList;
 
 import java.lang.reflect.*;
 
+import java.util.Random;
+
 @SuppressWarnings("unchecked")
 
-public class Premethod {
+public class Reward {
 
-    private Location location;
     private ArrayList<Object> arguments;
     private Class clazz;
     private Method method;
     private Field field;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+    //Chance is 1-100
+    private int chance;
+    private String rewardItem;
 
     public ArrayList<Object> getArguments() { return arguments; }
     public Class getClazz() { return clazz; }
@@ -26,15 +31,21 @@ public class Premethod {
 
     public void invokeMethod() {
         try {
+            //Does the random chance thing
+            Random random = new Random();
+            int number = random.nextInt(100-1)+1;
+            if(number > chance) { return; }
             if(field != null ) {
                 method.invoke(field, arguments);
+                TextFighter.addToOutput(rewardItem);
             } else {
                 method.invoke(arguments);
+                TextFighter.addToOutput(rewardItem);
             }
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); return; }
     }
 
-    public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<Requirement> requirements) {
+    public Reward(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<Requirement> requirements, int chance, String rewardItem) {
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
         try {
             if(field != null && !field.isEmpty()) {
@@ -47,7 +58,7 @@ public class Premethod {
             try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
         }
 
-        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for the location '" + location.getName() + "' premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
+        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
         if(arguments != null) {
             Class[] parameterTypes = this.method.getParameterTypes();
             for (int i=0; i<arguments.size(); i++) {
@@ -57,6 +68,8 @@ public class Premethod {
             }
         }
         this.requirements = requirements;
+        this.chance = chance;
+        this.rewardItem = rewardItem;
     }
 
 }

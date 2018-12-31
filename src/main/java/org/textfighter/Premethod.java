@@ -1,44 +1,39 @@
 package org.textfighter;
 
-import java.lang.reflect.*;
+import org.textfighter.location.Location;
+import org.textfighter.display.Display;
+import org.textfighter.Requirement;
 
 import java.util.ArrayList;
 
-import org.textfighter.display.Display;
-import org.textfighter.Premethod;
-import org.textfighter.location.Choice;
-import org.textfighter.enemy.Enemy;
+import java.lang.reflect.*;
 
 @SuppressWarnings("unchecked")
 
-public class Requirement {
-
-    private String parentName;
-    private Class parentType;
+public class Premethod {
 
     private ArrayList<Object> arguments;
     private Class clazz;
     private Method method;
     private Field field;
+    private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     public ArrayList<Object> getArguments() { return arguments; }
     public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
+    public ArrayList<Requirement> getRequirements() { return requirements; }
 
-    public boolean invokeMethod() {
+    public void invokeMethod() {
         try {
             if(field != null ) {
-                return((boolean)method.invoke(field, arguments));
+                method.invoke(field, arguments);
             } else {
-                return((boolean)method.invoke(arguments));
+                method.invoke(arguments);
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
-        return false;
     }
 
-    public Requirement(String parentName, Class parentType, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
-        this.parentName = parentName;
-        this.parentType = parentType;
+    public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<Requirement> requirements) {
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
         try {
             if(field != null && !field.isEmpty()) {
@@ -51,11 +46,7 @@ public class Requirement {
             try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
         }
 
-        if(this.method.getParameterTypes().length != argumentTypes.size()) {
-            if(parentType == Choice.class) { Display.displayWarning("There is an incorrect number of arguments for the choice '" + parentName + "' requirement's method parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
-            else if(parentType == Enemy.class) { Display.displayWarning("There is an incorrect number of arguments for the enemy'" + parentName + "' requirement's method parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
-            else if(parentType == Premethod.class) { Display.displayWarning("There is an incorrect number of arguments for a premethod requirement's method parameters. Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size());}
-        }
+        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
         if(arguments != null) {
             Class[] parameterTypes = this.method.getParameterTypes();
             for (int i=0; i<arguments.size(); i++) {
@@ -64,6 +55,7 @@ public class Requirement {
                 }
             }
         }
+        this.requirements = requirements;
     }
 
 }
