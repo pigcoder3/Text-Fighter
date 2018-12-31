@@ -99,6 +99,7 @@ public class Enemy implements Cloneable {
         this.levelRequirement = levelRequirement;
         this.difficulty = Math.round(hp * str * levelRequirement / 100);
         this.output = name + " - " + difficulty;
+        if(finalBoss) { output+= " - FINAL BOSS"; }
         this.requirements = requirements;
         this.finalBoss = finalBoss;
         this.postMethods = postMethods;

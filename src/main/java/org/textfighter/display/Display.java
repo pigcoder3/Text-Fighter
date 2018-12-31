@@ -87,8 +87,8 @@ public class Display {
             String line;
 
             while ((line = br.readLine()) != null) {
-                String key = " ";
-                String value = " ";
+                String key = "=";
+                String value = "=";
                 if(line.indexOf("=") != -1) {
                     key = line.substring(0,line.indexOf("="));
                     value = line.substring(line.indexOf("=")+1,line.length()).trim();
