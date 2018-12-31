@@ -665,6 +665,7 @@ public class TextFighter {
             int hp = Integer.parseInt((String)stats.get("health"));
             int coins = Integer.parseInt((String)stats.get("coins"));
             int magic = Integer.parseInt((String)stats.get("magic"));
+            boolean gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));
 
             JSONObject inventory = (JSONObject)file.get("inventory");
 
@@ -689,7 +690,7 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, level, experience, score, newInventory);
+            player = new Player(hp, maxhp, coins, magic, level, experience, score, gameBeaten, newInventory);
             addToOutput("Loaded save '" + name + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -741,7 +742,7 @@ public class TextFighter {
         ArrayList<Item> newInventory = new ArrayList<Item>();
         newInventory.add(new Sword(1,0,0));
 
-        player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, newInventory);
+        player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, false, newInventory);
 
         addToOutput("Added new save '" + name + "'");
 
@@ -765,6 +766,7 @@ public class TextFighter {
         stats.put("maxhealth", Integer.toString(player.getMaxHp()));
         stats.put("coins", Integer.toString(player.getCoins()));
         stats.put("magic", Integer.toString(player.getMagic()));
+        stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
 
         JSONObject inventory = new JSONObject();
 

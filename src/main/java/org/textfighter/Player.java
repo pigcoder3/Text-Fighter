@@ -25,6 +25,8 @@ public class Player {
 
     private static Location location;
 
+    private static boolean gameBeaten;
+
     private static ArrayList<Item> inventory = new ArrayList<Item>();
 
     public static boolean getAlive() { return alive; }
@@ -70,6 +72,8 @@ public class Player {
         }
     }
 
+    public static boolean getGameBeaten() { return gameBeaten; }
+
     public static ArrayList<Item> getInventory() { return inventory; }
     public static void addToInventory(Item item) { inventory.add(item); }
     public static void removeFromInventory(String classname) {
@@ -100,7 +104,7 @@ public class Player {
 
 
 
-    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, ArrayList<Item> inventory) {
+    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, boolean gameBeaten, ArrayList<Item> inventory) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -108,6 +112,7 @@ public class Player {
         this.level = level;
         this.experience = experience;
         this.score = score;
+        this.gameBeaten = gameBeaten;
         this.inventory = inventory;
     }
 
