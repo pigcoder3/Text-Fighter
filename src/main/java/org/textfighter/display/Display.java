@@ -24,7 +24,7 @@ public class Display {
     public static String error = colorCodes[1];
     public static String warning = colorCodes[3];
     public static String progress = colorCodes[4];
-    public static String output = colorCodes[3];
+    public static String output = colorCodes[2];
     public static String prompt = colorCodes[2];
 
     public static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();

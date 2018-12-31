@@ -1,6 +1,6 @@
-error red
-progress yellow
-output green
-prompt green
-previousCommand yellow
-warning purple
+error=red
+progress=yellow
+output=green
+prompt=green
+previousCommand=yellow
+warning=purple

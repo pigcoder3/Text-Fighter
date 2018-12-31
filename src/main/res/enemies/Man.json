@@ -1,8 +1,26 @@
 {
-    "name" : "man",
+    "name" : "Insane_Man",
     "health" : "50",
     "maxhealth" : "50",
     "strength" : "10",
     "levelRequirement" : "1",
-    "requirements" : [ ]
+    "requirements" : [],
+    "finalBoss" : "false",
+    "postMethods" : [],
+    "rewardMethods" : [
+        {
+            "method" : "getCoins",
+            "class" : "org.textfighter.TextFighter",
+            "field" : "player",
+            "arguments" : ["10"],
+            "argumentTypes" : ["1"]
+        },
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.TextFighter",
+            "field" : "player",
+            "arguments" : ["10"],
+            "argumentTypes" : ["1"]
+        }
+    ]
 }
