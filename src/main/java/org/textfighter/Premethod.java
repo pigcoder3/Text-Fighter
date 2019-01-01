@@ -18,10 +18,14 @@ public class Premethod {
     private Field field;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
+    private boolean valid = true;
+
     public ArrayList<Object> getArguments() { return arguments; }
     public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
+
+    public boolean getValid() { return valid; }
 
     public void invokeMethod() {
         try {
@@ -34,19 +38,19 @@ public class Premethod {
     }
 
     public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<Requirement> requirements) {
-        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
+        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid class. Omitting..."); valid = false; return;}
         try {
             if(field != null && !field.isEmpty()) {
                 this.field = this.clazz.getField(field);
             }
-        } catch (NoSuchFieldException | SecurityException e) { e.printStackTrace(); System.exit(1);}
+        } catch (NoSuchFieldException | SecurityException e) {Display.displayPackError("This premethod has an invalid field. Omitting..."); valid = false; return;}
         if(argumentTypes != null ) {
-            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
+            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e) { Display.displayPackError("This premethod has an invalid method. Omitting..."); valid = false; return; }
         } else {
-            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
+            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ Display.displayPackError("This premethod has an invalid method. Omitting..."); valid = false; return; }
         }
 
-        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); }
+        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); valid = false; return;}
         if(arguments != null) {
             Class[] parameterTypes = this.method.getParameterTypes();
             for (int i=0; i<arguments.size(); i++) {
@@ -55,7 +59,13 @@ public class Premethod {
                 }
             }
         }
-        this.requirements = requirements;
+
+        //Filters out invalid requirements
+        for(int i=0; i<requirements.size(); i++) {
+            if(!requirements.get(i).getValid()) {
+                this.requirements.add(requirements.get(i));
+            }
+        }
     }
 
 }

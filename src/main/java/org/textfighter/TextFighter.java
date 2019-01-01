@@ -420,7 +420,7 @@ public class TextFighter {
                         requirements.add(new Requirement(name, Enemy.class, method, arguments, argumentTypes, clazz, field));
                         }
                     }
-                    //defeatedmethods - Run when the enemy dies
+                    //postmethods - Run when the enemy dies
                     JSONArray postMethodsJArray = (JSONArray)enemyFile.get("postMethods");
                     ArrayList<Postmethod> postMethods = new ArrayList<Postmethod>();
                     if(postMethodsJArray != null && postMethodsJArray.size() > 0) {
@@ -483,6 +483,7 @@ public class TextFighter {
                             String method = (String)obj.get("method");
                             String clazz = (String)obj.get("class");
                             String field = (String)obj.get("field");
+                            String fieldclass = (String)obj.get("fieldclass");
                             int chance = Integer.parseInt((String)obj.get("chance"));
                             String rewardItem = (String)obj.get("rewardItem");
                             if(method == null || clazz == null) { Display.displayPackError("A rewardmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
@@ -524,10 +525,74 @@ public class TextFighter {
                                     requirements.add(new Requirement(null, Postmethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
                                 }
                             }
-                            rewardMethods.add(new Reward(method, arguments, argumentTypes, clazz, field, requirements, chance, rewardItem));
+                            rewardMethods.add(new Reward(method, arguments, argumentTypes, clazz, field, fieldclass, requirements, chance, rewardItem));
                         }
                     }
-                    enemies.add(new Enemy(name, health, strength, levelRequirement, requirements, finalBoss, postMethods, rewardMethods));
+                    JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
+                    ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
+                    if(enemyActionArray != null && enemyActionArray.size() > 0) {
+                        for (int i=0; i<enemyActionArray.size(); i++) {
+                            JSONObject obj = (JSONObject)enemyActionArray.get(i);
+                            JSONArray methodJSONArray = (JSONArray)obj.get("methods");
+                            ArrayList<EnemyActionMethod> methods = new ArrayList<EnemyActionMethod>();
+                            String choicename = (String)obj.get("name");
+                            String desc = (String)obj.get("description");
+                            String usage = (String)obj.get("usage");
+                            if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
+                            //Gets the methods
+                            if(methodJSONArray != null && methodJSONArray.size() > 0) {
+                                for(int p=0; p<methodJSONArray.size(); p++) {
+                                    JSONObject o = (JSONObject)methodJSONArray.get(p);
+                                    ArrayList<String> arguments = (JSONArray)o.get("arguments");
+                                    ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
+                                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                    String method = (String)o.get("method");
+                                    String clazz = (String)o.get("class");
+                                    String field = (String)o.get("field");
+                                    if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                    //Fields can be null (Which just means the method does not act upon a field)
+                                    if(argumentTypesString.size() > 0) {
+                                        for (int g=0; g<argumentTypesString.size(); g++) {
+                                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                argumentTypes.add(int.class);
+                                            } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                                argumentTypes.add(String.class);
+                                            }
+                                        }
+                                    }
+                                    methods.add(new EnemyActionMethod(method, arguments, argumentTypes, clazz, field));
+                                }
+                            } else { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' does not have any methods. Omitting..."); continue; }
+                            //Gets requirements if there is any
+                            JSONArray enemyActionRequirementsJArray = (JSONArray)obj.get("requirements");
+                            ArrayList<Requirement> enemyActionRequirements = new ArrayList<Requirement>();
+                            if(requirementsJArray != null && enemyActionRequirementsJArray.size() > 0) {
+                                for(int p=0; p<enemyActionRequirementsJArray.size(); p++) {
+                                    JSONObject ro = (JSONObject)enemyActionRequirementsJArray.get(p);
+                                    ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                                    ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                    String method = (String)ro.get("method");
+                                    String clazz = (String)ro.get("class");
+                                    String field = (String)ro.get("field");
+                                    if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                    //Fields can be null (Which just means the method does not act upon a field)
+                                    if(argumentTypesString != null && argumentTypesString.size() > 0) {
+                                        for (int g=0; g<argumentTypesString.size(); g++) {
+                                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                argumentTypes.add(int.class);
+                                            } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                argumentTypes.add(String.class);
+                                            }
+                                        }
+                                    }
+                                    requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
+                                }
+                            }
+                            enemyActions.add(new EnemyAction(methods, requirements));
+                        }
+                    }
+                    enemies.add(new Enemy(name, health, strength, levelRequirement, requirements, finalBoss, postMethods, rewardMethods, enemyActions));
                     usedNames.add(name);
                     directory=enemyDir;
                     parsingPack=false;
@@ -593,11 +658,15 @@ public class TextFighter {
                     String tag = (String)obj.get("tag");
                     String classname = (String)obj.get("class");
                     String methodname = (String)obj.get("method");
+                    String fieldclassname = (String)obj.get("fieldname");
+                    String fieldname = (String)obj.get("field");
                     if(tag == null) { Display.displayPackError("A tag does not have a name. Omitting tag..."); continue; }
                     if(usedNames.contains(tag) || namesToBeOmitted.contains(tag)) { continue; }
                     if(classname == null || methodname == null) { Display.displayPackError("Tag '" + tag + "' does not have a class or method. Omitting tag..."); continue; }
                     Method method;
                     Class clazz;
+                    Class fieldclass;
+                    Field field;
                     try { clazz = Class.forName((String)obj.get("class")); } catch (ClassNotFoundException e) {
                         Display.displayWarning("Class not found '" + classname + "' Omitting tag '" + tag + "'");
                         continue;
@@ -611,8 +680,11 @@ public class TextFighter {
                             }
                         }
                     }
-                    try { method = clazz.getMethod(methodname, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){
-                        Display.displayWarning("Method '" + methodname + "' of class '" + classname + "' does not exist. Omitting tag '" + tag + "'..."); e.printStackTrace(); continue;}
+                    if(fieldname != null && fieldclassname != null) {
+                        try { fieldclass = Class.forName(fieldclassname); } catch (ClassNotFoundException e) { Display.displayPackError("No such class '" + fieldclassname + "'. Omitting..."); continue;}
+                        try { field = fieldclass.getField(fieldname); } catch (NoSuchFieldException e) { Display.displayPackError("No such field '" + fieldname + "' in class '" + classname + "'. Omitting..."); continue;}
+                    }
+                    try { method = clazz.getMethod(methodname, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ Display.displayWarning("Method '" + methodname + "' of class '" + classname + "' does not exist. Omitting tag '" + tag + "'..."); e.printStackTrace(); continue;}
                     Class returnType = method.getReturnType();
                     if(returnType != String.class && method.getReturnType() != ArrayList.class && method.getReturnType() != int.class ) {
                         Display.displayWarning("Tag '" + tag + "' method does not return String, int, or ArrayList! Omitting tag...");
@@ -953,6 +1025,10 @@ public class TextFighter {
         if(validEnemy) {
             while(player.getInFight()) {
                 playGame();
+                //Make them fight
+                Random random = new Random(currentEnemy.getPossibleActions().size());
+                currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
+                player.setCanBeHurtThisTurn(true);
                 if(player.getHp() < 1) {
                     player.setAlive(false);
                     player.setInFight(false);

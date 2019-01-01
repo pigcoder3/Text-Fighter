@@ -1,7 +1,7 @@
 package org.textfighter.enemy;
 
 import org.textfighter.Requirement;
-import org.textfighter.enemy.Reward;
+import org.textfighter.enemy.*;
 import org.textfighter.Postmethod;
 
 import java.util.ArrayList;
@@ -18,8 +18,14 @@ public class Enemy implements Cloneable {
     private int levelRequirement;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
-    private ArrayList<Postmethod> postMethods = new ArrayList<Postmethod>();
-    private ArrayList<Reward> rewardMethods = new ArrayList<Reward>();
+    private ArrayList<EnemyAction> allActions = new ArrayList<EnemyAction>();
+    private ArrayList<EnemyAction> possibleActions = new ArrayList<EnemyAction>();
+
+    private ArrayList<Postmethod> allPostMethods = new ArrayList<Postmethod>();
+    private ArrayList<Postmethod> possiblePostMethods = new ArrayList<Postmethod>();
+
+    private ArrayList<Reward> allRewardMethods = new ArrayList<Reward>();
+    private ArrayList<Reward> possibleRewardMethods = new ArrayList<Reward>();
 
     private boolean finalBoss;
 
@@ -55,43 +61,73 @@ public class Enemy implements Cloneable {
     public int getLevelRequirement() { return levelRequirement; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
-    public boolean getIsFinalBoss() { return finalBoss; }
-
-    public void invokePostMethods() {
-        for(Postmethod pm : postMethods) {
+    public ArrayList<EnemyAction> getPossibleActions() { filterPossibleActions(); return possibleActions; }
+    public void filterPossibleActions() {
+        possibleActions.clear();
+        for(EnemyAction ea : allActions) {
             boolean valid = true;
-            for(Requirement r : pm.getRequirements()) {
-                if (!r.invokeMethod()) {
+            for(Requirement r : ea.getRequirements()) {
+                if(!r.invokeMethod()) {
                     valid = false;
                     break;
                 }
             }
             if(valid) {
-                pm.invokeMethod();
+                possibleActions.add(ea);
+            }
+        }
+    }
+    public boolean getIsFinalBoss() { return finalBoss; }
+
+    public void invokePostMethods() {
+        filterPostMethods();
+        for(Postmethod pm : possiblePostMethods) {
+            pm.invokeMethod();
+        }
+    }
+
+    public void filterPostMethods() {
+        possiblePostMethods.clear();
+        for(Postmethod pm : allPostMethods) {
+            boolean valid = true;
+            for(Requirement r : pm.getRequirements()) {
+                if(!r.invokeMethod()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid) {
+                possiblePostMethods.add(pm);
             }
         }
     }
 
     public void invokeRewardMethods() {
-        for(Reward pm : rewardMethods) {
+        filterRewardMethods();
+        for(Reward r : possibleRewardMethods) {
+            r.invokeMethod();
+        }
+    }
+
+    public void filterRewardMethods() {
+        possibleRewardMethods.clear();
+        for(Reward r : allRewardMethods) {
             boolean valid = true;
-            for(Requirement r : pm.getRequirements()) {
-                if (!r.invokeMethod()) {
+            for(Requirement rq : r.getRequirements()) {
+                if(!rq.invokeMethod()) {
                     valid = false;
                     break;
                 }
             }
             if(valid) {
-                pm.invokeMethod();
+                possibleRewardMethods.add(r);
             }
         }
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+    public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
-    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<Postmethod> postMethods, ArrayList<Reward> rewardMethods) {
+    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<Postmethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
         this.name = name;
         this.maxhp = hp;
         this.hp = hp;
@@ -100,10 +136,25 @@ public class Enemy implements Cloneable {
         this.difficulty = Math.round(hp * str * levelRequirement / 100);
         this.output = name + " - " + difficulty;
         if(finalBoss) { output+= " - FINAL BOSS"; }
-        this.requirements = requirements;
+        //Filters out invalid requirements
+        for(int i=0; i<requirements.size(); i++) {
+            if(!requirements.get(i).getValid()) {
+                this.requirements.add(requirements.get(i));
+            }
+        }
         this.finalBoss = finalBoss;
-        this.postMethods = postMethods;
-        this.rewardMethods = rewardMethods;
+        //Filters out invalid postMethods
+        for(int i=0; i<postMethods.size(); i++) {
+            if(!postMethods.get(i).getValid()) {
+                this.possiblePostMethods.add(postMethods.get(i));
+            }
+        }
+        //Filters out invalid rewardMethods
+        for(int i=0; i<rewardMethods.size(); i++) {
+            if(!rewardMethods.get(i).getValid()) {
+                this.allRewardMethods.add(rewardMethods.get(i));
+            }
+        }
     }
 
     public Enemy() { }

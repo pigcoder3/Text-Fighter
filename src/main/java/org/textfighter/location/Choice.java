@@ -16,7 +16,6 @@ public class Choice {
     private String output;
 
     private ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
-
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     public String getName() { return name; }
@@ -66,8 +65,18 @@ public class Choice {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        this.methods = methods;
-        this.requirements = requirements;
+        //Filters out invalid methods
+        for(int i=0; i<methods.size(); i++) {
+            if(!methods.get(i).getValid()) {
+                this.methods.add(methods.get(i));
+            }
+        }
+        //Filters out invalid requirements
+        for(int i=0; i<requirements.size(); i++) {
+            if(!requirements.get(i).getValid()) {
+                this.requirements.add(requirements.get(i));
+            }
+        }
         this.output = "- " + name + " \t:|: " + usage + " \t:|: " + description;
     }
 }

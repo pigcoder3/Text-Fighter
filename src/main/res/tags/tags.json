@@ -6,7 +6,6 @@
             "method" : "getSaves",
             "arguments" : [],
             "argumentTypes" : [],
-            "field" : "player"
         },
         {
             "tag" : "<coins>",
@@ -14,6 +13,7 @@
             "method" : "getCoins",
             "arguments" : [],
             "argumentTypes" : [],
+            "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
         {
@@ -22,6 +22,7 @@
             "method" : "getMagic",
             "arguments" : [],
             "argumentTypes" : [],
+            "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
         {

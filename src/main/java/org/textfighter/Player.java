@@ -27,6 +27,8 @@ public class Player {
 
     private static boolean gameBeaten;
 
+    private static boolean canBeHurtThisTurn = true;
+
     private static ArrayList<Item> inventory = new ArrayList<Item>();
 
     public static boolean getAlive() { return alive; }
@@ -39,29 +41,29 @@ public class Player {
     public static void setInFight(boolean b) { inFight=b; }
 
     public static int getLevel() { return level; }
-    public static void increaseLevel(int a) { level=+a; }
-    public static void decreaseLevel(int a) { level=-a; }
+    public static void increaseLevel(int a) { level+=a; }
+    public static void decreaseLevel(int a) { level-=a; }
     public static int getExperience() { return experience; }
-    public static void increaseExperience(int a) { experience=+a; }
-    public static void decreaseExperience(int a) { experience=-a; }
+    public static void increaseExperience(int a) { experience+=a; }
+    public static void decreaseExperience(int a) { experience-=a; }
     public static int getScore() { return score; }
-    public static void increaseScore(int a) { score=+a; }
-    public static void decreaseScore(int a) { score=-a; }
+    public static void increaseScore(int a) { score+=a; }
+    public static void decreaseScore(int a) { score-=a; }
 
     public static int getHp() { return hp; }
-    public static void damage(int a) { if (hp-a < 0) { hp = 0; } else { hp=-a; }}
-    public static void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp=+a; } }
+    public static void damage(int a) { if (hp-a < 0) { hp = 0; } else { hp-=a; }}
+    public static void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } }
 
     public static int getMaxHp() { return maxhp; }
     public static void setMaxHp(int a) { maxhp=a; }
 
     public static int getCoins() { return coins; }
-    public static void spendCoins(int a) { if (coins-a >= 0) { coins=-a; } else { coins=-a; } }
+    public static void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { coins-=a; } }
     public static void gainCoins(int a) { coins=+a; }
 
     public static int getMagic() { return magic; }
-    public static void spendMagic(int a) { if (magic-a >= 0) { magic=-a; } else { magic=-a; } }
-    public static void gainMagic(int a) { magic=+a; }
+    public static void spendMagic(int a) { if (magic-a >= 0) { magic-=a; } else { magic-=a; } }
+    public static void gainMagic(int a) { magic+=a; }
 
     public static Location getLocation() { return location; }
     public static void setLocation(String loc) {
@@ -73,6 +75,9 @@ public class Player {
     }
 
     public static boolean getGameBeaten() { return gameBeaten; }
+
+    public static boolean getCanBeHurtThisTurn() { return canBeHurtThisTurn; }
+    public static void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn = b; }
 
     public static ArrayList<Item> getInventory() { return inventory; }
     public static void addToInventory(Item item) { inventory.add(item); }

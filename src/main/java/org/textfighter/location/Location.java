@@ -15,7 +15,8 @@ public class Location {
     private ArrayList<Choice> allChoices = new ArrayList<Choice>();
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    private ArrayList<Premethod> preMethods = new ArrayList<Premethod>();
+    private ArrayList<Premethod> allPreMethods = new ArrayList<Premethod>();
+    private ArrayList<Premethod> possiblePremethods = new ArrayList<Premethod>();
 
     public String getName() { return name; }
 
@@ -24,19 +25,27 @@ public class Location {
     public ArrayList<Choice> getAllChoices() { return allChoices; }
     public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
-    public ArrayList<Premethod> getPremethods() { return preMethods; }
+    public ArrayList<Premethod> getPremethods() { return possiblePremethods; }
 
     public void invokePremethods() {
-        for(Premethod pm : preMethods) {
+        filterPremethods();
+        for(Premethod pm : possiblePremethods) {
+            pm.invokeMethod();
+        }
+    }
+
+    public void filterPremethods() {
+        possiblePremethods.clear();
+        for(Premethod pm : allPreMethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
-                if (!r.invokeMethod()) {
+                if(!r.invokeMethod()) {
                     valid = false;
                     break;
                 }
             }
             if(valid) {
-                pm.invokeMethod();
+                possiblePremethods.add(pm);
             }
         }
     }
@@ -47,11 +56,13 @@ public class Location {
             boolean valid = true;
             for(Requirement r : c.getRequirements()) {
                 if(!r.invokeMethod()) {
-                    valid=false;
+                    valid = false;
                     break;
                 }
             }
-            if(valid) {possibleChoices.add(c);}
+            if(valid) {
+                possibleChoices.add(c);
+            }
         }
     }
 
@@ -59,7 +70,7 @@ public class Location {
         this.name = name;
         this.interfaces = interfaces;
         this.allChoices = choices;
-        this.preMethods = preMethods;
+
         for(int i=0; i<allChoices.size(); i++) {
             for(ChoiceMethod m : allChoices.get(i).getMethods()) {
                 for(Class c : m.getMethod().getParameterTypes()) {
@@ -70,7 +81,15 @@ public class Location {
                 }
             }
         }
-        for(int i=0; i<this.preMethods.size(); i++) {
+
+        //Filters through preMethods that are not valid
+        for(int i=0; i<premethods.size(); i++) {
+            if(!premethods.get(i).getValid()) {
+                allPreMethods.add(premethods.get(i));
+            }
+        }
+
+        for(int i=0; i<this.allPreMethods.size(); i++) {
             for(Class c : premethods.get(i).getMethod().getParameterTypes()) {
                 if(c != int.class && c != String.class) {
                     premethods.remove(i);
@@ -78,6 +97,5 @@ public class Location {
                 }
             }
         }
-
     }
 }

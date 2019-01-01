@@ -9,18 +9,24 @@
     "postMethods" : [],
     "rewardMethods" : [
         {
-            "method" : "getCoins",
+            "method" : "gainCoins",
             "class" : "org.textfighter.TextFighter",
             "field" : "player",
+            "fieldclass" : "org.textfighter.Player",
             "arguments" : ["10"],
-            "argumentTypes" : ["1"]
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewardItem" : "10 coins"
         },
         {
             "method" : "increaseExperience",
             "class" : "org.textfighter.TextFighter",
             "field" : "player",
+            "fieldclass" : "org.textfighter.Player",
             "arguments" : ["10"],
-            "argumentTypes" : ["1"]
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewardItem" : "10 exp"
         }
     ]
 }

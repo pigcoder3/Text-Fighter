@@ -21,9 +21,13 @@ public class Requirement {
     private Method method;
     private Field field;
 
+    private boolean valid;
+
     public ArrayList<Object> getArguments() { return arguments; }
     public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
+
+    public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
         try {
@@ -39,16 +43,16 @@ public class Requirement {
     public Requirement(String parentName, Class parentType, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
         this.parentName = parentName;
         this.parentType = parentType;
-        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ e.printStackTrace(); System.exit(1); }
+        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid class. Parent: " + parentName + ". Omitting..."); valid = false; }
         try {
             if(field != null && !field.isEmpty()) {
                 this.field = this.clazz.getField(field);
             }
-        } catch (NoSuchFieldException | SecurityException e) { e.printStackTrace(); System.exit(1);}
+        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This requirement has an invalid field. Parent: " + parentName+ ". Omitting..."); valid = false;}
         if(argumentTypes != null ) {
-            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
+            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ Display.displayPackError("This requirement has an invalid method. Parent: " + parentName + ". Omitting..."); valid = false; }
         } else {
-            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ e.printStackTrace(); System.exit(1); }
+            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ Display.displayPackError("This requirement has an invalid method. Parent: " + parentName + ". Omitting..."); valid = false;}
         }
 
         if(this.method.getParameterTypes().length != argumentTypes.size()) {
