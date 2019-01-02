@@ -16,7 +16,7 @@ public class Requirement {
     private String parentName;
     private Class parentType;
 
-    private ArrayList<Object> arguments;
+    private ArrayList<Object> arguments = new ArrayList<Object>();
     private Class clazz;
     private Method method;
     private Field field;
@@ -31,10 +31,18 @@ public class Requirement {
 
     public boolean invokeMethod() {
         try {
-            if(field != null ) {
-                return((boolean)method.invoke(field, arguments));
+            if(field != null) {
+                if(arguments != null) {
+                    method.invoke(field, arguments.toArray());
+                } else {
+                    method.invoke(field, new Object[0]);
+                }
             } else {
-                return((boolean)method.invoke(arguments));
+                if(arguments != null) {
+                    method.invoke(null, arguments.toArray());
+                } else {
+                    method.invoke(null, new Object[0]);
+                }
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return false;

@@ -21,7 +21,13 @@ public class UiTag {
     public Class getClassname() { return clazz; }
     public ArrayList<Object> getArguments() { return arguments; }
     public Object invokeMethod() {
-        try { return(method.invoke(arguments)); } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        try {
+            if(arguments != null) {
+                return(method.invoke(null, arguments.toArray()));
+            } else {
+                return(method.invoke(null, new Object[0]));
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return null;
     }
 

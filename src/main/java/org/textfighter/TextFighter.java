@@ -52,6 +52,8 @@ public class TextFighter {
     public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     public static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
 
+    public static boolean needsSaving = false;
+
     public static void addToOutput(String msg) {
         output+=msg + "\n";
     }
@@ -74,8 +76,8 @@ public class TextFighter {
         intpackDir = new File(packDir + "/intpacks");
         //Place where all the enemyPacks are
         enemypackDir = new File(packDir + "/enemypacks");
-        if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
         loadConfig();
+        if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
         if (!savesDir.exists()) {
             Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
@@ -144,6 +146,7 @@ public class TextFighter {
                 directory = interfaceDir;
                 parsingPack = false;
             }
+            Display.displayProgressMessage("Interfaces loaded.");
             return true;
         } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file. It was likely deleted after the program got all files in the interfaces directory."); return false; }
         catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces. The permissions are likely set to be unreadable."); return false;}
@@ -338,6 +341,7 @@ public class TextFighter {
                     directory = locationDir;
                     parsingPack = false;
                 }
+                Display.displayProgressMessage("Locations loaded.");
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -597,6 +601,7 @@ public class TextFighter {
                     directory=enemyDir;
                     parsingPack=false;
                 }
+                Display.displayProgressMessage("Enemies loaded.");
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -633,18 +638,6 @@ public class TextFighter {
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default tags."); }
             }
-            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
-            if(parsingPack) {
-                File omissionFile = new File(directory + "/" + "omittags.txt");
-                if(omissionFile.exists()) {
-                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            namesToBeOmitted.add(line);
-                        }
-                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the interfacepack's omittags file (The file does exist). Continuing normally..."); }
-                }
-            }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
                 JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
@@ -661,7 +654,7 @@ public class TextFighter {
                     String fieldclassname = (String)obj.get("fieldname");
                     String fieldname = (String)obj.get("field");
                     if(tag == null) { Display.displayPackError("A tag does not have a name. Omitting tag..."); continue; }
-                    if(usedNames.contains(tag) || namesToBeOmitted.contains(tag)) { continue; }
+                    if(usedNames.contains(tag)) { continue; }
                     if(classname == null || methodname == null) { Display.displayPackError("Tag '" + tag + "' does not have a class or method. Omitting tag..."); continue; }
                     Method method;
                     Class clazz;
@@ -699,6 +692,7 @@ public class TextFighter {
                     parsingPack = false;
                     file = tagFile;
                 }
+                Display.displayProgressMessage("Interface tags loaded.");
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -708,6 +702,7 @@ public class TextFighter {
     public static void loadConfig() {
         if(configDir.exists()) {
             Display.loadDesiredColors();
+            Display.displayProgressMessage("Config loaded.");
         } else {
             Display.displayWarning("The config directory could not be found!\n Creating new config directory.");
             configDir.mkdirs();
@@ -822,7 +817,7 @@ public class TextFighter {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
-    public static boolean saveGame(String name) {
+    public static boolean saveGame() {
         //Rewrite the whole file
 
         File gameFile = new File(savesDir.getPath() + "/" + gameName + ".json");
@@ -1070,16 +1065,18 @@ public class TextFighter {
         //Display the interface for the user
         Display.displayInterfaces(player.getLocation());
         invokePlayerInput();
-        System.out.println("\u001b[H \u001b[2J");
+        Display.clearScreen();
         Display.displayPreviousCommand();
         if(output != null) {
             Display.displayOutputMessage(output);
         }
         output="";
+        if(needsSaving && currentSaveFile != null) { System.out.println("e");saveGame(); }
+        needsSaving = false;
     }
 
     public static void main(String[] args) {
-        System.out.println("\u001b[H\u001b[2J");
+        Display.clearScreen();
         if (!loadResources()) {
             Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);

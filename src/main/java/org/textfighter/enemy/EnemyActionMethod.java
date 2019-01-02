@@ -28,9 +28,17 @@ public class EnemyActionMethod {
     public boolean invokeMethod() {
         try {
             if(field != null) {
-                method.invoke(field, arguments.toArray());
+                if(arguments != null) {
+                    method.invoke(field, arguments.toArray());
+                } else {
+                    method.invoke(field, new Object[0]);
+                }
             } else {
-                method.invoke(arguments.toArray());
+                if(arguments != null) {
+                    method.invoke(null, arguments.toArray());
+                } else {
+                    method.invoke(null, new Object[0]);
+                }
             }
             return true;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
