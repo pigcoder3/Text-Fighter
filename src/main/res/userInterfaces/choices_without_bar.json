@@ -1,0 +1,11 @@
+{
+
+    "name" : "choices_without_bar",
+
+    "interface" : [
+
+        "<choices>"
+
+    ]
+
+}
