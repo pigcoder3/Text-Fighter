@@ -61,21 +61,21 @@ public class TextFighter {
     public static boolean loadResources() {
         Display.displayProgressMessage("Loading the resources...");
         resourcesDir = new File("../res");
-        tagFile = new File(resourcesDir + "/tags/tags.json");
-        interfaceDir = new File(resourcesDir + "/userinterfaces/");
-        locationDir = new File(resourcesDir + "/locations");
+        tagFile = new File(resourcesDir.getPath() + "/tags/tags.json");
+        interfaceDir = new File(resourcesDir.getPath() + "/userInterfaces/");
+        locationDir = new File(resourcesDir.getPath() + "/locations");
         savesDir = new File("../../../saves");
         enemyDir = new File(resourcesDir + "/enemies");
         configDir = new File("../../../config");
         //Place where desired packs are defined
-        packFile = new File(configDir + "/packs");
+        packFile = new File(configDir.getPath() + "/packs");
         packDir = new File("../../../packs");
         //Place where all the modPacks are
-        modpackDir = new File(packDir + "/modpacks");
+        modpackDir = new File(packDir.getPath() + "/modpacks");
         //Place where all the interfacePacks are
-        intpackDir = new File(packDir + "/intpacks");
+        intpackDir = new File(packDir.getPath() + "/intpacks");
         //Place where all the enemyPacks are
-        enemypackDir = new File(packDir + "/enemypacks");
+        enemypackDir = new File(packDir.getPath() + "/enemypacks");
         loadConfig();
         if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
         if (!savesDir.exists()) {
@@ -88,6 +88,7 @@ public class TextFighter {
     public static boolean loadInterfaces() {
         try {
             Display.displayProgressMessage("Loading the interfaces...");
+            if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory.") return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
             File directory = interfaceDir;
@@ -129,19 +130,21 @@ public class TextFighter {
 
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
-                for (String f : directory.list()) {
-                    if(f.equals("tags.json")) { continue; }
-                    if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                    JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
-                    JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
-                    String name = (String)interfaceFile.get("name");
-                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                    if(name == null) { Display.displayPackError("An interface does not have a name. Omitting..."); continue; }
-                    if(interfaceArray == null) { Display.displayPackError("Interface '" + name + "' does not have an interface array. Omitting..."); continue; }
-                    String uiString = "";
-                    for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
-                    Display.interfaces.add(new UserInterface(name, uiString));
-                    usedNames.add(name);
+                if(directory.list() != null) {
+                    for (String f : directory.list()) {
+                        if(f.equals("tags.json")) { continue; }
+                        if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
+                        JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
+                        JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
+                        String name = (String)interfaceFile.get("name");
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
+                        if(name == null) { Display.displayPackError("An interface does not have a name. Omitting..."); continue; }
+                        if(interfaceArray == null) { Display.displayPackError("Interface '" + name + "' does not have an interface array. Omitting..."); continue; }
+                        String uiString = "";
+                        for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
+                        Display.interfaces.add(new UserInterface(name, uiString));
+                        usedNames.add(name);
+                    }
                 }
                 directory = interfaceDir;
                 parsingPack = false;
@@ -155,6 +158,7 @@ public class TextFighter {
     public static boolean loadLocations() {
         try {
             Display.displayProgressMessage("Loading the locations...");
+            if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory.") return false;}
             //Search through the locations directory for all locations
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
@@ -195,151 +199,153 @@ public class TextFighter {
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
-                for (String f : directory.list()) {
-                    if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                    JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
-                    JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
-                    String name = (String)locationFile.get("name");
-                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                    if(name == null) { Display.displayPackError("A location does not have a name."); continue; }
-                    if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces."); continue; }
-                    ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
-                    boolean hasChoiceInterface = false;
-                    for(int i=0; i<interfaceJArray.size(); i++) {
-                        for(UserInterface ui : Display.interfaces) {
-                            if(ui.getName().equals(interfaceJArray.get(i))) {
-                                if(interfaceJArray.get(i).equals("choices")) {
-                                    hasChoiceInterface = true;
+                if(directory.list() != null) {
+                    for (String f : directory.list()) {
+                        if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
+                        JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
+                        JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
+                        String name = (String)locationFile.get("name");
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
+                        if(name == null) { Display.displayPackError("A location does not have a name."); continue; }
+                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces."); continue; }
+                        ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+                        boolean hasChoiceInterface = false;
+                        for(int i=0; i<interfaceJArray.size(); i++) {
+                            for(UserInterface ui : Display.interfaces) {
+                                if(ui.getName().equals(interfaceJArray.get(i))) {
+                                    if(((String)interfaceJArray.get(i)).contains("choices")) {
+                                        hasChoiceInterface = true;
+                                    }
+                                    interfaces.add(ui);
                                 }
-                                interfaces.add(ui);
                             }
                         }
-                    }
-                    if(!hasChoiceInterface) {
-                        Display.displayWarning("The location '" + name + "' does not have the choices interface. Omitting...");
-                        continue;
-                    }
-                    JSONArray choiceArray = (JSONArray)locationFile.get("choices");
-                    ArrayList<Choice> choices = new ArrayList<Choice>();
-                    //Loads the choices from the file
-                    if(choiceArray != null && choiceArray.size() > 0) {
-                        for (int i=0; i<choiceArray.size(); i++) {
-                            JSONObject obj = (JSONObject)choiceArray.get(i);
-                            JSONArray methodJSONArray = (JSONArray)obj.get("methods");
-                            ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
-                            String choicename = (String)obj.get("name");
-                            String desc = (String)obj.get("description");
-                            String usage = (String)obj.get("usage");
-                            if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
-                            //Gets the methods
-                            if(methodJSONArray != null && methodJSONArray.size() > 0) {
-                                for(int p=0; p<methodJSONArray.size(); p++) {
-                                    JSONObject o = (JSONObject)methodJSONArray.get(p);
-                                    ArrayList<String> arguments = (JSONArray)o.get("arguments");
-                                    ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
-                                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                                    String method = (String)o.get("method");
-                                    String clazz = (String)o.get("class");
-                                    String field = (String)o.get("field");
-                                    if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString.size() > 0) {
-                                        for (int g=0; g<argumentTypesString.size(); g++) {
-                                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                argumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
-                                                argumentTypes.add(String.class);
-                                            }
-                                        }
-                                    }
-                                    methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field));
-                                }
-                            } else { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' does not have any methods. Omitting..."); continue; }
-                            //Gets requirements if there is any
-                            JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
-                            ArrayList<Requirement> requirements = new ArrayList<Requirement>();
-                            if(requirementsJArray != null && requirementsJArray.size() > 0) {
-                                for(int p=0; p<requirementsJArray.size(); p++) {
-                                    JSONObject ro = (JSONObject)requirementsJArray.get(p);
-                                    ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
-                                    ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                                    String method = (String)ro.get("method");
-                                    String clazz = (String)ro.get("class");
-                                    String field = (String)ro.get("field");
-                                    if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString != null && argumentTypesString.size() > 0) {
-                                        for (int g=0; g<argumentTypesString.size(); g++) {
-                                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                argumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                argumentTypes.add(String.class);
-                                            }
-                                        }
-                                    }
-                                    requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
-                                }
-                            }
-                            choices.add(new Choice(choicename, desc, usage, methods, requirements));
+                        if(!hasChoiceInterface) {
+                            Display.displayWarning("The location '" + name + "' does not have a choices interface. Omitting...");
+                            continue;
                         }
-                    } else { Display.displayPackError("The location '" + name + "' does not have any choices. Omitting..."); }
-                    //Premethods - Run when the player enters the location
-                    JSONArray premethodJArray = (JSONArray)locationFile.get("premethods");
-                    ArrayList<Premethod> premethods = new ArrayList<Premethod>();
-                    if(premethodJArray != null && premethodJArray.size() > 0) {
-                        for(int p=0; p<premethodJArray.size(); p++) {
-                            JSONObject obj = (JSONObject)premethodJArray.get(p);
-                            ArrayList<String> arguments = (JSONArray)obj.get("arguments");
-                            ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
-                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                            String method = (String)obj.get("method");
-                            String clazz = (String)obj.get("class");
-                            String field = (String)obj.get("field");
-                            if(method == null || clazz == null) { Display.displayPackError("A premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
-                            //Fields can be null (Which just means the method does not act upon a field)
-                            if(argumentTypesString.size() > 0) {
-                                for (int g=0; g<argumentTypesString.size(); g++) {
-                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(int.class);
-                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
-                                        argumentTypes.add(String.class);
-                                    }
-                                }
-                            }
-                            //Gets the requirements of the premethods
-                            JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
-                            ArrayList<Requirement> requirements = new ArrayList<Requirement>();
-                            if(requirementsJArray != null && requirementsJArray.size() > 0) {
-                                for(int g=0; g<requirementsJArray.size(); g++) {
-                                    JSONObject ro = (JSONObject)requirementsJArray.get(g);
-                                    ArrayList<String> requirementArguments = (JSONArray)ro.get("requirementArgs");
-                                    ArrayList<String> requirementArgumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                                    ArrayList<Class> requirementArgumentTypes = new ArrayList<Class>();
-                                    String requirementMethod = (String)ro.get("method");
-                                    String requirementClazz = (String)ro.get("class");
-                                    String requirementField = (String)ro.get("field");
-                                    if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
-                                        for (int h=0; h<requirementArgumentTypesString.size(); h++) {
-                                            if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                requirementArgumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                requirementArgumentTypes.add(String.class);
+                        JSONArray choiceArray = (JSONArray)locationFile.get("choices");
+                        ArrayList<Choice> choices = new ArrayList<Choice>();
+                        //Loads the choices from the file
+                        if(choiceArray != null && choiceArray.size() > 0) {
+                            for (int i=0; i<choiceArray.size(); i++) {
+                                JSONObject obj = (JSONObject)choiceArray.get(i);
+                                JSONArray methodJSONArray = (JSONArray)obj.get("methods");
+                                ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
+                                String choicename = (String)obj.get("name");
+                                String desc = (String)obj.get("description");
+                                String usage = (String)obj.get("usage");
+                                if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
+                                //Gets the methods
+                                if(methodJSONArray != null && methodJSONArray.size() > 0) {
+                                    for(int p=0; p<methodJSONArray.size(); p++) {
+                                        JSONObject o = (JSONObject)methodJSONArray.get(p);
+                                        ArrayList<String> arguments = (JSONArray)o.get("arguments");
+                                        ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
+                                        ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                        String method = (String)o.get("method");
+                                        String clazz = (String)o.get("class");
+                                        String field = (String)o.get("field");
+                                        if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString.size() > 0) {
+                                            for (int g=0; g<argumentTypesString.size(); g++) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                                    argumentTypes.add(String.class);
+                                                }
                                             }
                                         }
+                                        methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field));
                                     }
-                                    requirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
+                                } else { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' does not have any methods. Omitting..."); continue; }
+                                //Gets requirements if there is any
+                                JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
+                                ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                                if(requirementsJArray != null && requirementsJArray.size() > 0) {
+                                    for(int p=0; p<requirementsJArray.size(); p++) {
+                                        JSONObject ro = (JSONObject)requirementsJArray.get(p);
+                                        ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                                        ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                        ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                        String method = (String)ro.get("method");
+                                        String clazz = (String)ro.get("class");
+                                        String field = (String)ro.get("field");
+                                        if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString != null && argumentTypesString.size() > 0) {
+                                            for (int g=0; g<argumentTypesString.size(); g++) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(String.class);
+                                                }
+                                            }
+                                        }
+                                        requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
+                                    }
                                 }
+                                choices.add(new Choice(choicename, desc, usage, methods, requirements));
                             }
-                            premethods.add(new Premethod(method, arguments, argumentTypes, clazz, field, requirements));
+                        } else { Display.displayPackError("The location '" + name + "' does not have any choices. Omitting..."); }
+                        //Premethods - Run when the player enters the location
+                        JSONArray premethodJArray = (JSONArray)locationFile.get("premethods");
+                        ArrayList<Premethod> premethods = new ArrayList<Premethod>();
+                        if(premethodJArray != null && premethodJArray.size() > 0) {
+                            for(int p=0; p<premethodJArray.size(); p++) {
+                                JSONObject obj = (JSONObject)premethodJArray.get(p);
+                                ArrayList<String> arguments = (JSONArray)obj.get("arguments");
+                                ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+                                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                String method = (String)obj.get("method");
+                                String clazz = (String)obj.get("class");
+                                String field = (String)obj.get("field");
+                                if(method == null || clazz == null) { Display.displayPackError("A premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                //Fields can be null (Which just means the method does not act upon a field)
+                                if(argumentTypesString.size() > 0) {
+                                    for (int g=0; g<argumentTypesString.size(); g++) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                            argumentTypes.add(String.class);
+                                        }
+                                    }
+                                }
+                                //Gets the requirements of the premethods
+                                JSONArray requirementsJArray = (JSONArray)obj.get("requirements");
+                                ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                                if(requirementsJArray != null && requirementsJArray.size() > 0) {
+                                    for(int g=0; g<requirementsJArray.size(); g++) {
+                                        JSONObject ro = (JSONObject)requirementsJArray.get(g);
+                                        ArrayList<String> requirementArguments = (JSONArray)ro.get("requirementArgs");
+                                        ArrayList<String> requirementArgumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                        ArrayList<Class> requirementArgumentTypes = new ArrayList<Class>();
+                                        String requirementMethod = (String)ro.get("method");
+                                        String requirementClazz = (String)ro.get("class");
+                                        String requirementField = (String)ro.get("field");
+                                        if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
+                                            for (int h=0; h<requirementArgumentTypesString.size(); h++) {
+                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(String.class);
+                                                }
+                                            }
+                                        }
+                                        requirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
+                                    }
+                                }
+                                premethods.add(new Premethod(method, arguments, argumentTypes, clazz, field, requirements));
+                            }
                         }
+                        locations.add(new Location(name, interfaces, choices, premethods));
+                        usedNames.add(name);
+                        directory = locationDir;
+                        parsingPack = false;
                     }
-                    locations.add(new Location(name, interfaces, choices, premethods));
-                    usedNames.add(name);
-                    directory = locationDir;
-                    parsingPack = false;
                 }
                 Display.displayProgressMessage("Locations loaded.");
             }
@@ -349,6 +355,7 @@ public class TextFighter {
     public static boolean loadEnemies() {
         try {
             Display.displayProgressMessage("Loading the enemies...");
+            if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory.") return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
             File directory = enemyDir;
@@ -388,218 +395,220 @@ public class TextFighter {
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; }
-                for(String f : directory.list()) {
-                    JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
-                    JSONArray requirementsJArray = (JSONArray)enemyFile.get("requirements");
-                    ArrayList<Requirement> requirements = new ArrayList<Requirement>();
-                    String name = (String)enemyFile.get("name");
-                    int health = Integer.parseInt((String)enemyFile.get("health"));
-                    int strength = Integer.parseInt((String)enemyFile.get("strength"));
-                    int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
-                    boolean finalBoss = Boolean.getBoolean((String)enemyFile.get("finalBoss"));
-                    if(name == null) { Display.displayPackError("An enemy does not have a name. Omitting..."); continue; }
-                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                    if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
-                    if(levelRequirement < 1) { levelRequirement=1; }
-                    if(requirements != null && requirementsJArray.size() > 0) {
-                        for(int p=0; p<requirementsJArray.size(); p++) {
-                            JSONObject ro = (JSONObject)requirementsJArray.get(p);
-                            ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
-                            ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                            String method = (String)ro.get("method");
-                            String clazz = (String)ro.get("class");
-                            String field = (String)ro.get("field");
-                            if(method == null || clazz == null) { Display.displayPackError("A requirement in enemy '" + name + "' does not have a class or field. Omitting..."); continue; }
-                            //Fields can be null (Which just means the method does not act upon a field)
-                            if(argumentTypesString.size() > 0) {
-                                for (int g=0; g<argumentTypesString.size(); g++) {
-                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(int.class);
-                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(String.class);
-                                    }
-                                }
-                            }
-                        requirements.add(new Requirement(name, Enemy.class, method, arguments, argumentTypes, clazz, field));
-                        }
-                    }
-                    //postmethods - Run when the enemy dies
-                    JSONArray postMethodsJArray = (JSONArray)enemyFile.get("postMethods");
-                    ArrayList<Postmethod> postMethods = new ArrayList<Postmethod>();
-                    if(postMethodsJArray != null && postMethodsJArray.size() > 0) {
-                        for(int p=0; p<postMethodsJArray.size(); p++) {
-                            JSONObject obj = (JSONObject)postMethodsJArray.get(p);
-                            ArrayList<String> arguments = (JSONArray)obj.get("arguments");
-                            ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
-                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                            String method = (String)obj.get("method");
-                            String clazz = (String)obj.get("class");
-                            String field = (String)obj.get("field");
-                            if(method == null || clazz == null) { Display.displayPackError("A postmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
-                            //Fields can be null (Which just means the method does not act upon a field)
-                            if(argumentTypesString.size() > 0) {
-                                for (int g=0; g<argumentTypesString.size(); g++) {
-                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(int.class);
-                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
-                                        argumentTypes.add(String.class);
-                                    }
-                                }
-                            }
-                            //Gets the requirements of the postMethods
-                            JSONArray postRequirementsJArray = (JSONArray)obj.get("requirements");
-                            ArrayList<Requirement> postRequirements = new ArrayList<Requirement>();
-                            if(postRequirementsJArray != null && postRequirementsJArray.size() > 0) {
-                                for(int g=0; g<postRequirementsJArray.size(); g++) {
-                                    JSONObject ro = (JSONObject)requirementsJArray.get(g);
-                                    ArrayList<String> requirementArguments = (JSONArray)ro.get("requirementArgs");
-                                    ArrayList<String> requirementArgumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                                    ArrayList<Class> requirementArgumentTypes = new ArrayList<Class>();
-                                    String requirementMethod = (String)ro.get("method");
-                                    String requirementClazz = (String)ro.get("class");
-                                    String requirementField = (String)ro.get("field");
-                                    if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a postmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
-                                        for (int h=0; h<requirementArgumentTypesString.size(); h++) {
-                                            if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                requirementArgumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                requirementArgumentTypes.add(String.class);
-                                            }
+                if(directory.list() != null) {
+                    for(String f : directory.list()) {
+                        JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
+                        JSONArray requirementsJArray = (JSONArray)enemyFile.get("requirements");
+                        ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+                        String name = (String)enemyFile.get("name");
+                        int health = Integer.parseInt((String)enemyFile.get("health"));
+                        int strength = Integer.parseInt((String)enemyFile.get("strength"));
+                        int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
+                        boolean finalBoss = Boolean.getBoolean((String)enemyFile.get("finalBoss"));
+                        if(name == null) { Display.displayPackError("An enemy does not have a name. Omitting..."); continue; }
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
+                        if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
+                        if(levelRequirement < 1) { levelRequirement=1; }
+                        if(requirements != null && requirementsJArray.size() > 0) {
+                            for(int p=0; p<requirementsJArray.size(); p++) {
+                                JSONObject ro = (JSONObject)requirementsJArray.get(p);
+                                ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                                ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                String method = (String)ro.get("method");
+                                String clazz = (String)ro.get("class");
+                                String field = (String)ro.get("field");
+                                if(method == null || clazz == null) { Display.displayPackError("A requirement in enemy '" + name + "' does not have a class or field. Omitting..."); continue; }
+                                //Fields can be null (Which just means the method does not act upon a field)
+                                if(argumentTypesString.size() > 0) {
+                                    for (int g=0; g<argumentTypesString.size(); g++) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(String.class);
                                         }
                                     }
-                                    postRequirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
                                 }
+                            requirements.add(new Requirement(name, Enemy.class, method, arguments, argumentTypes, clazz, field));
                             }
-                            postMethods.add(new Postmethod(method, arguments, argumentTypes, clazz, field, requirements));
                         }
-                    }
-                    JSONArray rewardMethodsJArray = (JSONArray)enemyFile.get("rewardMethods");
-                    ArrayList<Reward> rewardMethods = new ArrayList<Reward>();
-                    if(rewardMethodsJArray != null && rewardMethodsJArray.size() > 0) {
-                        for(int p=0; p<rewardMethodsJArray.size(); p++) {
-                            JSONObject obj = (JSONObject)rewardMethodsJArray.get(p);
-                            ArrayList<String> arguments = (JSONArray)obj.get("arguments");
-                            ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
-                            ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                            String method = (String)obj.get("method");
-                            String clazz = (String)obj.get("class");
-                            String field = (String)obj.get("field");
-                            String fieldclass = (String)obj.get("fieldclass");
-                            int chance = Integer.parseInt((String)obj.get("chance"));
-                            String rewardItem = (String)obj.get("rewardItem");
-                            if(method == null || clazz == null) { Display.displayPackError("A rewardmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
-                            if(chance == 0) { Display.displayPackError("A chance in a rewardmethod of enemy '" + name + "' is 0. Omitting..."); continue; }
-                            if(rewardItem == null) { Display.displayPackError("A rewardItem of enemy '" + name + "' is null. Omitting...."); continue; }
-                            //Fields can be null (Which just means the method does not act upon a field)
-                            if(argumentTypesString.size() > 0) {
-                                for (int g=0; g<argumentTypesString.size(); g++) {
-                                    if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                        argumentTypes.add(int.class);
-                                    } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
-                                        argumentTypes.add(String.class);
-                                    }
-                                }
-                            }
-                            //Gets the requirements of the rewardMethods
-                            JSONArray rewardRequirementsJArray = (JSONArray)obj.get("rewards");
-                            ArrayList<Requirement> rewardRequirements = new ArrayList<Requirement>();
-                            if(rewardRequirementsJArray != null && rewardRequirementsJArray.size() > 0) {
-                                for(int g=0; g<rewardRequirementsJArray.size(); g++) {
-                                    JSONObject ro = (JSONObject)requirementsJArray.get(g);
-                                    ArrayList<String> requirementArguments = (JSONArray)ro.get("requirementArgs");
-                                    ArrayList<String> requirementArgumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                                    ArrayList<Class> requirementArgumentTypes = new ArrayList<Class>();
-                                    String requirementMethod = (String)ro.get("method");
-                                    String requirementClazz = (String)ro.get("class");
-                                    String requirementField = (String)ro.get("field");
-                                    if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a rewardmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
-                                        for (int h=0; h<requirementArgumentTypesString.size(); h++) {
-                                            if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                requirementArgumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                requirementArgumentTypes.add(String.class);
-                                            }
+                        //postmethods - Run when the enemy dies
+                        JSONArray postMethodsJArray = (JSONArray)enemyFile.get("postMethods");
+                        ArrayList<Postmethod> postMethods = new ArrayList<Postmethod>();
+                        if(postMethodsJArray != null && postMethodsJArray.size() > 0) {
+                            for(int p=0; p<postMethodsJArray.size(); p++) {
+                                JSONObject obj = (JSONObject)postMethodsJArray.get(p);
+                                ArrayList<String> arguments = (JSONArray)obj.get("arguments");
+                                ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+                                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                String method = (String)obj.get("method");
+                                String clazz = (String)obj.get("class");
+                                String field = (String)obj.get("field");
+                                if(method == null || clazz == null) { Display.displayPackError("A postmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
+                                //Fields can be null (Which just means the method does not act upon a field)
+                                if(argumentTypesString.size() > 0) {
+                                    for (int g=0; g<argumentTypesString.size(); g++) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                            argumentTypes.add(String.class);
                                         }
                                     }
-                                    requirements.add(new Requirement(null, Postmethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
                                 }
-                            }
-                            rewardMethods.add(new Reward(method, arguments, argumentTypes, clazz, field, fieldclass, requirements, chance, rewardItem));
-                        }
-                    }
-                    JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
-                    ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
-                    if(enemyActionArray != null && enemyActionArray.size() > 0) {
-                        for (int i=0; i<enemyActionArray.size(); i++) {
-                            JSONObject obj = (JSONObject)enemyActionArray.get(i);
-                            JSONArray methodJSONArray = (JSONArray)obj.get("methods");
-                            ArrayList<EnemyActionMethod> methods = new ArrayList<EnemyActionMethod>();
-                            String choicename = (String)obj.get("name");
-                            String desc = (String)obj.get("description");
-                            String usage = (String)obj.get("usage");
-                            if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
-                            //Gets the methods
-                            if(methodJSONArray != null && methodJSONArray.size() > 0) {
-                                for(int p=0; p<methodJSONArray.size(); p++) {
-                                    JSONObject o = (JSONObject)methodJSONArray.get(p);
-                                    ArrayList<String> arguments = (JSONArray)o.get("arguments");
-                                    ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
-                                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                                    String method = (String)o.get("method");
-                                    String clazz = (String)o.get("class");
-                                    String field = (String)o.get("field");
-                                    if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString.size() > 0) {
-                                        for (int g=0; g<argumentTypesString.size(); g++) {
-                                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                argumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
-                                                argumentTypes.add(String.class);
+                                //Gets the requirements of the postMethods
+                                JSONArray postRequirementsJArray = (JSONArray)obj.get("requirements");
+                                ArrayList<Requirement> postRequirements = new ArrayList<Requirement>();
+                                if(postRequirementsJArray != null && postRequirementsJArray.size() > 0) {
+                                    for(int g=0; g<postRequirementsJArray.size(); g++) {
+                                        JSONObject ro = (JSONObject)requirementsJArray.get(g);
+                                        ArrayList<String> requirementArguments = (JSONArray)ro.get("requirementArgs");
+                                        ArrayList<String> requirementArgumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                        ArrayList<Class> requirementArgumentTypes = new ArrayList<Class>();
+                                        String requirementMethod = (String)ro.get("method");
+                                        String requirementClazz = (String)ro.get("class");
+                                        String requirementField = (String)ro.get("field");
+                                        if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a postmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
+                                            for (int h=0; h<requirementArgumentTypesString.size(); h++) {
+                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(String.class);
+                                                }
                                             }
                                         }
+                                        postRequirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
                                     }
-                                    methods.add(new EnemyActionMethod(method, arguments, argumentTypes, clazz, field));
                                 }
-                            } else { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' does not have any methods. Omitting..."); continue; }
-                            //Gets requirements if there is any
-                            JSONArray enemyActionRequirementsJArray = (JSONArray)obj.get("requirements");
-                            ArrayList<Requirement> enemyActionRequirements = new ArrayList<Requirement>();
-                            if(requirementsJArray != null && enemyActionRequirementsJArray.size() > 0) {
-                                for(int p=0; p<enemyActionRequirementsJArray.size(); p++) {
-                                    JSONObject ro = (JSONObject)enemyActionRequirementsJArray.get(p);
-                                    ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
-                                    ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
-                                    ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                                    String method = (String)ro.get("method");
-                                    String clazz = (String)ro.get("class");
-                                    String field = (String)ro.get("field");
-                                    if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
-                                    //Fields can be null (Which just means the method does not act upon a field)
-                                    if(argumentTypesString != null && argumentTypesString.size() > 0) {
-                                        for (int g=0; g<argumentTypesString.size(); g++) {
-                                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                argumentTypes.add(int.class);
-                                            } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                argumentTypes.add(String.class);
-                                            }
+                                postMethods.add(new Postmethod(method, arguments, argumentTypes, clazz, field, requirements));
+                            }
+                        }
+                        JSONArray rewardMethodsJArray = (JSONArray)enemyFile.get("rewardMethods");
+                        ArrayList<Reward> rewardMethods = new ArrayList<Reward>();
+                        if(rewardMethodsJArray != null && rewardMethodsJArray.size() > 0) {
+                            for(int p=0; p<rewardMethodsJArray.size(); p++) {
+                                JSONObject obj = (JSONObject)rewardMethodsJArray.get(p);
+                                ArrayList<String> arguments = (JSONArray)obj.get("arguments");
+                                ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+                                ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                String method = (String)obj.get("method");
+                                String clazz = (String)obj.get("class");
+                                String field = (String)obj.get("field");
+                                String fieldclass = (String)obj.get("fieldclass");
+                                int chance = Integer.parseInt((String)obj.get("chance"));
+                                String rewardItem = (String)obj.get("rewardItem");
+                                if(method == null || clazz == null) { Display.displayPackError("A rewardmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
+                                if(chance == 0) { Display.displayPackError("A chance in a rewardmethod of enemy '" + name + "' is 0. Omitting..."); continue; }
+                                if(rewardItem == null) { Display.displayPackError("A rewardItem of enemy '" + name + "' is null. Omitting...."); continue; }
+                                //Fields can be null (Which just means the method does not act upon a field)
+                                if(argumentTypesString.size() > 0) {
+                                    for (int g=0; g<argumentTypesString.size(); g++) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                            argumentTypes.add(String.class);
                                         }
                                     }
-                                    requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
                                 }
+                                //Gets the requirements of the rewardMethods
+                                JSONArray rewardRequirementsJArray = (JSONArray)obj.get("rewards");
+                                ArrayList<Requirement> rewardRequirements = new ArrayList<Requirement>();
+                                if(rewardRequirementsJArray != null && rewardRequirementsJArray.size() > 0) {
+                                    for(int g=0; g<rewardRequirementsJArray.size(); g++) {
+                                        JSONObject ro = (JSONObject)requirementsJArray.get(g);
+                                        ArrayList<String> requirementArguments = (JSONArray)ro.get("requirementArgs");
+                                        ArrayList<String> requirementArgumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                        ArrayList<Class> requirementArgumentTypes = new ArrayList<Class>();
+                                        String requirementMethod = (String)ro.get("method");
+                                        String requirementClazz = (String)ro.get("class");
+                                        String requirementField = (String)ro.get("field");
+                                        if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a rewardmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
+                                            for (int h=0; h<requirementArgumentTypesString.size(); h++) {
+                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(String.class);
+                                                }
+                                            }
+                                        }
+                                        requirements.add(new Requirement(null, Postmethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
+                                    }
+                                }
+                                rewardMethods.add(new Reward(method, arguments, argumentTypes, clazz, field, fieldclass, requirements, chance, rewardItem));
                             }
-                            enemyActions.add(new EnemyAction(methods, requirements));
                         }
+                        JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
+                        ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
+                        if(enemyActionArray != null && enemyActionArray.size() > 0) {
+                            for (int i=0; i<enemyActionArray.size(); i++) {
+                                JSONObject obj = (JSONObject)enemyActionArray.get(i);
+                                JSONArray methodJSONArray = (JSONArray)obj.get("methods");
+                                ArrayList<EnemyActionMethod> methods = new ArrayList<EnemyActionMethod>();
+                                String choicename = (String)obj.get("name");
+                                String desc = (String)obj.get("description");
+                                String usage = (String)obj.get("usage");
+                                if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
+                                //Gets the methods
+                                if(methodJSONArray != null && methodJSONArray.size() > 0) {
+                                    for(int p=0; p<methodJSONArray.size(); p++) {
+                                        JSONObject o = (JSONObject)methodJSONArray.get(p);
+                                        ArrayList<String> arguments = (JSONArray)o.get("arguments");
+                                        ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
+                                        ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                        String method = (String)o.get("method");
+                                        String clazz = (String)o.get("class");
+                                        String field = (String)o.get("field");
+                                        if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString.size() > 0) {
+                                            for (int g=0; g<argumentTypesString.size(); g++) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                                    argumentTypes.add(String.class);
+                                                }
+                                            }
+                                        }
+                                        methods.add(new EnemyActionMethod(method, arguments, argumentTypes, clazz, field));
+                                    }
+                                } else { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' does not have any methods. Omitting..."); continue; }
+                                //Gets requirements if there is any
+                                JSONArray enemyActionRequirementsJArray = (JSONArray)obj.get("requirements");
+                                ArrayList<Requirement> enemyActionRequirements = new ArrayList<Requirement>();
+                                if(requirementsJArray != null && enemyActionRequirementsJArray.size() > 0) {
+                                    for(int p=0; p<enemyActionRequirementsJArray.size(); p++) {
+                                        JSONObject ro = (JSONObject)enemyActionRequirementsJArray.get(p);
+                                        ArrayList<String> arguments = (JSONArray)ro.get("requirementArgs");
+                                        ArrayList<String> argumentTypesString = (JSONArray)ro.get("requirementArgTypes");
+                                        ArrayList<Class> argumentTypes = new ArrayList<Class>();
+                                        String method = (String)ro.get("method");
+                                        String clazz = (String)ro.get("class");
+                                        String field = (String)ro.get("field");
+                                        if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
+                                        //Fields can be null (Which just means the method does not act upon a field)
+                                        if(argumentTypesString != null && argumentTypesString.size() > 0) {
+                                            for (int g=0; g<argumentTypesString.size(); g++) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(String.class);
+                                                }
+                                            }
+                                        }
+                                        requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
+                                    }
+                                }
+                                enemyActions.add(new EnemyAction(methods, requirements));
+                            }
+                        }
+                        enemies.add(new Enemy(name, health, strength, levelRequirement, requirements, finalBoss, postMethods, rewardMethods, enemyActions));
+                        usedNames.add(name);
+                        directory=enemyDir;
+                        parsingPack=false;
                     }
-                    enemies.add(new Enemy(name, health, strength, levelRequirement, requirements, finalBoss, postMethods, rewardMethods, enemyActions));
-                    usedNames.add(name);
-                    directory=enemyDir;
-                    parsingPack=false;
                 }
                 Display.displayProgressMessage("Enemies loaded.");
             }
@@ -609,6 +618,7 @@ public class TextFighter {
     public static boolean loadParsingTags() {
         try {
             Display.displayProgressMessage("Loading the parsing tags...");
+            if(!tagFile.exists()) { Display.displayError("Could not find the default tags file.") return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
             File directory = intpackDir;
