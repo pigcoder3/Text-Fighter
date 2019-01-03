@@ -15,4 +15,5 @@ cp -r src/main/res bin/main/ || exit
 cd bin/main/java || exit
 java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter
 cd ../../../ || exit
+pwd
 rm sourceFiles.txt
