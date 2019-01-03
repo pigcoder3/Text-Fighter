@@ -88,7 +88,7 @@ public class TextFighter {
     public static boolean loadInterfaces() {
         try {
             Display.displayProgressMessage("Loading the interfaces...");
-            if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory.") return false;}
+            if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
             File directory = interfaceDir;
@@ -158,7 +158,7 @@ public class TextFighter {
     public static boolean loadLocations() {
         try {
             Display.displayProgressMessage("Loading the locations...");
-            if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory.") return false;}
+            if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
             //Search through the locations directory for all locations
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
@@ -355,7 +355,7 @@ public class TextFighter {
     public static boolean loadEnemies() {
         try {
             Display.displayProgressMessage("Loading the enemies...");
-            if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory.") return false;}
+            if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
             File directory = enemyDir;
@@ -618,7 +618,7 @@ public class TextFighter {
     public static boolean loadParsingTags() {
         try {
             Display.displayProgressMessage("Loading the parsing tags...");
-            if(!tagFile.exists()) { Display.displayError("Could not find the default tags file.") return false;}
+            if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             boolean parsingPack = false;
             File directory = intpackDir;
