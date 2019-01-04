@@ -56,7 +56,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "arguments" : ["menu"],
+                    "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 }
@@ -70,19 +70,6 @@
                     "class" : "org.textfighter.TextFighter"
                 }
             ]
-        },
-        {
-            "name" : "quit",
-            "description" : "Quits the game",
-            "methods" : [
-                {
-                    "method" : "exitGame",
-                    "arguments" : ["0"],
-                    "argumentTypes" : ["1"],
-                    "class" : "org.textfighter.TextFighter"
-                }
-            ],
-            "usage" : "quit"
         }
     ]
 }

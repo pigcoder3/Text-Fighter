@@ -290,7 +290,7 @@ public class TextFighter {
                                 }
                                 choices.add(new Choice(choicename, desc, usage, methods, requirements));
                             }
-                        } else { Display.displayPackError("The location '" + name + "' does not have any choices. Omitting..."); }
+                        }
                         //Premethods - Run when the player enters the location
                         JSONArray premethodJArray = (JSONArray)locationFile.get("premethods");
                         ArrayList<Premethod> premethods = new ArrayList<Premethod>();
@@ -343,6 +343,11 @@ public class TextFighter {
                                 premethods.add(new Premethod(method, arguments, argumentTypes, clazz, field, requirements));
                             }
                         }
+                        //Adds the quit choice to all locations
+                        ArrayList<String> arguments = new ArrayList<String>(); arguments.add("0");
+                        ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
+                        ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod("exitGame", arguments, argumentTypes, "org.textfighter.TextFighter", null));
+                        choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                         locations.add(new Location(name, interfaces, choices, premethods));
                         usedNames.add(name);
                         directory = locationDir;
@@ -382,7 +387,7 @@ public class TextFighter {
                             Display.displayWarning("Enemy pack '" + value + "' not found. Falling back to default enemies.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the enemypack's file (The file does exist). Falling back to default locations."); }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the enemypack's file (The file does exist). Falling back to default enemies."); }
             }
             ArrayList<String> namesToBeOmitted = new ArrayList<String>();
             if(parsingPack) {
@@ -1023,7 +1028,6 @@ public class TextFighter {
     }
 
     public static boolean fight(String en) {
-        System.out.println(en);
         boolean validEnemy = false;
         for(int i=0; i<enemies.size(); i++) {
             if (enemies.get(i).getName().equals(en)) {
@@ -1040,6 +1044,7 @@ public class TextFighter {
                 currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
                 player.setCanBeHurtThisTurn(true);
                 if(player.getHp() < 1) {
+                    movePlayer("dead");
                     player.setAlive(false);
                     player.setInFight(false);
                 } else if(currentEnemy.getHp() < 1) {
@@ -1086,7 +1091,7 @@ public class TextFighter {
             Display.displayOutputMessage(output);
         }
         output="";
-        if(needsSaving && currentSaveFile != null) { System.out.println("e");saveGame(); }
+        if(needsSaving && currentSaveFile != null) { saveGame(); }
         needsSaving = false;
     }
 

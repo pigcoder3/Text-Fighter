@@ -1,6 +1,7 @@
 package org.textfighter.location;
 
 import org.textfighter.display.Display;
+import org.textfighter.TextFighter;
 
 import java.lang.reflect.*;
 

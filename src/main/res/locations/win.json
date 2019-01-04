@@ -24,19 +24,6 @@
             "usage" : "playAgain"
         },
         {
-            "name" : "quit",
-            "description" : "Quits the game",
-            "methods" : [
-                {
-                    "method" : "exitGame",
-                    "arguments" : ["0"],
-                    "argumentTypes" : ["1"],
-                    "class" : "org.textfighter.TextFighter"
-                }
-            ],
-            "usage" : "quit"
-        },
-        {
             "name" : "continue",
             "description" : "Moves you to the menu, and allows you to continue with this save! Deaths no longer delete your save.",
             "methods" : [

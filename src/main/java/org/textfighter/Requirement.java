@@ -33,15 +33,15 @@ public class Requirement {
         try {
             if(field != null) {
                 if(arguments != null) {
-                    method.invoke(field, arguments.toArray());
+                    return((boolean)method.invoke(field, arguments.toArray()));
                 } else {
-                    method.invoke(field, new Object[0]);
+                    return((boolean)method.invoke(field, new Object[0]));
                 }
             } else {
                 if(arguments != null) {
-                    method.invoke(null, arguments.toArray());
+                    return((boolean)method.invoke(null, arguments.toArray()));
                 } else {
-                    method.invoke(null, new Object[0]);
+                    return((boolean)method.invoke(null, new Object[0]));
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }

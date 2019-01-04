@@ -4,7 +4,7 @@
 
     "interfaces" : [
 
-        "menu",
+        "inGameMenu",
         "choices_without_bar"
 
     ],
@@ -23,19 +23,6 @@
                 }
             ],
             "usage" : "fight"
-        },
-        {
-            "name" : "quit",
-            "description" : "Quits the game",
-            "methods" : [
-                {
-                    "method" : "exitGame",
-                    "arguments" : ["0"],
-                    "argumentTypes" : ["1"],
-                    "class" : "org.textfighter.TextFighter"
-                }
-            ],
-            "usage" : "quit"
         }
 
     ]

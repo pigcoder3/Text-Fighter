@@ -72,10 +72,14 @@ public class Choice {
             }
         }
         //Filters out invalid requirements
-        for(int i=0; i<requirements.size(); i++) {
-            if(!requirements.get(i).getValid()) {
-                this.requirements.add(requirements.get(i));
+        if(requirements != null) {
+            for(int i=0; i<requirements.size(); i++) {
+                if(!requirements.get(i).getValid()) {
+                    this.requirements.add(requirements.get(i));
+                }
             }
+        } else {
+            requirements = new ArrayList<Requirement>();
         }
         this.output = "- " + name + " \t:|: " + usage + " \t:|: " + description;
     }
