@@ -10,7 +10,7 @@ import java.io.*;
 
 public class Display {
 
-    public static final String PROMPT = " > ";
+    public static String promptString = " > ";
 
     public static final String[] colorNames = {"black", "red", "green", "yellow", "blue", "purple", "cyan", "white"};
 
@@ -46,7 +46,7 @@ public class Display {
     }
 
     public static void displayPackError(String e) {
-        // Displays pack errors
+        // Displays errors that deal with packs
         if(ANSI) {
             System.err.println(error + "[PackError] " + e + RESET);
         } else {
@@ -64,7 +64,7 @@ public class Display {
     }
 
     public static void displayOutputMessage(String e) {
-        // Used for displaying messages that explain loading resource progess or something like that
+        // Used for displaying messages that explain loading resource progess
         if(ANSI) {
             System.err.println(output + e + RESET);
         } else {
@@ -94,13 +94,14 @@ public class Display {
     public static void promptUser() {
         //Displays the prompt
         if(ANSI) {
-            System.out.print(prompt + PROMPT + RESET);
+            System.out.print(prompt + promptString + RESET);
         } else {
-            System.out.print(PROMPT);
+            System.out.print(promptString);
         }
     }
 
     public static void resetColors() {
+        //Resets the colors for err and out
         if(ANSI) {
             System.out.println(RESET);
             System.err.println(RESET);
@@ -124,16 +125,15 @@ public class Display {
 
     public static void loadDesiredColors() {
         displayProgressMessage("Loading the display colors...");
-        File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/displayColors");
+        File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/display");
         if(!displayColors.exists()) { return; }
         try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {
             String line;
-
             boolean colorWarning = true;
-
             while ((line = br.readLine()) != null) {
                 String key = "";
                 String value = "";
+                if(key == null || value == null) { continue; }
                 if(line.indexOf("=") != -1) {
                     key = line.substring(0,line.indexOf("="));
                     value = line.substring(line.indexOf("=")+1,line.length()).trim();
@@ -182,18 +182,20 @@ public class Display {
                             warning = colorCodes[i];
                         }
                     }
+                } else if(key.equals("promptString")) {
+                    promptString = value;
                 }
             }
             displayProgressMessage("Display colors loaded.");
             if(ANSI && colorWarning) {
-                displayWarning("Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the displayColors config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the displayColors config file.");
+                displayWarning("Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the display config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
             } else if(!ANSI && colorWarning) {
-                displayWarning("Display colors are disabled. If you wish to enable them,\n remove 'disable' from the displayColors config file.\nIf you wish to disable this message,\nIf you wish to disable this message,\ntype 'disableWarning' in the displayColors config file.");
+                displayWarning("Display colors are disabled. If you wish to enable them,\n remove 'disable' from the display config file.\nIf you wish to disable this message,\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            displayError("Unable to read the colors in the displayColors (The file does exist).");
+            displayError("Unable to read the colors in the display (The file does exist).");
         }
     }
 }

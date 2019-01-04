@@ -15,5 +15,3 @@ if [ "$1" = "-c" ]; then
 fi
 cd bin/main/java || exit
 java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter
-cd ../../../ || exit
-rm sourceFiles.txt

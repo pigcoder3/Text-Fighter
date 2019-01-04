@@ -4,4 +4,3 @@ output=green
 prompt=green
 previousCommand=green
 warning=yellow
-disableWarning
