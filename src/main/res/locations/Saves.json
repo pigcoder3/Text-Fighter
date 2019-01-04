@@ -70,7 +70,7 @@
                     "class" : "org.textfighter.TextFighter"
                 }
             ]
-        }
+        },
         {
             "name" : "quit",
             "description" : "Quits the game",
@@ -83,6 +83,6 @@
                 }
             ],
             "usage" : "quit"
-        },
+        }
     ]
 }

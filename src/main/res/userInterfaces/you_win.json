@@ -1,0 +1,13 @@
+{
+
+    "name" : "you_win",
+
+    "interface" : [
+
+        "                 YOU WIN!"
+        "             Congradulations!"
+        "           You won TextFighter!"
+
+    ]
+
+}

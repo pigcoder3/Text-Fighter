@@ -887,6 +887,7 @@ public class TextFighter {
     public static ArrayList<String> getSaves() { saves = getSaveFiles(); return saves; }
     public static void addSave(String name) { saves.add(name); }
     public static void removeSave(String name) {
+        if(name.equals(currentSaveFile.getName()) && player.getGameBeaten()) { return; }
         boolean saveExists = false;
         for(int i=0;i<saves.size();i++){
             if(saves.get(i).equals(name)) {
@@ -1060,7 +1061,7 @@ public class TextFighter {
     }
 
     public static void playerWins() {
-
+        movePlayer("Win");
     }
 
     public static void exitGame(int code) {
