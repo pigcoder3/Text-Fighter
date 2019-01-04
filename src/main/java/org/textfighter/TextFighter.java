@@ -98,6 +98,7 @@ public class TextFighter {
                     while ((line = br.readLine()) != null) {
                         String key = "";
                         String value = "";
+                        if(key == null && value == null) { continue; }
                         if(line.indexOf("=") != -1) {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
@@ -169,6 +170,7 @@ public class TextFighter {
                     while ((line = br.readLine()) != null) {
                         String key = " ";
                         String value = " ";
+                        if(key == null && value == null) { continue; }
                         if(line.indexOf("=") != -1) {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
@@ -365,6 +367,7 @@ public class TextFighter {
                     while ((line = br.readLine()) != null) {
                         String key = "";
                         String value = "";
+                        if(key == null && value == null) { continue; }
                         if(line.indexOf("=") != -1) {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
@@ -629,6 +632,7 @@ public class TextFighter {
                     while ((line = br.readLine()) != null) {
                         String key = " ";
                         String value = " ";
+                        if(key == null && value == null) { continue; }
                         if(line.indexOf("=") != -1) {
                             key = line.substring(0,line.indexOf("="));
                             value = line.substring(line.indexOf("=")+1,line.length()).trim();
