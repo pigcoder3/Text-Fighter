@@ -84,10 +84,12 @@ public class EnemyActionMethod {
             valid = false;
         }
         for (int i=0; i<arguments.size(); i++) {
-            if(this.method.getParameterTypes()[i].equals(int.class)) {
+            if(argumentTypes.get(i).equals(int.class)) {
                 this.arguments.add(Integer.parseInt(arguments.get(i)));
-            } else if (this.method.getParameterTypes()[i].equals(String.class)) {
+            } else if (argumentTypes.get(i).equals(String.class)) {
                 this.arguments.add(arguments.get(i));
+            } else if (argumentTypes.get(i).equals(Boolean.class)) {
+                this.arguments.add(Boolean.parseBoolean(arguments.get(i)));
             }
         }
     }

@@ -19,6 +19,14 @@
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : ["saves"],
                     "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "setGameBeaten",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["false"],
+                    "argumentTypes" : ["2"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.Player"
                 }
             ],
             "usage" : "playAgain"
@@ -27,6 +35,12 @@
             "name" : "continue",
             "description" : "Moves you to the menu, and allows you to continue with this save! Deaths no longer delete your save.",
             "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"]
+                },
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.TextFighter",

@@ -73,10 +73,14 @@ public class Location {
 
         for(int i=0; i<allChoices.size(); i++) {
             for(ChoiceMethod m : allChoices.get(i).getMethods()) {
-                for(Class c : m.getMethod().getParameterTypes()) {
-                    if(c != int.class && c != String.class) {
-                        allChoices.remove(i);
-                        Display.displayPackError("The choice '" + allChoices.get(i).getName() + "' in location '" + name + "' had a method that took arguments other than String and int. Omitting choice...");
+                if(m != null && m.getMethod() != null && m.getMethod().getParameterTypes() != null) {
+                    if(m.getMethod().getParameterTypes() != null) {
+                        for(Class c : m.getMethod().getParameterTypes()) {
+                            if(c != int.class && c != String.class && c != boolean.class) {
+                                allChoices.remove(i);
+                                Display.displayPackError("The choice '" + allChoices.get(i).getName() + "' in location '" + name + "' had a method that took arguments other than String and int. Omitting choice...");
+                            }
+                        }
                     }
                 }
             }

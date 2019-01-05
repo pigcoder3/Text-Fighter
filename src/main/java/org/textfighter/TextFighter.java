@@ -248,18 +248,21 @@ public class TextFighter {
                                         String method = (String)o.get("method");
                                         String clazz = (String)o.get("class");
                                         String field = (String)o.get("field");
+                                        String fieldclass = (String)o.get("fieldclass");
                                         if(method == null || clazz == null) { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString.size() > 0) {
                                             for (int g=0; g<argumentTypesString.size(); g++) {
-                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                    argumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                                     argumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    argumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
-                                        methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field));
+                                        methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass));
                                     }
                                 } else { Display.displayPackError("The choice '" + choicename + "' in location '" + name + "' does not have any methods. Omitting..."); continue; }
                                 //Gets requirements if there is any
@@ -274,18 +277,21 @@ public class TextFighter {
                                         String method = (String)ro.get("method");
                                         String clazz = (String)ro.get("class");
                                         String field = (String)ro.get("field");
+                                        String fieldclass = (String)ro.get("fieldclass");
                                         if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString != null && argumentTypesString.size() > 0) {
                                             for (int g=0; g<argumentTypesString.size(); g++) {
-                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                    argumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                                     argumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    argumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
-                                        requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
+                                        requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field, fieldclass));
                                     }
                                 }
                                 choices.add(new Choice(choicename, desc, usage, methods, requirements));
@@ -303,14 +309,17 @@ public class TextFighter {
                                 String method = (String)obj.get("method");
                                 String clazz = (String)obj.get("class");
                                 String field = (String)obj.get("field");
+                                String fieldclass = (String)obj.get("fieldclass");
                                 if(method == null || clazz == null) { Display.displayPackError("A premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
                                 //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
-                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                            argumentTypes.add(int.class);
-                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                             argumentTypes.add(String.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                            argumentTypes.add(boolean.class);
                                         }
                                     }
                                 }
@@ -326,27 +335,30 @@ public class TextFighter {
                                         String requirementMethod = (String)ro.get("method");
                                         String requirementClazz = (String)ro.get("class");
                                         String requirementField = (String)ro.get("field");
+                                        String requirementFieldclass = (String)ro.get("fieldclass");
                                         if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a premethod in location '" + name + "' has no class or method. Omitting..."); continue; }
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
                                             for (int h=0; h<requirementArgumentTypesString.size(); h++) {
-                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                    requirementArgumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 0) {
                                                     requirementArgumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    requirementArgumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
-                                        requirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
+                                        requirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField, requirementFieldclass));
                                     }
                                 }
-                                premethods.add(new Premethod(method, arguments, argumentTypes, clazz, field, requirements));
+                                premethods.add(new Premethod(method, arguments, argumentTypes, clazz, field, fieldclass, requirements));
                             }
                         }
                         //Adds the quit choice to all locations
                         ArrayList<String> arguments = new ArrayList<String>(); arguments.add("0");
                         ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
-                        ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod("exitGame", arguments, argumentTypes, "org.textfighter.TextFighter", null));
+                        ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod("exitGame", arguments, argumentTypes, "org.textfighter.TextFighter", null, null));
                         choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                         locations.add(new Location(name, interfaces, choices, premethods));
                         usedNames.add(name);
@@ -426,24 +438,28 @@ public class TextFighter {
                                 String method = (String)ro.get("method");
                                 String clazz = (String)ro.get("class");
                                 String field = (String)ro.get("field");
+                                String fieldclass = (String)ro.get("fieldclass");
                                 if(method == null || clazz == null) { Display.displayPackError("A requirement in enemy '" + name + "' does not have a class or field. Omitting..."); continue; }
                                 //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
-                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                            argumentTypes.add(int.class);
-                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                             argumentTypes.add(String.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                            argumentTypes.add(boolean.class);
                                         }
                                     }
                                 }
-                            requirements.add(new Requirement(name, Enemy.class, method, arguments, argumentTypes, clazz, field));
+                            requirements.add(new Requirement(name, Enemy.class, method, arguments, argumentTypes, clazz, field, fieldclass));
                             }
                         }
                         //postmethods - Run when the enemy dies
                         JSONArray postMethodsJArray = (JSONArray)enemyFile.get("postMethods");
                         ArrayList<Postmethod> postMethods = new ArrayList<Postmethod>();
                         if(postMethodsJArray != null && postMethodsJArray.size() > 0) {
+                            System.out.println("e");
                             for(int p=0; p<postMethodsJArray.size(); p++) {
                                 JSONObject obj = (JSONObject)postMethodsJArray.get(p);
                                 ArrayList<String> arguments = (JSONArray)obj.get("arguments");
@@ -452,14 +468,17 @@ public class TextFighter {
                                 String method = (String)obj.get("method");
                                 String clazz = (String)obj.get("class");
                                 String field = (String)obj.get("field");
+                                String fieldclass = (String)obj.get("fieldclass");
                                 if(method == null || clazz == null) { Display.displayPackError("A postmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
                                 //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
-                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                            argumentTypes.add(int.class);
-                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                             argumentTypes.add(String.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                            argumentTypes.add(boolean.class);
                                         }
                                     }
                                 }
@@ -475,21 +494,24 @@ public class TextFighter {
                                         String requirementMethod = (String)ro.get("method");
                                         String requirementClazz = (String)ro.get("class");
                                         String requirementField = (String)ro.get("field");
+                                        String requirementFieldclass = (String)ro.get("fieldclass");
                                         if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a postmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
                                             for (int h=0; h<requirementArgumentTypesString.size(); h++) {
-                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                    requirementArgumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 0) {
                                                     requirementArgumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    requirementArgumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
-                                        postRequirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
+                                        postRequirements.add(new Requirement(null, Premethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField, requirementFieldclass));
                                     }
                                 }
-                                postMethods.add(new Postmethod(method, arguments, argumentTypes, clazz, field, requirements));
+                                postMethods.add(new Postmethod(method, arguments, argumentTypes, clazz, field, fieldclass, requirements));
                             }
                         }
                         JSONArray rewardMethodsJArray = (JSONArray)enemyFile.get("rewardMethods");
@@ -512,10 +534,12 @@ public class TextFighter {
                                 //Fields can be null (Which just means the method does not act upon a field)
                                 if(argumentTypesString.size() > 0) {
                                     for (int g=0; g<argumentTypesString.size(); g++) {
-                                        if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                            argumentTypes.add(int.class);
-                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                        if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                             argumentTypes.add(String.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                            argumentTypes.add(int.class);
+                                        } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                            argumentTypes.add(boolean.class);
                                         }
                                     }
                                 }
@@ -531,18 +555,21 @@ public class TextFighter {
                                         String requirementMethod = (String)ro.get("method");
                                         String requirementClazz = (String)ro.get("class");
                                         String requirementField = (String)ro.get("field");
+                                        String requirementFieldclass = (String)ro.get("fieldclass");
                                         if(requirementMethod == null || requirementClazz == null) { Display.displayPackError("A requirement of a rewardmethod in enemy '" + name + "' has no class or method. Omitting..."); continue; }
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString != null && requirementArgumentTypesString.size() > 0) {
                                             for (int h=0; h<requirementArgumentTypesString.size(); h++) {
-                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
-                                                    requirementArgumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 0) {
                                                     requirementArgumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(requirementArgumentTypesString.get(g)) == 1) {
+                                                    requirementArgumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    requirementArgumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
-                                        requirements.add(new Requirement(null, Postmethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField));
+                                        requirements.add(new Requirement(null, Postmethod.class, requirementMethod, requirementArguments, requirementArgumentTypes, requirementClazz, requirementField, requirementFieldclass));
                                     }
                                 }
                                 rewardMethods.add(new Reward(method, arguments, argumentTypes, clazz, field, fieldclass, requirements, chance, rewardItem));
@@ -573,10 +600,12 @@ public class TextFighter {
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString.size() > 0) {
                                             for (int g=0; g<argumentTypesString.size(); g++) {
-                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                    argumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                                     argumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    argumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
@@ -595,18 +624,21 @@ public class TextFighter {
                                         String method = (String)ro.get("method");
                                         String clazz = (String)ro.get("class");
                                         String field = (String)ro.get("field");
+                                        String fieldclass = (String)ro.get("fieldclass");
                                         if(method == null || clazz == null) { Display.displayPackError("A requirement of choice '" + choicename + "' in location '" + name + "' has no class or method. Omitting..."); continue; }
                                         //Fields can be null (Which just means the method does not act upon a field)
                                         if(argumentTypesString != null && argumentTypesString.size() > 0) {
                                             for (int g=0; g<argumentTypesString.size(); g++) {
-                                                if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                                    argumentTypes.add(int.class);
-                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                                     argumentTypes.add(String.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
+                                                    argumentTypes.add(int.class);
+                                                } else if(Integer.parseInt(argumentTypesString.get(g)) == 2) {
+                                                    argumentTypes.add(boolean.class);
                                                 }
                                             }
                                         }
-                                        requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field));
+                                        requirements.add(new Requirement(choicename, Choice.class, method, arguments, argumentTypes, clazz, field, fieldclass));
                                     }
                                 }
                                 enemyActions.add(new EnemyAction(methods, requirements));
@@ -685,10 +717,12 @@ public class TextFighter {
                     }
                     if(arguments.size() > 0) {
                         for (int g=0; g<argumentTypesString.size(); g++) {
-                            if(Integer.parseInt(argumentTypesString.get(g)) == 1) {
-                                argumentTypes.add(int.class);
-                            } else {
+                            if(Integer.parseInt(argumentTypesString.get(g)) == 0) {
                                 argumentTypes.add(String.class);
+                            } else if (Integer.parseInt(argumentTypesString.get(g)) == 1){
+                                argumentTypes.add(int.class);
+                            } else if (Integer.parseInt(argumentTypesString.get(g)) == 2){
+                                argumentTypes.add(boolean.class);
                             }
                         }
                     }
@@ -1069,17 +1103,9 @@ public class TextFighter {
         movePlayer("Win");
     }
 
-    public static void exitGame(int code) {
-        System.exit(code);
-    }
+    public static void exitGame(int code) { System.exit(code); }
 
-    public static boolean gameLoaded() {
-        if(currentSaveFile != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public static boolean gameLoaded() { return (currentSaveFile != null); }
 
     public static void playGame() {
         //Display the interface for the user
@@ -1103,7 +1129,7 @@ public class TextFighter {
         }
         getSaveFiles();
         player.setLocation("saves");
-        while(player.getAlive()) {
+        while(player.getAlive() || player.getGameBeaten()) {
             playGame();
         }
     }

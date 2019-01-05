@@ -16,6 +16,7 @@ public class Postmethod {
     private Class clazz;
     private Method method;
     private Field field;
+    private Class fieldclass;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     private boolean valid = true;
@@ -45,18 +46,30 @@ public class Postmethod {
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
     }
 
-    public Postmethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, ArrayList<Requirement> requirements) {
+    public Postmethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass, ArrayList<Requirement> requirements) {
+
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This postmethod has an invalid class. Omitting..."); valid = false; }
+        if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid fieldclass. Omitting..."); valid = false; return;} }
         try {
-            if(field != null && !field.isEmpty()) {
+            if(field != null) {
                 this.field = this.clazz.getField(field);
             }
         } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This postmethod has an invalid field. Omitting..."); valid = false; return; }
-        if(argumentTypes != null ) {
-            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ Display.displayPackError("This postmethod has an invalid method. Omitting..."); valid = false; return; }
-        } else {
-            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ Display.displayPackError("This postmethod has an invalid method. Omitting..."); valid = false; return; }
-        }
+        try {
+            if(argumentTypes != null ) {
+                if(field != null || this.fieldclass != null) {
+                    this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                } else {
+                    this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                }
+            } else {
+                if(field != null || fieldclass != null) {
+                    this.method = this.fieldclass.getMethod(method);
+                } else {
+                    this.method = this.clazz.getMethod(method);
+                }
+            }
+        } catch (NoSuchMethodException e){ Display.displayPackError("This postmethod has an invalid method. Omitting..."); valid = false; return; }
 
         if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); valid = false; return;}
         if(arguments != null) {

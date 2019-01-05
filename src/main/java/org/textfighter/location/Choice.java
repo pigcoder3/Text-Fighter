@@ -40,7 +40,9 @@ public class Choice {
                     if(m.getArgumentTypes().get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
                     } else if(m.getArgumentTypes().get(i).equals(String.class)) {
-                        methodArgs.add(inputArgs.get(inputArgsIndex)); //This is adding it to the originalArguments arrayList somehow. It makes no sense that it could
+                        methodArgs.add(inputArgs.get(inputArgsIndex));
+                    } else if(m.getArgumentTypes().get(i).equals(Boolean.class)) {
+                        methodArgs.add(Boolean.parseBoolean(inputArgs.get(inputArgsIndex)));
                     }
                     inputArgsIndex++;
                 } else {

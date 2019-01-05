@@ -14,6 +14,7 @@ public class ChoiceMethod {
     private Method method;
     private Class clazz;
     private Field field;
+    private Class fieldclass;
     private int originalArgumentsNumber;
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
@@ -38,6 +39,7 @@ public class ChoiceMethod {
             try {
                 if(field != null) {
                     if(arguments != null) {
+
                         method.invoke(field, arguments.toArray());
                     } else {
                         method.invoke(field, new Object[0]);
@@ -63,36 +65,40 @@ public class ChoiceMethod {
         }
     }
 
-    public ChoiceMethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
+    public ChoiceMethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass) {
 
         this.argumentTypes = argumentTypes;
         //Creates the method
-        try {
-            this.clazz = Class.forName(clazz);
-        } catch (ClassNotFoundException e){
-            Display.displayPackError("This choice has an invalid class. Omitting...");
-            valid = false;
-        }
+        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This choice has an invalid class. Omitting..."); valid = false;}
+        if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid fieldclass. Omitting..."); valid = false; return;} }
         try {
             if(field != null) {
                 this.field = this.clazz.getField(field);
             }
-        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This choice has an invalid method. Omitting..."); valid = false; }
+        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This choice has an invalid field. Omitting..."); valid = false; return; }
         try {
-            if(argumentTypes != null) {
-                this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+            if(argumentTypes != null ) {
+                if(field != null && this.fieldclass != null) {
+                    this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                } else {
+                    this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                }
             } else {
-                this.method = this.clazz.getMethod(method);
+                if(field != null && fieldclass != null) {
+                    this.method = this.fieldclass.getMethod(method);
+                } else {
+                    this.method = this.clazz.getMethod(method);
+                }
             }
-        } catch (NoSuchMethodException e){
-            Display.displayPackError("This choice has an invalid method. Omitting...");
-            valid = false;
-        }
+        } catch (NoSuchMethodException e){ Display.displayPackError("This choice method has an invalid method. Omitting..."); valid = false; return; }
+
         for (int i=0; i<arguments.size(); i++) {
-            if(this.method.getParameterTypes()[i].equals(int.class)) {
+            if(argumentTypes.get(i).equals(int.class)) {
                 this.arguments.add(Integer.parseInt(arguments.get(i)));
-            } else if (this.method.getParameterTypes()[i].equals(String.class)) {
+            } else if (argumentTypes.get(i).equals(String.class)) {
                 this.arguments.add(arguments.get(i));
+            } else if (argumentTypes.get(i).equals(boolean.class)) {
+                this.arguments.add(Boolean.parseBoolean(arguments.get(i)));
             }
         }
         this.originalArgumentsNumber = this.arguments.size();

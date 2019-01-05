@@ -20,6 +20,7 @@ public class Requirement {
     private Class clazz;
     private Method method;
     private Field field;
+    private Class fieldclass;
 
     private boolean valid;
 
@@ -48,10 +49,11 @@ public class Requirement {
         return false;
     }
 
-    public Requirement(String parentName, Class parentType, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
+    public Requirement(String parentName, Class parentType, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass) {
         this.parentName = parentName;
         this.parentType = parentType;
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid class. Parent: " + parentName + ". Omitting..."); valid = false; }
+        if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid fieldclass. Parent: " + parentName + ". Omitting..."); valid = false; } }
         try {
             if(field != null && !field.isEmpty()) {
                 this.field = this.clazz.getField(field);
