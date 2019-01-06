@@ -171,7 +171,10 @@ public class TextFighter {
                 if(type.equals(ChoiceMethod.class)) {
                     methods.add(new ChoiceMethod(method, arguments, clazz, field, fieldclass));
                 } else if(type.equals(Requirement.class)) {
-                    methods.add(new Requirement(parentName, parentType, method, arguments, clazz, field, fieldclass));
+                    String neededBooleanString = (String)o.get("neededBoolean");
+                    boolean neededBoolean = Boolean.parseBoolean(neededBooleanString);
+                    if(neededBooleanString == null) { neededBoolean = true; }
+                    methods.add(new Requirement(parentName, parentType, method, arguments, clazz, field, fieldclass, neededBoolean));
                 } else if(type.equals(Postmethod.class)) {
                     methods.add(new Postmethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), null, Postmethod.class)));
                 } else if(type.equals(Premethod.class)) {

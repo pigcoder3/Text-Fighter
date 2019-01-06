@@ -21,6 +21,7 @@ public class Requirement {
     private Method method;
     private Field field;
     private Class fieldclass;
+    private boolean neededBoolean;
 
     private boolean valid;
 
@@ -34,22 +35,22 @@ public class Requirement {
         try {
             if(field != null) {
                 if(arguments != null) {
-                    return((boolean)method.invoke(field, arguments.toArray()));
+                    return((boolean)method.invoke(field, arguments.toArray()) == neededBoolean);
                 } else {
-                    return((boolean)method.invoke(field, new Object[0]));
+                    return((boolean)method.invoke(field, new Object[0]) == neededBoolean);
                 }
             } else {
                 if(arguments != null) {
-                    return((boolean)method.invoke(null, arguments.toArray()));
+                    return((boolean)method.invoke(null, arguments.toArray()) == neededBoolean);
                 } else {
-                    return((boolean)method.invoke(null, new Object[0]));
+                    return((boolean)method.invoke(null, new Object[0]) == neededBoolean);
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return false;
     }
 
-    public Requirement(String parentName, Class parentType, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
+    public Requirement(String parentName, Class parentType, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, boolean neededBoolean) {
         this.parentName = parentName;
         this.parentType = parentType;
         this.method = method;
@@ -57,6 +58,7 @@ public class Requirement {
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;
+        this.neededBoolean = neededBoolean;
         /*
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid class. Parent: " + parentName + ". Omitting..."); valid = false; }
         if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid fieldclass. Parent: " + parentName + ". Omitting..."); valid = false; } }
