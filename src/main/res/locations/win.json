@@ -22,11 +22,11 @@
                 },
                 {
                     "method" : "setGameBeaten",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.Player",
                     "arguments" : ["false"],
                     "argumentTypes" : ["2"],
                     "field" : "player",
-                    "fieldclass" : "org.textfighter.Player"
+                    "fieldclass" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "playAgain"

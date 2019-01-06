@@ -137,24 +137,14 @@ public class Enemy implements Cloneable {
         this.output = name + " - " + difficulty;
         if(finalBoss) { output+= " - FINAL BOSS"; }
         //Filters out invalid requirements
-        for(int i=0; i<requirements.size(); i++) {
-            if(!requirements.get(i).getValid()) {
-                this.requirements.add(requirements.get(i));
+        if(requirements != null) {
+            for(int i=0; i<requirements.size(); i++) {
+                if(!requirements.get(i).getValid()) {
+                    this.requirements.add(requirements.get(i));
+                }
             }
         }
         this.finalBoss = finalBoss;
-        //Filters out invalid postMethods
-        for(int i=0; i<postMethods.size(); i++) {
-            if(!postMethods.get(i).getValid()) {
-                this.possiblePostMethods.add(postMethods.get(i));
-            }
-        }
-        //Filters out invalid rewardMethods
-        for(int i=0; i<rewardMethods.size(); i++) {
-            if(!rewardMethods.get(i).getValid()) {
-                this.allRewardMethods.add(rewardMethods.get(i));
-            }
-        }
     }
 
     public Enemy() { }

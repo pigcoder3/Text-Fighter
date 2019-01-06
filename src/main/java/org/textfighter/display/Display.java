@@ -36,6 +36,14 @@ public class Display {
     public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
     public static ArrayList<UserInterface> getInterfaces() { return interfaces; }
 
+    public static void filterTags() {
+        ArrayList<UiTag> tags = new ArrayList<UiTag>();
+        for(int i=0; i<interfaceTags.size(); i++) {
+            if(interfaceTags.get(i).getValid()) { tags.add(interfaceTags.get(i)); }
+        }
+        interfaceTags = tags;
+    }
+
     public static void displayError(String e) {
         // Used for displaying errors such as something could not be found
         if(ANSI) {
@@ -47,10 +55,22 @@ public class Display {
 
     public static void displayPackError(String e) {
         // Displays errors that deal with packs
-        if(ANSI) {
-            System.err.println(error + "[PackError] " + e + RESET);
-        } else {
-            System.err.println("[PackError] " + e);
+        if(TextFighter.testMode) {
+            if(ANSI) {
+                System.err.println(error + "[PackError] " + e + RESET);
+            } else {
+                System.err.println("[PackError] " + e);
+            }
+        }
+    }
+
+    public static void displayPackMessage(String e) {
+        if(TextFighter.testMode) {
+            if(ANSI) {
+                System.err.println(progress + "[PackMessage] " + e + RESET);
+            } else {
+                System.err.println("[PackMessage] " + e);
+            }
         }
     }
 
@@ -186,16 +206,18 @@ public class Display {
                     promptString = value;
                 }
             }
-            displayProgressMessage("Display colors loaded.");
-            if(ANSI && colorWarning) {
-                displayWarning("Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the display config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
-            } else if(!ANSI && colorWarning) {
-                displayWarning("Display colors are disabled. If you wish to enable them,\n remove 'disable' from the display config file.\nIf you wish to disable this message,\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
+            if(!TextFighter.testMode) {
+                displayProgressMessage("Display colors loaded.");
+                if(ANSI && colorWarning) {
+                    displayWarning("Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the display config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
+                } else if(!ANSI && colorWarning) {
+                    displayWarning("Display colors are disabled. If you wish to enable them,\n remove 'disable' from the display config file.\nIf you wish to disable this message,\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
+                }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            displayError("Unable to read the colors in the display (The file does exist).");
+            displayError("Unable to read the colors in the display file. (The file does exist).");
         }
     }
 }

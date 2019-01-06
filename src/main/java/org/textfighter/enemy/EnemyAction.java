@@ -24,16 +24,11 @@ public class EnemyAction {
     }
 
     public EnemyAction(ArrayList<EnemyActionMethod> methods, ArrayList<Requirement> requirement) {
+        this.requirements = requirements;
         //Filters out invalid methods
         for(int i=0; i<methods.size(); i++) {
             if(!methods.get(i).getValid()) {
                 this.methods.add(methods.get(i));
-            }
-        }
-        //Filters out invalid requirements
-        for(int i=0; i<requirements.size(); i++) {
-            if(!requirements.get(i).getValid()) {
-                this.requirements.add(requirements.get(i));
             }
         }
     }

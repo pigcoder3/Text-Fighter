@@ -46,7 +46,14 @@ public class Premethod {
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
     }
 
-    public Premethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass, ArrayList<Requirement> requirements) {
+    public Premethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
+        this.method = method;
+        this.arguments = arguments;
+        this.clazz = clazz;
+        this.field = field;
+        this.fieldclass = fieldclass;
+        this.requirements = requirements;
+        /*
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid class. Omitting..."); valid = false; return;}
         if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid fieldclass. Omitting..."); valid = false; return;} }
         try {
@@ -78,14 +85,6 @@ public class Premethod {
                     this.arguments.add(Integer.parseInt((String)arguments.get(i)));
                 }
             }
-        }
-
-        //Filters out invalid requirements
-        for(int i=0; i<requirements.size(); i++) {
-            if(!requirements.get(i).getValid()) {
-                this.requirements.add(requirements.get(i));
-            }
-        }
+        }*/
     }
-
 }

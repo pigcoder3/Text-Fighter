@@ -49,9 +49,15 @@ public class Requirement {
         return false;
     }
 
-    public Requirement(String parentName, Class parentType, String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass) {
+    public Requirement(String parentName, Class parentType, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
         this.parentName = parentName;
         this.parentType = parentType;
+        this.method = method;
+        this.arguments = arguments;
+        this.clazz = clazz;
+        this.field = field;
+        this.fieldclass = fieldclass;
+        /*
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid class. Parent: " + parentName + ". Omitting..."); valid = false; }
         if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This requirement has an invalid fieldclass. Parent: " + parentName + ". Omitting..."); valid = false; } }
         try {
@@ -59,10 +65,24 @@ public class Requirement {
                 this.field = this.clazz.getField(field);
             }
         } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This requirement has an invalid field. Parent: " + parentName+ ". Omitting..."); valid = false;}
-        if(argumentTypes != null ) {
-            try { this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()])); } catch (NoSuchMethodException e){ Display.displayPackError("This requirement has an invalid method. Parent: " + parentName + ". Omitting..."); valid = false; }
-        } else {
-            try { this.method = this.clazz.getMethod(method); } catch (NoSuchMethodException e){ Display.displayPackError("This requirement has an invalid method. Parent: " + parentName + ". Omitting..."); valid = false;}
+        try {
+            if(argumentTypes != null ) {
+                if(this.field != null) {
+                    this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                } else {
+                    this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                }
+            } else {
+                if(this.field != null) {
+                    this.method = this.fieldclass.getMethod(method);
+                } else {
+                    this.method = this.clazz.getMethod(method);
+                }
+            }
+        } catch (NoSuchMethodException e){
+            Display.displayWarning("This requirement has an invalid method. Omitting...");
+            valid = false;
+            return;
         }
 
         if(this.method.getParameterTypes().length != argumentTypes.size()) {
@@ -78,6 +98,7 @@ public class Requirement {
                 }
             }
         }
+        */
     }
 
 }

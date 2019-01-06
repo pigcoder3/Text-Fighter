@@ -69,37 +69,11 @@ public class Location {
     public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<Premethod> premethods) {
         this.name = name;
         this.interfaces = interfaces;
-        this.allChoices = choices;
 
-        for(int i=0; i<allChoices.size(); i++) {
-            for(ChoiceMethod m : allChoices.get(i).getMethods()) {
-                if(m != null && m.getMethod() != null && m.getMethod().getParameterTypes() != null) {
-                    if(m.getMethod().getParameterTypes() != null) {
-                        for(Class c : m.getMethod().getParameterTypes()) {
-                            if(c != int.class && c != String.class && c != boolean.class) {
-                                allChoices.remove(i);
-                                Display.displayPackError("The choice '" + allChoices.get(i).getName() + "' in location '" + name + "' had a method that took arguments other than String and int. Omitting choice...");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //Filters through preMethods that are not valid
-        for(int i=0; i<premethods.size(); i++) {
-            if(!premethods.get(i).getValid()) {
-                allPreMethods.add(premethods.get(i));
-            }
-        }
-
-        for(int i=0; i<this.allPreMethods.size(); i++) {
-            for(Class c : premethods.get(i).getMethod().getParameterTypes()) {
-                if(c != int.class && c != String.class) {
-                    premethods.remove(i);
-                    Display.displayPackError("A premethod in location '" + name + "' took arguments other than String and int. Omitting method...");
-                }
-            }
+        for(int i=0; i<choices.size(); i++) {
+            if(!choices.get(i).getValid()) {
+                Display.displayPackError("Location '" + name + "' had an invalid choice. Omitting choice...");
+            } else { allChoices.add(choices.get(i)); }
         }
     }
 }

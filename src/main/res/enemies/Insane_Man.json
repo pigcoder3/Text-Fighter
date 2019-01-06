@@ -10,9 +10,9 @@
     "rewardMethods" : [
         {
             "method" : "gainCoins",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.Player",
             "field" : "player",
-            "fieldclass" : "org.textfighter.Player",
+            "fieldclass" : "org.textfighter.TextFighter",
             "arguments" : ["10"],
             "argumentTypes" : ["1"],
             "chance" : "100",
@@ -20,9 +20,9 @@
         },
         {
             "method" : "increaseExperience",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.Player",
             "field" : "player",
-            "fieldclass" : "org.textfighter.Player",
+            "fieldclass" : "org.textfighter.TextFighter",
             "arguments" : ["10"],
             "argumentTypes" : ["1"],
             "chance" : "100",

@@ -15,12 +15,12 @@ import java.util.Random;
 
 public class Reward {
 
-    private ArrayList<Object> arguments;
     private Class clazz;
     private Method method;
     private Field field;
     private Class fieldclass;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+    private ArrayList<Object> arguments;
     //Chance is 1-100
     private int chance;
     private String rewardItem;
@@ -50,49 +50,39 @@ public class Reward {
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); return; }
     }
 
-    public Reward(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass, ArrayList<Requirement> requirements, int chance, String rewardItem) {
+    public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance, String rewardItem) {
+        this.method = method;
+        this.arguments = arguments;
+        this.clazz = clazz;
+        this.field = field;
+        this.fieldclass = fieldclass;
+        this.requirements = requirements;
+        this.chance = chance;
+        this.rewardItem = rewardItem;
+        /*
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayWarning("This reward has an invalid class. Omitting..."); valid = false; return; }
         if(field != null && fieldclass != null) {
             try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e) { Display.displayPackError("No such class '" + fieldclass + "'. Omitting..."); valid = false; return;}
             try { this.field = this.clazz.getDeclaredField(field); } catch (NoSuchFieldException e) { Display.displayPackError("No such field '" + field + "' in class '" + clazz + "'. Omitting..."); valid = false; return;}
         }
-        if(argumentTypes != null ) {
-            if(this.field != null) {
-                try{
+        try {
+            if(argumentTypes != null ) {
+                if(this.field != null) {
                     this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                } catch (NoSuchMethodException e){
-                    e.printStackTrace();
-                    Display.displayWarning("This reward has an invalid method. Omitting...");
-                    valid = false;
-                    return;
-                }
-            } else {
-                try{
+                } else {
                     this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                } catch (NoSuchMethodException e){
-                    Display.displayWarning("This reward has an invalid method. Omitting...");
-                    valid = false;
-                    return;
-                }
-            }
-        } else {
-            if(this.field != null) {
-                try{
-                    this.method = this.fieldclass.getMethod(method);
-                } catch (NoSuchMethodException e){
-                    Display.displayWarning("This reward has an invalid method. Omitting...");
-                    valid = false;
-                    return;
                 }
             } else {
-                try{
+                if(this.field != null) {
+                    this.method = this.fieldclass.getMethod(method);
+                } else {
                     this.method = this.clazz.getMethod(method);
-                } catch (NoSuchMethodException e){
-                    Display.displayWarning("This reward has an invalid method. Omitting...");
-                    valid = false;
-                    return;
                 }
             }
+        } catch (NoSuchMethodException e){
+            Display.displayWarning("This reward has an invalid method. Omitting...");
+            valid = false;
+            return;
         }
         if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); valid = false; return;}
         if(arguments != null) {
@@ -102,10 +92,6 @@ public class Reward {
                     this.arguments.add(Integer.parseInt((String)arguments.get(i)));
                 }
             }
-        }
-        this.requirements = requirements;
-        this.chance = chance;
-        this.rewardItem = rewardItem;
+        }*/
     }
-
 }

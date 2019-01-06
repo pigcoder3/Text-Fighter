@@ -15,6 +15,8 @@ public class Choice {
     private String usage;
     private String output;
 
+    private boolean valid = true;
+
     private ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
@@ -23,6 +25,7 @@ public class Choice {
     public String getUsage() { return usage; }
     public String getOutput() { return output; }
     public void setOutput(String o) { output = o;}
+    public boolean getValid() { return valid; }
     public ArrayList<ChoiceMethod> getMethods() { return methods; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
@@ -67,22 +70,6 @@ public class Choice {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        //Filters out invalid methods
-        for(int i=0; i<methods.size(); i++) {
-            if(!methods.get(i).getValid()) {
-                this.methods.add(methods.get(i));
-            }
-        }
-        //Filters out invalid requirements
-        if(requirements != null) {
-            for(int i=0; i<requirements.size(); i++) {
-                if(!requirements.get(i).getValid()) {
-                    this.requirements.add(requirements.get(i));
-                }
-            }
-        } else {
-            requirements = new ArrayList<Requirement>();
-        }
-        this.output = "- " + name + " \t:|: " + usage + " \t:|: " + description;
+        if(methods == null) { valid = false; return; }
     }
 }

@@ -65,9 +65,17 @@ public class ChoiceMethod {
         }
     }
 
-    public ChoiceMethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field, String fieldclass) {
+    public ChoiceMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
 
         this.argumentTypes = argumentTypes;
+        this.method = method;
+        this.arguments = arguments;
+        this.clazz = clazz;
+        this.field = field;
+        this.fieldclass = fieldclass;
+        this.originalArgumentsNumber = this.arguments.size();
+
+        /*
         //Creates the method
         try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This choice has an invalid class. Omitting..."); valid = false;}
         if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid fieldclass. Omitting..."); valid = false; return;} }
@@ -100,7 +108,7 @@ public class ChoiceMethod {
             } else if (argumentTypes.get(i).equals(boolean.class)) {
                 this.arguments.add(Boolean.parseBoolean(arguments.get(i)));
             }
-        }
-        this.originalArgumentsNumber = this.arguments.size();
+        }*/
+
     }
 }

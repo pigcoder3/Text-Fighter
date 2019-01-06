@@ -2,6 +2,7 @@ package org.textfighter.display;
 
 import org.textfighter.*;
 import org.textfighter.item.Item;
+import org.textfighter.display.Display;
 
 import java.lang.reflect.*;
 
@@ -14,29 +15,45 @@ public class UiTag {
     private String tag;
     private Class clazz;
     private Method method;
+    private Field field;
+    private Class fieldclass;
     private ArrayList<Object> arguments;
+
+    private boolean valid;
 
     public String getTag() { return tag; }
     public Method getFunction() { return method; }
     public Class getClassname() { return clazz; }
     public ArrayList<Object> getArguments() { return arguments; }
+
+    public boolean getValid() { return valid; }
+
     public Object invokeMethod() {
+        if(!valid) { return null; }
         try {
-            if(arguments != null) {
-                return(method.invoke(null, arguments.toArray()));
+            if(field != null) {
+                if(arguments != null) {
+                    return(method.invoke(field, arguments.toArray()));
+                } else {
+                    return(method.invoke(field, new Object[0]));
+                }
             } else {
-                return(method.invoke(null, new Object[0]));
+                if(arguments != null) {
+                    return(method.invoke(null, arguments.toArray()));
+                } else {
+                    return(method.invoke(null, new Object[0]));
+                }
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return null;
     }
 
-    public UiTag(String tag, Method method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, Class classname) {
+    public UiTag(String tag, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
         this.tag = tag;
         this.method = method;
-        this.clazz = classname;
-        if(argumentTypes.size() != arguments.size()) { Display.displayWarning("There is an incorrect number of arguments for this tag's function parameters!");}
-        Class[] parameterTypes = method.getParameterTypes();
-        for (int i=0; i<arguments.size(); i++) { if(parameterTypes[i].equals(int.class)) {this.arguments.add(Integer.parseInt(arguments.get(i)));} }
+        this.clazz = clazz;
+        this.arguments = arguments;
+        this.field = field;
+        this.fieldclass = fieldclass;
     }
 }

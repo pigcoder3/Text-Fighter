@@ -12,8 +12,8 @@ public class EnemyActionMethod {
     private Method method;
     private Class clazz;
     private Field field;
+    private Class fieldclass;
     private ArrayList<Object> arguments = new ArrayList<Object>();
-    private ArrayList<Class> argumentTypes = new ArrayList<Class>();
 
     private boolean valid = true;
 
@@ -21,7 +21,6 @@ public class EnemyActionMethod {
     public Class getClazz() { return clazz; }
     public Field getField() { return field; }
     public ArrayList<Object> getArguments() { return arguments; }
-    public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
 
     public boolean getValid() { return valid; }
 
@@ -45,9 +44,15 @@ public class EnemyActionMethod {
         return false;
     }
 
-    public EnemyActionMethod(String method, ArrayList<String> arguments, ArrayList<Class> argumentTypes, String clazz, String field) {
+    public EnemyActionMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
 
-        this.argumentTypes = argumentTypes;
+        this.method = method;
+        this.arguments = arguments;
+        this.clazz = clazz;
+        this.field = field;
+        this.fieldclass = fieldclass;
+
+        /*
         if((argumentTypes != null && arguments == null) || (argumentTypes == null && arguments != null)) {
             Display.displayPackError("This EnemyActionMethod's arguments array is not the same size as the argumentTypes array. Omitting...");
             valid = false;
@@ -69,10 +74,24 @@ public class EnemyActionMethod {
             valid = false;
         }
         try {
-            if(field != null) {
-                this.field = this.clazz.getField(field);
+            if(argumentTypes != null ) {
+                if(this.field != null) {
+                    this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                } else {
+                    this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                }
+            } else {
+                if(this.field != null) {
+                    this.method = this.fieldclass.getMethod(method);
+                } else {
+                    this.method = this.clazz.getMethod(method);
+                }
             }
-        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This EnemyActionMethod's has an invalid field. Omitting..."); valid = false; }
+        } catch (NoSuchMethodException e){
+            Display.displayWarning("This EnemyActionMethod has an invalid method. Omitting...");
+            valid = false;
+            return;
+        }
         try {
             if(argumentTypes != null) {
                 this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
@@ -92,5 +111,6 @@ public class EnemyActionMethod {
                 this.arguments.add(Boolean.parseBoolean(arguments.get(i)));
             }
         }
+        */
     }
 }
