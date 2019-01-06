@@ -50,7 +50,7 @@ public class Reward {
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); return; }
     }
 
-    public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance, String rewardItem) {
+    public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance) {
         this.method = method;
         this.arguments = arguments;
         this.clazz = clazz;

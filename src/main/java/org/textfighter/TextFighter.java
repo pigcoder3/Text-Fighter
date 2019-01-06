@@ -183,7 +183,7 @@ public class TextFighter {
                     if(chance <= 0.0) { Display.displayPackError("This reward does not have a chance. Omitting..."); continue; }
                     String reward = (String)o.get("reward");
                     if(reward == null)
-                    methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), null, Reward.class), chance, reward));
+                    methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), null, Enemy.class), chance));
                 } else if(type.equals(UiTag.class)) {
                     String tag = (String)o.get("tag");
                     if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); }
@@ -239,7 +239,7 @@ public class TextFighter {
             }
 
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; } else { Display.displayProgressMessage("Loading interfaces from the default pack.");}
+                if(!parsingPack) { num++; Display.displayProgressMessage("Loading interfaces from the default pack."); }
                 if(directory.list() != null) {
                     for (String f : directory.list()) {
                         if(f.equals("tags.json")) { continue; }
@@ -310,7 +310,7 @@ public class TextFighter {
                 }
             }
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; } else { Display.displayProgressMessage("Loading locations from the default pack."); }
+                if(!parsingPack) { num++; Display.displayProgressMessage("Loading locations from the default pack."); }
                 if(directory.list() != null) {
                     for (String f : directory.list()) {
                         if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
@@ -417,7 +417,7 @@ public class TextFighter {
                 }
             }
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; } else { Display.displayProgressMessage("Loading enemies from the default pack."); }
+                if(!parsingPack) { num++; Display.displayProgressMessage("Loading enemies from the default pack."); }
                 if(directory.list() != null) {
                     for(String f : directory.list()) {
                         JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
@@ -485,7 +485,7 @@ public class TextFighter {
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default tags."); }
             }
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; } else { Display.displayProgressMessage("Loading tags from the default pack."); }
+                if(!parsingPack) { num++; Display.displayProgressMessage("Loading parsing tags from the default pack."); }
                 JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
                 JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
                 if(tagsArray == null) { continue; }
