@@ -24,6 +24,8 @@ import org.json.simple.parser.ParseException;
 public class TextFighter {
 
     public static boolean testMode = false;
+    public static boolean parsingPack = false;
+    public static boolean defaultpackmsgs = false;
 
     public static String gameName;
 
@@ -202,7 +204,6 @@ public class TextFighter {
             Display.displayProgressMessage("Loading the interfaces...");
             if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
-            boolean parsingPack = false;
             File directory = interfaceDir;
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
@@ -242,7 +243,7 @@ public class TextFighter {
             }
 
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; Display.displayProgressMessage("Loading interfaces from the default pack."); }
+                if(!parsingPack) { num++; Display.displayPackMessage("Loading interfaces from the default pack."); }
                 if(directory.list() != null) {
                     for (String f : directory.list()) {
                         if(f.equals("tags.json")) { continue; }
@@ -275,7 +276,6 @@ public class TextFighter {
             if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
             //Search through the locations directory for all locations
             ArrayList<String> usedNames = new ArrayList<String>();
-            boolean parsingPack = false;
             File directory = locationDir;
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
@@ -313,7 +313,7 @@ public class TextFighter {
                 }
             }
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; Display.displayProgressMessage("Loading locations from the default pack."); }
+                if(!parsingPack) { num++; Display.displayPackMessage("Loading locations from the default pack."); }
                 if(directory.list() != null) {
                     for (String f : directory.list()) {
                         if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
@@ -382,7 +382,6 @@ public class TextFighter {
             Display.displayProgressMessage("Loading the enemies...");
             if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
-            boolean parsingPack = false;
             File directory = enemyDir;
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
@@ -420,7 +419,7 @@ public class TextFighter {
                 }
             }
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; Display.displayProgressMessage("Loading enemies from the default pack."); }
+                if(!parsingPack) { num++; Display.displayPackMessage("Loading enemies from the default pack."); }
                 if(directory.list() != null) {
                     for(String f : directory.list()) {
                         JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
@@ -458,7 +457,6 @@ public class TextFighter {
             Display.displayProgressMessage("Loading the parsing tags...");
             if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
-            boolean parsingPack = false;
             File directory = intpackDir;
             File file = tagFile;
             if(packFile.exists()) {
@@ -488,7 +486,7 @@ public class TextFighter {
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default tags."); }
             }
             for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; Display.displayProgressMessage("Loading parsing tags from the default pack."); }
+                if(!parsingPack) { num++; Display.displayPackMessage("Loading parsing tags from the default pack."); }
                 JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
                 JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
                 if(tagsArray == null) { continue; }
@@ -872,10 +870,13 @@ public class TextFighter {
     }
 
     public static void main(String[] args) {
-        if(args.length > 0) {
-            if(args[0].equals("testpacks")) { testMode = true; }
+        for(String a : args) {
+            if(a.equals("testpacks")) {
+                testMode = true;
+            } else if (a.equals("defaultpackmsgs") && testMode) {
+                defaultpackmsgs = true;
+            }
         }
-        System.out.println("e");
         if(!testMode) { Display.clearScreen(); }
         if (!loadResources()) {
             Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");

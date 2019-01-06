@@ -1,5 +1,6 @@
 #!/bin/sh
 mode=0
+defaultpackmsgs=0
 compile=0
 function run {
 	CURRDIR="$( cd "$( dirname "$0" )" >/dev/null && pwd )";
@@ -18,7 +19,11 @@ function run {
 	fi
 	cd bin/main/java || exit
 	if [ $1 = 1 ]; then
-		java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter testpacks
+		if [ $3 = 1 ]; then
+			java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter testpacks defaultpackmsgs
+		else
+			java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter testpacks
+		fi
 	elif [ $1 = 0 ]; then
 		java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter
 	fi
@@ -31,26 +36,32 @@ function main {
 		exit
 	fi
 
-	case $@ in
-	"--compile")
-		compile=1
-		shift
-		;;
-	"--test")
-		mode=1
-		shift
-		;;
-	"--help")
-		printf "usage run --compile  compiles the game\n     run --test  tests packs for errors\n     run --help\n"
-		exit
-		;;
-	*)
-		printf "usage run --compile\n     run --test\n     run --help\n"
-		exit
-		;;
-	esac
-	run $mode $compile
-
+	while [ $# != 0 ]; do
+		case $1 in
+			"--compile")
+			compile=1
+			shift
+			;;
+		"--test")
+			mode=1
+			shift
+			;;
+		"--defaultpackmsgs")
+			defaultpackmsgs=1
+			shift
+			;;
+		"--help")
+			printf "usage run --compile  compiles the game\n     run --test  tests packs for errors\n     run --help\n"
+			exit
+			;;
+		*)
+			printf "usage run --compile\n     run --test\n     run --help\n"
+			exit
+			;;
+		esac
+	done
+	
+	run $mode $compile $defaultpackmsgs
 }
 
 main $@
