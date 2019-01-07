@@ -740,7 +740,7 @@ public class TextFighter {
         for(Location l : locations) {
             if(l.getName().equals(location)) {
                 //Invokes the post methods of the previous location
-                player.getLocation().invokePostMethods();
+                player.getLocation().invokePostmethods();
                 player.setLocation(location);
                 addToOutput("Moved to " + location);
                 //Invokes the pre methods of the previous location
@@ -825,7 +825,7 @@ public class TextFighter {
                 } else if(currentEnemy.getHp() < 1) {
                     player.setInFight(false);
                     addToOutput("You defeated the '" + currentEnemy.getName() + "'!");
-                    currentEnemy.invokePostMethods();
+                    currentEnemy.invokePostmethods();
                     currentEnemy.invokeRewardMethods();
                     addToOutput("Rewards:");
                     if(currentEnemy.getIsFinalBoss()) { playerWins(); }

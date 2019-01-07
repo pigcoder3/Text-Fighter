@@ -89,14 +89,14 @@ public class Enemy implements Cloneable {
     public boolean getCanBeHurtThisTurn() { return canBeHurtThisTurn; }
     public void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn=b; }
 
-    public void invokePostMethods() {
-        filterPostMethods();
+    public void invokePostmethods() {
+        filterPostmethods();
         for(Postmethod pm : possiblePostmethods) {
             pm.invokeMethod();
         }
     }
 
-    public void filterPostMethods() {
+    public void filterPostmethods() {
         possiblePostmethods.clear();
         for(Postmethod pm : allPostmethods) {
             boolean valid = true;
@@ -112,14 +112,14 @@ public class Enemy implements Cloneable {
         }
     }
 
-    public void invokePreMethods() {
-        filterPreMethods();
+    public void invokePremethods() {
+        filterPremethods();
         for(Premethod pm : possiblePremethods) {
             pm.invokeMethod();
         }
     }
 
-    public void filterPreMethods() {
+    public void filterPremethods() {
         possiblePremethods.clear();
         for(Premethod pm : allPremethods) {
             boolean valid = true;
