@@ -2,7 +2,7 @@ package org.textfighter.enemy;
 
 import org.textfighter.Requirement;
 import org.textfighter.enemy.*;
-import org.textfighter.Postmethod;
+import org.textfighter.*;
 
 import java.util.ArrayList;
 
@@ -21,13 +21,18 @@ public class Enemy implements Cloneable {
     private ArrayList<EnemyAction> allActions = new ArrayList<EnemyAction>();
     private ArrayList<EnemyAction> possibleActions = new ArrayList<EnemyAction>();
 
-    private ArrayList<Postmethod> allPostMethods = new ArrayList<Postmethod>();
-    private ArrayList<Postmethod> possiblePostMethods = new ArrayList<Postmethod>();
+    private ArrayList<Postmethod> allPostmethods = new ArrayList<Postmethod>();
+    private ArrayList<Postmethod> possiblePostmethods = new ArrayList<Postmethod>();
+
+    private ArrayList<Premethod> allPremethods = new ArrayList<Premethod>();
+    private ArrayList<Premethod> possiblePremethods = new ArrayList<Premethod>();
 
     private ArrayList<Reward> allRewardMethods = new ArrayList<Reward>();
     private ArrayList<Reward> possibleRewardMethods = new ArrayList<Reward>();
 
     private boolean finalBoss;
+
+    private boolean canBeHurtThisTurn;
 
     public String getName() { return name; }
     public void setName(String n) { name=n; }
@@ -40,8 +45,10 @@ public class Enemy implements Cloneable {
 
     public int getHp() { return hp; }
     public void damaged(int a) {
-        hp = hp - a;
-        if (hp < 1) { hp = 0; }
+        if(canBeHurtThisTurn) {
+            hp = hp - a;
+            if (hp < 1) { hp = 0; }
+        }
     }
     public void healed(int a) {
         hp = hp + a;
@@ -79,16 +86,19 @@ public class Enemy implements Cloneable {
     }
     public boolean getIsFinalBoss() { return finalBoss; }
 
+    public boolean getCanBeHurtThisTurn() { return canBeHurtThisTurn; }
+    public void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn=b; }
+
     public void invokePostMethods() {
         filterPostMethods();
-        for(Postmethod pm : possiblePostMethods) {
+        for(Postmethod pm : possiblePostmethods) {
             pm.invokeMethod();
         }
     }
 
     public void filterPostMethods() {
-        possiblePostMethods.clear();
-        for(Postmethod pm : allPostMethods) {
+        possiblePostmethods.clear();
+        for(Postmethod pm : allPostmethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
                 if(!r.invokeMethod()) {
@@ -97,7 +107,30 @@ public class Enemy implements Cloneable {
                 }
             }
             if(valid) {
-                possiblePostMethods.add(pm);
+                possiblePostmethods.add(pm);
+            }
+        }
+    }
+
+    public void invokePreMethods() {
+        filterPreMethods();
+        for(Premethod pm : possiblePremethods) {
+            pm.invokeMethod();
+        }
+    }
+
+    public void filterPreMethods() {
+        possiblePremethods.clear();
+        for(Premethod pm : allPremethods) {
+            boolean valid = true;
+            for(Requirement r : pm.getRequirements()) {
+                if(!r.invokeMethod()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid) {
+                possiblePremethods.add(pm);
             }
         }
     }
@@ -127,7 +160,11 @@ public class Enemy implements Cloneable {
 
     public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
-    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<Postmethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
+    public void attack() { TextFighter.player.damage(strength); }
+
+    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<Premethod> premethods, ArrayList<Postmethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
+
+        //Sets the variables
         this.name = name;
         this.maxhp = hp;
         this.hp = hp;
@@ -135,16 +172,17 @@ public class Enemy implements Cloneable {
         this.levelRequirement = levelRequirement;
         this.difficulty = Math.round(hp * str * levelRequirement / 100);
         this.output = name + " - " + difficulty;
+        //Puts the final boss tag that tells the user that it is the final boss (Or one of them, there could be multiple)
         if(finalBoss) { output+= " - FINAL BOSS"; }
-        //Filters out invalid requirements
-        if(requirements != null) {
-            for(int i=0; i<requirements.size(); i++) {
-                if(!requirements.get(i).getValid()) {
-                    this.requirements.add(requirements.get(i));
-                }
-            }
-        }
+        this.requirements = requirements;
         this.finalBoss = finalBoss;
+        this.allPremethods = premethods;
+        this.allPostmethods = allPostmethods;
+        this.allRewardMethods = rewardMethods;
+        //Filters out invalid enemy actions
+        for(EnemyAction ea : actions) {
+            if(ea.getValid()) { allActions.add(ea); }
+        }
     }
 
     public Enemy() { }

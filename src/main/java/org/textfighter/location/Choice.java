@@ -70,6 +70,6 @@ public class Choice {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        if(methods == null) { valid = false; return; }
+        if(methods == null) { valid = false; }
     }
 }

@@ -355,7 +355,7 @@ public class TextFighter {
                             }
                         }
 
-                        Display.displayPackMessage("Loading the quit choice");
+                        Display.displayPackMessage("Adding the quit choice");
 
                         Method method;
                         try {
@@ -366,7 +366,7 @@ public class TextFighter {
                         ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, org.textfighter.TextFighter.class, null, null));
                         choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                         //Adds the loaded location
-                        locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), name, Location.class)));
+                        locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), name, Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), name, Location.class)));
                         usedNames.add(name);
                         directory = locationDir;
                         parsingPack = false;
@@ -441,7 +441,7 @@ public class TextFighter {
                                 enemyActions.add(new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), null, EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), name, Enemy.class)));
                             }
                         }
-                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), name, Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(Postmethod.class, (JSONArray)enemyFile.get("postMethods"), name, Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), name, Enemy.class), enemyActions));
+                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), name, Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(Premethod.class, (JSONArray)enemyFile.get("preMethods"), name, Enemy.class), loadMethods(Postmethod.class, (JSONArray)enemyFile.get("postMethods"), name, Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), name, Enemy.class), enemyActions));
                         usedNames.add(name);
                         directory=enemyDir;
                         parsingPack=false;
@@ -739,20 +739,12 @@ public class TextFighter {
     public static boolean movePlayer(String location) {
         for(Location l : locations) {
             if(l.getName().equals(location)) {
+                //Invokes the post methods of the previous location
+                player.getLocation().invokePostMethods();
                 player.setLocation(location);
                 addToOutput("Moved to " + location);
-                for(Premethod m : l.getPremethods()) {
-                    boolean validMethod = true;
-                    for(Requirement r : m.getRequirements()) {
-                        if(!r.invokeMethod()) {
-                            validMethod = false;
-                            break;
-                        }
-                    }
-                    if(validMethod) {
-                        m.invokeMethod();
-                    }
-                }
+                //Invokes the pre methods of the previous location
+                l.invokePremethods();
                 return true;
             }
         }
@@ -819,6 +811,7 @@ public class TextFighter {
             }
         }
         if(validEnemy) {
+            currentEnemy.invokePremethods();
             while(player.getInFight()) {
                 playGame();
                 //Make them fight

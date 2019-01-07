@@ -1,6 +1,7 @@
 package org.textfighter;
 
 import org.textfighter.item.*;
+import org.textfighter.item.armor.*;
 import org.textfighter.location.Location;
 import org.textfighter.TextFighter;
 import org.textfighter.display.Display;
@@ -16,6 +17,8 @@ public class Player {
 
     private boolean alive = true;
     private boolean inFight = false;
+
+    private double totalProtection = 1;
 
     private int level;
     private int experience;
@@ -40,12 +43,17 @@ public class Player {
 
     public boolean getAlive() { return alive; }
     public void setAlive(boolean b) { alive=b; TextFighter.removeSave(TextFighter.currentSaveFile.getName()); TextFighter.needsSaving=true;}
-    public void died(String cause) {
-        TextFighter.addToOutput("You died!");
-        TextFighter.addToOutput(cause);
-    }
+    public void died() { TextFighter.movePlayer("dead"); }
     public boolean getInFight() { return inFight; }
     public void setInFight(boolean b) { inFight=b; TextFighter.needsSaving=true;}
+
+    public double getTotalProtection() { return totalProtection; }
+    public void calculateTotalProtection() {
+        totalProtection=1;
+        for(Item i : inventory) {
+            totalProtection+=((Armor)i).getProtectionAmount();
+        }
+    }
 
     public int getLevel() { return level; }
     public void increaseLevel(int a) { level+=a; TextFighter.needsSaving=true;}
@@ -58,7 +66,13 @@ public class Player {
     public void decreaseScore(int a) { score-=a; TextFighter.needsSaving=true;}
 
     public int getHp() { return hp; }
-    public void damage(int a) { if (hp-a < 0) { hp = 0; } else { hp-=a; } TextFighter.needsSaving=true;}
+    public void damage(int a) {
+        if(canBeHurtThisTurn) { return; }
+        calculateTotalProtection();
+        if (hp-(a/totalProtection) < 0) { hp = 0; }
+        else { hp-=(a/totalProtection); }
+        TextFighter.needsSaving=true;
+    }
     public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } TextFighter.needsSaving=true;}
 
     public int getMaxHp() { return maxhp; }
@@ -189,7 +203,7 @@ public class Player {
         for(Location l : TextFighter.locations) {
             if(l.getName().equals("saves")) { this.location = l; }
         }
-
+        calculateTotalProtection();
     }
 
     public Player() { }

@@ -66,7 +66,6 @@ public class ChoiceMethod {
     }
 
     public ChoiceMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
-
         this.argumentTypes = argumentTypes;
         this.method = method;
         this.arguments = arguments;
@@ -74,41 +73,5 @@ public class ChoiceMethod {
         this.field = field;
         this.fieldclass = fieldclass;
         this.originalArgumentsNumber = this.arguments.size();
-
-        /*
-        //Creates the method
-        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayPackError("This choice has an invalid class. Omitting..."); valid = false;}
-        if(fieldclass != null && field != null) { try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e){ Display.displayPackError("This premethod has an invalid fieldclass. Omitting..."); valid = false; return;} }
-        try {
-            if(field != null) {
-                this.field = this.clazz.getField(field);
-            }
-        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This choice has an invalid field. Omitting..."); valid = false; return; }
-        try {
-            if(argumentTypes != null ) {
-                if(field != null && this.fieldclass != null) {
-                    this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                } else {
-                    this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                }
-            } else {
-                if(field != null && fieldclass != null) {
-                    this.method = this.fieldclass.getMethod(method);
-                } else {
-                    this.method = this.clazz.getMethod(method);
-                }
-            }
-        } catch (NoSuchMethodException e){ Display.displayPackError("This choice method has an invalid method. Omitting..."); valid = false; return; }
-
-        for (int i=0; i<arguments.size(); i++) {
-            if(argumentTypes.get(i).equals(int.class)) {
-                this.arguments.add(Integer.parseInt(arguments.get(i)));
-            } else if (argumentTypes.get(i).equals(String.class)) {
-                this.arguments.add(arguments.get(i));
-            } else if (argumentTypes.get(i).equals(boolean.class)) {
-                this.arguments.add(Boolean.parseBoolean(arguments.get(i)));
-            }
-        }*/
-
     }
 }

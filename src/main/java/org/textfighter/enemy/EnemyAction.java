@@ -10,8 +10,12 @@ public class EnemyAction {
     private ArrayList<EnemyActionMethod> methods = new ArrayList<EnemyActionMethod>();
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
+    private boolean valid = true;
+
     public ArrayList<EnemyActionMethod> getMethods() { return methods; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
+
+    public boolean getValid() { return valid; }
 
     public void invokeMethods() {
         for(int i=0; i<methods.size(); i++) {
@@ -25,11 +29,6 @@ public class EnemyAction {
 
     public EnemyAction(ArrayList<EnemyActionMethod> methods, ArrayList<Requirement> requirement) {
         this.requirements = requirements;
-        //Filters out invalid methods
-        for(int i=0; i<methods.size(); i++) {
-            if(!methods.get(i).getValid()) {
-                this.methods.add(methods.get(i));
-            }
-        }
+        if(methods == null) { valid = false; }
     }
 }

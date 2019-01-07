@@ -15,8 +15,11 @@ public class Location {
     private ArrayList<Choice> allChoices = new ArrayList<Choice>();
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    private ArrayList<Premethod> allPreMethods = new ArrayList<Premethod>();
+    private ArrayList<Premethod> allPremethods = new ArrayList<Premethod>();
     private ArrayList<Premethod> possiblePremethods = new ArrayList<Premethod>();
+
+    private ArrayList<Postmethod> allPostmethods = new ArrayList<Postmethod>();
+    private ArrayList<Postmethod> possiblePostmethods = new ArrayList<Postmethod>();
 
     public String getName() { return name; }
 
@@ -26,6 +29,7 @@ public class Location {
     public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
     public ArrayList<Premethod> getPremethods() { return possiblePremethods; }
+    public ArrayList<Postmethod> getPostmethods() { return possiblePostmethods; }
 
     public void invokePremethods() {
         filterPremethods();
@@ -36,7 +40,7 @@ public class Location {
 
     public void filterPremethods() {
         possiblePremethods.clear();
-        for(Premethod pm : allPreMethods) {
+        for(Premethod pm : allPremethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
                 if(!r.invokeMethod()) {
@@ -49,6 +53,30 @@ public class Location {
             }
         }
     }
+
+    public void invokePostmethods() {
+        filterPostmethods();
+        for(Postmethod pm : possiblePostmethods) {
+            pm.invokeMethod();
+        }
+    }
+
+    public void filterPostmethods() {
+        possiblePostmethods.clear();
+        for(Postmethod pm : allPostmethods) {
+            boolean valid = true;
+            for(Requirement r : pm.getRequirements()) {
+                if(!r.invokeMethod()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid) {
+                possiblePostmethods.add(pm);
+            }
+        }
+    }
+
 
     public void filterPossibleChoices() {
         possibleChoices.clear();
@@ -66,14 +94,17 @@ public class Location {
         }
     }
 
-    public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<Premethod> premethods) {
+    public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<Premethod> premethods, ArrayList<Postmethod> postmethods) {
+
+        //Sets all variables
         this.name = name;
         this.interfaces = interfaces;
+        this.allPremethods = premethods;
+        this.allPostmethods = postmethods;
 
+        //Filters out any invalid choices
         for(int i=0; i<choices.size(); i++) {
-            if(!choices.get(i).getValid()) {
-                Display.displayPackError("Location '" + name + "' had an invalid choice. Omitting choice...");
-            } else { allChoices.add(choices.get(i)); }
+            if(choices.get(i).getValid()) { allChoices.add(choices.get(i)); }
         }
     }
 }

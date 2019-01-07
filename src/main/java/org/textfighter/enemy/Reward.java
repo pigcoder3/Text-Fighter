@@ -59,39 +59,5 @@ public class Reward {
         this.requirements = requirements;
         this.chance = chance;
         this.rewardItem = rewardItem;
-        /*
-        try { this.clazz = Class.forName(clazz); } catch (ClassNotFoundException e){ Display.displayWarning("This reward has an invalid class. Omitting..."); valid = false; return; }
-        if(field != null && fieldclass != null) {
-            try { this.fieldclass = Class.forName(fieldclass); } catch (ClassNotFoundException e) { Display.displayPackError("No such class '" + fieldclass + "'. Omitting..."); valid = false; return;}
-            try { this.field = this.clazz.getDeclaredField(field); } catch (NoSuchFieldException e) { Display.displayPackError("No such field '" + field + "' in class '" + clazz + "'. Omitting..."); valid = false; return;}
-        }
-        try {
-            if(argumentTypes != null ) {
-                if(this.field != null) {
-                    this.method = this.fieldclass.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                } else {
-                    this.method = this.clazz.getMethod(method, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                }
-            } else {
-                if(this.field != null) {
-                    this.method = this.fieldclass.getMethod(method);
-                } else {
-                    this.method = this.clazz.getMethod(method);
-                }
-            }
-        } catch (NoSuchMethodException e){
-            Display.displayWarning("This reward has an invalid method. Omitting...");
-            valid = false;
-            return;
-        }
-        if(this.method.getParameterTypes().length != argumentTypes.size()) { Display.displayWarning("There is an incorrect number of arguments for a location or enemy's premethod '" + method + "' parameters! Needed: " + this.method.getParameterTypes().length + " Got: " + argumentTypes.size()); valid = false; return;}
-        if(arguments != null) {
-            Class[] parameterTypes = this.method.getParameterTypes();
-            for (int i=0; i<arguments.size(); i++) {
-                if(parameterTypes[i].equals(Integer.class)) {
-                    this.arguments.add(Integer.parseInt((String)arguments.get(i)));
-                }
-            }
-        }*/
     }
 }
