@@ -15,25 +15,29 @@ public class Player {
 
     static int defaulthp = 50;
 
+    static int defaultcoins = 10;
+    static int defaultmagic = 0;
+    static int defaultmetalscraps = 0;
+
     private boolean alive = true;
     private boolean inFight = false;
 
     private double totalProtection = 1;
 
-    private int level;
-    private int experience;
-    private int score;
+    private int level = 1;
+    private int experience = 0;
+    private int score = 0;
 
-    private int hp;
-    private int maxhp;
+    private int hp = defaulthp;
+    private int maxhp = defaulthp;
 
-    private int coins;
-    private int magic;
-    private int metalScraps;
+    private int coins = defaultcoins;
+    private int magic = defaultmagic;
+    private int metalScraps = defaultmetalscraps;
 
     private Location location;
 
-    private boolean gameBeaten;
+    private boolean gameBeaten = false;
 
     private boolean canBeHurtThisTurn = true;
 
@@ -51,7 +55,7 @@ public class Player {
     public void calculateTotalProtection() {
         totalProtection=1;
         for(Item i : inventory) {
-            totalProtection+=((Armor)i).getProtectionAmount();
+            if(i.getClass().getSuperclass().equals(Armor.class)) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
     }
 

@@ -35,7 +35,13 @@
                     "class" : "org.textfighter.TextFighter"
                 }
             ],
-            "usage" : "loadGame <name>"
+            "usage" : "loadGame <name>",
+            "requirements" : [
+                {
+                    "method" : "areThereAnySaves",
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ]
         },
         {
             "name" : "removeSave",
@@ -48,7 +54,13 @@
                     "class" : "org.textfighter.TextFighter"
                 }
             ],
-            "usage" : "removeSave <name>"
+            "usage" : "removeSave <name>",
+            "requirements" : [
+                {
+                    "method" : "areThereAnySaves",
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ]
         },
         {
             "name" : "menu",
@@ -65,8 +77,6 @@
             "requirements" : [
                 {
                     "method" : "gameLoaded",
-                    "arguments" : [],
-                    "argumentTypes" : [],
                     "class" : "org.textfighter.TextFighter"
                 }
             ]

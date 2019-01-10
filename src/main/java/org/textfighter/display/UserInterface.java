@@ -26,37 +26,28 @@ public class UserInterface {
                 inTag = true;
             } else if (unparsedui.charAt(i) == '>' & inTag) {
                 currentTag+=">";
-                if(currentTag.equals("<choices>")) {
-                    for(Choice c : TextFighter.player.getLocation().getPossibleChoices()) {
-                        c.setOutput(c.getName() + "\n" +
-                                    "    desc  - " + c.getDescription() + "\n" +
-                                    "    usage - " + c.getUsage());
-                        uiInProgress+=c.getOutput()+"\n";
-                    }
-                }
-                ArrayList<UiTag> tags = Display.interfaceTags;
-                for(UiTag t : tags) {
+                boolean tagUsed = false;
+                //Matches the tag string with a tag in the interfaceTags
+                for(UiTag t : Display.interfaceTags) {
                     if(t.getTag().equals(currentTag)) {
                         Object output = t.invokeMethod();
-                        if(output instanceof Integer) {
-                            uiInProgress+=Integer.parseInt((String)output);
-                        } else if (output instanceof String) {
+                        if(output instanceof Integer) { //If it returns an integer
+                            uiInProgress+=output.toString();
+                        } else if (output instanceof String) { //If it returns a string
                             uiInProgress+=output;
-                        } else if (output instanceof ArrayList) {
+                        } else if (output instanceof ArrayList) { //If it returns an ArrayList of Strings
                             if(((ArrayList)output).size() > 0 && ((ArrayList)output).get(0) instanceof String) {
-                                if(t.getTag().substring(t.getTag().length()-2, t.getTag().length()-1).equals("\\n")){
-                                    for(int p=0; p<((ArrayList)output).size(); p++) {
-                                        uiInProgress+=((ArrayList)output).get(p);
-                                    }
-                                } else {
-                                    for(int p=0; p<((ArrayList)output).size(); p++) {
-                                        uiInProgress+=((ArrayList)output).get(p) + "\n";
-                                    }
+                                for(int p=0; p<((ArrayList)output).size(); p++) {
+                                    uiInProgress+=((ArrayList)output).get(p);
+                                    if(p != ((ArrayList)output).size()-1) {uiInProgress += "\n"; }
                                 }
                             }
                         }
+                        tagUsed = true;
                     }
                 }
+                if(!tagUsed) { uiInProgress+=currentTag; }
+                tagUsed=false;
                 inTag=false;
             } else if (inTag){
                 currentTag+=unparsedui.charAt(i);

@@ -3,25 +3,54 @@
         {
             "tag" : "<saves>",
             "class" : "org.textfighter.TextFighter",
-            "method" : "getSaves",
-            "arguments" : [],
-            "argumentTypes" : [],
+            "method" : "getSaveFiles"
         },
         {
             "tag" : "<coins>",
             "class" : "org.textfighter.Player",
             "method" : "getCoins",
-            "arguments" : [],
-            "argumentTypes" : [],
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
         {
-            "tag" : "<mana>",
+            "tag" : "<magic>",
             "class" : "org.textfighter.Player",
             "method" : "getMagic",
-            "arguments" : [],
-            "argumentTypes" : [],
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<metal>",
+            "class" : "org.textfighter.Player",
+            "method" : "getMetalScraps",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<health>",
+            "class" : "org.textfighter.Player",
+            "method" : "getHp",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<maxhealth>",
+            "class" : "org.textfighter.Player",
+            "method" : "getMaxHp",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<level>",
+            "class" : "org.textfighter.Player",
+            "method" : "getLevel",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<experience>",
+            "class" : "org.textfighter.Player",
+            "method" : "getExperience",
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
@@ -29,8 +58,11 @@
             "tag" : "<enemies>",
             "class" : "org.textfighter.TextFighter",
             "method" : "getPossibleEnemyOutputs",
-            "arguments" : [],
-            "argumentTypes" : []
+        },
+        {
+            "tag" : "<choices>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getChoiceOutputs"
         }
 
     ]

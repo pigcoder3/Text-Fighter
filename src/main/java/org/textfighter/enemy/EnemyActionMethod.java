@@ -28,9 +28,9 @@ public class EnemyActionMethod {
         try {
             if(field != null) {
                 if(arguments != null) {
-                    method.invoke(field, arguments.toArray());
+                    method.invoke(field.get(null), arguments.toArray());
                 } else {
-                    method.invoke(field, new Object[0]);
+                    method.invoke(field.get(null), new Object[0]);
                 }
             } else {
                 if(arguments != null) {
@@ -45,7 +45,6 @@ public class EnemyActionMethod {
     }
 
     public EnemyActionMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
-
         this.method = method;
         this.arguments = arguments;
         this.clazz = clazz;

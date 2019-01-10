@@ -40,9 +40,9 @@ public class ChoiceMethod {
                 if(field != null) {
                     if(arguments != null) {
 
-                        method.invoke(field, arguments.toArray());
+                        method.invoke(field.get(null), arguments.toArray());
                     } else {
-                        method.invoke(field, new Object[0]);
+                        method.invoke(field.get(null), new Object[0]);
                     }
                 } else {
                     if(arguments != null) {
@@ -65,7 +65,7 @@ public class ChoiceMethod {
         }
     }
 
-    public ChoiceMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
+    public ChoiceMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Class clazz, Field field, Class fieldclass) {
         this.argumentTypes = argumentTypes;
         this.method = method;
         this.arguments = arguments;

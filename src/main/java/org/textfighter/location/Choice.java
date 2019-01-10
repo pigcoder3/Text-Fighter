@@ -71,5 +71,10 @@ public class Choice {
         this.description = description;
         this.usage = usage;
         if(methods == null) { valid = false; }
+        this.methods = methods;
+        this.requirements = requirements;
+        this.output = name + "\n" +
+                        "\tdesc  - " + description + "\n" +
+                        "\tusage - " + usage;
     }
 }

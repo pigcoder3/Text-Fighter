@@ -36,14 +36,6 @@ public class Display {
     public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
     public static ArrayList<UserInterface> getInterfaces() { return interfaces; }
 
-    public static void filterTags() {
-        ArrayList<UiTag> tags = new ArrayList<UiTag>();
-        for(int i=0; i<interfaceTags.size(); i++) {
-            if(interfaceTags.get(i).getValid()) { tags.add(interfaceTags.get(i)); }
-        }
-        interfaceTags = tags;
-    }
-
     public static void displayError(String e) {
         // Used for displaying errors such as something could not be found
         if(ANSI) {

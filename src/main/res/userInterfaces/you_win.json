@@ -4,10 +4,11 @@
 
     "interface" : [
 
-        "                 YOU WIN!"
-        "             Congradulations!"
-        "           You won TextFighter!"
-
+        "-------------------------------------------"
+        "                 YOU WIN!                  ",
+        "             Congradulations!              ",
+        "           You won TextFighter!            ",
+        "-------------------------------------------"
     ]
 
 }

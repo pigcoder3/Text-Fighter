@@ -40,6 +40,7 @@ public class Location {
 
     public void filterPremethods() {
         possiblePremethods.clear();
+        if(allPremethods == null) { return; }
         for(Premethod pm : allPremethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
@@ -63,6 +64,7 @@ public class Location {
 
     public void filterPostmethods() {
         possiblePostmethods.clear();
+        if(allPostmethods == null) { return; }
         for(Postmethod pm : allPostmethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
@@ -80,12 +82,15 @@ public class Location {
 
     public void filterPossibleChoices() {
         possibleChoices.clear();
+        if(allChoices == null) { return; }
         for(Choice c : allChoices) {
             boolean valid = true;
-            for(Requirement r : c.getRequirements()) {
-                if(!r.invokeMethod()) {
-                    valid = false;
-                    break;
+            if(c.getRequirements() != null){
+                for(Requirement r : c.getRequirements()) {
+                    if(!r.invokeMethod()) {
+                        valid = false;
+                        break;
+                    }
                 }
             }
             if(valid) {

@@ -19,29 +19,25 @@ public class UiTag {
     private Class fieldclass;
     private ArrayList<Object> arguments;
 
-    private boolean valid;
-
     public String getTag() { return tag; }
     public Method getFunction() { return method; }
     public Class getClassname() { return clazz; }
     public ArrayList<Object> getArguments() { return arguments; }
 
-    public boolean getValid() { return valid; }
-
     public Object invokeMethod() {
-        if(!valid) { return null; }
         try {
             if(field != null) {
+                //System.out.println(clazz.getField(fieldclass.getName()+ "." + field.getName()).toString());
                 if(arguments != null) {
-                    return(method.invoke(field, arguments.toArray()));
+                    return(method.invoke(field.get(null), arguments.toArray()));
                 } else {
-                    return(method.invoke(field, new Object[0]));
+                    return(method.invoke(field.get(null)));
                 }
             } else {
                 if(arguments != null) {
                     return(method.invoke(null, arguments.toArray()));
                 } else {
-                    return(method.invoke(null, new Object[0]));
+                    return(method.invoke(null));
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
