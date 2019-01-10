@@ -30,5 +30,6 @@ public class EnemyAction {
     public EnemyAction(ArrayList<EnemyActionMethod> methods, ArrayList<Requirement> requirement) {
         this.requirements = requirements;
         if(methods == null) { valid = false; }
+        this.methods = methods;
     }
 }

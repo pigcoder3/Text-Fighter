@@ -34,23 +34,30 @@ public class Reward {
 
     public boolean getValid() { return valid; }
 
-    public void invokeMethod() {
+    public String invokeMethod() {
         try {
             //Does the random chance thing
             Random random = new Random();
             int number = random.nextInt(100-1)+1;
-            if(number > chance) { return; }
+            if(number > chance) { return null; }
             if(field != null ) {
-                method.invoke(field, arguments);
-                TextFighter.addToOutput(rewardItem);
+                if(arguments != null) {
+                    method.invoke(field.get(null), arguments);
+                } else {
+                    method.invoke(field.get(null));
+                }
             } else {
-                method.invoke(arguments);
-                TextFighter.addToOutput(rewardItem);
+                if(arguments != null) {
+                    method.invoke(null, arguments);
+                } else {
+                    method.invoke(null);
+                }
             }
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); return; }
+            return rewardItem;
+        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); return null; }
     }
 
-    public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance) {
+    public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance, String rewardItem) {
         this.method = method;
         this.arguments = arguments;
         this.clazz = clazz;

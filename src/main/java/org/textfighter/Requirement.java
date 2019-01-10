@@ -35,15 +35,15 @@ public class Requirement {
         try {
             if(field != null) {
                 if(arguments != null) {
-                    return((boolean)method.invoke(field, arguments.toArray()) == neededBoolean);
+                    return((boolean)method.invoke(field.get(null), arguments.toArray()) == neededBoolean);
                 } else {
-                    return((boolean)method.invoke(field, new Object[0]) == neededBoolean);
+                    return((boolean)method.invoke(field.get(null)) == neededBoolean);
                 }
             } else {
                 if(arguments != null) {
                     return((boolean)method.invoke(null, arguments.toArray()) == neededBoolean);
                 } else {
-                    return((boolean)method.invoke(null, new Object[0]) == neededBoolean);
+                    return((boolean)method.invoke(null) == neededBoolean);
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }

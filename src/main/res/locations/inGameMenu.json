@@ -4,8 +4,8 @@
 
     "interfaces" : [
 
-        "inGameMenu",
-        "choices_without_bar"
+        "stats",
+        "choices"
 
     ],
 

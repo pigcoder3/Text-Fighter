@@ -98,62 +98,78 @@ public class Enemy implements Cloneable {
 
     public void filterPostmethods() {
         possiblePostmethods.clear();
-        for(Postmethod pm : allPostmethods) {
-            boolean valid = true;
-            for(Requirement r : pm.getRequirements()) {
-                if(!r.invokeMethod()) {
-                    valid = false;
-                    break;
+        if(allPostmethods != null) {
+            for(Postmethod pm : allPostmethods) {
+                boolean valid = true;
+                if(pm.getRequirements() != null){
+                    for(Requirement r : pm.getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        possiblePostmethods.add(pm);
+                    }
                 }
-            }
-            if(valid) {
-                possiblePostmethods.add(pm);
             }
         }
     }
 
     public void invokePremethods() {
         filterPremethods();
-        for(Premethod pm : possiblePremethods) {
-            pm.invokeMethod();
+        if(possiblePremethods != null) {
+            for(Premethod pm : possiblePremethods) {
+                pm.invokeMethod();
+            }
         }
     }
 
     public void filterPremethods() {
         possiblePremethods.clear();
-        for(Premethod pm : allPremethods) {
-            boolean valid = true;
-            for(Requirement r : pm.getRequirements()) {
-                if(!r.invokeMethod()) {
-                    valid = false;
-                    break;
+        if(allPremethods != null){
+            for(Premethod pm : allPremethods) {
+                boolean valid = true;
+                if(pm.getRequirements() != null) {
+                    for(Requirement r : pm.getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        possiblePremethods.add(pm);
+                    }
                 }
-            }
-            if(valid) {
-                possiblePremethods.add(pm);
             }
         }
     }
 
     public void invokeRewardMethods() {
         filterRewardMethods();
-        for(Reward r : possibleRewardMethods) {
-            r.invokeMethod();
+        if(possibleRewardMethods != null) {
+            for(Reward r : possibleRewardMethods) {
+                r.invokeMethod();
+            }
         }
     }
 
     public void filterRewardMethods() {
         possibleRewardMethods.clear();
-        for(Reward r : allRewardMethods) {
-            boolean valid = true;
-            for(Requirement rq : r.getRequirements()) {
-                if(!rq.invokeMethod()) {
-                    valid = false;
-                    break;
+        if(allRewardMethods != null){
+            for(Reward r : allRewardMethods) {
+                boolean valid = true;
+                if(r.getRequirements() != null) {
+                    for(Requirement rq : r.getRequirements()) {
+                        if(!rq.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        possibleRewardMethods.add(r);
+                    }
                 }
-            }
-            if(valid) {
-                possibleRewardMethods.add(r);
             }
         }
     }

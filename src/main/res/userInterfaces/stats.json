@@ -1,0 +1,24 @@
+{
+
+    "name" : "stats",
+
+    "interface" : [
+
+        "----------------------",
+        "         STATS        ",
+        "----------------------",
+        "  hp:    <health>",
+        "  maxhp: <maxhealth>",
+        "",
+        "  level: <level>",
+        "  exp:   <experience>",
+        "",
+        "  coins: <coins>",
+        "  magic: <magic>",
+        "  metal: <metal>",
+        "----------------------"
+
+
+    ]
+
+}

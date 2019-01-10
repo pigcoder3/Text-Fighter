@@ -104,8 +104,8 @@ public class TextFighter {
                 String fieldString = (String)o.get("field");
                 String fieldclassString = (String)o.get("fieldclass");
                 if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); continue; }
-                //Fields and fieldclasses can be null (Which just means the method does not act upon a field)
-                if(argumentTypesString.size() > 0) {
+                //Fields and fieldclasses can be null (Which just means the method does not act upon a field
+                if(argumentTypesString != null && argumentTypesString.size() > 0) {
                     for (int g=0; g<argumentTypesString.size(); g++) {
                         int num = Integer.parseInt(argumentTypesString.get(g));
                         if(num == 0) {
@@ -114,6 +114,9 @@ public class TextFighter {
                             argumentTypes.add(int.class);
                         } else if(num == 2) {
                             argumentTypes.add(boolean.class);
+                        } else {
+                            Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
+                            continue;
                         }
                     }
                 }
@@ -129,8 +132,8 @@ public class TextFighter {
                 //Gets the field from the class
                 Field field = null;
                 try {
-                    if(field != null) {
-                        field = clazz.getField(fieldString);
+                    if(fieldString != null) {
+                        field = fieldclass.getField(fieldString);
                     }
                 } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); continue; }
 
@@ -138,30 +141,22 @@ public class TextFighter {
                 Method method = null;
                 try {
                     if(argumentTypes != null ) {
-                        if(field != null && fieldclass != null) {
-                            method = fieldclass.getMethod(methodString, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                        } else {
-                            method = clazz.getMethod(methodString, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                        }
+                        method = clazz.getMethod(methodString, argumentTypes.toArray(new Class[argumentTypes.size()]));
                     } else {
-                        if(field != null && fieldclass != null) {
-                            method = fieldclass.getMethod(methodString);
-                        } else {
-                            method = clazz.getMethod(methodString);
-                        }
+                        method = clazz.getMethod(methodString);
                     }
                 } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' could not be found. Omitting..."); continue; }
 
                 //Makes the arguments the correct type (String, int, or boolean)
                 ArrayList<Object> arguments = new ArrayList<Object>();
-                if(arguments != null) {
-                    for (int p=0; p<arguments.size(); p++) {
+                if(argumentsString != null) {
+                    for (int p=0; p<argumentsString.size(); p++) {
                         if(argumentTypes.get(p).equals(int.class)) {
-                            arguments.add(Integer.parseInt((String)arguments.get(p)));
+                            arguments.add(Integer.parseInt(argumentsString.get(p)));
                         } else if (argumentTypes.get(p).equals(String.class)) {
-                            arguments.add((String)arguments.get(p));
+                            arguments.add(argumentsString.get(p));
                         } else if (argumentTypes.get(p).equals(boolean.class)) {
-                            arguments.add(Boolean.parseBoolean((String)arguments.get(p)));
+                            arguments.add(Boolean.parseBoolean(argumentsString.get(p)));
                         } else {
                             Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
                             continue;
@@ -169,9 +164,10 @@ public class TextFighter {
                     }
                 }
 
+
                 //Creates the correct Method type
                 if(type.equals(ChoiceMethod.class)) {
-                    methods.add(new ChoiceMethod(method, arguments, clazz, field, fieldclass));
+                    methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass));
                 } else if(type.equals(Requirement.class)) {
                     String neededBooleanString = (String)o.get("neededBoolean");
                     boolean neededBoolean = Boolean.parseBoolean(neededBooleanString);
@@ -186,12 +182,11 @@ public class TextFighter {
                 } else if(type.equals(Reward.class)) {
                     int chance = Integer.parseInt((String)o.get("chance"));
                     if(chance <= 0.0) { Display.displayPackError("This reward does not have a chance. Omitting..."); continue; }
-                    String reward = (String)o.get("reward");
-                    if(reward == null)
-                    methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), null, Enemy.class), chance));
+                    String rewardItem = (String)o.get("rewarditem");
+                    methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), null, Enemy.class), chance, rewardItem));
                 } else if(type.equals(UiTag.class)) {
                     String tag = (String)o.get("tag");
-                    if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); }
+                    if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); continue; }
                     methods.add(new UiTag(tag, method, arguments, clazz, field, fieldclass));
                 }
             }
@@ -351,7 +346,7 @@ public class TextFighter {
                                 String desc = (String)obj.get("description");
                                 String usage = (String)obj.get("usage");
                                 if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
-                                choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), name, Location.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), choicename, Choice.class)));
+                                choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), choicename, Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), choicename, Choice.class)));
                             }
                         }
 
@@ -363,7 +358,7 @@ public class TextFighter {
                         } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); continue; }
                         ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
                         ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
-                        ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, org.textfighter.TextFighter.class, null, null));
+                        ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
                         choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                         //Adds the loaded location
                         locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), name, Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), name, Location.class)));
@@ -493,8 +488,7 @@ public class TextFighter {
                 Display.interfaceTags = loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null, null);
                 parsingPack = false;
                 file = tagFile;
-                Display.filterTags();
-                Display.displayProgressMessage("Interface tags loaded.");
+                Display.displayProgressMessage("Parsing tags loaded.");
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -512,9 +506,7 @@ public class TextFighter {
 
     public static boolean loadGame(String name) {
 
-        boolean areThereAnySaves = false;
-        for(String s : savesDir.list()) { if(s.substring(s.lastIndexOf("."),s.length()).equals(".json")) { areThereAnySaves=true; continue; } }
-        if(!areThereAnySaves){ addToOutput("There are no saves, create one."); return false;}
+        if(!areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
 
         File f = new File(savesDir.getPath() + "/" + name + ".json");
         if(!f.exists()) { addToOutput("Unable to find a save with that name."); return false; }
@@ -568,13 +560,13 @@ public class TextFighter {
     }
     public static void newGame(String name) {
 
-        if(getSaves().contains(name)) {
+        if(getSaveFiles().contains(name)) {
             addToOutput("There is already a save with that name. Pick another.");
             return;
         }
 
         File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
-        try { newGameFile.createNewFile(); } catch (IOException e) {
+        try { newGameFile.createNewFile(); System.out.println(newGameFile.getName());} catch (IOException e) {
             addToOutput("Failed to create new file");
             e.printStackTrace();
             return;
@@ -615,14 +607,14 @@ public class TextFighter {
         addToOutput("Added new save '" + name + "'");
 
         try (FileWriter w = new FileWriter(newGameFile);) {
+            System.out.println(newGameFile.getName());
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
     public static boolean saveGame() {
         //Rewrite the whole file
 
-        File gameFile = new File(savesDir.getPath() + "/" + gameName + ".json");
-        if(!gameFile.exists()) { try { gameFile.createNewFile(); } catch (IOException e) { addToOutput("Unable to save game!"); return false; }}
+        if(currentSaveFile != null && !currentSaveFile.exists()) { try { currentSaveFile.createNewFile(); } catch (IOException e) { addToOutput("Unable to save game!"); return false; }}
 
         JSONObject base = new JSONObject();
 
@@ -663,7 +655,7 @@ public class TextFighter {
         base.put("stats", stats);
         base.put("name", gameName);
 
-        try (FileWriter w = new FileWriter(gameFile);) {
+        try (FileWriter w = new FileWriter(currentSaveFile);) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); return false; }
 
@@ -671,10 +663,10 @@ public class TextFighter {
 
     }
 
-    public static ArrayList<String> getSaves() { saves = getSaveFiles(); return saves; }
     public static void addSave(String name) { saves.add(name); }
     public static void removeSave(String name) {
-        if(name.equals(currentSaveFile.getName()) && player.getGameBeaten()) { return; }
+        getSaveFiles();
+        if(currentSaveFile != null && name.equals(currentSaveFile.getName()) && player.getGameBeaten()) { return; }
         boolean saveExists = false;
         for(int i=0;i<saves.size();i++){
             if(saves.get(i).equals(name)) {
@@ -688,7 +680,7 @@ public class TextFighter {
             addToOutput("File with that name not found. No action performed");
         }
     }
-
+    public static boolean areThereAnySaves() { return(getSaveFiles().size() > 0); }
     public static ArrayList<String> getSaveFiles() {
         ArrayList<String> filteredSaves = new ArrayList<String>();
         for(String s : savesDir.list()) {
@@ -696,7 +688,20 @@ public class TextFighter {
                 filteredSaves.add(s.substring(0,s.lastIndexOf(".")));
             }
         }
+        saves = filteredSaves;
         return filteredSaves;
+    }
+    public static ArrayList<String> getChoiceOutputs() {
+        Location l = player.getLocation();
+        ArrayList<String> outputs = new ArrayList<String>();
+        if(l != null && l.getPossibleChoices() != null) {
+            for(Choice c : l.getPossibleChoices()) {
+                if(c.getOutput() != null){
+                    outputs.add(c.getOutput());
+                }
+            }
+        }
+        return outputs;
     }
     public static void setPossibleEnemies() {
         sortEnemies();
@@ -704,10 +709,12 @@ public class TextFighter {
         for(Enemy e : enemies) {
             boolean valid = true;
             if(e.getLevelRequirement() >= player.getLevel()) {
-                for(Requirement r : e.getRequirements()) {
-                    if(!r.invokeMethod()) {
-                        valid=false;
-                        break;
+                if(e.getRequirements() != null) {
+                    for(Requirement r : e.getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid=false;
+                            break;
+                        }
                     }
                 }
                 if(valid) {
@@ -828,6 +835,7 @@ public class TextFighter {
                     currentEnemy.invokePostmethods();
                     currentEnemy.invokeRewardMethods();
                     addToOutput("Rewards:");
+                    currentEnemy.invokeRewardMethods();
                     if(currentEnemy.getIsFinalBoss()) { playerWins(); }
                     currentEnemy=null;
                     return true;
