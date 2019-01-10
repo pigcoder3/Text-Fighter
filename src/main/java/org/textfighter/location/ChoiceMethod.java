@@ -39,7 +39,6 @@ public class ChoiceMethod {
             try {
                 if(field != null) {
                     if(arguments != null) {
-
                         method.invoke(field.get(null), arguments.toArray());
                     } else {
                         method.invoke(field.get(null), new Object[0]);

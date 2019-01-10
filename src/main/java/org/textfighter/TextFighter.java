@@ -154,7 +154,8 @@ public class TextFighter {
                         if(argumentTypes.get(p).equals(int.class)) {
                             arguments.add(Integer.parseInt(argumentsString.get(p)));
                         } else if (argumentTypes.get(p).equals(String.class)) {
-                            arguments.add(argumentsString.get(p));
+                            if(argumentsString.get(p).equals("%null%")) { arguments.add(null); }
+                            else { arguments.add(argumentsString.get(p)); }
                         } else if (argumentTypes.get(p).equals(boolean.class)) {
                             arguments.add(Boolean.parseBoolean(argumentsString.get(p)));
                         } else {
@@ -891,5 +892,7 @@ public class TextFighter {
             }
         }
     }
+
+    public static void nullTest(String e) { return; }
 
 }
