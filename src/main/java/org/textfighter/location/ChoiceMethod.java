@@ -15,7 +15,6 @@ public class ChoiceMethod {
     private Class clazz;
     private Field field;
     private Class fieldclass;
-    private int originalArgumentsNumber;
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
 
@@ -27,41 +26,27 @@ public class ChoiceMethod {
     public ArrayList<Object> getArguments() { return arguments; }
     public void setArguments(ArrayList<Object> args) { arguments=args; }
     public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
-    public int getOriginalArgumentsNumber() { return originalArgumentsNumber; }
 
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
-        if(arguments.size() != argumentTypes.size()) {
-            removeAllAfterIndex();
-            return false;
-        } else {
-            try {
-                if(field != null) {
-                    if(arguments != null) {
-                        method.invoke(field.get(null), arguments.toArray());
-                    } else {
-                        method.invoke(field.get(null), new Object[0]);
-                    }
+        try {
+            if(field != null) {
+                if(arguments != null) {
+                    method.invoke(field.get(null), arguments.toArray());
                 } else {
-                    if(arguments != null) {
-                        method.invoke(null, arguments.toArray());
-                    } else {
-                        method.invoke(null, new Object[0]);
-                    }
+                    method.invoke(field.get(null), new Object[0]);
                 }
-                removeAllAfterIndex();
-                return true;
-            } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
-        }
-        removeAllAfterIndex();
+            } else {
+                if(arguments != null) {
+                    method.invoke(null, arguments.toArray());
+                } else {
+                    method.invoke(null, new Object[0]);
+                }
+            }
+            return true;
+        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return false;
-    }
-
-    public void removeAllAfterIndex() {
-        for(int i=originalArgumentsNumber; i<arguments.size(); i++) {
-            arguments.remove(i);
-        }
     }
 
     public ChoiceMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Class clazz, Field field, Class fieldclass) {
@@ -71,6 +56,5 @@ public class ChoiceMethod {
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;
-        this.originalArgumentsNumber = this.arguments.size();
     }
 }

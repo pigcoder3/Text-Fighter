@@ -104,6 +104,13 @@ public class TextFighter {
                 String fieldString = (String)o.get("field");
                 String fieldclassString = (String)o.get("fieldclass");
                 if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); continue; }
+                if((argumentsString != null && argumentTypesString != null) && (argumentsString.size() == argumentTypesString.size())) {
+
+                } else if(argumentTypesString == null && argumentsString == null) {
+
+                } else {
+                    Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); continue;
+                }
                 //Fields and fieldclasses can be null (Which just means the method does not act upon a field
                 if(argumentTypesString != null && argumentTypesString.size() > 0) {
                     for (int g=0; g<argumentTypesString.size(); g++) {
@@ -351,19 +358,21 @@ public class TextFighter {
                             }
                         }
 
-                        Display.displayPackMessage("Adding the quit choice");
+                        if(!usedNames.contains("quit")) {
+                            Display.displayPackMessage("Adding the quit choice");
 
-                        Method method;
-                        try {
-                            method = TextFighter.class.getMethod("exitGame", new Class[] {int.class});
-                        } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); continue; }
-                        ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
-                        ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
-                        ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
-                        choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
-                        //Adds the loaded location
-                        locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), name, Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), name, Location.class)));
-                        usedNames.add(name);
+                            Method method;
+                            try {
+                                method = TextFighter.class.getMethod("exitGame", new Class[] {int.class});
+                            } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); continue; }
+                            ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
+                            ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
+                            ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
+                            choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
+                            //Adds the loaded location
+                            locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), name, Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), name, Location.class)));
+                            usedNames.add(name);
+                        }
                         directory = locationDir;
                         parsingPack = false;
                     }
@@ -567,7 +576,7 @@ public class TextFighter {
         }
 
         File newGameFile = new File(savesDir.getPath() + "/" + name + ".json");
-        try { newGameFile.createNewFile(); System.out.println(newGameFile.getName());} catch (IOException e) {
+        try { newGameFile.createNewFile();} catch (IOException e) {
             addToOutput("Failed to create new file");
             e.printStackTrace();
             return;
@@ -608,7 +617,6 @@ public class TextFighter {
         addToOutput("Added new save '" + name + "'");
 
         try (FileWriter w = new FileWriter(newGameFile);) {
-            System.out.println(newGameFile.getName());
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }

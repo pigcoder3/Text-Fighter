@@ -17,7 +17,7 @@
             "methods" : [
                 {
                     "method" : "fight",
-                    "arguments" : [],
+                    "arguments" : ["%ph%"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 }
