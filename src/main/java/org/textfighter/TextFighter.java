@@ -14,6 +14,7 @@ import org.textfighter.item.weapon.*;
 import org.textfighter.*;
 import org.textfighter.location.*;
 import org.textfighter.enemy.*;
+import org.textfighter.method.*;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -42,12 +43,14 @@ public class TextFighter {
     public static File locationDir;
     public static File enemyDir;
     public static File savesDir;
+    public static File achievementsDir;
     public static File configDir;
     public static File packFile;
     public static File packDir;
     public static File modpackDir;
     public static File intpackDir;
     public static File enemypackDir;
+    public static File achievementpackDir;
 
     public static JSONParser parser = new JSONParser();
 
@@ -55,12 +58,11 @@ public class TextFighter {
     public static ArrayList<String> saves = new ArrayList<String>();
     public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     public static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
+    public static ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
     public static boolean needsSaving = false;
 
-    public static void addToOutput(String msg) {
-        output+=msg + "\n";
-    }
+    public static void addToOutput(String msg) { output+=msg + "\n"; }
 
     public static boolean loadResources() {
         Display.displayProgressMessage("Loading the resources...");
@@ -70,6 +72,7 @@ public class TextFighter {
         locationDir = new File(resourcesDir.getPath() + "/locations");
         savesDir = new File("../../../saves");
         enemyDir = new File(resourcesDir + "/enemies");
+        achievementsDir = new File(resourcesDir + "/achievements");
         configDir = new File("../../../config");
         //Place where desired packs are defined
         packFile = new File(configDir.getPath() + "/packs");
@@ -80,8 +83,10 @@ public class TextFighter {
         intpackDir = new File(packDir.getPath() + "/intpacks");
         //Place where all the enemyPacks are
         enemypackDir = new File(packDir.getPath() + "/enemypacks");
+        //Place where are the achivementPacks are
+        achievementpackDir = new File(packDir.getPath() + "/achivementpacks");
         loadConfig();
-        if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies()) { return false; }
+        if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
         if (!savesDir.exists()) {
             Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
@@ -89,7 +94,7 @@ public class TextFighter {
         return true;
     }
 
-    public static ArrayList loadMethods(Class type, JSONArray methodArray, String parentName, Class parentType) {
+    public static ArrayList loadMethods(Class type, JSONArray methodArray, Class parentType) {
         ArrayList<Object> methods = new ArrayList<Object>();
         if(methodArray != null && methodArray.size() > 0) {
             for(int i=0; i<methodArray.size(); i++) {
@@ -104,13 +109,7 @@ public class TextFighter {
                 String fieldString = (String)o.get("field");
                 String fieldclassString = (String)o.get("fieldclass");
                 if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); continue; }
-                if((argumentsString != null && argumentTypesString != null) && (argumentsString.size() == argumentTypesString.size())) {
-
-                } else if(argumentTypesString == null && argumentsString == null) {
-
-                } else {
-                    Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); continue;
-                }
+                if(!((argumentsString != null && argumentTypesString != null) && (argumentsString.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsString == null))) { Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); continue; }
                 //Fields and fieldclasses can be null (Which just means the method does not act upon a field
                 if(argumentTypesString != null && argumentTypesString.size() > 0) {
                     for (int g=0; g<argumentTypesString.size(); g++) {
@@ -180,18 +179,21 @@ public class TextFighter {
                     String neededBooleanString = (String)o.get("neededBoolean");
                     boolean neededBoolean = Boolean.parseBoolean(neededBooleanString);
                     if(neededBooleanString == null) { neededBoolean = true; }
-                    methods.add(new Requirement(parentName, parentType, method, arguments, clazz, field, fieldclass, neededBoolean));
+                    methods.add(new Requirement(method, arguments, clazz, field, fieldclass, neededBoolean));
                 } else if(type.equals(Postmethod.class)) {
-                    methods.add(new Postmethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), null, Postmethod.class)));
+                    methods.add(new Postmethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), Postmethod.class)));
                 } else if(type.equals(Premethod.class)) {
-                    methods.add(new Premethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), null, Premethod.class)));
+                    methods.add(new Premethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), Premethod.class)));
                 } else if(type.equals(EnemyActionMethod.class)) {
                     methods.add(new EnemyActionMethod(method, arguments, clazz, field, fieldclass));
                 } else if(type.equals(Reward.class)) {
-                    int chance = Integer.parseInt((String)o.get("chance"));
-                    if(chance <= 0.0) { Display.displayPackError("This reward does not have a chance. Omitting..."); continue; }
-                    String rewardItem = (String)o.get("rewarditem");
-                    methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), null, Enemy.class), chance, rewardItem));
+                    if(parentType.equals(Enemy.class)) {
+                        int chance = Integer.parseInt((String)o.get("chance"));
+                        if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); continue; }
+                        methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), Enemy.class), chance, (String)o.get("rewarditem")));
+                    } else {
+                        methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), Enemy.class), 100, (String)o.get("rewarditem")));
+                    }
                 } else if(type.equals(UiTag.class)) {
                     String tag = (String)o.get("tag");
                     if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); continue; }
@@ -354,7 +356,7 @@ public class TextFighter {
                                 String desc = (String)obj.get("description");
                                 String usage = (String)obj.get("usage");
                                 if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
-                                choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), choicename, Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), choicename, Choice.class)));
+                                choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class)));
                             }
                         }
 
@@ -370,7 +372,7 @@ public class TextFighter {
                             ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
                             choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                             //Adds the loaded location
-                            locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), name, Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), name, Location.class)));
+                            locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), Location.class)));
                             usedNames.add(name);
                         }
                         directory = locationDir;
@@ -427,7 +429,7 @@ public class TextFighter {
                 if(!parsingPack) { num++; Display.displayPackMessage("Loading enemies from the default pack."); }
                 if(directory.list() != null) {
                     for(String f : directory.list()) {
-                        JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(enemyDir.getAbsolutePath() + "/" + f)));
+                        JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                         String name = (String)enemyFile.get("name");
                         Display.displayPackMessage("Loading enemy '" + name + "'");
                         int health = Integer.parseInt((String)enemyFile.get("health"));
@@ -443,10 +445,10 @@ public class TextFighter {
                         if(enemyActionArray != null && enemyActionArray.size() > 0) {
                             for (int i=0; i<enemyActionArray.size(); i++) {
                                 JSONObject obj = (JSONObject)enemyActionArray.get(i);
-                                enemyActions.add(new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), null, EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), name, Enemy.class)));
+                                enemyActions.add(new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), Enemy.class)));
                             }
                         }
-                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), name, Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(Premethod.class, (JSONArray)enemyFile.get("preMethods"), name, Enemy.class), loadMethods(Postmethod.class, (JSONArray)enemyFile.get("postMethods"), name, Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), name, Enemy.class), enemyActions));
+                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(Premethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class), loadMethods(Postmethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class), enemyActions));
                         usedNames.add(name);
                         directory=enemyDir;
                         parsingPack=false;
@@ -495,10 +497,71 @@ public class TextFighter {
                 JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
                 JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
                 if(tagsArray == null) { continue; }
-                Display.interfaceTags = loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null, null);
+                Display.interfaceTags = loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null);
                 parsingPack = false;
                 file = tagFile;
                 Display.displayProgressMessage("Parsing tags loaded.");
+            }
+        } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
+        return true;
+    }
+
+    public static boolean loadAchievements() {
+        try {
+            Display.displayProgressMessage("Loading the achievements...");
+            if(!achievementsDir.exists()) { Display.displayError("Could not find the default achievements directory."); return false;}
+            ArrayList<String> usedNames = new ArrayList<String>();
+            File directory = achievementsDir;
+            if(packFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String key = "";
+                        String value = "";
+                        if(key == null && value == null) { continue; }
+                        if(line.indexOf("=") != -1) {
+                            key = line.substring(0,line.indexOf("="));
+                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
+                        }
+                        if(value == null || key == null || !key.equals("achievementpack")) { continue; }
+                        File achievementpack = new File(achievementpackDir + "/" + value);
+                        if(achievementpackDir.list() != null && new ArrayList<>(Arrays.asList(achievementpackDir.list())).contains(value) && achievementpack.isDirectory()) {
+                            directory = achievementpack;
+                            Display.displayProgressMessage("loading achievements from achievementpack '" + value + "'");
+                            parsingPack = true;
+                        } else {
+                            Display.displayWarning("Achievement pack '" + value + "' not found. Falling back to default achievements.");
+                        }
+                    }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack file (The file does exist). Falling back to default achievements."); }
+            }
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            if(parsingPack) {
+                File omissionFile = new File(directory + "/" + "omit.txt");
+                if(omissionFile.exists()) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            namesToBeOmitted.add(line);
+                        }
+                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally..."); }
+                }
+            }
+            for(int num=0; num<2; num++) {
+                if(!parsingPack) { num++; Display.displayPackMessage("Loading achievements from the default pack."); }
+                if(directory.list() != null) {
+                    for(String f : directory.list()) {
+                        JSONObject achievementFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
+                        String name = (String)achievementFile.get("name");
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
+                        Display.displayPackMessage("Loading achievement '" + name + "'");
+                        achievements.add(new Achievement(name, loadMethods(Requirement.class, (JSONArray)achievementFile.get("requirements"), Achievement.class), loadMethods(Reward.class, (JSONArray)achievementFile.get("rewards"), Achievement.class)));
+                        usedNames.add(name);
+                        directory=enemyDir;
+                        parsingPack=false;
+                    }
+                }
+                Display.displayProgressMessage("Achievements loaded.");
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
@@ -560,7 +623,20 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, level, experience, score, gameBeaten, newInventory);
+            ArrayList<Achievement> playerAchievements = new ArrayList<Achievement>();
+            JSONArray achievementsArray = (JSONArray)file.get("achievements");
+
+            if(achievementsArray != null) {
+                for(int i=0; i<achievementsArray.size(); i++) {
+                    for(Achievement a : achievements) {
+                        if(achievementsArray.get(i) == a.getName()) {
+                            playerAchievements.add(a);
+                        }
+                    }
+                }
+            }
+
+            player = new Player(hp, maxhp, coins, magic, level, experience, score, gameBeaten, newInventory, playerAchievements);
             addToOutput("Loaded save '" + name + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -612,7 +688,7 @@ public class TextFighter {
         ArrayList<Item> newInventory = new ArrayList<Item>();
         newInventory.add(new Sword(1,0,0));
 
-        player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, false, newInventory);
+        player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, false, newInventory, new ArrayList<Achievement>());
 
         addToOutput("Added new save '" + name + "'");
 
@@ -660,6 +736,16 @@ public class TextFighter {
             }
         }
 
+        JSONArray earnedAchievements = new JSONArray();
+
+        //For achievements
+        if(player.getAchievements() != null) {
+            for(Achievement a : player.getAchievements()) {
+                earnedAchievements.add(a.getName());
+            }
+        }
+
+        base.put("achievements", earnedAchievements);
         base.put("inventory", inventory);
         base.put("stats", stats);
         base.put("name", gameName);
@@ -871,6 +957,20 @@ public class TextFighter {
         invokePlayerInput();
         Display.clearScreen();
         Display.displayPreviousCommand();
+        for(Achievement a : achievements) {
+            if(!player.getAchievements().contains(a)) {
+                boolean earned = true;
+                for(Requirement r : a.getRequirements()) {
+                    if(!r.invokeMethod() == r.getNeededBoolean()) {
+                        earned = false;
+                        break;
+                    }
+                }
+                if(earned) {
+                    player.achievementEarned(a);
+                }
+            }
+        }
         if(output != null) {
             Display.displayOutputMessage(output);
         }

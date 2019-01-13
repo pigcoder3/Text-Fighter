@@ -1,8 +1,8 @@
-package org.textfighter;
+package org.textfighter.method;
 
 import org.textfighter.location.Location;
 import org.textfighter.display.Display;
-import org.textfighter.Requirement;
+import org.textfighter.method.*;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 
 @SuppressWarnings("unchecked")
 
-public class Premethod {
+public class Postmethod {
 
     private ArrayList<Object> arguments;
     private Class clazz;
@@ -46,7 +46,7 @@ public class Premethod {
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
     }
 
-    public Premethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
+    public Postmethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
         this.method = method;
         this.arguments = arguments;
         this.clazz = clazz;

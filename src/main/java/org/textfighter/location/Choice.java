@@ -1,6 +1,6 @@
 package org.textfighter.location;
 
-import org.textfighter.Requirement;
+import org.textfighter.method.*;
 
 import org.textfighter.TextFighter;
 
@@ -33,7 +33,7 @@ public class Choice {
         int inputArgsIndex = 0;
         for(ChoiceMethod m : methods) {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
-            int startingIndex = 0;
+            if(m.getArguments() == null) { continue; }
             for(int i=0; i<m.getArgumentTypes().size(); i++) {
                 if(!m.getArguments().get(i).equals("%ph%")) { methodArgs.add(m.getArguments().get(i)); continue; }
                 if(inputArgsIndex <= inputArgs.size() - 1) {
@@ -57,6 +57,7 @@ public class Choice {
         for(ChoiceMethod m : methods) {
             if(!m.invokeMethod()) {
                 TextFighter.addToOutput("Usage: " + usage);
+                m.resetArguments();
                 return false;
             }
         }

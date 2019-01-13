@@ -27,7 +27,6 @@ public class UiTag {
     public Object invokeMethod() {
         try {
             if(field != null) {
-                //System.out.println(clazz.getField(fieldclass.getName()+ "." + field.getName()).toString());
                 if(arguments != null) {
                     return(method.invoke(field.get(null), arguments.toArray()));
                 } else {

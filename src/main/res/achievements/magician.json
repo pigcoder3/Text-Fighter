@@ -1,0 +1,27 @@
+{
+
+    "name" : "magician",
+
+    "requirements" : [
+        {
+            "method" : "isCarryingSpecialItem",
+            "class" : "org.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["ManaPouch"],
+            "argumentTypes" : ["0"]
+        }
+    ],
+
+    "Rewards" : [
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["100"],
+            "argumentTypes" : ["0"]
+        }
+    ]
+
+}
