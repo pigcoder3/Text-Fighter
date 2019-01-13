@@ -17,6 +17,7 @@ public class Display {
     public static final String[] colorCodes = {"\u001B[30m", "\u001B[31m", "\u001B[32m", "\u001B[33m", "\u001B[34m", "\u001B[35m", "\u001B[36m", "\u001B[37m"};
 
     public static final String RESET = "\u001B[0m";
+    public static final String BOLD = "\u001B[1m]";
 
     public static String previousCommandString = "";
 
@@ -110,6 +111,14 @@ public class Display {
             System.out.print(prompt + promptString + RESET);
         } else {
             System.out.print(promptString);
+        }
+    }
+
+    public static void achievementEarned(String name) {
+        if(ANSI) {
+            TextFighter.addToOutput(BOLD + "You have earned the achievement '" + name + "'!" + RESET);
+        } else {
+            TextFighter.addToOutput("You have earned the achievement '" + name + "'!");
         }
     }
 

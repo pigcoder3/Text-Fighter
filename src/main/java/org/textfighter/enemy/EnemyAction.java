@@ -1,7 +1,7 @@
 package org.textfighter.enemy;
 
 import org.textfighter.enemy.*;
-import org.textfighter.Requirement;
+import org.textfighter.method.*;
 
 import java.util.ArrayList;
 

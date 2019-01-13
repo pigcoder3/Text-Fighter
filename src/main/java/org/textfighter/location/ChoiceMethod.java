@@ -16,6 +16,7 @@ public class ChoiceMethod {
     private Field field;
     private Class fieldclass;
     private ArrayList<Object> arguments = new ArrayList<Object>();
+    private ArrayList<Object> originalArguments = new ArrayList<Object>();
     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
 
     private boolean valid;
@@ -30,6 +31,7 @@ public class ChoiceMethod {
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
+        if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { return false; }
         try {
             if(field != null) {
                 if(arguments != null) {
@@ -44,15 +46,19 @@ public class ChoiceMethod {
                     method.invoke(null, new Object[0]);
                 }
             }
+            resetArguments();
             return true;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
         return false;
     }
 
+    public void resetArguments() { arguments = originalArguments; }
+
     public ChoiceMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Class clazz, Field field, Class fieldclass) {
         this.argumentTypes = argumentTypes;
         this.method = method;
         this.arguments = arguments;
+        this.originalArguments = arguments;
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;

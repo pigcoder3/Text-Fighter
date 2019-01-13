@@ -3,9 +3,10 @@ package org.textfighter;
 import org.textfighter.item.*;
 import org.textfighter.item.armor.*;
 import org.textfighter.location.Location;
-import org.textfighter.TextFighter;
+import org.textfighter.*;
 import org.textfighter.display.Display;
 import org.textfighter.item.specialitem.SpecialItem;
+import org.textfighter.method.*;
 
 import java.lang.reflect.*;
 
@@ -44,6 +45,8 @@ public class Player {
     private ArrayList<Item> inventory = new ArrayList<Item>();
 
     private ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
+
+    private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
     public boolean getAlive() { return alive; }
     public void setAlive(boolean b) { alive=b; TextFighter.removeSave(TextFighter.currentSaveFile.getName()); TextFighter.needsSaving=true;}
@@ -194,7 +197,14 @@ public class Player {
         return null;
     }
 
-    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, boolean gameBeaten, ArrayList<Item> inventory) {
+    public void achievementEarned(Achievement a) {
+        achievements.add(a);
+        Display.achievementEarned(a.getName());
+    }
+
+    public ArrayList<Achievement> getAchievements() { return achievements; }
+
+    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -204,6 +214,7 @@ public class Player {
         this.score = score;
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;
+        this.achievements = achievements;
         for(Location l : TextFighter.locations) {
             if(l.getName().equals("saves")) { this.location = l; }
         }

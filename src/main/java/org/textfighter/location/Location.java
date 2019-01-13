@@ -3,6 +3,7 @@ package org.textfighter.location;
 import org.textfighter.location.*;
 import org.textfighter.*;
 import org.textfighter.display.*;
+import org.textfighter.method.*;
 
 import java.util.ArrayList;
 
