@@ -34,11 +34,8 @@ public class Choice {
         for(ChoiceMethod m : methods) {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
             int startingIndex = 0;
-            if(m.getArguments() != null) {
-                methodArgs = m.getArguments();
-                startingIndex=m.getArguments().size();
-            }
-            for(int i=startingIndex; i<m.getArgumentTypes().size(); i++) {
+            for(int i=0; i<m.getArgumentTypes().size(); i++) {
+                if(!m.getArguments().get(i).equals("%ph%")) { methodArgs.add(m.getArguments().get(i)); continue; }
                 if(inputArgsIndex <= inputArgs.size() - 1) {
                     if(m.getArgumentTypes().get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
