@@ -153,7 +153,6 @@ public class TextFighter {
         //Makes the arguments the correct type (String, int, or boolean)
         ArrayList<Object> arguments = new ArrayList<Object>();
         if(argumentsRaw != null) {
-            System.out.println("e");
             for (int p=0; p<argumentTypes.size(); p++) {
                 if(argumentsRaw.get(p).getClass().equals(JSONObject.class)) {
                     arguments.add(loadMethod(TFMethod.class, (JSONObject)argumentsRaw.get(p), type));
