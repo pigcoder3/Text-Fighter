@@ -2,6 +2,7 @@ package org.textfighter.location;
 
 import org.textfighter.display.Display;
 import org.textfighter.TextFighter;
+import org.textfighter.method.TFMethod;
 
 import java.lang.reflect.*;
 
@@ -26,12 +27,22 @@ public class ChoiceMethod {
     public Field getField() { return field; }
     public ArrayList<Object> getArguments() { return arguments; }
     public void setArguments(ArrayList<Object> args) { arguments=args; }
+    public ArrayList<Object> getOriginalArguments() { return originalArguments; }
     public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
 
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
+        //Invokes all the arguments that are methods
+        if(arguments != null) {
+            for(int i=0; i<arguments.size(); i++) {
+                if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
+                    arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
+                }
+            }
+        }
         if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { return false; }
+
         try {
             if(field != null) {
                 if(arguments != null) {

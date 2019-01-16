@@ -21,11 +21,11 @@ public class Enemy implements Cloneable {
     private ArrayList<EnemyAction> allActions = new ArrayList<EnemyAction>();
     private ArrayList<EnemyAction> possibleActions = new ArrayList<EnemyAction>();
 
-    private ArrayList<Postmethod> allPostmethods = new ArrayList<Postmethod>();
-    private ArrayList<Postmethod> possiblePostmethods = new ArrayList<Postmethod>();
+    private ArrayList<TFMethod> allPostmethods = new ArrayList<TFMethod>();
+    private ArrayList<TFMethod> possiblePostmethods = new ArrayList<TFMethod>();
 
-    private ArrayList<Premethod> allPremethods = new ArrayList<Premethod>();
-    private ArrayList<Premethod> possiblePremethods = new ArrayList<Premethod>();
+    private ArrayList<TFMethod> allPremethods = new ArrayList<TFMethod>();
+    private ArrayList<TFMethod> possiblePremethods = new ArrayList<TFMethod>();
 
     private ArrayList<Reward> allRewardMethods = new ArrayList<Reward>();
     private ArrayList<Reward> possibleRewardMethods = new ArrayList<Reward>();
@@ -91,7 +91,7 @@ public class Enemy implements Cloneable {
 
     public void invokePostmethods() {
         filterPostmethods();
-        for(Postmethod pm : possiblePostmethods) {
+        for(TFMethod pm : possiblePostmethods) {
             pm.invokeMethod();
         }
     }
@@ -99,7 +99,7 @@ public class Enemy implements Cloneable {
     public void filterPostmethods() {
         possiblePostmethods.clear();
         if(allPostmethods != null) {
-            for(Postmethod pm : allPostmethods) {
+            for(TFMethod pm : allPostmethods) {
                 boolean valid = true;
                 if(pm.getRequirements() != null){
                     for(Requirement r : pm.getRequirements()) {
@@ -119,7 +119,7 @@ public class Enemy implements Cloneable {
     public void invokePremethods() {
         filterPremethods();
         if(possiblePremethods != null) {
-            for(Premethod pm : possiblePremethods) {
+            for(TFMethod pm : possiblePremethods) {
                 pm.invokeMethod();
             }
         }
@@ -128,7 +128,7 @@ public class Enemy implements Cloneable {
     public void filterPremethods() {
         possiblePremethods.clear();
         if(allPremethods != null){
-            for(Premethod pm : allPremethods) {
+            for(TFMethod pm : allPremethods) {
                 boolean valid = true;
                 if(pm.getRequirements() != null) {
                     for(Requirement r : pm.getRequirements()) {
@@ -178,7 +178,7 @@ public class Enemy implements Cloneable {
 
     public void attack() { TextFighter.player.damage(strength); }
 
-    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<Premethod> premethods, ArrayList<Postmethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
+    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
 
         //Sets the variables
         this.name = name;
