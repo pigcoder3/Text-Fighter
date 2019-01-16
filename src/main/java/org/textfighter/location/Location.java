@@ -16,11 +16,11 @@ public class Location {
     private ArrayList<Choice> allChoices = new ArrayList<Choice>();
     private ArrayList<Choice> possibleChoices = new ArrayList<Choice>();
 
-    private ArrayList<Premethod> allPremethods = new ArrayList<Premethod>();
-    private ArrayList<Premethod> possiblePremethods = new ArrayList<Premethod>();
+    private ArrayList<TFMethod> allPremethods = new ArrayList<TFMethod>();
+    private ArrayList<TFMethod> possiblePremethods = new ArrayList<TFMethod>();
 
-    private ArrayList<Postmethod> allPostmethods = new ArrayList<Postmethod>();
-    private ArrayList<Postmethod> possiblePostmethods = new ArrayList<Postmethod>();
+    private ArrayList<TFMethod> allPostmethods = new ArrayList<TFMethod>();
+    private ArrayList<TFMethod> possiblePostmethods = new ArrayList<TFMethod>();
 
     public String getName() { return name; }
 
@@ -29,12 +29,12 @@ public class Location {
     public ArrayList<Choice> getAllChoices() { return allChoices; }
     public ArrayList<Choice> getPossibleChoices() { return possibleChoices; }
 
-    public ArrayList<Premethod> getPremethods() { return possiblePremethods; }
-    public ArrayList<Postmethod> getPostmethods() { return possiblePostmethods; }
+    public ArrayList<TFMethod> getPremethods() { return possiblePremethods; }
+    public ArrayList<TFMethod> getPostmethods() { return possiblePostmethods; }
 
     public void invokePremethods() {
         filterPremethods();
-        for(Premethod pm : possiblePremethods) {
+        for(TFMethod pm : possiblePremethods) {
             pm.invokeMethod();
         }
     }
@@ -42,7 +42,7 @@ public class Location {
     public void filterPremethods() {
         possiblePremethods.clear();
         if(allPremethods == null) { return; }
-        for(Premethod pm : allPremethods) {
+        for(TFMethod pm : allPremethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
                 if(!r.invokeMethod()) {
@@ -58,7 +58,7 @@ public class Location {
 
     public void invokePostmethods() {
         filterPostmethods();
-        for(Postmethod pm : possiblePostmethods) {
+        for(TFMethod pm : possiblePostmethods) {
             pm.invokeMethod();
         }
     }
@@ -66,7 +66,7 @@ public class Location {
     public void filterPostmethods() {
         possiblePostmethods.clear();
         if(allPostmethods == null) { return; }
-        for(Postmethod pm : allPostmethods) {
+        for(TFMethod pm : allPostmethods) {
             boolean valid = true;
             for(Requirement r : pm.getRequirements()) {
                 if(!r.invokeMethod()) {
@@ -100,7 +100,7 @@ public class Location {
         }
     }
 
-    public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<Premethod> premethods, ArrayList<Postmethod> postmethods) {
+    public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postmethods) {
 
         //Sets all variables
         this.name = name;

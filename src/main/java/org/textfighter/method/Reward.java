@@ -35,6 +35,15 @@ public class Reward {
     public boolean getValid() { return valid; }
 
     public String invokeMethod() {
+        //Invokes all the arguments that are methods
+        if(arguments != null) {
+            for(int i=0; i<arguments.size(); i++) {
+                if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
+                    arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
+                }
+            }
+        }
+
         try {
             //Does the random chance thing
             Random random = new Random();

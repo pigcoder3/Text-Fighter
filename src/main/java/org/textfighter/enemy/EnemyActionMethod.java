@@ -2,6 +2,7 @@ package org.textfighter.enemy;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import org.textfighter.method.TFMethod;
 
 import org.textfighter.display.Display;
 
@@ -25,6 +26,14 @@ public class EnemyActionMethod {
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
+        //Invokes all the arguments that are methods
+        if(arguments != null) {
+            for(int i=0; i<arguments.size(); i++) {
+                if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
+                    arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
+                }
+            }
+        }
         try {
             if(field != null) {
                 if(arguments != null) {

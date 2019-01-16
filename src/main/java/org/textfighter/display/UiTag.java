@@ -3,6 +3,7 @@ package org.textfighter.display;
 import org.textfighter.*;
 import org.textfighter.item.Item;
 import org.textfighter.display.Display;
+import org.textfighter.method.TFMethod;
 
 import java.lang.reflect.*;
 
@@ -25,6 +26,14 @@ public class UiTag {
     public ArrayList<Object> getArguments() { return arguments; }
 
     public Object invokeMethod() {
+        //Invokes all the arguments that are methods
+        if(arguments != null) {
+            for(int i=0; i<arguments.size(); i++) {
+                if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
+                    arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
+                }
+            }
+        }
         try {
             if(field != null) {
                 if(arguments != null) {

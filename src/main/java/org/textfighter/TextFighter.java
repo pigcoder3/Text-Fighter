@@ -94,111 +94,123 @@ public class TextFighter {
         return true;
     }
 
+    public static Object loadMethod(Class type, JSONObject obj, Class parentType) {
+        ArrayList<Object> argumentsRaw = (JSONArray)obj.get("arguments");
+        ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
+        ArrayList<Class> argumentTypes = new ArrayList<Class>();
+        if(type.equals(UiTag.class) && obj.get("tag") != null) { Display.displayPackMessage("Loading tag '" + (String)obj.get("tag") + "'"); }
+        String methodString = (String)obj.get("method");
+        Display.displayPackMessage("Loading method '" + methodString + "' of type '" + type.getSimpleName() + "'");
+        Display.changePackTabbing(true);
+        String clazzString = (String)obj.get("class");
+        String fieldString = (String)obj.get("field");
+        String fieldclassString = (String)obj.get("fieldclass");
+        if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); return null; }
+        if(!((argumentsRaw != null && argumentTypesString != null) && (argumentsRaw.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsRaw == null))) { Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); return null; }
+        //Fields and fieldclasses can be null (Which just means the method does not act upon a field
+        if(argumentTypesString != null && argumentTypesString.size() > 0) {
+            for (int g=0; g<argumentTypesString.size(); g++) {
+                int num = Integer.parseInt(argumentTypesString.get(g));
+                if(num == 0) {
+                    argumentTypes.add(String.class);
+                } else if(num == 1) {
+                    argumentTypes.add(int.class);
+                } else if(num == 2) {
+                    argumentTypes.add(boolean.class);
+                } else {
+                    Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
+                    continue;
+                }
+            }
+        }
+
+        //Gets the class
+        Class clazz = null;
+        try { clazz = Class.forName(clazzString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); return null; }
+
+        //Gets the fieldclass
+        Class fieldclass = null;
+        if(fieldclassString != null && fieldString != null) { try { fieldclass = Class.forName(fieldclassString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); return null; } }
+
+        //Gets the field from the class
+        Field field = null;
+        try {
+            if(fieldString != null) {
+                field = fieldclass.getField(fieldString);
+            }
+        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); return null; }
+
+        //Gets the method from the class
+        Method method = null;
+        try {
+            if(argumentTypes != null ) {
+                method = clazz.getMethod(methodString, argumentTypes.toArray(new Class[argumentTypes.size()]));
+            } else {
+                method = clazz.getMethod(methodString);
+            }
+        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' could not be found. Omitting..."); return null; }
+
+        //Makes the arguments the correct type (String, int, or boolean)
+        ArrayList<Object> arguments = new ArrayList<Object>();
+        if(argumentsRaw != null) {
+            System.out.println("e");
+            for (int p=0; p<argumentTypes.size(); p++) {
+                if(argumentsRaw.get(p).getClass().equals(JSONObject.class)) {
+                    arguments.add(loadMethod(TFMethod.class, (JSONObject)argumentsRaw.get(p), type));
+                } else {
+                    if(argumentTypes.get(p).equals(int.class)) {
+                        arguments.add(Integer.parseInt((String)argumentsRaw.get(p)));
+                    } else if (argumentTypes.get(p).equals(String.class)) {
+                        if(argumentsRaw.get(p).equals("%null%")) { arguments.add(null); }
+                        else { arguments.add((String)argumentsRaw.get(p)); }
+                    } else if (argumentTypes.get(p).equals(boolean.class)) {
+                        arguments.add(Boolean.parseBoolean((String)argumentsRaw.get(p)));
+                    } else {
+                        Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
+                        continue;
+                    }
+                }
+            }
+        }
+
+        Object o = null;
+
+        //Creates the correct Method type
+        if(type.equals(ChoiceMethod.class)) {
+            o=new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass);
+        } else if(type.equals(Requirement.class)) {
+            String neededBooleanString = (String)obj.get("neededBoolean");
+            boolean neededBoolean = Boolean.parseBoolean(neededBooleanString);
+            if(neededBooleanString == null) { neededBoolean = true; }
+            o=new Requirement(method, arguments, clazz, field, fieldclass, neededBoolean);
+        } else if(type.equals(EnemyActionMethod.class)) {
+            o=new EnemyActionMethod(method, arguments, clazz, field, fieldclass);
+        } else if(type.equals(TFMethod.class)) {
+            o=new TFMethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
+        } else if(type.equals(Reward.class)) {
+            if(parentType.equals(Enemy.class)) {
+                int chance = Integer.parseInt((String)obj.get("chance"));
+                if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
+                o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
+            } else {
+                o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
+            }
+        } else if(type.equals(UiTag.class)) {
+            String tag = (String)obj.get("tag");
+            if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); return null; }
+            o=new UiTag(tag, method, arguments, clazz, field, fieldclass);
+        }
+        Display.changePackTabbing(false);
+        return o;
+    }
+
     public static ArrayList loadMethods(Class type, JSONArray methodArray, Class parentType) {
         ArrayList<Object> methods = new ArrayList<Object>();
-        if(methodArray != null && methodArray.size() > 0) {
+        if((methodArray != null && methodArray.size() > 0)) {
             for(int i=0; i<methodArray.size(); i++) {
                 JSONObject o = (JSONObject)methodArray.get(i);
-                ArrayList<String> argumentsString = (JSONArray)o.get("arguments");
-                ArrayList<String> argumentTypesString = (JSONArray)o.get("argumentTypes");
-                ArrayList<Class> argumentTypes = new ArrayList<Class>();
-                if(type.equals(UiTag.class) && o.get("tag") != null) { Display.displayPackMessage("Loading tag '" + (String)o.get("tag") + "'"); }
-                String methodString = (String)o.get("method");
-                Display.displayPackMessage("Loading method '" + methodString + "' of type '" + type.getSimpleName() + "'");
-                String clazzString = (String)o.get("class");
-                String fieldString = (String)o.get("field");
-                String fieldclassString = (String)o.get("fieldclass");
-                if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); continue; }
-                if(!((argumentsString != null && argumentTypesString != null) && (argumentsString.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsString == null))) { Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); continue; }
-                //Fields and fieldclasses can be null (Which just means the method does not act upon a field
-                if(argumentTypesString != null && argumentTypesString.size() > 0) {
-                    for (int g=0; g<argumentTypesString.size(); g++) {
-                        int num = Integer.parseInt(argumentTypesString.get(g));
-                        if(num == 0) {
-                            argumentTypes.add(String.class);
-                        } else if(num == 1) {
-                            argumentTypes.add(int.class);
-                        } else if(num == 2) {
-                            argumentTypes.add(boolean.class);
-                        } else {
-                            Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
-                            continue;
-                        }
-                    }
-                }
-
-                //Gets the class
-                Class clazz = null;
-                try { clazz = Class.forName(clazzString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); continue; }
-
-                //Gets the fieldclass
-                Class fieldclass = null;
-                if(fieldclassString != null && fieldString != null) { try { fieldclass = Class.forName(fieldclassString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); continue; } }
-
-                //Gets the field from the class
-                Field field = null;
-                try {
-                    if(fieldString != null) {
-                        field = fieldclass.getField(fieldString);
-                    }
-                } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); continue; }
-
-                //Gets the method from the class
-                Method method = null;
-                try {
-                    if(argumentTypes != null ) {
-                        method = clazz.getMethod(methodString, argumentTypes.toArray(new Class[argumentTypes.size()]));
-                    } else {
-                        method = clazz.getMethod(methodString);
-                    }
-                } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' could not be found. Omitting..."); continue; }
-
-                //Makes the arguments the correct type (String, int, or boolean)
-                ArrayList<Object> arguments = new ArrayList<Object>();
-                if(argumentsString != null) {
-                    for (int p=0; p<argumentsString.size(); p++) {
-                        if(argumentTypes.get(p).equals(int.class)) {
-                            arguments.add(Integer.parseInt(argumentsString.get(p)));
-                        } else if (argumentTypes.get(p).equals(String.class)) {
-                            if(argumentsString.get(p).equals("%null%")) { arguments.add(null); }
-                            else { arguments.add(argumentsString.get(p)); }
-                        } else if (argumentTypes.get(p).equals(boolean.class)) {
-                            arguments.add(Boolean.parseBoolean(argumentsString.get(p)));
-                        } else {
-                            Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
-                            continue;
-                        }
-                    }
-                }
-
-
-                //Creates the correct Method type
-                if(type.equals(ChoiceMethod.class)) {
-                    methods.add(new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass));
-                } else if(type.equals(Requirement.class)) {
-                    String neededBooleanString = (String)o.get("neededBoolean");
-                    boolean neededBoolean = Boolean.parseBoolean(neededBooleanString);
-                    if(neededBooleanString == null) { neededBoolean = true; }
-                    methods.add(new Requirement(method, arguments, clazz, field, fieldclass, neededBoolean));
-                } else if(type.equals(Postmethod.class)) {
-                    methods.add(new Postmethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), Postmethod.class)));
-                } else if(type.equals(Premethod.class)) {
-                    methods.add(new Premethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)o.get("requirements"), Premethod.class)));
-                } else if(type.equals(EnemyActionMethod.class)) {
-                    methods.add(new EnemyActionMethod(method, arguments, clazz, field, fieldclass));
-                } else if(type.equals(Reward.class)) {
-                    if(parentType.equals(Enemy.class)) {
-                        int chance = Integer.parseInt((String)o.get("chance"));
-                        if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); continue; }
-                        methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), Enemy.class), chance, (String)o.get("rewarditem")));
-                    } else {
-                        methods.add(new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)o.get("requirements"), Enemy.class), 100, (String)o.get("rewarditem")));
-                    }
-                } else if(type.equals(UiTag.class)) {
-                    String tag = (String)o.get("tag");
-                    if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); continue; }
-                    methods.add(new UiTag(tag, method, arguments, clazz, field, fieldclass));
-                }
+                Object method = loadMethod(type, o, parentType);
+                if(method != null) { methods.add(method); }
             }
             return methods;
         } else { return null; }
@@ -257,27 +269,31 @@ public class TextFighter {
                         JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
                         String name = (String)interfaceFile.get("name");
                         Display.displayPackMessage("Loading interface '" + name + "'");
+                        Display.changePackTabbing(true);
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("An interface does not have a name. Omitting..."); continue; }
-                        if(interfaceArray == null) { Display.displayPackError("Interface '" + name + "' does not have an interface array. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); continue; }
+                        if(interfaceArray == null) { Display.displayPackError("This does not have an interface array. Omitting..."); continue; }
                         String uiString = "";
                         for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
                         Display.interfaces.add(new UserInterface(name, uiString));
                         usedNames.add(name);
+                        Display.changePackTabbing(false);
                     }
                 }
                 directory = interfaceDir;
                 parsingPack = false;
             }
             Display.displayProgressMessage("Interfaces loaded.");
+            Display.changePackTabbing(false);
             return true;
-        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file. It was likely deleted after the program got all files in the interfaces directory."); return false; }
-        catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces. The permissions are likely set to be unreadable."); return false;}
-        catch (ParseException e) { Display.displayError("Having trouble parsing the interface files. Will continue as expected though."); return false; }
+        } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file. It was likely deleted after the program got all files in the interfaces directory."); Display.changePackTabbing(false); return false; }
+        catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces. The permissions are likely set to be unreadable."); Display.changePackTabbing(false); return false;}
+        catch (ParseException e) { Display.displayError("Having trouble parsing the interface files. Will continue as expected though."); Display.changePackTabbing(false); return false; }
     }
     public static boolean loadLocations() {
         try {
             Display.displayProgressMessage("Loading the locations...");
+            Display.changePackTabbing(true);
             if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
             //Search through the locations directory for all locations
             ArrayList<String> usedNames = new ArrayList<String>();
@@ -326,9 +342,10 @@ public class TextFighter {
                         JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
                         String name = (String)locationFile.get("name");
                         Display.displayPackMessage("Loading Location '" + name + "'");
+                        Display.changePackTabbing(true);
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("A location does not have a name."); continue; }
-                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces."); continue; }
+                        if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); continue; }
+                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); continue; }
                         ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                         boolean hasChoiceInterface = false;
                         for(int i=0; i<interfaceJArray.size(); i++) {
@@ -342,7 +359,7 @@ public class TextFighter {
                             }
                         }
                         if(!hasChoiceInterface) {
-                            Display.displayWarning("The location '" + name + "' does not have a choices interface. Omitting...");
+                            Display.displayWarning("This does not have a choices interface. Omitting...");
                             continue;
                         }
                         JSONArray choiceArray = (JSONArray)locationFile.get("choices");
@@ -353,15 +370,18 @@ public class TextFighter {
                                 JSONObject obj = (JSONObject)choiceArray.get(i);
                                 String choicename = (String)obj.get("name");
                                 Display.displayPackMessage("Loading choice '" + choicename + "'");
+                                Display.changePackTabbing(true);
                                 String desc = (String)obj.get("description");
                                 String usage = (String)obj.get("usage");
                                 if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
                                 choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class)));
+                                Display.changePackTabbing(false);
                             }
                         }
 
                         if(!usedNames.contains("quit")) {
                             Display.displayPackMessage("Adding the quit choice");
+                            Display.changePackTabbing(true);
 
                             Method method;
                             try {
@@ -371,17 +391,21 @@ public class TextFighter {
                             ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
                             ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
                             choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
-                            //Adds the loaded location
-                            locations.add(new Location(name, interfaces, choices, loadMethods(Premethod.class, (JSONArray)locationFile.get("premethods"), Location.class), loadMethods(Postmethod.class, (JSONArray)locationFile.get("postmethods"), Location.class)));
-                            usedNames.add(name);
+                            Display.changePackTabbing(false);
                         }
+                        //Adds the loaded location
+                        locations.add(new Location(name, interfaces, choices, loadMethods(TFMethod.class, (JSONArray)locationFile.get("premethods"), Location.class), loadMethods(TFMethod.class, (JSONArray)locationFile.get("postmethods"), Location.class)));
+                        usedNames.add(name);
+                        Display.changePackTabbing(false);
                         directory = locationDir;
                         parsingPack = false;
                     }
                 }
                 Display.displayProgressMessage("Locations loaded.");
+                Display.changePackTabbing(false);
             }
-        } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
+        } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
+        Display.changePackTabbing(false);
         return true;
     }
     public static boolean loadEnemies() {
@@ -432,11 +456,12 @@ public class TextFighter {
                         JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                         String name = (String)enemyFile.get("name");
                         Display.displayPackMessage("Loading enemy '" + name + "'");
+                        Display.changePackTabbing(true);
                         int health = Integer.parseInt((String)enemyFile.get("health"));
                         int strength = Integer.parseInt((String)enemyFile.get("strength"));
                         int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
                         boolean finalBoss = Boolean.parseBoolean((String)enemyFile.get("finalBoss"));
-                        if(name == null) { Display.displayPackError("An enemy does not have a name. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This enemy does not have a name. Omitting..."); continue; }
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
                         if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
                         if(levelRequirement < 1) { levelRequirement=1; }
@@ -448,15 +473,17 @@ public class TextFighter {
                                 enemyActions.add(new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), Enemy.class)));
                             }
                         }
-                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(Premethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class), loadMethods(Postmethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class), enemyActions));
+                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class), loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class), enemyActions));
                         usedNames.add(name);
                         directory=enemyDir;
                         parsingPack=false;
+                        Display.changePackTabbing(false);
                     }
                 }
                 Display.displayProgressMessage("Enemies loaded.");
             }
-        } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
+        } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
+        Display.changePackTabbing(false);
         return true;
     }
     public static boolean loadParsingTags() {
@@ -502,7 +529,8 @@ public class TextFighter {
                 file = tagFile;
                 Display.displayProgressMessage("Parsing tags loaded.");
             }
-        } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
+        } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
+        Display.changePackTabbing(false);
         return true;
     }
 
@@ -555,13 +583,16 @@ public class TextFighter {
                         String name = (String)achievementFile.get("name");
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
                         Display.displayPackMessage("Loading achievement '" + name + "'");
+                        Display.changePackTabbing(true);
                         achievements.add(new Achievement(name, loadMethods(Requirement.class, (JSONArray)achievementFile.get("requirements"), Achievement.class), loadMethods(Reward.class, (JSONArray)achievementFile.get("rewards"), Achievement.class)));
+                        Display.changePackTabbing(false);
                         usedNames.add(name);
                         directory=enemyDir;
                         parsingPack=false;
                     }
                 }
                 Display.displayProgressMessage("Achievements loaded.");
+                Display.changePackTabbing(false);
             }
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;

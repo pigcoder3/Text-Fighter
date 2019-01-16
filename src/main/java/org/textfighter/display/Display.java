@@ -10,6 +10,8 @@ import java.io.*;
 
 public class Display {
 
+    public static String packTabbing = "";
+
     public static String promptString = " > ";
 
     public static final String[] colorNames = {"black", "red", "green", "yellow", "blue", "purple", "cyan", "white"};
@@ -50,9 +52,9 @@ public class Display {
         // Displays errors that deal with packs
         if((TextFighter.testMode && TextFighter.parsingPack) || (!TextFighter.parsingPack && TextFighter.defaultpackmsgs)) {
             if(ANSI) {
-                System.err.println(error + "[PackError] " + e + RESET);
+                System.err.println(error + packTabbing + "[PackError] " + e + RESET);
             } else {
-                System.err.println("[PackError] " + e);
+                System.err.println(packTabbing + "[PackError] " + e);
             }
         }
     }
@@ -61,10 +63,20 @@ public class Display {
         // Displays messages that deal with packs
         if((TextFighter.testMode && TextFighter.parsingPack) || (!TextFighter.parsingPack && TextFighter.defaultpackmsgs)) {
             if(ANSI) {
-                System.err.println(progress + "[PackMessage] " + e + RESET);
+                System.err.println(progress + packTabbing + "[PackMessage] " + e + RESET);
             } else {
-                System.err.println("[PackMessage] " + e);
+                System.err.println(packTabbing + "[PackMessage] " + e);
             }
+        }
+    }
+
+    public static void changePackTabbing(boolean plusOrMinus) {
+        // true: add, false: remove
+        if(plusOrMinus) {
+            packTabbing+="  ";
+        } else {
+            if(packTabbing != null && packTabbing.length() > 2)
+            packTabbing=packTabbing.substring(0,packTabbing.length()-2);
         }
     }
 
