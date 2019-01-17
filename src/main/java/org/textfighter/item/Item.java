@@ -8,9 +8,6 @@ public class Item {
     protected int experience;
     protected int experienceRequirement;
     protected int baseExperienceRequirement = 50;
-    protected int type;
-
-    protected String[] typeStrings;
 
     protected String[] methodsForCalculations = {"calculateExperienceRequirement"};
 

@@ -7,8 +7,6 @@ public class Armor extends Item {
     protected double protectionAmount = 0.0;
     protected double baseProtection = 1;
 
-    protected String[] typeStrings = {"normal"};
-
     protected String[] methodsForCalculations = {"calculateProtectionAmount", "calculateExperienceRequirement"};
 
     public double getProtectionAmount() { return protectionAmount; }

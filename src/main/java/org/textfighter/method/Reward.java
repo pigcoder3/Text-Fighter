@@ -45,9 +45,9 @@ public class Reward {
         }
 
         try {
-            //Does the random chance thing
+            //Does the random chance thing to detemine if the player gets the reward
             Random random = new Random();
-            int number = random.nextInt(100-1)+1;
+            int number = random.nextInt(99)+1;
             if(number > chance) { return null; }
             if(field != null ) {
                 if(arguments != null) {

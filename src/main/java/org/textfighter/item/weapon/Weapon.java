@@ -7,9 +7,8 @@ public class Weapon extends Item {
     protected int damage;
     protected int baseDamage = 1;
 
+    //calculateExperienceRequirement hasnt been added yet
     protected String[] methodsForCalculations = {"calculateDamage", "calculateExperienceRequirement"};
-
-    protected String[] typeStrings = {"normal"};
 
     public int getDamage(){ return damage; }
     public void setDamage(int a){ damage=a;}

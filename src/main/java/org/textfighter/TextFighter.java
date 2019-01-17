@@ -24,10 +24,12 @@ import org.json.simple.parser.ParseException;
 
 public class TextFighter {
 
+    // Pack testing variables
     public static boolean testMode = false;
     public static boolean parsingPack = false;
     public static boolean defaultpackmsgs = false;
 
+    // Important game variables
     public static String gameName;
 
     public static Player player = new Player();
@@ -37,6 +39,7 @@ public class TextFighter {
 
     public static String output = "";
 
+    // All default pack directories
     public static File resourcesDir;
     public static File tagFile;
     public static File interfaceDir;
@@ -44,7 +47,11 @@ public class TextFighter {
     public static File enemyDir;
     public static File savesDir;
     public static File achievementsDir;
+
+    // Config
     public static File configDir;
+
+    // All pack directories
     public static File packFile;
     public static File packDir;
     public static File modpackDir;
@@ -66,6 +73,7 @@ public class TextFighter {
 
     public static boolean loadResources() {
         Display.displayProgressMessage("Loading the resources...");
+        //Loads all the directories
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir.getPath() + "/tags/tags.json");
         interfaceDir = new File(resourcesDir.getPath() + "/userInterfaces/");
@@ -74,18 +82,16 @@ public class TextFighter {
         enemyDir = new File(resourcesDir + "/enemies");
         achievementsDir = new File(resourcesDir + "/achievements");
         configDir = new File("../../../config");
-        //Place where desired packs are defined
         packFile = new File(configDir.getPath() + "/packs");
         packDir = new File("../../../packs");
-        //Place where all the modPacks are
         modpackDir = new File(packDir.getPath() + "/modpacks");
-        //Place where all the interfacePacks are
         intpackDir = new File(packDir.getPath() + "/intpacks");
-        //Place where all the enemyPacks are
         enemypackDir = new File(packDir.getPath() + "/enemypacks");
-        //Place where are the achivementPacks are
         achievementpackDir = new File(packDir.getPath() + "/achivementpacks");
         loadConfig();
+
+        //loads the content
+        //If any of the necessary content fails to load, send an error and exit the game
         if (!loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
         if (!savesDir.exists()) {
             Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
@@ -94,6 +100,10 @@ public class TextFighter {
         return true;
     }
 
+    /*
+      Loads a singular method
+      Useful for loading a Method that is an argument that you wouldnt pass a JSONArray to
+    */
     public static Object loadMethod(Class type, JSONObject obj, Class parentType) {
         ArrayList<Object> argumentsRaw = (JSONArray)obj.get("arguments");
         ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
@@ -203,6 +213,10 @@ public class TextFighter {
         return o;
     }
 
+    /*
+      Loads the methods in things like requirements, choicemethods, and others
+      Used if you have a JSONArray full of methods (And only methods) to parse
+    */
     public static ArrayList loadMethods(Class type, JSONArray methodArray, Class parentType) {
         ArrayList<Object> methods = new ArrayList<Object>();
         if((methodArray != null && methodArray.size() > 0)) {
@@ -219,8 +233,9 @@ public class TextFighter {
         try {
             Display.displayProgressMessage("Loading the interfaces...");
             if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory."); return false;}
-            ArrayList<String> usedNames = new ArrayList<String>();
+            ArrayList<String> usedNames = new ArrayList<String>(); // Used to override default interfaces with ones in packs
             File directory = interfaceDir;
+            //Determine if there is a pack to be loaded
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
                     String line;
@@ -245,7 +260,7 @@ public class TextFighter {
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default interfaces."); }
             }
 
-            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>(); //Place where all names that are located in the omit file are stored
             if(parsingPack) {
                 File omissionFile = new File(directory + "/" + "omit.txt");
                 if(omissionFile.exists()) {
@@ -258,6 +273,7 @@ public class TextFighter {
                 }
             }
 
+            //Now parses the interfaces
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; Display.displayPackMessage("Loading interfaces from the default pack."); }
                 if(directory.list() != null) {
@@ -294,7 +310,6 @@ public class TextFighter {
             Display.displayProgressMessage("Loading the locations...");
             Display.changePackTabbing(true);
             if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
-            //Search through the locations directory for all locations
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = locationDir;
             if(packFile.exists()) {
@@ -320,7 +335,7 @@ public class TextFighter {
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default locations."); }
             }
-            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+            ArrayList<String> namesToBeOmitted = new ArrayList<String>(); //Place where names to be ommitted are stored
             if(parsingPack) {
                 File omissionFile = new File(directory + "/" + "omit.txt");
                 if(omissionFile.exists()) {
@@ -347,6 +362,7 @@ public class TextFighter {
                         if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); continue; }
                         ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                         boolean hasChoiceInterface = false;
+                        //Determines if the location has a choices array
                         for(int i=0; i<interfaceJArray.size(); i++) {
                             for(UserInterface ui : Display.interfaces) {
                                 if(ui.getName().equals(interfaceJArray.get(i))) {
@@ -378,6 +394,7 @@ public class TextFighter {
                             }
                         }
 
+                        //Adds the quit choice
                         if(!usedNames.contains("quit")) {
                             Display.displayPackMessage("Adding the quit choice");
                             Display.changePackTabbing(true);
@@ -413,6 +430,7 @@ public class TextFighter {
             if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = enemyDir;
+            //Determines if there is a pack to be parsed
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
                     String line;
@@ -436,6 +454,7 @@ public class TextFighter {
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the enemypack's file (The file does exist). Falling back to default enemies."); }
             }
+            //Gets omitted names
             ArrayList<String> namesToBeOmitted = new ArrayList<String>();
             if(parsingPack) {
                 File omissionFile = new File(directory + "/" + "omit.txt");
@@ -486,12 +505,14 @@ public class TextFighter {
         return true;
     }
     public static boolean loadParsingTags() {
+        //Custom parsing tags are located in interface packs
         try {
             Display.displayProgressMessage("Loading the parsing tags...");
             if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = intpackDir;
             File file = tagFile;
+            //Finds if there is a pack file to be parsed
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
                     String line;
@@ -539,6 +560,7 @@ public class TextFighter {
             if(!achievementsDir.exists()) { Display.displayError("Could not find the default achievements directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = achievementsDir;
+            //Finds achievement packs
             if(packFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
                     String line;
@@ -562,6 +584,7 @@ public class TextFighter {
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack file (The file does exist). Falling back to default achievements."); }
             }
+            //Ones to be omitted
             ArrayList<String> namesToBeOmitted = new ArrayList<String>();
             if(parsingPack) {
                 File omissionFile = new File(directory + "/" + "omit.txt");
@@ -574,6 +597,7 @@ public class TextFighter {
                     } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally..."); }
                 }
             }
+            //Loads them
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; Display.displayPackMessage("Loading achievements from the default pack."); }
                 if(directory.list() != null) {
@@ -656,6 +680,7 @@ public class TextFighter {
             ArrayList<Achievement> playerAchievements = new ArrayList<Achievement>();
             JSONArray achievementsArray = (JSONArray)file.get("achievements");
 
+            // Adds the previously earned achievements to a new array
             if(achievementsArray != null) {
                 for(int i=0; i<achievementsArray.size(); i++) {
                     for(Achievement a : achievements) {
@@ -676,6 +701,7 @@ public class TextFighter {
     }
     public static void newGame(String name) {
 
+        // Tells the player if they would overwrite a game (And doesnt allow them to do so)
         if(getSaveFiles().contains(name)) {
             addToOutput("There is already a save with that name. Pick another.");
             return;
@@ -690,6 +716,8 @@ public class TextFighter {
 
         currentSaveFile = newGameFile;
 
+        //Writes all the default stuff to the file
+
         JSONObject base = new JSONObject();
 
         JSONObject stats = new JSONObject();
@@ -698,8 +726,8 @@ public class TextFighter {
         stats.put("score", "0");
         stats.put("maxhealth", Integer.toString(Player.defaulthp));
         stats.put("health", Integer.toString(Player.defaulthp));
-        stats.put("coins", "0");
-        stats.put("magic", "0");
+        stats.put("coins", Integer.toString(Player.defaultcoins);
+        stats.put("magic", Integer.toString(Player.defaultMagic);
 
         JSONObject inventory = new JSONObject();
 
@@ -714,22 +742,24 @@ public class TextFighter {
         base.put("stats", stats);
         base.put("name", name);
 
-        //This is temporary as I will create methods for calculation based on level
         ArrayList<Item> newInventory = new ArrayList<Item>();
         newInventory.add(new Sword(1,0,0));
 
-        player = new Player(Player.defaulthp, Player.defaulthp, 0, 0, 1, 0, 0, false, newInventory, new ArrayList<Achievement>());
+        //Initializes the game with a default player
+        player = new Player();
 
         addToOutput("Added new save '" + name + "'");
 
+        //Writes it
         try (FileWriter w = new FileWriter(newGameFile);) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
     public static boolean saveGame() {
-        //Rewrite the whole file
 
         if(currentSaveFile != null && !currentSaveFile.exists()) { try { currentSaveFile.createNewFile(); } catch (IOException e) { addToOutput("Unable to save game!"); return false; }}
+
+        //Rewrites the whole save file with the new stuff
 
         JSONObject base = new JSONObject();
 
@@ -768,7 +798,7 @@ public class TextFighter {
 
         JSONArray earnedAchievements = new JSONArray();
 
-        //For achievements
+        //For all achievements
         if(player.getAchievements() != null) {
             for(Achievement a : player.getAchievements()) {
                 earnedAchievements.add(a.getName());
@@ -780,6 +810,7 @@ public class TextFighter {
         base.put("stats", stats);
         base.put("name", gameName);
 
+        //Writes it
         try (FileWriter w = new FileWriter(currentSaveFile);) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); return false; }
@@ -791,6 +822,8 @@ public class TextFighter {
     public static void addSave(String name) { saves.add(name); }
     public static void removeSave(String name) {
         getSaveFiles();
+        //Makes sure the player isnt attempting to delete the save that is currently being used and the player hasnt beaten the game
+        //When the game has been beaten, saves are not deleted when the player dies
         if(currentSaveFile != null && name.equals(currentSaveFile.getName()) && player.getGameBeaten()) { return; }
         boolean saveExists = false;
         for(int i=0;i<saves.size();i++){
@@ -850,6 +883,7 @@ public class TextFighter {
         possibleEnemies = possible;
     }
     public static void sortEnemies() {
+        //Sorts by difficulty
         ArrayList<Enemy> sortedList = new ArrayList<Enemy>();
         int highestDifficulty = 0;
         for(Enemy e : enemies) {
@@ -893,11 +927,13 @@ public class TextFighter {
             if(input.trim() != null) {
                 boolean validChoice = false;
                 for(Choice c : player.getLocation().getPossibleChoices()){
+                    //Makes sure the input has any arguments
                     if(input.indexOf(" ") != -1) {
                         if (c.getName().equals(input.substring(0,input.indexOf(" ")))) {
                             validChoice = true;
                             break;
                         }
+                    //If no arguments
                     } else {
                         if (c.getName().equals(input)) {
                             validChoice = true;
@@ -946,7 +982,7 @@ public class TextFighter {
             currentEnemy.invokePremethods();
             while(player.getInFight()) {
                 playGame();
-                //Make them fight
+                //does a random enemy action
                 Random random = new Random(currentEnemy.getPossibleActions().size());
                 currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
                 player.setCanBeHurtThisTurn(true);
@@ -987,6 +1023,7 @@ public class TextFighter {
         invokePlayerInput();
         Display.clearScreen();
         Display.displayPreviousCommand();
+        //Determine if any achievements should be recieved
         for(Achievement a : achievements) {
             if(!player.getAchievements().contains(a)) {
                 boolean earned = true;
@@ -1010,6 +1047,7 @@ public class TextFighter {
     }
 
     public static void main(String[] args) {
+        //Determine if the game is run in pacak test mode
         for(String a : args) {
             if(a.equals("testpacks")) {
                 testMode = true;
@@ -1030,7 +1068,4 @@ public class TextFighter {
             }
         }
     }
-
-    public static void nullTest(String e) { return; }
-
 }

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 mode=0
 defaultpackmsgs=0
 compile=0
