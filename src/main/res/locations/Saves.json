@@ -33,22 +33,6 @@
                     "arguments" : ["%ph%"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
-                },
-                {
-                    "method" : "increaseExperience",
-                    "arguments" : [
-
-                        {
-                            "method" : "getCoins",
-                            "class" : "org.textfighter.Player",
-                            "fieldclass" : "org.textfighter.TextFighter",
-                            "field" : "player"
-                        }
-                    ],
-                    "argumentTypes" : ["1"],
-                    "class" : "org.textfighter.Player",
-                    "fieldclass" : "org.textfighter.TextFighter",
-                    "field" : "player"
                 }
             ],
             "usage" : "loadGame <name>",
