@@ -28,11 +28,6 @@ public class Item {
     public void setExperienceRequirement(int a){ experienceRequirement=a; }
     public void calculateExperienceRequirement(){ experienceRequirement=(baseExperienceRequirement*level)*(baseExperienceRequirement*level); }
 
-    public String getTypeString(int index) { return typeStrings[index]; }
-
-    public int getType(){ return type; }
-    public void setType(int t){ type=t; }
-
     public void calculateVariables() {
         if(methodsForCalculations.length > 1) {
             for(String m : methodsForCalculations) {
@@ -41,10 +36,9 @@ public class Item {
         }
     }
 
-    public Item (int level, int experience, int type) {
+    public Item (int level, int experience) {
         this.level = level;
         this.experience = experience;
-        this.type = type;
         calculateVariables();
     }
 

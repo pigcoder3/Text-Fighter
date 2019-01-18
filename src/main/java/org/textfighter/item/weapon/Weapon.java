@@ -18,8 +18,8 @@ public class Weapon extends Item {
         damage = multiplier*baseDamage;
     }
 
-    public Weapon(int level, int experience, int type) {
-        super(level, experience, type);
+    public Weapon(int level, int experience) {
+        super(level, experience);
         calculateDamage();
     }
 

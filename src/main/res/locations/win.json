@@ -24,7 +24,7 @@
                     "method" : "setGameBeaten",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["false"],
-                    "argumentTypes" : ["2"],
+                    "argumentTypes" : ["3"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
                 }
