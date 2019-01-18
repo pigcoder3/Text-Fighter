@@ -6,7 +6,7 @@ public class Chestplate extends Armor {
 
     private double baseProtection = 3;
 
-    public Chestplate (int level, int experience, int type) {
-        super(level, experience, type);
+    public Chestplate (int level, int experience) {
+        super(level, experience);
     }
 }

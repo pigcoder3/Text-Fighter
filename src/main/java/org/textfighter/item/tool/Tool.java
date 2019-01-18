@@ -4,8 +4,8 @@ import org.textfighter.item.Item;
 
 public class Tool extends Item {
 
-    public Tool (int level, int experience, int type) {
-        super(level, experience, type);
+    public Tool (int level, int experience) {
+        super(level, experience);
     }
 
 }

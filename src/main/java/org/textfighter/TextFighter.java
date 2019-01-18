@@ -126,7 +126,11 @@ public class TextFighter {
                 } else if(num == 1) {
                     argumentTypes.add(int.class);
                 } else if(num == 2) {
+                    argumentTypes.add(double.class);
+                } else if(num == 3) {
                     argumentTypes.add(boolean.class);
+                } else if(num == 4) {
+                    argumentTypes.add(Class.class);
                 } else {
                     Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
                     continue;
@@ -172,10 +176,14 @@ public class TextFighter {
                     } else if (argumentTypes.get(p).equals(String.class)) {
                         if(argumentsRaw.get(p).equals("%null%")) { arguments.add(null); }
                         else { arguments.add((String)argumentsRaw.get(p)); }
+                    } else if(argumentTypes.get(p).equals(double.class)) {
+                        arguments.add(Double.parseDouble((String)argumentsRaw.get(p)));
                     } else if (argumentTypes.get(p).equals(boolean.class)) {
                         arguments.add(Boolean.parseBoolean((String)argumentsRaw.get(p)));
+                    } else if (argumentTypes.get(p).equals(Class.class)) {
+                        try { arguments.add(Class.forName((String)argumentsRaw.get(p))); } catch(ClassNotFoundException e) { Display.displayPackError("An argument tried to get a class that does not exist. Omitting... "); return null; }
                     } else {
-                        Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
+                        Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                         continue;
                     }
                 }
@@ -664,13 +672,12 @@ public class TextFighter {
                 JSONObject jsonobj = (JSONObject)inventory.get(key);
                 int itemlevel = Integer.parseInt(((String)jsonobj.get("level")));
                 int itemexperience = Integer.parseInt(((String)jsonobj.get("experience")));
-                int itemtype = Integer.parseInt(((String)jsonobj.get("type")));
                 for(Class c : items) {
                     if(c.getSimpleName().equals(jsonobj.get("itemtype"))) {
                         try {
-                            Item item = new Item(itemlevel, itemexperience, itemtype);
+                            Item item = new Item(itemlevel, itemexperience);
                             Constructor cons = c.getConstructors()[0];
-                            item = (Item)cons.newInstance(itemlevel, itemexperience, itemtype);
+                            item = (Item)cons.newInstance(itemlevel, itemexperience);
                             newInventory.add(item);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); continue; }
                     }
@@ -699,7 +706,7 @@ public class TextFighter {
         return true;
 
     }
-    public static void newGame(String name) {
+    public static void newGame (String name) {
 
         // Tells the player if they would overwrite a game (And doesnt allow them to do so)
         if(getSaveFiles().contains(name)) {
@@ -726,14 +733,13 @@ public class TextFighter {
         stats.put("score", "0");
         stats.put("maxhealth", Integer.toString(Player.defaulthp));
         stats.put("health", Integer.toString(Player.defaulthp));
-        stats.put("coins", Integer.toString(Player.defaultcoins);
-        stats.put("magic", Integer.toString(Player.defaultMagic);
+        stats.put("coins", Integer.toString(Player.defaultcoins));
+        stats.put("magic", Integer.toString(Player.defaultmagic));
 
         JSONObject inventory = new JSONObject();
 
         JSONObject sword = new JSONObject();
         sword.put("itemtype", "Sword");
-        sword.put("type", "0");
         sword.put("level", "1");
         sword.put("experience", "0");
         inventory.put("sword", sword);
@@ -743,10 +749,11 @@ public class TextFighter {
         base.put("name", name);
 
         ArrayList<Item> newInventory = new ArrayList<Item>();
-        newInventory.add(new Sword(1,0,0));
+        newInventory.add(new Sword(1,0));
 
         //Initializes the game with a default player
         player = new Player();
+        player.setLocation("saves");
 
         addToOutput("Added new save '" + name + "'");
 
@@ -783,7 +790,6 @@ public class TextFighter {
                 Item obj = player.getFromInventory(c.getName());
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("itemtype", obj.getClass().getSimpleName());
-                jsonobj.put("type", Integer.toString(obj.getType()));
                 jsonobj.put("level", Integer.toString(obj.getLevel()));
                 jsonobj.put("experience", Integer.toString(obj.getExperience()));
                 if(c.getSuperclass().equals(Armor.class)) {
@@ -918,6 +924,8 @@ public class TextFighter {
     }
 
     public static void invokePlayerInput() {
+
+        if(player.getLocation() != null) { System.out.println("e"); }
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         try {
             Display.promptUser();
@@ -1009,6 +1017,224 @@ public class TextFighter {
         return false;
     }
 
+    public static boolean variableComparison(String field1String, String field1Class, String comparison, String field2String, String field2Class) {
+
+        //This does not need a separate method for each type because it does not ask for raw types
+
+        Field field1 = null;
+        Field field2 = null;
+
+        if(field1String != null) {
+            try {
+                field1 = Class.forName(field1Class).getField(field1String);
+            } catch(NoSuchFieldException | ClassNotFoundException e) {
+                Display.displayError("The pack wants to use an invalid class and/or field for field1: " + field1String);
+                return false;
+            }
+        } else { return false;}
+        if(field2String != null) {
+            try {
+                field2 = Class.forName(field2Class).getField(field2String);
+            } catch(NoSuchFieldException | ClassNotFoundException e) {
+                Display.displayError("The pack wants to use an invalid class and/or field for field2: " + field2String);
+                return false;
+            }
+        } else { return false; }
+
+        Object value1 = null;
+        Object value2 = null;
+
+        try {
+            //Make sure the two fields have the same type
+            if(!field1.get(null).getClass().equals(field2.get(null).getClass())) { Display.displayError("The pack attempted to compare variables of different types"); return false; }
+
+            value1 = field1.get(null);
+            value2 = field2.get(null);
+        } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
+
+        //If they are strings, you must do an equals comparison
+        if(value1.getClass().equals(String.class)) { return(value1.equals(value2)); }
+
+        //Make the comparison
+        if(comparison != null) {
+            if(value1.getClass().equals(int.class)) {
+                switch(comparison) {
+                    case "=":
+                        return((int)value1 == (int)value2);
+                    case ">":
+                        return((int)value1 > (int)value2);
+                    case "<":
+                        return((int)value1 < (int)value2);
+                    case ">=":
+                        return((int)value1 >=(int) value2);
+                    case "<=":
+                        return((int)value1 >= (int)value2);
+                    default:
+                        Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+                }
+            } else if(value1.getClass().equals(double.class)) {
+                switch(comparison) {
+                    case "=":
+                        return((double)value1 == (double)value2);
+                    case ">":
+                        return((double)value1 > (double)value2);
+                    case "<":
+                        return((double)value1 < (double)value2);
+                    case ">=":
+                        return((double)value1 >= (double)value2);
+                    case "<=":
+                        return((double)value1 <= (double)value2);
+                    default:
+                        Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+                }
+            } else {
+                Display.displayError("The pack gave an invalid type: " + value1.getClass().toString());
+            }
+        }
+        return false;
+    }
+
+    public static boolean variableComparison(String fieldString, String fieldClass, String value) {
+        //No comparison operator necessary because you can only do '=' on strings
+
+        Field field = null;
+
+        if(fieldString != null) {
+            try {
+                field = Class.forName(fieldClass).getField(fieldString);
+            } catch(NoSuchFieldException | ClassNotFoundException e) {
+                Display.displayError("The pack wants to use an invalid class and/or field for field: " + field);
+                return false;
+            }
+        } else { return false;}
+
+        Object value1 = null;
+
+        try { value1 = field.get(null); } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
+
+        return value1.equals(value);
+    }
+
+    public static boolean variableComparison(String fieldString, String fieldClass, String comparison, double value) {
+
+        Field field = null;
+
+        if(fieldString != null) {
+            try {
+                field = Class.forName(fieldClass).getField(fieldString);
+            } catch(NoSuchFieldException | ClassNotFoundException e) {
+                Display.displayError("The pack wants to use an invalid class and/or field for field: " + field);
+                return false;
+            }
+        } else { return false;}
+
+        Object value1 = null;
+
+        try { value1 = field.get(null); } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
+
+        //Make the comparison
+        if(comparison != null) {
+            switch(comparison) {
+                case "=":
+                    return((double)value1 == (double)value);
+                case ">":
+                    return((double)value1 > (double)value);
+                case "<":
+                    return((double)value1 < (double)value);
+                case ">=":
+                    return((double)value1 >= (double)value);
+                case "<=":
+                    return((double)value1 <= (double)value);
+                default:
+                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+            }
+        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
+        return false;
+    }
+
+    public static boolean variableComparison(String fieldString, String fieldClass, String comparison, int value) {
+
+        Field field = null;
+
+        if(fieldString != null) {
+            try {
+                field = Class.forName(fieldClass).getField(fieldString);
+            } catch(NoSuchFieldException | ClassNotFoundException e) {
+                Display.displayError("The pack wants to use an invalid class and/or field for field: " + field);
+                return false;
+            }
+        } else { return false;}
+
+        Object value1 = null;
+
+        try { value1 = field.get(null); } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
+
+        //Make the comparison
+        if(comparison != null) {
+            switch(comparison) {
+                case "=":
+                    return((int)value1 == (int)value);
+                case ">":
+                    return((int)value1 > (int)value);
+                case "<":
+                    return((int)value1 < (int)value);
+                case ">=":
+                    return((int)value1 >= (int)value);
+                case "<=":
+                    return((int)value1 <= (int)value);
+                default:
+                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+            }
+        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
+        return false;
+    }
+
+    public static boolean variableComparison(String value1, String value2) { /*No comparison operator necessary because you can only do '=' on strings*/return(value1.equals(value2)); }
+
+    public static boolean variableComparison(double value1, String comparison, double value2) {
+
+        //Make the comparison
+        if(comparison != null) {
+            switch(comparison) {
+                case "=":
+                    return((double)value1 == (double)value2);
+                case ">":
+                    return((double)value1 > (double)value2);
+                case "<":
+                    return((double)value1 < (double)value2);
+                case ">=":
+                    return((double)value1 >= (double)value2);
+                case "<=":
+                    return((double)value1 <= (double)value2);
+                default:
+                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+            }
+        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
+        return false;
+    }
+
+    public static boolean variableComparison(int value1, String comparison, int value2) {
+
+        //Make the comparison
+        if(comparison != null) {
+            switch(comparison) {
+                case "=":
+                    return((int)value1 == (int)value2);
+                case ">":
+                    return((int)value1 > (int)value2);
+                case "<":
+                    return((int)value1 < (int)value2);
+                case ">=":
+                    return((int)value1 >= (int)value2);
+                case "<=":
+                    return((int)value1 <= (int)value2);
+                default:
+                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+            }
+        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
+        return false;
+    }
+
     public static void playerWins() {
         movePlayer("Win");
     }
@@ -1043,11 +1269,12 @@ public class TextFighter {
         }
         output="";
         if(needsSaving && currentSaveFile != null) { saveGame(); }
+        if(player.getLocation() != null) { System.out.println("e"); }
         needsSaving = false;
     }
 
     public static void main(String[] args) {
-        //Determine if the game is run in pacak test mode
+        //Determine if the game is run in pack test mode
         for(String a : args) {
             if(a.equals("testpacks")) {
                 testMode = true;

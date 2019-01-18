@@ -17,8 +17,8 @@ public class Armor extends Item {
         protectionAmount = level*baseProtection;
     }
 
-    public Armor (int level, int experience, int type) {
-        super(level, experience, type);
+    public Armor (int level, int experience) {
+        super(level, experience);
     }
 
 }

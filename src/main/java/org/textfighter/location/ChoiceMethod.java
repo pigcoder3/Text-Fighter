@@ -42,7 +42,6 @@ public class ChoiceMethod {
             }
         }
         if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { return false; }
-
         try {
             if(field != null) {
                 if(arguments != null) {
@@ -52,6 +51,7 @@ public class ChoiceMethod {
                 }
             } else {
                 if(arguments != null) {
+                    //Here
                     method.invoke(null, arguments.toArray());
                 } else {
                     method.invoke(null, new Object[0]);

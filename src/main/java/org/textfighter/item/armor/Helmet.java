@@ -6,8 +6,8 @@ public class Helmet extends Armor {
 
     private double baseProtection = 1.5;
 
-    public Helmet (int level, int experience, int type) {
-        super(level, experience, type);
+    public Helmet (int level, int experience) {
+        super(level, experience);
     }
 
 }
