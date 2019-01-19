@@ -13,6 +13,13 @@
             "field" : "player"
         },
         {
+            "tag" : "<str>",
+            "class" : "org.textfighter.Player",
+            "method" : "getStrength",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
             "tag" : "<magic>",
             "class" : "org.textfighter.Player",
             "method" : "getMagic",

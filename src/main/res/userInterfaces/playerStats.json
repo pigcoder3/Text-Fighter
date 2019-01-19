@@ -10,14 +10,14 @@
         "  hp:    <health>",
         "  maxhp: <maxhealth>",
         "",
+        "  strength: <str>",
+        "",
         "  level: <level>",
         "  exp:   <experience>",
         "",
         "  coins: <coins>",
         "  magic: <magic>",
-        "  metal: <metal>",
-        "----------------------"
-
+        "  metal: <metal>"
 
     ]
 

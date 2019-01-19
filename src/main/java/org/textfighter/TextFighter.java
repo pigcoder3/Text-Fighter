@@ -11,6 +11,7 @@ import org.textfighter.item.*;
 import org.textfighter.item.tool.*;
 import org.textfighter.item.armor.*;
 import org.textfighter.item.weapon.*;
+import org.textfighter.item.specialitem.*;
 import org.textfighter.*;
 import org.textfighter.location.*;
 import org.textfighter.enemy.*;
@@ -149,7 +150,7 @@ public class TextFighter {
         //Gets the field from the class
         Field field = null;
         try {
-            if(fieldString != null) {
+            if(fieldString != null && fieldclass != null) {
                 field = fieldclass.getField(fieldString);
             }
         } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); return null; }
@@ -382,7 +383,7 @@ public class TextFighter {
                             }
                         }
                         if(!hasChoiceInterface) {
-                            Display.displayWarning("This does not have a choices interface. Omitting...");
+                            Display.displayPackError("This does not have a choices interface. Omitting...");
                             continue;
                         }
                         JSONArray choiceArray = (JSONArray)locationFile.get("choices");
@@ -666,19 +667,42 @@ public class TextFighter {
 
             ArrayList<Item> newInventory = new ArrayList<Item>();
 
-            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
+            Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class};
 
-            for (Object key : inventory.keySet()) {
-                JSONObject jsonobj = (JSONObject)inventory.get(key);
-                int itemlevel = Integer.parseInt(((String)jsonobj.get("level")));
-                int itemexperience = Integer.parseInt(((String)jsonobj.get("experience")));
-                for(Class c : items) {
-                    if(c.getSimpleName().equals(jsonobj.get("itemtype"))) {
+            //Inventory
+            if(inventory != null) {
+                for (Object key : inventory.keySet()) {
+                    JSONObject jsonobj = (JSONObject)inventory.get(key);
+                    int itemlevel = Integer.parseInt(((String)jsonobj.get("level")));
+                    int itemexperience = Integer.parseInt(((String)jsonobj.get("experience")));
+                    for(Class c : items) {
+                        if(c.getSimpleName().equals(jsonobj.get("itemtype"))) {
+                            try {
+                                Item item = new Item(itemlevel, itemexperience);
+                                Constructor cons = c.getConstructors()[0];
+                                item = (Item)cons.newInstance(itemlevel, itemexperience);
+                                newInventory.add(item);
+                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); continue; }
+                        }
+                    }
+                }
+            }
+
+            Class[] specialItemsClasses = {ManaPouch.class};
+
+            // SpecialItems
+
+            ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
+            JSONObject specialitemsArray = (JSONObject)file.get("specialitems");
+
+            if(specialitemsArray != null) {
+                for(int i=0; i<specialitemsArray.size(); i++) {
+                    for(Class c : items) {
                         try {
-                            Item item = new Item(itemlevel, itemexperience);
+                            SpecialItem item = new SpecialItem();
                             Constructor cons = c.getConstructors()[0];
-                            item = (Item)cons.newInstance(itemlevel, itemexperience);
-                            newInventory.add(item);
+                            item = (SpecialItem)cons.newInstance();
+                            specialItems.add(item);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); continue; }
                     }
                 }
@@ -698,7 +722,7 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, level, experience, score, gameBeaten, newInventory, playerAchievements);
+            player = new Player(hp, maxhp, coins, magic, level, experience, score, gameBeaten, newInventory, playerAchievements, specialItems);
             addToOutput("Loaded save '" + name + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -744,12 +768,8 @@ public class TextFighter {
         sword.put("experience", "0");
         inventory.put("sword", sword);
 
-        base.put("inventory", inventory);
         base.put("stats", stats);
         base.put("name", name);
-
-        ArrayList<Item> newInventory = new ArrayList<Item>();
-        newInventory.add(new Sword(1,0));
 
         //Initializes the game with a default player
         player = new Player();
@@ -781,29 +801,34 @@ public class TextFighter {
         stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
 
         JSONObject inventory = new JSONObject();
-
-        Class[] items = {Pickaxe.class, Helmet.class, Chestplate.class, Leggings.class, Boots.class, Sword.class, Bow.class};
-
-        //For all items
-        for(Class c : items) {
-            if(player.isCarrying(c.getName())) {
-                Item obj = player.getFromInventory(c.getName());
+        //For items in inventory
+        if(player.getInventory() != null) {
+            for(Item i : player.getInventory()) {
                 JSONObject jsonobj = new JSONObject();
-                jsonobj.put("itemtype", obj.getClass().getSimpleName());
-                jsonobj.put("level", Integer.toString(obj.getLevel()));
-                jsonobj.put("experience", Integer.toString(obj.getExperience()));
-                if(c.getSuperclass().equals(Armor.class)) {
-                    jsonobj.put("protectionAmount", String.valueOf(((Armor)obj).getProtectionAmount()));
+                jsonobj.put("itemtype", i.getClass().getSimpleName());
+                jsonobj.put("level", Integer.toString(i.getLevel()));
+                jsonobj.put("experience", Integer.toString(i.getExperience()));
+                if(i.getClass().getSuperclass().equals(Armor.class)) {
+                    jsonobj.put("protectionAmount", String.valueOf(((Armor)i).getProtectionAmount()));
                 }
-                if(c.getSuperclass().equals(Weapon.class)) {
-                    jsonobj.put("damage", Integer.toString(((Weapon)obj).getDamage()));
+                if(i.getClass().getSuperclass().equals(Weapon.class)) {
+                    jsonobj.put("damage", Integer.toString(((Weapon)i).getDamage()));
                 }
-                inventory.put(c, jsonobj);
+                inventory.put(i.getClass().getSimpleName(), jsonobj);
+            }
+        }
+
+        JSONObject specialitems = new JSONObject();
+        //For all special specialitems
+        if(player.getSpecialItems() != null) {
+            for(SpecialItem si : player.getSpecialItems()) {
+                JSONObject jsonobj = new JSONObject();
+                jsonobj.put("itemtype", si.getClass().getSimpleName());
+                specialitems.put(si.getClass().getSimpleName(), jsonobj);
             }
         }
 
         JSONArray earnedAchievements = new JSONArray();
-
         //For all achievements
         if(player.getAchievements() != null) {
             for(Achievement a : player.getAchievements()) {
@@ -813,6 +838,7 @@ public class TextFighter {
 
         base.put("achievements", earnedAchievements);
         base.put("inventory", inventory);
+        base.put("specialitems", specialitems);
         base.put("stats", stats);
         base.put("name", gameName);
 
@@ -925,7 +951,6 @@ public class TextFighter {
 
     public static void invokePlayerInput() {
 
-        if(player.getLocation() != null) { System.out.println("e"); }
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         try {
             Display.promptUser();
@@ -1269,7 +1294,6 @@ public class TextFighter {
         }
         output="";
         if(needsSaving && currentSaveFile != null) { saveGame(); }
-        if(player.getLocation() != null) { System.out.println("e"); }
         needsSaving = false;
     }
 
@@ -1295,4 +1319,6 @@ public class TextFighter {
             }
         }
     }
+
+    public static void doNothing() { return; }
 }

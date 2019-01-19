@@ -2,6 +2,8 @@ package org.textfighter;
 
 import org.textfighter.item.*;
 import org.textfighter.item.armor.*;
+import org.textfighter.item.tool.*;
+import org.textfighter.item.weapon.*;
 import org.textfighter.location.Location;
 import org.textfighter.*;
 import org.textfighter.display.Display;
@@ -20,10 +22,14 @@ public class Player {
     static int defaultmagic = 0;
     static int defaultmetalscraps = 0;
 
+    static int defaultStrength = 5;  //Strength of just your fists
+
     private boolean alive = true;
     private boolean inFight = false;
 
     private double totalProtection = 1;
+
+    private Weapon currentWeapon;
 
     private int level = 1;
     private int experience = 0;
@@ -31,6 +37,8 @@ public class Player {
 
     private int hp = defaulthp;
     private int maxhp = defaulthp;
+
+    private int strength = defaultStrength;
 
     private int coins = defaultcoins;
     private int magic = defaultmagic;
@@ -61,6 +69,17 @@ public class Player {
             if(i.getClass().getSuperclass().equals(Armor.class)) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
     }
+
+    public Weapon getCurrentWeapon() { return currentWeapon; }
+    public void setCurrentWeapon(Weapon weapon) { currentWeapon = weapon; calculateStrength();}
+    public void calculateStrength() {
+        if(currentWeapon != null) {
+            strength = currentWeapon.getDamage();
+        } else {
+            strength = defaultStrength;
+        }
+    }
+    public int getStrength() { return strength; }
 
     public int getLevel() { return level; }
     public void increaseLevel(int a) { level+=a; TextFighter.needsSaving=true;}
@@ -129,6 +148,7 @@ public class Player {
         for(int i=0;i<inventory.size();i++) {
             try {
                 if(inventory.get(i).getClass().equals(Class.forName(classname))) {
+                    if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
                     inventory.remove(i);
                     TextFighter.needsSaving=true;
                     break;
@@ -154,6 +174,8 @@ public class Player {
         }
         return null;
     }
+
+    public ArrayList<SpecialItem> getSpecialItems() { return specialItems; }
 
     public void addToSpecialItems(String classname) {
         if(classname != null && !isCarryingSpecialItem(classname)) {
@@ -204,7 +226,7 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements) {
+    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -215,6 +237,7 @@ public class Player {
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;
         this.achievements = achievements;
+        this.specialItems = specialItems;
         for(Location l : TextFighter.locations) {
             if(l.getName().equals("saves")) { this.location = l; }
         }

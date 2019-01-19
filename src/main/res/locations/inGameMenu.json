@@ -4,7 +4,7 @@
 
     "interfaces" : [
 
-        "stats",
+        "playerStats",
         "choices"
 
     ],

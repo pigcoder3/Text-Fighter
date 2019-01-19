@@ -1,0 +1,81 @@
+{
+
+    "name" : "fight",
+
+    "interfaces" : [
+
+        "playerStats"
+        "choices",
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "attack",
+            "description" : "attacks the enemy",
+            "methods" : [
+                {
+                    "method" : "damaged",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "arguments" : [
+                        {
+                            "method" : "getStrength",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        }
+                    ],
+                    "argumentTypes" : ["1"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "getCanBeHurtThisTurn",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "field" : "currentEnemy",
+                    "fieldClass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "attack"
+        },
+        {
+            "name" : "block",
+            "description" : "blocks the enemy's next attack",
+            "methods" : [
+                {
+                    "method" : "setCanBeHurtThisTurn",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["false"],
+                    "argumentTypes" : ["3"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["Shield"],
+                    "argumentTypes" : ["0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "block"
+        },
+        {
+            "name" : "nothing",
+            "description" : "do nothing",
+            "methods" : [
+                {
+                    "method" : "doNothing",
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "nothing"
+        }
+    ]
+}
