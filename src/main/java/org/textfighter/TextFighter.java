@@ -30,6 +30,10 @@ public class TextFighter {
     public static boolean parsingPack = false;
     public static boolean defaultpackmsgs = false;
 
+    //Version
+    public static File versionFile = new File("../../../VERSION.txt");
+    public static String version;
+
     // Important game variables
     public static String gameName;
 
@@ -72,6 +76,17 @@ public class TextFighter {
 
     public static void addToOutput(String msg) { output+=msg + "\n"; }
 
+    public static String readVersionFromFile() {
+        if(versionFile == null) { Display.displayWarning("Could not read the version from file"); return "Unknown"; }
+        try (BufferedReader br = new BufferedReader(new FileReader(versionFile))) {
+            String line = br.readLine();
+            if(line != null) { return line; } else { return "Unknown"; }
+        } catch(IOException e) { Display.displayWarning("Could not read the version from file");}
+        return "Unknown";
+    }
+
+    public static String getVersion() { return version; }
+
     public static boolean loadResources() {
         Display.displayProgressMessage("Loading the resources...");
         //Loads all the directories
@@ -89,6 +104,7 @@ public class TextFighter {
         intpackDir = new File(packDir.getPath() + "/intpacks");
         enemypackDir = new File(packDir.getPath() + "/enemypacks");
         achievementpackDir = new File(packDir.getPath() + "/achivementpacks");
+        version = readVersionFromFile();
         loadConfig();
 
         //loads the content
@@ -216,7 +232,7 @@ public class TextFighter {
         } else if(type.equals(UiTag.class)) {
             String tag = (String)obj.get("tag");
             if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); return null; }
-            o=new UiTag(tag, method, arguments, clazz, field, fieldclass);
+            o=new UiTag(tag, method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), UiTag.class));
         }
         Display.changePackTabbing(false);
         return o;
@@ -858,7 +874,7 @@ public class TextFighter {
         getSaveFiles();
         //Makes sure the player isnt attempting to delete the save that is currently being used and the player hasnt beaten the game
         //When the game has been beaten, saves are not deleted when the player dies
-        if(currentSaveFile != null && name.equals(currentSaveFile.getName()) && player.getGameBeaten()) { return; }
+        if(currentSaveFile != null && ( ( (name+".json").equals(currentSaveFile.getName()) && player.getAlive()) || player.getGameBeaten())) {return; }
         boolean saveExists = false;
         for(int i=0;i<saves.size();i++){
             if(saves.get(i).equals(name)) {
@@ -1025,20 +1041,20 @@ public class TextFighter {
             movePlayer("fight");
             player.setInFight(true);
             currentEnemy.invokePremethods();
+            //Does a lot of basic things from playGame(), but if they werent here, then things would look quite strange (screen not being cleared, no output from previous command, etc.)
             Display.clearScreen();
+            Display.displayPreviousCommand();
+            if(output != null) {
+                Display.displayOutputMessage(output);
+            }
+            if(needsSaving && currentSaveFile != null && (player.getAlive() || player.getGameBeaten())) { saveGame(); }
+            needsSaving = false;
+            output = "";
             while(player.getInFight()) {
                 Display.displayInterfaces(player.getLocation());
-                boolean validInput = invokePlayerInput();
-                Display.clearScreen();
-                Display.displayPreviousCommand();
-                if(output != null) {
-                    Display.displayOutputMessage(output);
-                }
-                output="";
-                if(needsSaving && currentSaveFile != null && (player.getAlive() || player.getGameBeaten())) { saveGame(); }
-                needsSaving = false;
-                if(!validInput) { continue; }
-                //does a random enemy action
+                //Invokes enemyInput and continues if invalid
+                if(!invokePlayerInput()) { continue; }
+                // Does enemy actions
                 Random random = new Random();
                 if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
                     int number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()*2))+1;
@@ -1051,6 +1067,15 @@ public class TextFighter {
                 } else {
                     currentEnemy.attack();
                 }
+                Display.clearScreen();
+                Display.displayPreviousCommand();
+                if(output != null) {
+                    Display.displayOutputMessage(output);
+                }
+                output="";
+                if(needsSaving && currentSaveFile != null) { saveGame(); }
+                needsSaving = false;
+                //does a random enemy action
                 if(player.getHp() < 1) {
                     player.setAlive(false);
                     player.setInFight(false);
@@ -1345,7 +1370,7 @@ public class TextFighter {
         }
         if(!testMode) {
             getSaveFiles();
-            player.setLocation("saves");
+            player.setLocation("start");
             while(player.getAlive() || player.getGameBeaten()) {
                 playGame();
             }

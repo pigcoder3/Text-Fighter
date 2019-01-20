@@ -20,6 +20,12 @@
                     "arguments" : ["%ph%"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "newGame <name>"
@@ -31,6 +37,12 @@
                 {
                     "method" : "loadGame",
                     "arguments" : ["%ph%"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 }

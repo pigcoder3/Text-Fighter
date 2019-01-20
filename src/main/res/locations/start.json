@@ -1,0 +1,28 @@
+{
+
+    "name" : "start",
+
+    "interfaces" : [
+        "start",
+        "choices"
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "start",
+            "description" : "Starts the game",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["saves"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "start"
+        }
+
+    ]
+
+}

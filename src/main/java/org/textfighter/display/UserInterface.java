@@ -2,6 +2,7 @@ package org.textfighter.display;
 
 import org.textfighter.TextFighter;
 import org.textfighter.location.Choice;
+import org.textfighter.method.Requirement;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,16 @@ public class UserInterface {
                 //Matches the tag string with a tag in the interfaceTags
                 for(UiTag t : Display.interfaceTags) {
                     if(t.getTag().equals(currentTag)) {
+                        if(t.getRequirements() != null) {
+                            boolean valid = true;
+                            for(Requirement r : t.getRequirements()) {
+                                if(!r.invokeMethod()) {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                            if(!valid) { tagUsed = true; continue;}
+                        }
                         Object output = t.invokeMethod();
                         if(output instanceof Integer) { //If it returns an integer
                             uiInProgress+=output.toString();

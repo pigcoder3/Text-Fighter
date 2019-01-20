@@ -3,7 +3,7 @@ package org.textfighter.display;
 import org.textfighter.*;
 import org.textfighter.item.Item;
 import org.textfighter.display.Display;
-import org.textfighter.method.TFMethod;
+import org.textfighter.method.*;
 
 import java.lang.reflect.*;
 
@@ -19,11 +19,13 @@ public class UiTag {
     private Field field;
     private Class fieldclass;
     private ArrayList<Object> arguments;
+    private ArrayList<Requirement> requirements;
 
     public String getTag() { return tag; }
     public Method getFunction() { return method; }
     public Class getClassname() { return clazz; }
     public ArrayList<Object> getArguments() { return arguments; }
+    public ArrayList<Requirement> getRequirements() { return requirements; }
 
     public Object invokeMethod() {
         //Invokes all the arguments that are methods
@@ -36,13 +38,13 @@ public class UiTag {
         }
         try {
             if(field != null) {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     return(method.invoke(field.get(null), arguments.toArray()));
                 } else {
                     return(method.invoke(field.get(null)));
                 }
             } else {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     return(method.invoke(null, arguments.toArray()));
                 } else {
                     return(method.invoke(null));
@@ -52,12 +54,13 @@ public class UiTag {
         return null;
     }
 
-    public UiTag(String tag, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
+    public UiTag(String tag, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
         this.tag = tag;
         this.method = method;
         this.clazz = clazz;
         this.arguments = arguments;
         this.field = field;
         this.fieldclass = fieldclass;
+        this.requirements = requirements;
     }
 }

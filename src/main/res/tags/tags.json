@@ -15,6 +15,11 @@
             "class" : "org.textfighter.TextFighter",
             "method" : "getChoiceOutputs"
         },
+        {
+            "tag" : "<version>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getVersion"
+        },
 
 
 

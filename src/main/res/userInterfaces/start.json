@@ -1,0 +1,15 @@
+{
+
+    "name" : "start",
+
+    "interface" : [
+
+        "Version: <version>",
+        "----------------------",
+        "     TEXT-FIGHTER     ",
+        "   'start' to begin   ",
+        "----------------------"
+
+    ]
+
+}
