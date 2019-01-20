@@ -16,7 +16,7 @@
             "arguments" : ["10"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewardItem" : "10 coins"
+            "rewarditem" : "10 coins"
         },
         {
             "method" : "increaseExperience",
@@ -26,7 +26,8 @@
             "arguments" : ["10"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewardItem" : "10 exp"
+            "rewarditem" : "10 exp"
         }
-    ]
+    ],
+    "actions" : []
 }

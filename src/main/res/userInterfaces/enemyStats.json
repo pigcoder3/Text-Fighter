@@ -1,0 +1,20 @@
+{
+
+    "name" : "enemyStats",
+
+    "interface" : [
+
+        "----------------------"
+        "      ENEMY STATS     ",
+        "----------------------"
+        " hp: <enemyhp>",
+        " maxhp: <enemymaxhp>",
+        "",
+        " strength: <enemystr>",
+        "",
+        " level requirement: <enemylevelreq>",
+        " difficulty: <enemydifficulty>",
+
+    ]
+
+}

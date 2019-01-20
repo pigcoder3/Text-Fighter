@@ -150,7 +150,7 @@ public class TextFighter {
         //Gets the field from the class
         Field field = null;
         try {
-            if(fieldString != null && fieldclass != null) {
+            if(fieldString != null && fieldclassString != null) {
                 field = fieldclass.getField(fieldString);
             }
         } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); return null; }
@@ -853,6 +853,8 @@ public class TextFighter {
 
     public static void addSave(String name) { saves.add(name); }
     public static void removeSave(String name) {
+        if(name == null) { return; }
+        if(name.lastIndexOf(".") != -1) { name = name.substring(0,name.lastIndexOf(".")); }
         getSaveFiles();
         //Makes sure the player isnt attempting to delete the save that is currently being used and the player hasnt beaten the game
         //When the game has been beaten, saves are not deleted when the player dies
@@ -861,9 +863,14 @@ public class TextFighter {
         for(int i=0;i<saves.size();i++){
             if(saves.get(i).equals(name)) {
                 saveExists = true;
-                new File(savesDir.getAbsolutePath() + "/" + saves.get(i) + ".json").delete();
+                File gameFile = new File(savesDir.getAbsolutePath() + "/" + saves.get(i) + ".json");
+                if(!gameFile.delete()) {
+                    addToOutput("File found, but was unable to delete it");
+                    return;
+                }
                 saves.remove(i);
                 addToOutput("Removed save '" + name + "'");
+                break;
             }
         }
         if(!saveExists) {
@@ -898,7 +905,7 @@ public class TextFighter {
         ArrayList<Enemy> possible = new ArrayList<Enemy>();
         for(Enemy e : enemies) {
             boolean valid = true;
-            if(e.getLevelRequirement() >= player.getLevel()) {
+            if(e.getLevelRequirement() <= player.getLevel()) {
                 if(e.getRequirements() != null) {
                     for(Requirement r : e.getRequirements()) {
                         if(!r.invokeMethod()) {
@@ -935,6 +942,7 @@ public class TextFighter {
     }
 
     public static boolean movePlayer(String location) {
+        if(player.getLocation() != null && location.equals(player.getLocation())) { return true; }
         for(Location l : locations) {
             if(l.getName().equals(location)) {
                 //Invokes the post methods of the previous location
@@ -949,7 +957,7 @@ public class TextFighter {
         return false;
     }
 
-    public static void invokePlayerInput() {
+    public static boolean invokePlayerInput() {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -981,9 +989,9 @@ public class TextFighter {
                     for(Choice c : player.getLocation().getPossibleChoices()) {
                         if(c.getName().equals(commandName)) {
                             if(inputArrayList != null) {
-                                c.invokeMethods(inputArrayList);
+                                return(c.invokeMethods(inputArrayList));
                             } else {
-                                c.invokeMethods(new ArrayList<String>());
+                                return(c.invokeMethods(new ArrayList<String>()));
                             }
                         }
                     }
@@ -993,6 +1001,7 @@ public class TextFighter {
                     } else {
                         addToOutput("Invalid choice - '" + input + "'");
                     }
+                    return false;
                 }
             } else {addToOutput("Pick one of the choices shown.");}
         } catch (IOException e) {
@@ -1000,6 +1009,7 @@ public class TextFighter {
             e.printStackTrace();
             System.exit(1);
         }
+        return false;
     }
 
     public static boolean fight(String en) {
@@ -1012,31 +1022,53 @@ public class TextFighter {
             }
         }
         if(validEnemy) {
+            movePlayer("fight");
+            player.setInFight(true);
             currentEnemy.invokePremethods();
+            Display.clearScreen();
             while(player.getInFight()) {
-                playGame();
+                Display.displayInterfaces(player.getLocation());
+                boolean validInput = invokePlayerInput();
+                Display.clearScreen();
+                Display.displayPreviousCommand();
+                if(output != null) {
+                    Display.displayOutputMessage(output);
+                }
+                output="";
+                if(needsSaving && currentSaveFile != null && (player.getAlive() || player.getGameBeaten())) { saveGame(); }
+                needsSaving = false;
+                if(!validInput) { continue; }
                 //does a random enemy action
-                Random random = new Random(currentEnemy.getPossibleActions().size());
-                currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
-                player.setCanBeHurtThisTurn(true);
+                Random random = new Random();
+                if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
+                    int number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()*2))+1;
+                    if(number > currentEnemy.getPossibleActions().size()) {
+                        currentEnemy.attack();
+                    } else {
+                        currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
+                    }
+                    player.setCanBeHurtThisTurn(true);
+                } else {
+                    currentEnemy.attack();
+                }
                 if(player.getHp() < 1) {
-                    movePlayer("dead");
                     player.setAlive(false);
                     player.setInFight(false);
                 } else if(currentEnemy.getHp() < 1) {
                     player.setInFight(false);
                     addToOutput("You defeated the '" + currentEnemy.getName() + "'!");
                     currentEnemy.invokePostmethods();
-                    currentEnemy.invokeRewardMethods();
                     addToOutput("Rewards:");
                     currentEnemy.invokeRewardMethods();
                     if(currentEnemy.getIsFinalBoss()) { playerWins(); }
                     currentEnemy=null;
+                    movePlayer("inGameMenu");
                     return true;
                 }
             }
         } else {
             addToOutput("Invalid enemy: '" + en + "'");
+            movePlayer("enemyChoices");
             return false;
         }
         return false;
@@ -1293,7 +1325,7 @@ public class TextFighter {
             Display.displayOutputMessage(output);
         }
         output="";
-        if(needsSaving && currentSaveFile != null) { saveGame(); }
+        if(needsSaving && currentSaveFile != null && (player.getAlive() || player.getGameBeaten())) { saveGame(); }
         needsSaving = false;
     }
 

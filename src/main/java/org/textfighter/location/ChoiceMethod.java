@@ -44,14 +44,13 @@ public class ChoiceMethod {
         if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { return false; }
         try {
             if(field != null) {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     method.invoke(field.get(null), arguments.toArray());
                 } else {
                     method.invoke(field.get(null), new Object[0]);
                 }
             } else {
-                if(arguments != null) {
-                    //Here
+                if(arguments != null && arguments.size() > 0) {
                     method.invoke(null, arguments.toArray());
                 } else {
                     method.invoke(null, new Object[0]);

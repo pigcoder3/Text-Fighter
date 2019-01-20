@@ -1,11 +1,11 @@
 {
 
-    "name" : "stats",
+    "name" : "playerStats",
 
     "interface" : [
 
         "----------------------",
-        "         STATS        ",
+        "       YOUR STATS     ",
         "----------------------",
         "  hp:    <health>",
         "  maxhp: <maxhealth>",

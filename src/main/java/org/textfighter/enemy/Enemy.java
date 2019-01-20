@@ -32,7 +32,7 @@ public class Enemy implements Cloneable {
 
     private boolean finalBoss;
 
-    private boolean canBeHurtThisTurn;
+    private boolean canBeHurtThisTurn = true;
 
     public String getName() { return name; }
     public void setName(String n) { name=n; }
@@ -48,11 +48,13 @@ public class Enemy implements Cloneable {
         if(canBeHurtThisTurn) {
             hp = hp - a;
             if (hp < 1) { hp = 0; }
+            TextFighter.addToOutput("Your enemy has been hurt for " + a + " hp.");
         }
     }
     public void healed(int a) {
         hp = hp + a;
         if (hp > maxhp) { hp = 0; }
+        TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");
     }
 
     public int getStrength() { return strength; }
@@ -149,7 +151,8 @@ public class Enemy implements Cloneable {
         filterRewardMethods();
         if(possibleRewardMethods != null) {
             for(Reward r : possibleRewardMethods) {
-                r.invokeMethod();
+                String output = r.invokeMethod();
+                if(output != null) { TextFighter.addToOutput(output); }
             }
         }
     }
@@ -170,13 +173,16 @@ public class Enemy implements Cloneable {
                         possibleRewardMethods.add(r);
                     }
                 }
+                else {
+                    possibleRewardMethods.add(r);
+                }
             }
         }
     }
 
     public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
-    public void attack() { TextFighter.player.damage(strength); }
+    public void attack() { if(strength > 0) { TextFighter.player.damaged(strength); } }
 
     public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
 

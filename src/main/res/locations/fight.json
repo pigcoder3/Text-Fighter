@@ -4,7 +4,8 @@
 
     "interfaces" : [
 
-        "playerStats"
+        "playerStats",
+        "enemyStats"
         "choices",
 
     ],
@@ -36,7 +37,7 @@
                     "method" : "getCanBeHurtThisTurn",
                     "class" : "org.textfighter.enemy.Enemy",
                     "field" : "currentEnemy",
-                    "fieldClass" : "org.textfighter.TextFighter"
+                    "fieldclass" : "org.textfighter.TextFighter"
                 }
             ],
             "usage" : "attack"

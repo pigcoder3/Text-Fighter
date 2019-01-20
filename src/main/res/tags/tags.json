@@ -6,6 +6,20 @@
             "method" : "getSaveFiles"
         },
         {
+            "tag" : "<enemies>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getPossibleEnemyOutputs",
+        },
+        {
+            "tag" : "<choices>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getChoiceOutputs"
+        },
+
+
+
+
+        {
             "tag" : "<coins>",
             "class" : "org.textfighter.Player",
             "method" : "getCoins",
@@ -61,16 +75,45 @@
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
+
+
+
+
         {
-            "tag" : "<enemies>",
-            "class" : "org.textfighter.TextFighter",
-            "method" : "getPossibleEnemyOutputs",
+            "tag" : "<enemyhp>",
+            "class" : "org.textfighter.enemy.Enemy",
+            "method" : "getHp",
+            "field" : "currentEnemy",
+            "fieldclass" : "org.textfighter.TextFighter"
         },
         {
-            "tag" : "<choices>",
-            "class" : "org.textfighter.TextFighter",
-            "method" : "getChoiceOutputs"
-        }
+            "tag" : "<enemymaxhp>",
+            "class" : "org.textfighter.enemy.Enemy",
+            "method" : "getMaxHp",
+            "field" : "currentEnemy",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemystr>",
+            "class" : "org.textfighter.enemy.Enemy",
+            "method" : "getStrength",
+            "field" : "currentEnemy",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemylevelreq>",
+            "class" : "org.textfighter.enemy.Enemy",
+            "method" : "getLevelRequirement",
+            "field" : "currentEnemy",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemydifficulty>",
+            "class" : "org.textfighter.enemy.Enemy",
+            "method" : "getDifficulty",
+            "field" : "currentEnemy",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
 
     ]
 }

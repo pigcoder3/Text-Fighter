@@ -43,13 +43,13 @@ public class TFMethod {
         //Invokes this method's base method
         try {
             if(field != null) {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     a=method.invoke(field.get(null), arguments.toArray());
                 } else {
                     a=method.invoke(field.get(null), new Object[0]);
                 }
             } else {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     a=method.invoke(null, arguments.toArray());
                 } else {
                     a=method.invoke(null, new Object[0]);

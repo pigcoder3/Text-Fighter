@@ -47,17 +47,18 @@ public class Reward {
         try {
             //Does the random chance thing to detemine if the player gets the reward
             Random random = new Random();
-            int number = random.nextInt(99)+1;
+            //"random" number between 1 and 99
+            int number = random.nextInt(98)+1;
             if(number > chance) { return null; }
             if(field != null ) {
-                if(arguments != null) {
-                    method.invoke(field.get(null), arguments);
+                if(arguments != null && arguments.size() > 0) {
+                    method.invoke(field.get(null), arguments.toArray());
                 } else {
                     method.invoke(field.get(null));
                 }
             } else {
-                if(arguments != null) {
-                    method.invoke(null, arguments);
+                if(arguments != null && arguments.size() > 0) {
+                    method.invoke(null, arguments.toArray());
                 } else {
                     method.invoke(null);
                 }

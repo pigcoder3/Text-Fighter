@@ -19,7 +19,7 @@ public class Requirement {
     private Method method;
     private Field field;
     private Class fieldclass;
-    private boolean neededBoolean;
+    private boolean neededBoolean = true;
 
     private boolean valid;
 
@@ -41,13 +41,13 @@ public class Requirement {
         }
         try {
             if(field != null) {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     return((boolean)method.invoke(field.get(null), arguments.toArray()) == neededBoolean);
                 } else {
                     return((boolean)method.invoke(field.get(null)) == neededBoolean);
                 }
             } else {
-                if(arguments != null) {
+                if(arguments != null && arguments.size() > 0) {
                     return((boolean)method.invoke(null, arguments.toArray()) == neededBoolean);
                 } else {
                     return((boolean)method.invoke(null) == neededBoolean);
