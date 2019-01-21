@@ -15,6 +15,8 @@ import java.util.Random;
 
 public class Reward {
 
+    public static int defaultChance = 100;
+
     private Class clazz;
     private Method method;
     private Field field;
@@ -22,7 +24,7 @@ public class Reward {
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
     private ArrayList<Object> arguments;
     //Chance is 1-100
-    private int chance;
+    private int chance = defaultChance;
     private String rewardItem;
 
     private boolean valid;

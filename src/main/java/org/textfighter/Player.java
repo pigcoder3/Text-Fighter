@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class Player {
 
     static int defaulthp = 50;
+    static int defaultMaxhp = 50;
 
     static int defaultcoins = 10;
     static int defaultmagic = 0;
