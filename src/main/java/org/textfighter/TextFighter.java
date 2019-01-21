@@ -44,6 +44,8 @@ public class TextFighter {
 
     public static String output = "";
 
+    public static File packUsed;
+
     // All default pack directories
     public static File resourcesDir;
     public static File tagFile;
@@ -51,7 +53,7 @@ public class TextFighter {
     public static File locationDir;
     public static File enemyDir;
     public static File savesDir;
-    public static File achievementsDir;
+    public static File achievementDir;
 
     // Config
     public static File configDir;
@@ -59,10 +61,6 @@ public class TextFighter {
     // All pack directories
     public static File packFile;
     public static File packDir;
-    public static File modpackDir;
-    public static File intpackDir;
-    public static File enemypackDir;
-    public static File achievementpackDir;
 
     public static JSONParser parser = new JSONParser();
 
@@ -95,15 +93,11 @@ public class TextFighter {
         interfaceDir = new File(resourcesDir.getPath() + "/userInterfaces/");
         locationDir = new File(resourcesDir.getPath() + "/locations");
         savesDir = new File("../../../saves");
-        enemyDir = new File(resourcesDir + "/enemies");
-        achievementsDir = new File(resourcesDir + "/achievements");
+        enemyDir = new File(resourcesDir.getPath() + "/enemies");
+        achievementDir = new File(resourcesDir.getPath() + "/achievements");
         configDir = new File("../../../config");
-        packFile = new File(configDir.getPath() + "/packs");
+        packFile = new File(configDir.getPath() + "/pack");
         packDir = new File("../../../packs");
-        modpackDir = new File(packDir.getPath() + "/modpacks");
-        intpackDir = new File(packDir.getPath() + "/intpacks");
-        enemypackDir = new File(packDir.getPath() + "/enemypacks");
-        achievementpackDir = new File(packDir.getPath() + "/achivementpacks");
         version = readVersionFromFile();
         loadConfig();
 
@@ -213,9 +207,7 @@ public class TextFighter {
         if(type.equals(ChoiceMethod.class)) {
             o=new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass);
         } else if(type.equals(Requirement.class)) {
-            String neededBooleanString = (String)obj.get("neededBoolean");
-            boolean neededBoolean = Boolean.parseBoolean(neededBooleanString);
-            if(neededBooleanString == null) { neededBoolean = true; }
+            boolean neededBoolean = Requirement.defaultNeededBoolean; if(obj.get("neededBoolean") != null) {neededBoolean=Boolean.parseBoolean((String)obj.get("neededBoolean"));}
             o=new Requirement(method, arguments, clazz, field, fieldclass, neededBoolean);
         } else if(type.equals(EnemyActionMethod.class)) {
             o=new EnemyActionMethod(method, arguments, clazz, field, fieldclass);
@@ -223,7 +215,7 @@ public class TextFighter {
             o=new TFMethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
-                int chance = Integer.parseInt((String)obj.get("chance"));
+                int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
                 if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
                 o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
@@ -261,28 +253,17 @@ public class TextFighter {
             ArrayList<String> usedNames = new ArrayList<String>(); // Used to override default interfaces with ones in packs
             File directory = interfaceDir;
             //Determine if there is a pack to be loaded
-            if(packFile.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String key = "";
-                        String value = "";
-                        if(key == null && value == null) { continue; }
-                        if(line.indexOf("=") != -1) {
-                            key = line.substring(0,line.indexOf("="));
-                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
-                        }
-                        if(value == null || key == null || ! key.equals("intpack") || key.substring(0,1).equals("#")) { continue; }
-                        File intpack = new File(intpackDir + "/" + value);
-                        if(intpackDir.list() != null && new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
-                            directory = intpack;
-                            Display.displayProgressMessage("loading interfaces from interfacepack '" + value + "'");
+            if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+                for(String s : packUsed.list()) {
+                    if(s.equals("interfaces")) {
+                        File pack = new File(packUsed.getPath() + "/interfaces");
+                        if(pack.exists() && pack.isDirectory()) {
+                            directory = pack;
+                            Display.displayPackMessage("loading interfaces from pack '" + packUsed.getName() + "'");
                             parsingPack = true;
-                        } else {
-                            Display.displayWarning("Interface pack '" + value + "' not found. Falling back to default interfaces.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default interfaces."); }
+                }
             }
 
             ArrayList<String> namesToBeOmitted = new ArrayList<String>(); //Place where all names that are located in the omit file are stored
@@ -308,11 +289,11 @@ public class TextFighter {
                         JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
                         JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
                         String name = (String)interfaceFile.get("name");
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading interface '" + name + "'");
                         Display.changePackTabbing(true);
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); continue; }
-                        if(interfaceArray == null) { Display.displayPackError("This does not have an interface array. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
+                        if(interfaceArray == null) { Display.displayPackError("This does not have an interface array. Omitting..."); Display.changePackTabbing(false); continue; }
                         String uiString = "";
                         for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
                         Display.interfaces.add(new UserInterface(name, uiString));
@@ -337,28 +318,18 @@ public class TextFighter {
             if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = locationDir;
-            if(packFile.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String key = " ";
-                        String value = " ";
-                        if(key == null && value == null) { continue; }
-                        if(line.indexOf("=") != -1) {
-                            key = line.substring(0,line.indexOf("="));
-                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
-                        }
-                        if(value == null || key == null || ! key.equals("modpack")) { continue; }
-                        File modpack = new File(modpackDir + "/" + value);
-                        if(modpackDir.list() != null && new ArrayList<>(Arrays.asList(modpackDir.list())).contains(value) && modpack.isDirectory()) {
-                            directory = modpack;
-                            Display.displayProgressMessage("loading locations from modpack '" + value + "'");
+            //Determine if there is a pack to be loaded
+            if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+                for(String s : packUsed.list()) {
+                    if(s.equals("locations")) {
+                        File pack = new File(packUsed.getPath() + "/locations");
+                        if(pack.exists() && pack.isDirectory()) {
+                            directory = pack;
+                            Display.displayPackMessage("loading locations from pack '" + packUsed.getName() + "'");
                             parsingPack = true;
-                        } else {
-                            Display.displayWarning("Mod pack '" + value + "' not found. Falling back to default locations.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default locations."); }
+                }
             }
             ArrayList<String> namesToBeOmitted = new ArrayList<String>(); //Place where names to be ommitted are stored
             if(parsingPack) {
@@ -380,11 +351,11 @@ public class TextFighter {
                         JSONObject locationFile = (JSONObject)parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                         JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
                         String name = (String)locationFile.get("name");
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading Location '" + name + "'");
                         Display.changePackTabbing(true);
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); continue; }
-                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
+                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); Display.changePackTabbing(false); continue; }
                         ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                         boolean hasChoiceInterface = false;
                         //Determines if the location has a choices array
@@ -427,7 +398,7 @@ public class TextFighter {
                             Method method;
                             try {
                                 method = TextFighter.class.getMethod("exitGame", new Class[] {int.class});
-                            } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); continue; }
+                            } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); Display.changePackTabbing(false); continue; }
                             ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
                             ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
                             ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
@@ -438,13 +409,13 @@ public class TextFighter {
                         locations.add(new Location(name, interfaces, choices, loadMethods(TFMethod.class, (JSONArray)locationFile.get("premethods"), Location.class), loadMethods(TFMethod.class, (JSONArray)locationFile.get("postmethods"), Location.class)));
                         usedNames.add(name);
                         Display.changePackTabbing(false);
-                        directory = locationDir;
-                        parsingPack = false;
                     }
                 }
-                Display.displayProgressMessage("Locations loaded.");
-                Display.changePackTabbing(false);
+                directory = locationDir;
+                parsingPack = false;
             }
+            Display.displayProgressMessage("Locations loaded.");
+            Display.changePackTabbing(false);
         } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
         Display.changePackTabbing(false);
         return true;
@@ -455,29 +426,18 @@ public class TextFighter {
             if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = enemyDir;
-            //Determines if there is a pack to be parsed
-            if(packFile.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String key = "";
-                        String value = "";
-                        if(key == null && value == null) { continue; }
-                        if(line.indexOf("=") != -1) {
-                            key = line.substring(0,line.indexOf("="));
-                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
-                        }
-                        if(value == null || key == null || ! key.equals("enemypack")) { continue; }
-                        File enemypack = new File(enemypackDir + "/" + value);
-                        if(enemypackDir.list() != null && new ArrayList<>(Arrays.asList(enemypackDir.list())).contains(value) && enemypack.isDirectory()) {
-                            directory = enemypack;
-                            Display.displayProgressMessage("loading enemies from enemypack '" + value + "'");
+            //Determine if there is a pack to be loaded
+            if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+                for(String s : packUsed.list()) {
+                    if(s.equals("enemies")) {
+                        File pack = new File(packUsed.getPath() + "/enemies");
+                        if(pack.exists() && pack.isDirectory()) {
+                            directory = pack;
+                            Display.displayPackMessage("loading enemies from pack '" + packUsed.getName() + "'");
                             parsingPack = true;
-                        } else {
-                            Display.displayWarning("Enemy pack '" + value + "' not found. Falling back to default enemies.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the enemypack's file (The file does exist). Falling back to default enemies."); }
+                }
             }
             //Gets omitted names
             ArrayList<String> namesToBeOmitted = new ArrayList<String>();
@@ -497,16 +457,16 @@ public class TextFighter {
                 if(directory.list() != null) {
                     for(String f : directory.list()) {
                         JSONObject enemyFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
-                        String name = (String)enemyFile.get("name");
+                        //If a value is not specified in the file, it automatically goes to the default values
+                        String name = Enemy.defaultName;                        if(enemyFile.get("name") != null){              name=(String)enemyFile.get("name");}
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading enemy '" + name + "'");
                         Display.changePackTabbing(true);
-                        int health = Integer.parseInt((String)enemyFile.get("health"));
-                        int strength = Integer.parseInt((String)enemyFile.get("strength"));
-                        int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
-                        boolean finalBoss = Boolean.parseBoolean((String)enemyFile.get("finalBoss"));
-                        if(name == null) { Display.displayPackError("This enemy does not have a name. Omitting..."); continue; }
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
+                        int health = Enemy.defaulthp;                           if(enemyFile.get("health") != null){            health=Integer.parseInt((String)enemyFile.get("health"));}
+                        int maxhealth = Enemy.defaultMaxhp;                     if(enemyFile.get("maxhp") != null){             maxhealth=Integer.parseInt((String)enemyFile.get("maxhp"));}
+                        int strength = Enemy.defaultStrength;                   if(enemyFile.get("strength") != null){          strength=Integer.parseInt((String)enemyFile.get("strength"));}
+                        int levelRequirement =  Enemy.defaultLevelRequirement;  if(enemyFile.get("levelRequirement") != null){  levelRequirement=Integer.parseInt((String)enemyFile.get("levelRequirement"));}
+                        boolean finalBoss = false;                              if(enemyFile.get("finalBoss") != null){         finalBoss=Boolean.parseBoolean((String)enemyFile.get("finalBoss"));}
                         if(levelRequirement < 1) { levelRequirement=1; }
                         JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
                         ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
@@ -518,13 +478,13 @@ public class TextFighter {
                         }
                         enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class), loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class), enemyActions));
                         usedNames.add(name);
-                        directory=enemyDir;
-                        parsingPack=false;
                         Display.changePackTabbing(false);
                     }
                 }
-                Display.displayProgressMessage("Enemies loaded.");
+                directory=enemyDir;
+                parsingPack=false;
             }
+            Display.displayProgressMessage("Enemies loaded.");
         } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
         Display.changePackTabbing(false);
         return true;
@@ -535,34 +495,22 @@ public class TextFighter {
             Display.displayProgressMessage("Loading the parsing tags...");
             if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
-            File directory = intpackDir;
             File file = tagFile;
-            //Finds if there is a pack file to be parsed
-            if(packFile.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String key = " ";
-                        String value = " ";
-                        if(key == null && value == null) { continue; }
-                        if(line.indexOf("=") != -1) {
-                            key = line.substring(0,line.indexOf("="));
-                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
-                        }
-                        if(value == null || key == null || ! key.equals("intpack")) { continue; }
-                        File intpack = new File(intpackDir + "/" + value);
-                        if(intpackDir.list() != null && new ArrayList<>(Arrays.asList(intpackDir.list())).contains(value) && intpack.isDirectory()) {
-                            if(new ArrayList<>(Arrays.asList(intpack.list())).contains("tags.json")) {
-                                directory = intpack;
-                                file = new File(intpack + "/tags.json");
-                                Display.displayProgressMessage("loading tags from intpack '" + value + "'");
+            //Determine if there is a pack to be loaded
+            if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+                for(String s : packUsed.list()) {
+                    if(s.equals("interfaces")) {
+                        File pack = new File(packUsed.getPath() + "/interfaces");
+                        if(pack.exists() && pack.isDirectory()) {
+                            File thefile = new File(pack + "/tags.json");
+                            if(thefile.exists()) {
+                                file = thefile;
+                                Display.displayPackMessage("loading tags from pack '" + packUsed.getName() + "'");
                                 parsingPack = true;
                             }
-                        } else {
-                            Display.displayWarning("Interface pack '" + value + "' not found. Falling back to default tags.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the packs file (The file does exist). Falling back to default tags."); }
+                }
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; Display.displayPackMessage("Loading parsing tags from the default pack."); }
@@ -582,32 +530,21 @@ public class TextFighter {
     public static boolean loadAchievements() {
         try {
             Display.displayProgressMessage("Loading the achievements...");
-            if(!achievementsDir.exists()) { Display.displayError("Could not find the default achievements directory."); return false;}
+            if(!achievementDir.exists()) { Display.displayError("Could not find the default achievements directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
-            File directory = achievementsDir;
-            //Finds achievement packs
-            if(packFile.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String key = "";
-                        String value = "";
-                        if(key == null && value == null) { continue; }
-                        if(line.indexOf("=") != -1) {
-                            key = line.substring(0,line.indexOf("="));
-                            value = line.substring(line.indexOf("=")+1,line.length()).trim();
-                        }
-                        if(value == null || key == null || !key.equals("achievementpack")) { continue; }
-                        File achievementpack = new File(achievementpackDir + "/" + value);
-                        if(achievementpackDir.list() != null && new ArrayList<>(Arrays.asList(achievementpackDir.list())).contains(value) && achievementpack.isDirectory()) {
-                            directory = achievementpack;
-                            Display.displayProgressMessage("loading achievements from achievementpack '" + value + "'");
+            File directory = achievementDir;
+            //Determine if there is a pack to be loaded
+            if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+                for(String s : packUsed.list()) {
+                    if(s.equals("achievements")) {
+                        File pack = new File(packUsed.getPath() + "/achievements");
+                        if(pack.exists() && pack.isDirectory()) {
+                            directory = pack;
+                            Display.displayPackMessage("loading achievements from pack '" + packUsed.getName() + "'");
                             parsingPack = true;
-                        } else {
-                            Display.displayWarning("Achievement pack '" + value + "' not found. Falling back to default achievements.");
                         }
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack file (The file does exist). Falling back to default achievements."); }
+                }
             }
             //Ones to be omitted
             ArrayList<String> namesToBeOmitted = new ArrayList<String>();
@@ -619,7 +556,7 @@ public class TextFighter {
                         while ((line = br.readLine()) != null) {
                             namesToBeOmitted.add(line);
                         }
-                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally..."); }
+                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally...");}
                 }
             }
             //Loads them
@@ -629,25 +566,36 @@ public class TextFighter {
                     for(String f : directory.list()) {
                         JSONObject achievementFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f)));
                         String name = (String)achievementFile.get("name");
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
+                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading achievement '" + name + "'");
                         Display.changePackTabbing(true);
                         achievements.add(new Achievement(name, loadMethods(Requirement.class, (JSONArray)achievementFile.get("requirements"), Achievement.class), loadMethods(Reward.class, (JSONArray)achievementFile.get("rewards"), Achievement.class)));
                         Display.changePackTabbing(false);
                         usedNames.add(name);
-                        directory=enemyDir;
-                        parsingPack=false;
                     }
                 }
-                Display.displayProgressMessage("Achievements loaded.");
-                Display.changePackTabbing(false);
+                directory=achievementDir;
+                parsingPack=false;
             }
+            Display.displayProgressMessage("Achievements loaded.");
+            Display.changePackTabbing(false);
         } catch (IOException | ParseException e) { e.printStackTrace(); return false; }
         return true;
     }
 
     public static void loadConfig() {
         if(configDir.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                String line = br.readLine();
+                if(line != null && packDir != null && packDir.exists() && packDir.list() != null) {
+                    for(String s : packDir.list()){
+                        if(s.equals(line)) {
+                            packUsed = new File(packDir.getPath() + "/" + line);
+                            Display.displayProgressMessage("Current pack: " + line);
+                        }
+                    }
+                }
+            } catch(IOException e) { Display.displayWarning("Could not read the config file that defines desired pack!"); }
             Display.loadDesiredColors();
             Display.displayProgressMessage("Config loaded.");
         } else {
@@ -670,14 +618,14 @@ public class TextFighter {
             gameName = (String)file.get("name");
 
             JSONObject stats = (JSONObject)file.get("stats");
-            int level = Integer.parseInt((String)stats.get("level"));
-            int experience = Integer.parseInt((String)stats.get("experience"));
-            int score = Integer.parseInt((String)stats.get("score"));
-            int maxhp = Integer.parseInt((String)stats.get("maxhealth"));
-            int hp = Integer.parseInt((String)stats.get("health"));
-            int coins = Integer.parseInt((String)stats.get("coins"));
-            int magic = Integer.parseInt((String)stats.get("magic"));
-            boolean gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));
+            int level = 1;                      if(stats.get("level") != null){         level=Integer.parseInt((String)stats.get("level"));}
+            int experience = 0;                 if(stats.get("experience") != null){    experience=Integer.parseInt((String)stats.get("experience"));}
+            int score = 0;                      if(stats.get("score") != null){         score=Integer.parseInt((String)stats.get("score"));}
+            int maxhp = Player.defaultMaxhp;    if(stats.get("maxhealth") != null){     maxhp=Integer.parseInt((String)stats.get("maxhealth"));}
+            int hp = Player.defaulthp;          if(stats.get("health") != null){        hp=Integer.parseInt((String)stats.get("health"));}
+            int coins = Player.defaultcoins;    if(stats.get("coins") != null){         coins=Integer.parseInt((String)stats.get("coins"));}
+            int magic = Player.defaultmagic;    if(stats.get("magic") != null){         magic=Integer.parseInt((String)stats.get("magic"));}
+            boolean gameBeaten = false;         if(stats.get("gameBeaten") != null){    gameBeaten=Boolean.parseBoolean((String)stats.get("gameBeaten"));}
 
             JSONObject inventory = (JSONObject)file.get("inventory");
 

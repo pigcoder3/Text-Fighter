@@ -14,12 +14,14 @@ import org.textfighter.enemy.Enemy;
 
 public class Requirement {
 
+    public static boolean defaultNeededBoolean = true;
+
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private Class clazz;
     private Method method;
     private Field field;
     private Class fieldclass;
-    private boolean neededBoolean = true;
+    private boolean neededBoolean = defaultNeededBoolean;
 
     private boolean valid;
 

@@ -8,14 +8,20 @@ import java.util.ArrayList;
 
 public class Enemy implements Cloneable {
 
-    private String name;
-    private int maxhp;
-    private int hp;
-    private int strength;
+    public static String defaultName = "enemy";
+    public static int defaulthp = 50;
+    public static int defaultMaxhp = 50;
+    public static int defaultStrength = 5;
+    public static int defaultLevelRequirement = 1;
+
+    private String name = defaultName;
+    private int maxhp = defaulthp;
+    private int hp = defaultMaxhp;
+    private int strength = defaultStrength;
     private int difficulty;
     private String output;
 
-    private int levelRequirement;
+    private int levelRequirement = defaultLevelRequirement;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     private ArrayList<EnemyAction> allActions = new ArrayList<EnemyAction>();
