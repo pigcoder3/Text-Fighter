@@ -9,13 +9,13 @@ import java.util.ArrayList;
 public class Enemy implements Cloneable {
 
     public static String defaultName = "enemy";
-    public static int defaulthp = 50;
+    public static int defaultHp = 50;
     public static int defaultMaxhp = 50;
     public static int defaultStrength = 5;
     public static int defaultLevelRequirement = 1;
 
     private String name = defaultName;
-    private int maxhp = defaulthp;
+    private int maxhp = defaultHp;
     private int hp = defaultMaxhp;
     private int strength = defaultStrength;
     private int difficulty;

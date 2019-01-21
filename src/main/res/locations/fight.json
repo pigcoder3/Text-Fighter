@@ -85,7 +85,7 @@
             "description" : "uses a strength potion, which gives you double strength for 2 turns",
             "methods" : [
                 {
-                    "method" : "setTurnsLeftWithStrength",
+                    "method" : "setTurnsWithStrengthLeft",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["2"],
                     "argumentTypes" : ["1"],
@@ -130,7 +130,7 @@
             "description" : "uses a healthPotion",
             "methods" : [
                 {
-                    "method" : "setTurnsLeftWithInvinsibility",
+                    "method" : "setTurnsWithInvinsibilityLeft",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["2"],
                     "argumentTypes" : ["1"],

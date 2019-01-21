@@ -1,29 +1,32 @@
 package org.textfighter;
 
 import org.textfighter.item.*;
-import org.textfighter.item.armor.*;
-import org.textfighter.item.tool.*;
-import org.textfighter.item.weapon.*;
 import org.textfighter.location.Location;
 import org.textfighter.*;
 import org.textfighter.display.Display;
-import org.textfighter.item.specialitem.SpecialItem;
+import org.textfighter.item.SpecialItem;
 import org.textfighter.method.*;
 
 import java.lang.reflect.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Player {
+
+    static int defaultLevel = 1;
+    static int defaultExperience = 0;
+    static int defaultScore = 0;
 
     static int defaulthp = 50;
     static int defaultMaxhp = 50;
 
-    static int defaultcoins = 10;
-    static int defaultmagic = 0;
-    static int defaultmetalscraps = 0;
+    static int defaultCoins = 10;
+    static int defaultMagic = 0;
+    static int defaultMetalscraps = 0;
 
     static int defaultStrength = 5;  //Strength of just your fists
+
+    static String defaultCurrentWeaponString = "fists";
 
     static int defaultHealthPotions = 0;
     static int defaultStrengthPotions = 0;
@@ -43,15 +46,9 @@ public class Player {
 
     private Weapon currentWeapon;
 
-    private int healthPotions = defaultHealthPotions;
-    private int strengthPotions = defaultStrengthPotions;
-    private int invinsibilityPotions = defaultInvinsibilityPotions;
-    private int turnsLeftWithStrength = 0;
-    private int turnsLeftWithInvinsibility = 0;
-
-    private int level = 1;
-    private int experience = 0;
-    private int score = 0;
+    private int level = defaultLevel;
+    private int experience = defaultExperience;
+    private int score = defaultScore;
 
     private int hp = defaulthp;
     private int maxhp = defaulthp;
@@ -65,9 +62,9 @@ public class Player {
     private int turnsWithStrengthLeft = defaultTurnsWithStrengthLeft;
     private int turnsWithInvinsibilityLeft = defaultTurnsWithInvinsibilityLeft;
 
-    private int coins = defaultcoins;
-    private int magic = defaultmagic;
-    private int metalScraps = defaultmetalscraps;
+    private int coins = defaultCoins;
+    private int magic = defaultMagic;
+    private int metalScraps = defaultMetalscraps;
 
     private Location location;
 
@@ -82,10 +79,21 @@ public class Player {
     private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
     public void attack(String customString) {
-        if(turnsLeftWithStrength>0){
-            TextFighter.currentEnemy.damaged(strength*2, customString);
+        int newStrength = strength;
+        if(currentWeapon == null) { TextFighter.addToOutput("You do not have a weapon, so you attack with your fists."); }
+        else {
+            //Deals with critical hits and misses
+            Random random = new Random();
+            int number = random.nextInt(99)+1;
+            if(number > currentWeapon.getMissChance()) { TextFighter.addToOutput("Your attack missed your enemy."); return; }
+            random = new Random();
+            number = random.nextInt(99)+1;
+            if(number > currentWeapon.getCritChance()) { newStrength*=1.5; TextFighter.addToOutput("Your attack was a critical hit!"); }
+        }
+        if(turnsWithStrengthLeft>0) {
+            TextFighter.currentEnemy.damaged(newStrength*2, customString);
         } else {
-            TextFighter.currentEnemy.damaged(strength, customString);
+            TextFighter.currentEnemy.damaged(newStrength, customString);
         }
     }
 
@@ -117,27 +125,6 @@ public class Player {
         }
     }
 
-    public void increaseStrengthPotions(int a) { strengthPotions+=a;}
-    public void decreaseStrengthPotions(int a) { strengthPotions-=a; if(strengthPotions<0){strengthPotions=0;}}
-    public int getStrengthPotions() { return strengthPotions; }
-    public void setStrengthPotions(int a) { strengthPotions=a; if(strengthPotions<0){strengthPotions=0;}}
-
-    public void setTurnsLeftWithStrength(int a) { turnsLeftWithStrength=a; if(turnsLeftWithStrength<0){turnsLeftWithStrength=0;}}
-    public void decreaseTurnsLeftWithStrength() { turnsLeftWithStrength--; if(turnsLeftWithStrength<0){turnsLeftWithStrength=0;}}
-
-    public void increaseHealthPotions(int a) { healthPotions+=a;}
-    public void decreaseHealthPotions(int a) { healthPotions-=a; if(healthPotions<0){healthPotions=0;}}
-    public int getHealthPotions() { return healthPotions; }
-    public void setHealthPotions(int a) { healthPotions=a; if(healthPotions<0){healthPotions=0;}}
-
-    public void increaseInvinsibilityPotions(int a) { invinsibilityPotions+=a;}
-    public void decreaseInvinsibilityPotions(int a) { invinsibilityPotions-=a; if(invinsibilityPotions<0){invinsibilityPotions=0;}}
-    public int getInvinsibilityPotions() { return invinsibilityPotions; }
-    public void setInvinsibilityPotions(int a) { invinsibilityPotions=a; if(invinsibilityPotions<0){invinsibilityPotions=0;}}
-
-    public void setTurnsLeftWithInvinsibility(int a) { turnsLeftWithInvinsibility=a; if(turnsLeftWithInvinsibility<0){turnsLeftWithInvinsibility=0;}}
-    public void decreaseTurnsLeftWithInvinsibility() { turnsLeftWithInvinsibility--; if(turnsLeftWithInvinsibility<0){turnsLeftWithInvinsibility=0;}}
-
     public int getStrength() { return strength; }
 
     public void increaseHealthPotions(int a) { healthPotions+=a; TextFighter.needsSaving=true;}
@@ -161,20 +148,33 @@ public class Player {
     public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; TextFighter.needsSaving=true;}
     public void decreaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft-=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
     public int getTurnsWithStrengthLeft() {return turnsWithStrengthLeft;}
+    public void setTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft=a; if(turnsWithStrengthLeft<0) {turnsWithStrengthLeft=0;}}
 
-    public void increaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft+=a;}
+    public void increaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft+=a; TextFighter.needsSaving=true;}
     public void decreaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft-=a; if(turnsWithInvinsibilityLeft<0){turnsWithInvinsibilityLeft=0;} TextFighter.needsSaving=true;}
     public int getTurnsWithInvinsibilityLeft() {return turnsWithInvinsibilityLeft;}
+    public void setTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft=a; if(turnsWithInvinsibilityLeft<0) {turnsWithInvinsibilityLeft=0;} TextFighter.needsSaving=true;}
 
     public int getLevel() { return level; }
     public void increaseLevel(int a) { level+=a; TextFighter.needsSaving=true;}
     public void decreaseLevel(int a) { level-=a; TextFighter.needsSaving=true;}
     public int getExperience() { return experience; }
-    public void increaseExperience(int a) { experience+=a; TextFighter.needsSaving=true;}
-    public void decreaseExperience(int a) { experience-=a; TextFighter.needsSaving=true;}
+    public void increaseExperience(int a) { experience+=a; checkForLevelUp(); TextFighter.needsSaving=true;}
+    public void decreaseExperience(int a) { experience-=a; if(experience < 0) { experience = 0; } TextFighter.needsSaving=true;}
     public int getScore() { return score; }
     public void increaseScore(int a) { score+=a; TextFighter.needsSaving=true;}
     public void decreaseScore(int a) { score-=a; TextFighter.needsSaving=true;}
+
+    public boolean checkForLevelUp() {
+        if(experience > level*10+100) {
+            experience = experience - level*10+100;
+            increaseLevel(1);
+            TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public int getHp() { return hp; }
     public void damaged(int a, String customString) {
@@ -313,25 +313,19 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public void attack(String customString) {
-        if(strength<1) { TextFighter.addToOutput("Your strength is 0, you did not attack.");}
-        if(turnsWithStrengthLeft>0) {
-            TextFighter.currentEnemy.damaged(strength*2, customString);
-        } else {
-            TextFighter.currentEnemy.damaged(strength, customString);
-        }
-    }
-
-    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, int healthPotions, int strengthPotions, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
+    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invinsibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
         this.magic = magic;
+        this.metalScraps = metalScraps;
         this.level = level;
         this.experience = experience;
         this.score = score;
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
+        this.invinsibilityPotions = invinsibilityPotions;
+        this.currentWeapon = currentWeapon;
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;
         this.achievements = achievements;
@@ -340,6 +334,10 @@ public class Player {
             if(l.getName().equals("saves")) { this.location = l; }
         }
         calculateTotalProtection();
+    }
+
+    public Player(Weapon currentWeapon) {
+        this.currentWeapon = currentWeapon;
     }
 
     public Player() { }

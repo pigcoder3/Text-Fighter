@@ -101,6 +101,20 @@
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
+        {
+            "tag" : "<turnsWithStrengthLeft>",
+            "class" : "org.textfighter.Player",
+            "method" : "getTurnsWithStrengthLeft",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<turnsWithInvinsibilityLeft>",
+            "class" : "org.textfighter.Player",
+            "method" : "getTurnsWithInvinsibilityLeft",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
 
 
 

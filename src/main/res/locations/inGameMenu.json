@@ -30,12 +30,35 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
                     "arguments" : ["shop"],
-                    "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
+                    "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "shop"
+        },
+        {
+            "name" : "mine",
+            "description" : "Goes to the mine",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["mine"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "mine",
+            "requirements" : [
+                {
+                    "methods" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["pickaxe"],
+                    "argumentTypes" : ["0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
         }
 
     ]

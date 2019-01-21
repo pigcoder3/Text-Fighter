@@ -10,9 +10,12 @@
         "  hp:    <health>",
         "  maxhp: <maxhealth>",
         "",
-        "  hppotions: <hppotions>",
-        "  strpotions: <strpotions>",
-        "  invinpotions: <invinpotions>",
+        "  Health potions: <hppotions>",
+        "  Strength potions: <strpotions>",
+        "  Invinsibility potions: <invinpotions>",
+        "",
+        "  Strength turns left: <turnsWithStrengthLeft>",
+        "  Invinsibility turns left: <turnsWithInvinsibilityLeft>",
         "",
         "  strength: <str>",
         "",
@@ -21,7 +24,7 @@
         "",
         "  coins: <coins>",
         "  magic: <magic>",
-        "  metal: <metal>"
+        "  metal scraps: <metal>"
 
     ]
 
