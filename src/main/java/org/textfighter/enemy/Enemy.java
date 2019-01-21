@@ -44,10 +44,11 @@ public class Enemy implements Cloneable {
     }
 
     public int getHp() { return hp; }
-    public void damaged(int a) {
+    public void damaged(int a, String customString) {
         if(canBeHurtThisTurn) {
             hp = hp - a;
             if (hp < 1) { hp = 0; }
+            if(customString != null) { TextFighter.addToOutput(customString); }
             TextFighter.addToOutput("Your enemy has been hurt for " + a + " hp.");
         }
     }
@@ -182,7 +183,7 @@ public class Enemy implements Cloneable {
 
     public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
-    public void attack() { if(strength > 0) { TextFighter.player.damaged(strength); } }
+    public void attack(String customString) { if(strength > 0) { TextFighter.player.damaged(strength, "physical", customString); } }
 
     public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
 

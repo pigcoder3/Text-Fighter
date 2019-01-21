@@ -1,8 +1,8 @@
 {
     "name" : "man",
     "health" : "50",
-    "maxhealth" : "50",
-    "strength" : "10",
+    "maxhealth" : "20",
+    "strength" : "3",
     "levelRequirement" : "1",
     "requirements" : [],
     "finalBoss" : "false",

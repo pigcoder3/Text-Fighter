@@ -23,6 +23,19 @@
                 }
             ],
             "usage" : "fight"
+        },
+        {
+            "name" : "shop",
+            "description" : "Goes to the shop",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["shop"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "shop"
         }
 
     ]

@@ -132,8 +132,8 @@ public class TextFighter {
         String clazzString = (String)obj.get("class");
         String fieldString = (String)obj.get("field");
         String fieldclassString = (String)obj.get("fieldclass");
-        if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); return null; }
-        if(!((argumentsRaw != null && argumentTypesString != null) && (argumentsRaw.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsRaw == null))) { Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); return null; }
+        if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); Display.changePackTabbing(false); return null; }
+        if(!((argumentsRaw != null && argumentTypesString != null) && (argumentsRaw.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsRaw == null))) { Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); Display.changePackTabbing(false); return null; }
         //Fields and fieldclasses can be null (Which just means the method does not act upon a field
         if(argumentTypesString != null && argumentTypesString.size() > 0) {
             for (int g=0; g<argumentTypesString.size(); g++) {
@@ -150,6 +150,7 @@ public class TextFighter {
                     argumentTypes.add(Class.class);
                 } else {
                     Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
+                    Display.changePackTabbing(false);
                     continue;
                 }
             }
@@ -157,11 +158,11 @@ public class TextFighter {
 
         //Gets the class
         Class clazz = null;
-        try { clazz = Class.forName(clazzString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); return null; }
+        try { clazz = Class.forName(clazzString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Gets the fieldclass
         Class fieldclass = null;
-        if(fieldclassString != null && fieldString != null) { try { fieldclass = Class.forName(fieldclassString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); return null; } }
+        if(fieldclassString != null && fieldString != null) { try { fieldclass = Class.forName(fieldclassString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); Display.changePackTabbing(false); return null; } }
 
         //Gets the field from the class
         Field field = null;
@@ -169,7 +170,7 @@ public class TextFighter {
             if(fieldString != null && fieldclassString != null) {
                 field = fieldclass.getField(fieldString);
             }
-        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); return null; }
+        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Gets the method from the class
         Method method = null;
@@ -179,7 +180,7 @@ public class TextFighter {
             } else {
                 method = clazz.getMethod(methodString);
             }
-        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' could not be found. Omitting..."); return null; }
+        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' could not be found. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Makes the arguments the correct type (String, int, or boolean)
         ArrayList<Object> arguments = new ArrayList<Object>();
@@ -198,9 +199,10 @@ public class TextFighter {
                     } else if (argumentTypes.get(p).equals(boolean.class)) {
                         arguments.add(Boolean.parseBoolean((String)argumentsRaw.get(p)));
                     } else if (argumentTypes.get(p).equals(Class.class)) {
-                        try { arguments.add(Class.forName((String)argumentsRaw.get(p))); } catch(ClassNotFoundException e) { Display.displayPackError("An argument tried to get a class that does not exist. Omitting... "); return null; }
+                        try { arguments.add(Class.forName((String)argumentsRaw.get(p))); } catch(ClassNotFoundException e) { Display.displayPackError("An argument tried to get a class that does not exist. Omitting... "); Display.changePackTabbing(false); return null; }
                     } else {
                         Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
+                        Display.changePackTabbing(false);
                         continue;
                     }
                 }
@@ -224,14 +226,14 @@ public class TextFighter {
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
                 int chance = Integer.parseInt((String)obj.get("chance"));
-                if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
+                if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); Display.changePackTabbing(false); return null; }
                 o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
                 o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
             }
         } else if(type.equals(UiTag.class)) {
             String tag = (String)obj.get("tag");
-            if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); return null; }
+            if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); Display.changePackTabbing(false); return null; }
             o=new UiTag(tag, method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), UiTag.class));
         }
         Display.changePackTabbing(false);
@@ -311,8 +313,8 @@ public class TextFighter {
                         Display.displayPackMessage("Loading interface '" + name + "'");
                         Display.changePackTabbing(true);
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); continue; }
-                        if(interfaceArray == null) { Display.displayPackError("This does not have an interface array. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
+                        if(interfaceArray == null) { Display.displayPackError("This does not have an interface array. Omitting..."); Display.changePackTabbing(false); continue; }
                         String uiString = "";
                         for (int i = 0; i < interfaceArray.size(); i++) { uiString += interfaceArray.get(i) + "\n"; }
                         Display.interfaces.add(new UserInterface(name, uiString));
@@ -383,8 +385,8 @@ public class TextFighter {
                         Display.displayPackMessage("Loading Location '" + name + "'");
                         Display.changePackTabbing(true);
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); continue; }
-                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); Display.changePackTabbing(false);continue; }
+                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); Display.changePackTabbing(false);continue; }
                         ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                         boolean hasChoiceInterface = false;
                         //Determines if the location has a choices array
@@ -400,6 +402,7 @@ public class TextFighter {
                         }
                         if(!hasChoiceInterface) {
                             Display.displayPackError("This does not have a choices interface. Omitting...");
+                            Display.changePackTabbing(false);
                             continue;
                         }
                         JSONArray choiceArray = (JSONArray)locationFile.get("choices");
@@ -413,7 +416,8 @@ public class TextFighter {
                                 Display.changePackTabbing(true);
                                 String desc = (String)obj.get("description");
                                 String usage = (String)obj.get("usage");
-                                if(choicename == null) { Display.displayPackError("A choice in location '" + name + "' has no name. Omitting..."); }
+                                if(obj.get("methods") == null) { Display.displayPackError("This choice has no methods. Omitting..."); Display.changePackTabbing(false); continue; }
+                                if(choicename == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
                                 choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class)));
                                 Display.changePackTabbing(false);
                             }
@@ -427,7 +431,7 @@ public class TextFighter {
                             Method method;
                             try {
                                 method = TextFighter.class.getMethod("exitGame", new Class[] {int.class});
-                            } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); continue; }
+                            } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); Display.changePackTabbing(false); continue; }
                             ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
                             ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
                             ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
@@ -504,9 +508,9 @@ public class TextFighter {
                         int strength = Integer.parseInt((String)enemyFile.get("strength"));
                         int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
                         boolean finalBoss = Boolean.parseBoolean((String)enemyFile.get("finalBoss"));
-                        if(name == null) { Display.displayPackError("This enemy does not have a name. Omitting..."); continue; }
+                        if(name == null) { Display.displayPackError("This enemy does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); continue; }
+                        if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); Display.changePackTabbing(false); continue; }
                         if(levelRequirement < 1) { levelRequirement=1; }
                         JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
                         ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
@@ -569,7 +573,9 @@ public class TextFighter {
                 JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
                 JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
                 if(tagsArray == null) { continue; }
-                Display.interfaceTags = loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null);
+                for(UiTag t : (ArrayList<UiTag>)loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null)) {
+                    Display.interfaceTags.add(t);
+                }
                 parsingPack = false;
                 file = tagFile;
                 Display.displayProgressMessage("Parsing tags loaded.");
@@ -670,14 +676,16 @@ public class TextFighter {
             gameName = (String)file.get("name");
 
             JSONObject stats = (JSONObject)file.get("stats");
-            int level = Integer.parseInt((String)stats.get("level"));
-            int experience = Integer.parseInt((String)stats.get("experience"));
-            int score = Integer.parseInt((String)stats.get("score"));
-            int maxhp = Integer.parseInt((String)stats.get("maxhealth"));
-            int hp = Integer.parseInt((String)stats.get("health"));
-            int coins = Integer.parseInt((String)stats.get("coins"));
-            int magic = Integer.parseInt((String)stats.get("magic"));
-            boolean gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));
+            int level = 0;                                      if((String)stats.get("level") != null)       {level = Integer.parseInt((String)stats.get("level"));}
+            int experience = 0;                                 if((String)stats.get("experience") != null)  {experience = Integer.parseInt((String)stats.get("experience"));}
+            int score = 0;                                      if((String)stats.get("score") != null)       {score = Integer.parseInt((String)stats.get("score"));}
+            int maxhp = player.defaulthp;                       if((String)stats.get("maxhealth") != null)   {maxhp = Integer.parseInt((String)stats.get("maxhealth"));}
+            int hp = player.defaulthp;                          if((String)stats.get("health") != null)      {hp = Integer.parseInt((String)stats.get("health"));}
+            int coins = player.defaultcoins;                    if((String)stats.get("coins") != null)       {coins = Integer.parseInt((String)stats.get("coins"));}
+            int magic = player.defaultmagic;                    if((String)stats.get("magic") != null)       {magic = Integer.parseInt((String)stats.get("magic"));}
+            int healthPotions = player.defaultHealthPotions;    if((String)stats.get("hppotions") != null)   {healthPotions = Integer.parseInt((String)stats.get("hppotions"));}
+            int strengthPotions = player.defaultStrengthPotions;if((String)stats.get("strpotions") != null)  {strengthPotions = Integer.parseInt((String)stats.get("strpotions"));}
+            boolean gameBeaten = false;                         if((String)stats.get("gameBeaten") != null)  {gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));}
 
             JSONObject inventory = (JSONObject)file.get("inventory");
 
@@ -738,7 +746,7 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, level, experience, score, gameBeaten, newInventory, playerAchievements, specialItems);
+            player = new Player(hp, maxhp, coins, magic, level, experience, score, healthPotions, strengthPotions, gameBeaten, newInventory, playerAchievements, specialItems);
             addToOutput("Loaded save '" + name + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -775,14 +783,12 @@ public class TextFighter {
         stats.put("health", Integer.toString(Player.defaulthp));
         stats.put("coins", Integer.toString(Player.defaultcoins));
         stats.put("magic", Integer.toString(Player.defaultmagic));
+        stats.put("hppotions", Integer.toString(Player.defaultHealthPotions));
+        stats.put("strpotions", Integer.toString(Player.defaultStrengthPotions));
 
         JSONObject inventory = new JSONObject();
 
         JSONObject sword = new JSONObject();
-        sword.put("itemtype", "Sword");
-        sword.put("level", "1");
-        sword.put("experience", "0");
-        inventory.put("sword", sword);
 
         base.put("stats", stats);
         base.put("name", name);
@@ -1054,18 +1060,20 @@ public class TextFighter {
                 Display.displayInterfaces(player.getLocation());
                 //Invokes enemyInput and continues if invalid
                 if(!invokePlayerInput()) { continue; }
+                player.decreaseTurnsLeftWithStrength();
+                player.decreaseTurnsLeftWithInvinsibility();
                 // Does enemy actions
                 Random random = new Random();
                 if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
                     int number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()*2))+1;
                     if(number > currentEnemy.getPossibleActions().size()) {
-                        currentEnemy.attack();
+                        currentEnemy.attack(null);
                     } else {
                         currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
                     }
                     player.setCanBeHurtThisTurn(true);
                 } else {
-                    currentEnemy.attack();
+                    currentEnemy.attack(null);
                 }
                 Display.clearScreen();
                 Display.displayPreviousCommand();
@@ -1099,179 +1107,43 @@ public class TextFighter {
         return false;
     }
 
-    public static boolean variableComparison(String field1String, String field1Class, String comparison, String field2String, String field2Class) {
-
-        //This does not need a separate method for each type because it does not ask for raw types
-
-        Field field1 = null;
-        Field field2 = null;
-
-        if(field1String != null) {
-            try {
-                field1 = Class.forName(field1Class).getField(field1String);
-            } catch(NoSuchFieldException | ClassNotFoundException e) {
-                Display.displayError("The pack wants to use an invalid class and/or field for field1: " + field1String);
-                return false;
-            }
-        } else { return false;}
-        if(field2String != null) {
-            try {
-                field2 = Class.forName(field2Class).getField(field2String);
-            } catch(NoSuchFieldException | ClassNotFoundException e) {
-                Display.displayError("The pack wants to use an invalid class and/or field for field2: " + field2String);
-                return false;
-            }
-        } else { return false; }
-
-        Object value1 = null;
-        Object value2 = null;
-
-        try {
-            //Make sure the two fields have the same type
-            if(!field1.get(null).getClass().equals(field2.get(null).getClass())) { Display.displayError("The pack attempted to compare variables of different types"); return false; }
-
-            value1 = field1.get(null);
-            value2 = field2.get(null);
-        } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
-
-        //If they are strings, you must do an equals comparison
-        if(value1.getClass().equals(String.class)) { return(value1.equals(value2)); }
-
-        //Make the comparison
+    public static int calculateFromTwoIntegers(int value1, String comparison, int value2) {
         if(comparison != null) {
-            if(value1.getClass().equals(int.class)) {
-                switch(comparison) {
-                    case "=":
-                        return((int)value1 == (int)value2);
-                    case ">":
-                        return((int)value1 > (int)value2);
-                    case "<":
-                        return((int)value1 < (int)value2);
-                    case ">=":
-                        return((int)value1 >=(int) value2);
-                    case "<=":
-                        return((int)value1 >= (int)value2);
-                    default:
-                        Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
-                }
-            } else if(value1.getClass().equals(double.class)) {
-                switch(comparison) {
-                    case "=":
-                        return((double)value1 == (double)value2);
-                    case ">":
-                        return((double)value1 > (double)value2);
-                    case "<":
-                        return((double)value1 < (double)value2);
-                    case ">=":
-                        return((double)value1 >= (double)value2);
-                    case "<=":
-                        return((double)value1 <= (double)value2);
-                    default:
-                        Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
-                }
-            } else {
-                Display.displayError("The pack gave an invalid type: " + value1.getClass().toString());
+            switch(comparison) {
+                case "+":
+                    return(value1 + value2);
+                case "-":
+                    return(value1 - value2);
+                case "*":
+                    return(value1 * value2);
+                case "/":
+                    return(Math.round(value1 / value2));
+                default:
+                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
             }
         }
-        return false;
+        return 0;
     }
 
-    public static boolean variableComparison(String fieldString, String fieldClass, String value) {
-        //No comparison operator necessary because you can only do '=' on strings
-
-        Field field = null;
-
-        if(fieldString != null) {
-            try {
-                field = Class.forName(fieldClass).getField(fieldString);
-            } catch(NoSuchFieldException | ClassNotFoundException e) {
-                Display.displayError("The pack wants to use an invalid class and/or field for field: " + field);
-                return false;
-            }
-        } else { return false;}
-
-        Object value1 = null;
-
-        try { value1 = field.get(null); } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
-
-        return value1.equals(value);
-    }
-
-    public static boolean variableComparison(String fieldString, String fieldClass, String comparison, double value) {
-
-        Field field = null;
-
-        if(fieldString != null) {
-            try {
-                field = Class.forName(fieldClass).getField(fieldString);
-            } catch(NoSuchFieldException | ClassNotFoundException e) {
-                Display.displayError("The pack wants to use an invalid class and/or field for field: " + field);
-                return false;
-            }
-        } else { return false;}
-
-        Object value1 = null;
-
-        try { value1 = field.get(null); } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
-
-        //Make the comparison
+    public static double calculateFromTwoDoubles(double value1, String comparison, double value2) {
         if(comparison != null) {
             switch(comparison) {
-                case "=":
-                    return((double)value1 == (double)value);
-                case ">":
-                    return((double)value1 > (double)value);
-                case "<":
-                    return((double)value1 < (double)value);
-                case ">=":
-                    return((double)value1 >= (double)value);
-                case "<=":
-                    return((double)value1 <= (double)value);
+                case "+":
+                    return(value1 + value2);
+                case "-":
+                    return(value1 - value2);
+                case "*":
+                    return(value1 * value2);
+                case "/":
+                    return(value1 / value2);
                 default:
                     Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
             }
-        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
-        return false;
+        }
+        return 0;
     }
 
-    public static boolean variableComparison(String fieldString, String fieldClass, String comparison, int value) {
-
-        Field field = null;
-
-        if(fieldString != null) {
-            try {
-                field = Class.forName(fieldClass).getField(fieldString);
-            } catch(NoSuchFieldException | ClassNotFoundException e) {
-                Display.displayError("The pack wants to use an invalid class and/or field for field: " + field);
-                return false;
-            }
-        } else { return false;}
-
-        Object value1 = null;
-
-        try { value1 = field.get(null); } catch(IllegalAccessException e) { Display.displayError("The pack tried to access a field that cannot be accessed"); }
-
-        //Make the comparison
-        if(comparison != null) {
-            switch(comparison) {
-                case "=":
-                    return((int)value1 == (int)value);
-                case ">":
-                    return((int)value1 > (int)value);
-                case "<":
-                    return((int)value1 < (int)value);
-                case ">=":
-                    return((int)value1 >= (int)value);
-                case "<=":
-                    return((int)value1 <= (int)value);
-                default:
-                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
-            }
-        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
-        return false;
-    }
-
-    public static boolean variableComparison(String value1, String value2) { /*No comparison operator necessary because you can only do '=' on strings*/return(value1.equals(value2)); }
+    public static boolean variableComparison(String value1, String value2) { return(value1.equals(value2)); } //No comparison operator necessary because you can only do '=' on strings
 
     public static boolean variableComparison(double value1, String comparison, double value2) {
 

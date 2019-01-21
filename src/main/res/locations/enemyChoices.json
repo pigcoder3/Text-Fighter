@@ -23,6 +23,19 @@
                 }
             ],
             "usage" : "fight <name>"
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
         }
 
     ]

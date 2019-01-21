@@ -40,12 +40,6 @@
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"]
-                },
-                {
-                    "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["inGameMenu"],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "continue"

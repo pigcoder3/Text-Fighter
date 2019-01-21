@@ -80,6 +80,27 @@
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
+        {
+            "tag" : "<hppotions>",
+            "class" : "org.textfighter.Player",
+            "method" : "getHealthPotions",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<strpotions>",
+            "class" : "org.textfighter.Player",
+            "method" : "getStrengthPotions",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<invinpotions>",
+            "class" : "org.textfighter.Player",
+            "method" : "getInvinsibilityPotions",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
 
 
 

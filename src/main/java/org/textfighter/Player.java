@@ -24,12 +24,22 @@ public class Player {
 
     static int defaultStrength = 5;  //Strength of just your fists
 
+    static int defaultHealthPotions = 0;
+    static int defaultStrengthPotions = 0;
+    static int defaultInvinsibilityPotions = 0;
+
     private boolean alive = true;
     private boolean inFight = false;
 
     private double totalProtection = 1;
 
     private Weapon currentWeapon;
+
+    private int healthPotions = defaultHealthPotions;
+    private int strengthPotions = defaultStrengthPotions;
+    private int invinsibilityPotions = defaultInvinsibilityPotions;
+    private int turnsLeftWithStrength = 0;
+    private int turnsLeftWithInvinsibility = 0;
 
     private int level = 1;
     private int experience = 0;
@@ -55,6 +65,14 @@ public class Player {
     private ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
 
     private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
+
+    public void attack(String customString) {
+        if(turnsLeftWithStrength>0){
+            TextFighter.currentEnemy.damaged(strength*2, customString);
+        } else {
+            TextFighter.currentEnemy.damaged(strength, customString);
+        }
+    }
 
     public boolean getAlive() { return alive; }
     public void setAlive(boolean b) { alive=b; if(!alive){died();}}
@@ -83,6 +101,28 @@ public class Player {
             strength = defaultStrength;
         }
     }
+
+    public void increaseStrengthPotions(int a) { strengthPotions+=a;}
+    public void decreaseStrengthPotions(int a) { strengthPotions-=a; if(strengthPotions<0){strengthPotions=0;}}
+    public int getStrengthPotions() { return strengthPotions; }
+    public void setStrengthPotions(int a) { strengthPotions=a; if(strengthPotions<0){strengthPotions=0;}}
+
+    public void setTurnsLeftWithStrength(int a) { turnsLeftWithStrength=a; if(turnsLeftWithStrength<0){turnsLeftWithStrength=0;}}
+    public void decreaseTurnsLeftWithStrength() { turnsLeftWithStrength--; if(turnsLeftWithStrength<0){turnsLeftWithStrength=0;}}
+
+    public void increaseHealthPotions(int a) { healthPotions+=a;}
+    public void decreaseHealthPotions(int a) { healthPotions-=a; if(healthPotions<0){healthPotions=0;}}
+    public int getHealthPotions() { return healthPotions; }
+    public void setHealthPotions(int a) { healthPotions=a; if(healthPotions<0){healthPotions=0;}}
+
+    public void increaseInvinsibilityPotions(int a) { invinsibilityPotions+=a;}
+    public void decreaseInvinsibilityPotions(int a) { invinsibilityPotions-=a; if(invinsibilityPotions<0){invinsibilityPotions=0;}}
+    public int getInvinsibilityPotions() { return invinsibilityPotions; }
+    public void setInvinsibilityPotions(int a) { invinsibilityPotions=a; if(invinsibilityPotions<0){invinsibilityPotions=0;}}
+
+    public void setTurnsLeftWithInvinsibility(int a) { turnsLeftWithInvinsibility=a; if(turnsLeftWithInvinsibility<0){turnsLeftWithInvinsibility=0;}}
+    public void decreaseTurnsLeftWithInvinsibility() { turnsLeftWithInvinsibility--; if(turnsLeftWithInvinsibility<0){turnsLeftWithInvinsibility=0;}}
+
     public int getStrength() { return strength; }
 
     public int getLevel() { return level; }
@@ -96,13 +136,19 @@ public class Player {
     public void decreaseScore(int a) { score-=a; TextFighter.needsSaving=true;}
 
     public int getHp() { return hp; }
-    public void damaged(int a) {
-        if(!canBeHurtThisTurn) { return; }
-        calculateTotalProtection();
-        if (hp-(a/totalProtection) < 0) { hp = 0; }
-        else { hp-=(a/totalProtection); }
+    public void damaged(int a, String type, String customString) {
+        if(!canBeHurtThisTurn || turnsLeftWithInvinsibility > 0) { return; }
+        if(type == null ) { type = "physical"; }
+        if(type.equals("physical")) {
+            calculateTotalProtection();
+            if (hp-(a/totalProtection) < 0) { hp = 0; }
+            else { hp-=(a/totalProtection); }
+        } else {
+            hp-=a;
+        }
         TextFighter.needsSaving=true;
-        TextFighter.addToOutput("You have been hurt for " + a + " hp.");
+        if(customString != null) { TextFighter.addToOutput(customString);}
+        TextFighter.addToOutput("You have been hurt for " + a/totalProtection + " hp.");
     }
     public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } TextFighter.needsSaving=true;}
 
@@ -111,11 +157,11 @@ public class Player {
 
     public int getCoins() { return coins; }
     public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { coins=0; } TextFighter.needsSaving=true;}
-    public void gainCoins(int a) { coins=+a; TextFighter.needsSaving=true; }
+    public void gainCoins(int a) { coins+=a; TextFighter.needsSaving=true; }
 
     public int getMagic() { if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return 0; } return magic; }
     public void spendMagic(int a) { if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return; } if (magic-a >= 0) { magic-=a; } else { magic=0; } TextFighter.needsSaving=true;}
-    public void gainMagic(int a) {if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return; }  magic+=a; TextFighter.needsSaving=true; }
+    public void gainMagic(int a) { if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return; }  magic+=a; TextFighter.needsSaving=true; }
 
     public int getMetalScraps() { return magic; }
     public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; } TextFighter.needsSaving=true; }
@@ -231,7 +277,7 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
+    public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, int healthPotions, int strengthPotions, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -239,6 +285,8 @@ public class Player {
         this.level = level;
         this.experience = experience;
         this.score = score;
+        this.healthPotions = healthPotions;
+        this.strengthPotions = strengthPotions;
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;
         this.achievements = achievements;
