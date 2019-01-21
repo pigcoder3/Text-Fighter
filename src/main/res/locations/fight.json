@@ -25,9 +25,10 @@
                             "class" : "org.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "org.textfighter.TextFighter"
-                        }
+                        },
+                        "null"
                     ],
-                    "argumentTypes" : ["1"],
+                    "argumentTypes" : ["1","0"],
                     "field" : "currentEnemy",
                     "fieldclass" : "org.textfighter.TextFighter"
                 }

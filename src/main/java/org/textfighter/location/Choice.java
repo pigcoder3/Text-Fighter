@@ -57,10 +57,20 @@ public class Choice {
             m.setArguments(methodArgs);
         }
         for(ChoiceMethod m : methods) {
-            if(!m.invokeMethod()) {
-                TextFighter.addToOutput("Usage: " + usage);
-                m.resetArguments();
-                return false;
+            boolean valid = true;
+            if(m.getRequirements() != null) {
+                for(Requirement r : m.getRequirements()) {
+                    if(!r.invokeMethod()) {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+            if(valid) {
+                if(!m.invokeMethod()) {
+                    TextFighter.addToOutput("Usage: " + usage);
+                    return false;
+                }
             }
         }
         return true;
