@@ -29,6 +29,16 @@ public class Player {
     static int defaultStrengthPotions = 0;
     static int defaultInvinsibilityPotions = 0;
 
+<<<<<<< HEAD
+=======
+    static int defaultTurnsWithStrengthLeft = 0;
+    static int defaultTurnsWithInvinsibilityLeft = 0;
+
+    static int hpHealthPotionsGive = 30;
+    static int turnsStrengthPotionsGive = 2;
+    static int turnsInvinsibilityPotionsGive = 2;
+
+>>>>>>> feature
     private boolean alive = true;
     private boolean inFight = false;
 
@@ -50,6 +60,13 @@ public class Player {
     private int maxhp = defaulthp;
 
     private int strength = defaultStrength;
+
+    private int healthPotions = defaultHealthPotions;
+    private int strengthPotions = defaultStrengthPotions;
+    private int invinsibilityPotions = defaultInvinsibilityPotions;
+
+    private int turnsWithStrengthLeft = defaultTurnsWithStrengthLeft;
+    private int turnsWithInvinsibilityLeft = defaultTurnsWithInvinsibilityLeft;
 
     private int coins = defaultcoins;
     private int magic = defaultmagic;
@@ -126,6 +143,32 @@ public class Player {
 
     public int getStrength() { return strength; }
 
+    public void increaseHealthPotions(int a) { healthPotions+=a; TextFighter.needsSaving=true;}
+    public void decreaseHealthPotions(int a) { healthPotions-=a; if(healthPotions<0){healthPotions=0;} TextFighter.needsSaving=true;}
+    public void useHealthPotion() { if(healthPotions<1){return;} decreaseHealthPotions(1); heal(hpHealthPotionsGive); TextFighter.needsSaving=true;}
+    public void setHealthPotions(int a) { healthPotions = a; if(healthPotions<1){healthPotions=0;} TextFighter.needsSaving=true;}
+    public int getHealthPotions() { return healthPotions;}
+
+    public void increaseStrengthPotions(int a) { strengthPotions+=a; TextFighter.needsSaving=true;}
+    public void decreaseStrengthPotions(int a) { strengthPotions-=a; if(strengthPotions<0){strengthPotions=0;} TextFighter.needsSaving=true;}
+    public void useStrengthPotion() { if(turnsWithStrengthLeft > 0 || strengthPotions < 1) {return;} decreaseStrengthPotions(1); turnsWithStrengthLeft = turnsStrengthPotionsGive; TextFighter.needsSaving=true;}
+    public void setStrengthPotions(int a) { strengthPotions = a; if(strengthPotions<1){strengthPotions=0;} TextFighter.needsSaving=true;}
+    public int getStrengthPotions() { return strengthPotions; }
+
+    public void increaseInvinsibilityPotions(int a) { invinsibilityPotions+=a; TextFighter.needsSaving=true;}
+    public void decreaseInvinsibilityPotions(int a) { invinsibilityPotions-=a; if(invinsibilityPotions<0){invinsibilityPotions=0;} TextFighter.needsSaving=true;}
+    public void useInvinsibilityPotion() { if(turnsWithInvinsibilityLeft > 0 || invinsibilityPotions < 1) {return;} decreaseInvinsibilityPotions(1); turnsWithInvinsibilityLeft = turnsInvinsibilityPotionsGive; TextFighter.needsSaving=true;}
+    public void setInvinsibilityPotions(int a) { invinsibilityPotions=a; if(invinsibilityPotions<0){invinsibilityPotions=0;} TextFighter.needsSaving=true;}
+    public int getInvinsibilityPotions() { return invinsibilityPotions; }
+
+    public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; TextFighter.needsSaving=true;}
+    public void decreaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft-=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
+    public int getTurnsWithStrengthLeft() {return turnsWithStrengthLeft;}
+
+    public void increaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft+=a;}
+    public void decreaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft-=a; if(turnsWithInvinsibilityLeft<0){turnsWithInvinsibilityLeft=0;} TextFighter.needsSaving=true;}
+    public int getTurnsWithInvinsibilityLeft() {return turnsWithInvinsibilityLeft;}
+
     public int getLevel() { return level; }
     public void increaseLevel(int a) { level+=a; TextFighter.needsSaving=true;}
     public void decreaseLevel(int a) { level-=a; TextFighter.needsSaving=true;}
@@ -137,6 +180,7 @@ public class Player {
     public void decreaseScore(int a) { score-=a; TextFighter.needsSaving=true;}
 
     public int getHp() { return hp; }
+<<<<<<< HEAD
     public void damaged(int a, String type, String customString) {
         if(!canBeHurtThisTurn || turnsLeftWithInvinsibility > 0) { return; }
         if(type == null ) { type = "physical"; }
@@ -150,6 +194,16 @@ public class Player {
         TextFighter.needsSaving=true;
         if(customString != null) { TextFighter.addToOutput(customString);}
         TextFighter.addToOutput("You have been hurt for " + a/totalProtection + " hp.");
+=======
+    public void damaged(int a, String customString) {
+        if(!canBeHurtThisTurn || turnsWithInvinsibilityLeft>0) { return; }
+        calculateTotalProtection();
+        if (hp-(a/totalProtection) < 0) { hp = 0; }
+        else { hp-=(a/totalProtection); }
+        TextFighter.needsSaving=true;
+        if(customString != null) { TextFighter.addToOutput(customString);}
+        TextFighter.addToOutput("You have been hurt for " + a + " hp.");
+>>>>>>> feature
     }
     public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } TextFighter.needsSaving=true;}
 
@@ -278,6 +332,18 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
+<<<<<<< HEAD
+=======
+    public void attack(String customString) {
+        if(strength<1) { TextFighter.addToOutput("Your strength is 0, you did not attack.");}
+        if(turnsWithStrengthLeft>0) {
+            TextFighter.currentEnemy.damaged(strength*2, customString);
+        } else {
+            TextFighter.currentEnemy.damaged(strength, customString);
+        }
+    }
+
+>>>>>>> feature
     public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, int healthPotions, int strengthPotions, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
         this.hp = hp;
         this.maxhp = maxhp;

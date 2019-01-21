@@ -174,7 +174,7 @@ public class TextFighter {
             } else {
                 method = clazz.getMethod(methodString);
             }
-        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' could not be found. Omitting..."); Display.changePackTabbing(false); return null; }
+        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' with given arguments could not be found. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Makes the arguments the correct type (String, int, or boolean)
         ArrayList<Object> arguments = new ArrayList<Object>();
@@ -207,7 +207,7 @@ public class TextFighter {
 
         //Creates the correct Method type
         if(type.equals(ChoiceMethod.class)) {
-            o=new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass);
+            o=new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), ChoiceMethod.class));
         } else if(type.equals(Requirement.class)) {
             boolean neededBoolean = Requirement.defaultNeededBoolean; if(obj.get("neededBoolean") != null) {neededBoolean=Boolean.parseBoolean((String)obj.get("neededBoolean"));}
             o=new Requirement(method, arguments, clazz, field, fieldclass, neededBoolean);
@@ -217,13 +217,8 @@ public class TextFighter {
             o=new TFMethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
-<<<<<<< HEAD
-                int chance = Integer.parseInt((String)obj.get("chance"));
-                if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); Display.changePackTabbing(false); return null; }
-=======
                 int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
                 if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
->>>>>>> feature
                 o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
                 o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
@@ -299,10 +294,6 @@ public class TextFighter {
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading interface '" + name + "'");
                         Display.changePackTabbing(true);
-<<<<<<< HEAD
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-=======
->>>>>>> feature
                         if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
                         if(interfaceArray == null) { Display.displayPackError("This does not have an interface array. Omitting..."); Display.changePackTabbing(false); continue; }
                         String uiString = "";
@@ -325,7 +316,6 @@ public class TextFighter {
     public static boolean loadLocations() {
         try {
             Display.displayProgressMessage("Loading the locations...");
-            Display.changePackTabbing(true);
             if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = locationDir;
@@ -365,14 +355,8 @@ public class TextFighter {
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading Location '" + name + "'");
                         Display.changePackTabbing(true);
-<<<<<<< HEAD
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); Display.changePackTabbing(false);continue; }
-                        if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); Display.changePackTabbing(false);continue; }
-=======
                         if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
                         if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); Display.changePackTabbing(false); continue; }
->>>>>>> feature
                         ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                         boolean hasChoiceInterface = false;
                         //Determines if the location has a choices array
@@ -420,7 +404,7 @@ public class TextFighter {
                             } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); Display.changePackTabbing(false); continue; }
                             ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
                             ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
-                            ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null));
+                            ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null, null));
                             choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                             Display.changePackTabbing(false);
                         }
@@ -481,21 +465,11 @@ public class TextFighter {
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                         Display.displayPackMessage("Loading enemy '" + name + "'");
                         Display.changePackTabbing(true);
-<<<<<<< HEAD
-                        int health = Integer.parseInt((String)enemyFile.get("health"));
-                        int strength = Integer.parseInt((String)enemyFile.get("strength"));
-                        int levelRequirement = Integer.parseInt((String)enemyFile.get("levelRequirement"));
-                        boolean finalBoss = Boolean.parseBoolean((String)enemyFile.get("finalBoss"));
-                        if(name == null) { Display.displayPackError("This enemy does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
-                        if(health < 1 || strength < 0) { Display.displayPackError("Enemy '" + name + "' does not have valid strength or health. Ommitting..."); Display.changePackTabbing(false); continue; }
-=======
                         int health = Enemy.defaulthp;                           if(enemyFile.get("health") != null){            health=Integer.parseInt((String)enemyFile.get("health"));}
                         int maxhealth = Enemy.defaultMaxhp;                     if(enemyFile.get("maxhp") != null){             maxhealth=Integer.parseInt((String)enemyFile.get("maxhp"));}
                         int strength = Enemy.defaultStrength;                   if(enemyFile.get("strength") != null){          strength=Integer.parseInt((String)enemyFile.get("strength"));}
                         int levelRequirement =  Enemy.defaultLevelRequirement;  if(enemyFile.get("levelRequirement") != null){  levelRequirement=Integer.parseInt((String)enemyFile.get("levelRequirement"));}
                         boolean finalBoss = false;                              if(enemyFile.get("finalBoss") != null){         finalBoss=Boolean.parseBoolean((String)enemyFile.get("finalBoss"));}
->>>>>>> feature
                         if(levelRequirement < 1) { levelRequirement=1; }
                         JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
                         ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
@@ -649,7 +623,6 @@ public class TextFighter {
             gameName = (String)file.get("name");
 
             JSONObject stats = (JSONObject)file.get("stats");
-<<<<<<< HEAD
             int level = 0;                                      if((String)stats.get("level") != null)       {level = Integer.parseInt((String)stats.get("level"));}
             int experience = 0;                                 if((String)stats.get("experience") != null)  {experience = Integer.parseInt((String)stats.get("experience"));}
             int score = 0;                                      if((String)stats.get("score") != null)       {score = Integer.parseInt((String)stats.get("score"));}
@@ -660,16 +633,6 @@ public class TextFighter {
             int healthPotions = player.defaultHealthPotions;    if((String)stats.get("hppotions") != null)   {healthPotions = Integer.parseInt((String)stats.get("hppotions"));}
             int strengthPotions = player.defaultStrengthPotions;if((String)stats.get("strpotions") != null)  {strengthPotions = Integer.parseInt((String)stats.get("strpotions"));}
             boolean gameBeaten = false;                         if((String)stats.get("gameBeaten") != null)  {gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));}
-=======
-            int level = 1;                      if(stats.get("level") != null){         level=Integer.parseInt((String)stats.get("level"));}
-            int experience = 0;                 if(stats.get("experience") != null){    experience=Integer.parseInt((String)stats.get("experience"));}
-            int score = 0;                      if(stats.get("score") != null){         score=Integer.parseInt((String)stats.get("score"));}
-            int maxhp = Player.defaultMaxhp;    if(stats.get("maxhealth") != null){     maxhp=Integer.parseInt((String)stats.get("maxhealth"));}
-            int hp = Player.defaulthp;          if(stats.get("health") != null){        hp=Integer.parseInt((String)stats.get("health"));}
-            int coins = Player.defaultcoins;    if(stats.get("coins") != null){         coins=Integer.parseInt((String)stats.get("coins"));}
-            int magic = Player.defaultmagic;    if(stats.get("magic") != null){         magic=Integer.parseInt((String)stats.get("magic"));}
-            boolean gameBeaten = false;         if(stats.get("gameBeaten") != null){    gameBeaten=Boolean.parseBoolean((String)stats.get("gameBeaten"));}
->>>>>>> feature
 
             JSONObject inventory = (JSONObject)file.get("inventory");
 
@@ -1044,8 +1007,13 @@ public class TextFighter {
                 Display.displayInterfaces(player.getLocation());
                 //Invokes enemyInput and continues if invalid
                 if(!invokePlayerInput()) { continue; }
+<<<<<<< HEAD
                 player.decreaseTurnsLeftWithStrength();
                 player.decreaseTurnsLeftWithInvinsibility();
+=======
+                player.decreaseTurnsWithStrengthLeft(1);
+                player.decreaseTurnsWithInvinsibilityLeft(1);
+>>>>>>> feature
                 // Does enemy actions
                 Random random = new Random();
                 if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {

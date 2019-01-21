@@ -2,7 +2,7 @@ package org.textfighter.location;
 
 import org.textfighter.display.Display;
 import org.textfighter.TextFighter;
-import org.textfighter.method.TFMethod;
+import org.textfighter.method.*;
 
 import java.lang.reflect.*;
 
@@ -19,6 +19,7 @@ public class ChoiceMethod {
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private ArrayList<Object> originalArguments = new ArrayList<Object>();
     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
+    private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
     private boolean valid;
 
@@ -29,6 +30,7 @@ public class ChoiceMethod {
     public void setArguments(ArrayList<Object> args) { arguments=args; }
     public ArrayList<Object> getOriginalArguments() { return originalArguments; }
     public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
+    public ArrayList<Requirement> getRequirements() { return requirements; }
 
     public boolean getValid() { return valid; }
 
@@ -41,7 +43,7 @@ public class ChoiceMethod {
                 }
             }
         }
-        if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { return false; }
+        if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { resetArguments(); return false;}
         try {
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {
@@ -58,13 +60,14 @@ public class ChoiceMethod {
             }
             resetArguments();
             return true;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); resetArguments();}
+        resetArguments();
         return false;
     }
 
     public void resetArguments() { arguments = originalArguments; }
 
-    public ChoiceMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Class clazz, Field field, Class fieldclass) {
+    public ChoiceMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
         this.argumentTypes = argumentTypes;
         this.method = method;
         this.arguments = arguments;
@@ -72,5 +75,6 @@ public class ChoiceMethod {
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;
+        this.requirements = requirements;
     }
 }

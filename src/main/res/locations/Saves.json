@@ -25,7 +25,13 @@
                     "method" : "movePlayer",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
+                    "class" : "org.textfighter.TextFighter",
+                    "requirements" : [
+                        {
+                            "method" : "gameLoaded",
+                            "class" : "org.textfighter.TextFighter"
+                        }
+                    ]
                 }
             ],
             "usage" : "newGame <name>"
@@ -44,7 +50,13 @@
                     "method" : "movePlayer",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
+                    "class" : "org.textfighter.TextFighter",
+                    "requirements" : [
+                        {
+                            "method" : "gameLoaded",
+                            "class" : "org.textfighter.TextFighter"
+                        }
+                    ]
                 }
             ],
             "usage" : "loadGame <name>",
