@@ -29,8 +29,6 @@ public class Player {
     static int defaultStrengthPotions = 0;
     static int defaultInvinsibilityPotions = 0;
 
-<<<<<<< HEAD
-=======
     static int defaultTurnsWithStrengthLeft = 0;
     static int defaultTurnsWithInvinsibilityLeft = 0;
 
@@ -38,7 +36,6 @@ public class Player {
     static int turnsStrengthPotionsGive = 2;
     static int turnsInvinsibilityPotionsGive = 2;
 
->>>>>>> feature
     private boolean alive = true;
     private boolean inFight = false;
 
@@ -180,21 +177,6 @@ public class Player {
     public void decreaseScore(int a) { score-=a; TextFighter.needsSaving=true;}
 
     public int getHp() { return hp; }
-<<<<<<< HEAD
-    public void damaged(int a, String type, String customString) {
-        if(!canBeHurtThisTurn || turnsLeftWithInvinsibility > 0) { return; }
-        if(type == null ) { type = "physical"; }
-        if(type.equals("physical")) {
-            calculateTotalProtection();
-            if (hp-(a/totalProtection) < 0) { hp = 0; }
-            else { hp-=(a/totalProtection); }
-        } else {
-            hp-=a;
-        }
-        TextFighter.needsSaving=true;
-        if(customString != null) { TextFighter.addToOutput(customString);}
-        TextFighter.addToOutput("You have been hurt for " + a/totalProtection + " hp.");
-=======
     public void damaged(int a, String customString) {
         if(!canBeHurtThisTurn || turnsWithInvinsibilityLeft>0) { return; }
         calculateTotalProtection();
@@ -203,7 +185,6 @@ public class Player {
         TextFighter.needsSaving=true;
         if(customString != null) { TextFighter.addToOutput(customString);}
         TextFighter.addToOutput("You have been hurt for " + a + " hp.");
->>>>>>> feature
     }
     public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } TextFighter.needsSaving=true;}
 
@@ -332,8 +313,6 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-<<<<<<< HEAD
-=======
     public void attack(String customString) {
         if(strength<1) { TextFighter.addToOutput("Your strength is 0, you did not attack.");}
         if(turnsWithStrengthLeft>0) {
@@ -343,7 +322,6 @@ public class Player {
         }
     }
 
->>>>>>> feature
     public Player(int hp, int maxhp, int coins, int magic, int level, int experience, int score, int healthPotions, int strengthPotions, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
         this.hp = hp;
         this.maxhp = maxhp;

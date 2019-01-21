@@ -72,7 +72,6 @@
                             "class" : "org.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "org.textfighter.TextFighter"
-<<<<<<< HEAD
                         }
                         ">"
                         "0"
@@ -91,13 +90,6 @@
                     "arguments" : ["2"],
                     "argumentTypes" : ["1"],
                     "field" : "player",
-=======
-                        },
-                        "null"
-                    ],
-                    "argumentTypes" : ["1","0"],
-                    "field" : "currentEnemy",
->>>>>>> feature
                     "fieldclass" : "org.textfighter.TextFighter"
                 },
                 {

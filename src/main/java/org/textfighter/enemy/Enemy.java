@@ -191,9 +191,6 @@ public class Enemy implements Cloneable {
 
     public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
-<<<<<<< HEAD
-    public void attack(String customString) { if(strength > 0) { TextFighter.player.damaged(strength, "physical", customString); } }
-=======
     public void attack(String customString) {
         if(TextFighter.player.getCanBeHurtThisTurn()) {
             if(strength > 0) {
@@ -201,7 +198,6 @@ public class Enemy implements Cloneable {
             }
         }
     }
->>>>>>> feature
 
     public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
 

@@ -1007,13 +1007,8 @@ public class TextFighter {
                 Display.displayInterfaces(player.getLocation());
                 //Invokes enemyInput and continues if invalid
                 if(!invokePlayerInput()) { continue; }
-<<<<<<< HEAD
-                player.decreaseTurnsLeftWithStrength();
-                player.decreaseTurnsLeftWithInvinsibility();
-=======
                 player.decreaseTurnsWithStrengthLeft(1);
                 player.decreaseTurnsWithInvinsibilityLeft(1);
->>>>>>> feature
                 // Does enemy actions
                 Random random = new Random();
                 if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
