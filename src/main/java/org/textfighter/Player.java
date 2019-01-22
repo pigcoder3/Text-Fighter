@@ -30,14 +30,14 @@ public class Player {
 
     static int defaultHealthPotions = 0;
     static int defaultStrengthPotions = 0;
-    static int defaultInvinsibilityPotions = 0;
+    static int defaultInvincibilityPotions = 0;
 
     static int defaultTurnsWithStrengthLeft = 0;
-    static int defaultTurnsWithInvinsibilityLeft = 0;
+    static int defaultTurnsWithInvincibilityLeft = 0;
 
     static int hpHealthPotionsGive = 30;
     static int turnsStrengthPotionsGive = 2;
-    static int turnsInvinsibilityPotionsGive = 2;
+    static int turnsInvincibilityPotionsGive = 2;
 
     private boolean alive = true;
     private boolean inFight = false;
@@ -57,10 +57,10 @@ public class Player {
 
     private int healthPotions = defaultHealthPotions;
     private int strengthPotions = defaultStrengthPotions;
-    private int invinsibilityPotions = defaultInvinsibilityPotions;
+    private int invincibilityPotions = defaultInvincibilityPotions;
 
     private int turnsWithStrengthLeft = defaultTurnsWithStrengthLeft;
-    private int turnsWithInvinsibilityLeft = defaultTurnsWithInvinsibilityLeft;
+    private int turnsWithInvincibilityLeft = defaultTurnsWithInvincibilityLeft;
 
     private int coins = defaultCoins;
     private int magic = defaultMagic;
@@ -139,21 +139,21 @@ public class Player {
     public void setStrengthPotions(int a) { strengthPotions = a; if(strengthPotions<1){strengthPotions=0;} TextFighter.needsSaving=true;}
     public int getStrengthPotions() { return strengthPotions; }
 
-    public void increaseInvinsibilityPotions(int a) { invinsibilityPotions+=a; TextFighter.needsSaving=true;}
-    public void decreaseInvinsibilityPotions(int a) { invinsibilityPotions-=a; if(invinsibilityPotions<0){invinsibilityPotions=0;} TextFighter.needsSaving=true;}
-    public void useInvinsibilityPotion() { if(turnsWithInvinsibilityLeft > 0 || invinsibilityPotions < 1) {return;} decreaseInvinsibilityPotions(1); turnsWithInvinsibilityLeft = turnsInvinsibilityPotionsGive; TextFighter.needsSaving=true;}
-    public void setInvinsibilityPotions(int a) { invinsibilityPotions=a; if(invinsibilityPotions<0){invinsibilityPotions=0;} TextFighter.needsSaving=true;}
-    public int getInvinsibilityPotions() { return invinsibilityPotions; }
+    public void increaseInvincibilityPotions(int a) { invincibilityPotions+=a; TextFighter.needsSaving=true;}
+    public void decreaseInvincibilityPotions(int a) { invincibilityPotions-=a; if(invincibilityPotions<0){invincibilityPotions=0;} TextFighter.needsSaving=true;}
+    public void useInvincibilityPotion() { if(turnsWithInvincibilityLeft > 0 || invincibilityPotions < 1) {return;} decreaseInvincibilityPotions(1); turnsWithInvincibilityLeft = turnsInvincibilityPotionsGive; TextFighter.needsSaving=true;}
+    public void setInvincibilityPotions(int a) { invincibilityPotions=a; if(invincibilityPotions<0){invincibilityPotions=0;} TextFighter.needsSaving=true;}
+    public int getInvincibilityPotions() { return invincibilityPotions; }
 
     public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; TextFighter.needsSaving=true;}
     public void decreaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft-=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
     public int getTurnsWithStrengthLeft() {return turnsWithStrengthLeft;}
     public void setTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft=a; if(turnsWithStrengthLeft<0) {turnsWithStrengthLeft=0;}}
 
-    public void increaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft+=a; TextFighter.needsSaving=true;}
-    public void decreaseTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft-=a; if(turnsWithInvinsibilityLeft<0){turnsWithInvinsibilityLeft=0;} TextFighter.needsSaving=true;}
-    public int getTurnsWithInvinsibilityLeft() {return turnsWithInvinsibilityLeft;}
-    public void setTurnsWithInvinsibilityLeft(int a) { turnsWithInvinsibilityLeft=a; if(turnsWithInvinsibilityLeft<0) {turnsWithInvinsibilityLeft=0;} TextFighter.needsSaving=true;}
+    public void increaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft+=a; TextFighter.needsSaving=true;}
+    public void decreaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft-=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
+    public int getTurnsWithInvincibilityLeft() {return turnsWithInvincibilityLeft;}
+    public void setTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft=a; if(turnsWithInvincibilityLeft<0) {turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
 
     public int getLevel() { return level; }
     public void increaseLevel(int a) { level+=a; TextFighter.needsSaving=true;}
@@ -178,7 +178,7 @@ public class Player {
 
     public int getHp() { return hp; }
     public void damaged(int a, String customString) {
-        if(!canBeHurtThisTurn || turnsWithInvinsibilityLeft>0) { return; }
+        if(!canBeHurtThisTurn || turnsWithInvincibilityLeft>0) { return; }
         calculateTotalProtection();
         if (hp-(a/totalProtection) < 0) { hp = 0; }
         else { hp-=(a/totalProtection); }
@@ -313,7 +313,7 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invinsibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
+    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -324,7 +324,7 @@ public class Player {
         this.score = score;
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
-        this.invinsibilityPotions = invinsibilityPotions;
+        this.invincibilityPotions = invincibilityPotions;
         this.currentWeapon = currentWeapon;
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;

@@ -146,7 +146,7 @@ public class TextFighter {
                 } else if(num == 4) {
                     argumentTypes.add(Class.class);
                 } else {
-                    Display.displayPackError("This method has arguments that are not String, int, or boolean. Omitting...");
+                    Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                     Display.changePackTabbing(false);
                     continue;
                 }
@@ -657,7 +657,7 @@ public class TextFighter {
                                     JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(armorDirectory.getAbsolutePath() + "/" + f)));
                                     String name = Armor.defaultName;                            if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
                                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
-                                    Display.displayPackMessage("Loading item '" + name + "' of type 'armor'");
+                                    Display.displayPackMessage("Loading item '" + name + "' of type 'armord'");
                                     double protectionamount = Armor.defaultProtectionAmount;    if(itemFile.get("protectionamount") != null) { protectionamount = Double.parseDouble((String)itemFile.get("protectionamount")); }
                                     String description = Armor.defaultDescription;              if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                                     armors.add(new Armor(name, description, protectionamount));
@@ -762,12 +762,12 @@ public class TextFighter {
             if(valuesFile.get("playerMaxhp") != null) {                         Player.defaultMaxhp = Integer.parseInt((String)valuesFile.get("playerMaxhp")); }
             if(valuesFile.get("playerHealthPotions") != null) {                 Player.defaultHealthPotions = Integer.parseInt((String)valuesFile.get("playerHealthPotions")); }
             if(valuesFile.get("playerStrengthPotions") != null) {               Player.defaultStrength = Integer.parseInt((String)valuesFile.get("playerStrengthPotions")); }
-            if(valuesFile.get("playerInvinsibilityPotions") != null) {          Player.defaultInvinsibilityPotions = Integer.parseInt((String)valuesFile.get("playerInvinsibilityPotions")); }
+            if(valuesFile.get("playerInvincibilityPotions") != null) {          Player.defaultInvincibilityPotions = Integer.parseInt((String)valuesFile.get("playerInvincibilityPotions")); }
             if(valuesFile.get("playerHpHealthPotionsGive") != null) {           Player.hpHealthPotionsGive = Integer.parseInt((String)valuesFile.get("playerHpHealthPotionsGive")); }
             if(valuesFile.get("playerTurnsStrengthPotionsGive") != null) {      Player.turnsStrengthPotionsGive = Integer.parseInt((String)valuesFile.get("playerTurnsStrengthPotionsGive")); }
-            if(valuesFile.get("playerTurnsInvinsibilityPotionsGive") != null) { Player.turnsInvinsibilityPotionsGive = Integer.parseInt((String)valuesFile.get("playerTurnsInvinsibilityPotionsGive")); }
-            if(valuesFile.get("playerPlayerurnsWithStrengthLeft") != null) {    Player.defaultTurnsWithStrengthLeft = Integer.parseInt((String)valuesFile.get("playerTurnsWithStrengthLeft")); }
-            if(valuesFile.get("playerTurnsWithInvinsibilityLeft") != null) {    Player.defaultTurnsWithInvinsibilityLeft = Integer.parseInt((String)valuesFile.get("playerTurnsWithInvinsibilityLeft")); }
+            if(valuesFile.get("playerTurnsInvincibilityPotionsGive") != null) { Player.turnsInvincibilityPotionsGive = Integer.parseInt((String)valuesFile.get("playerTurnsInvincibilityPotionsGive")); }
+            if(valuesFile.get("playerTurnsWithStrengthLeft") != null) {         Player.defaultTurnsWithStrengthLeft = Integer.parseInt((String)valuesFile.get("playerTurnsWithStrengthLeft")); }
+            if(valuesFile.get("playerTurnsWithInvincibilityLeft") != null) {    Player.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("playerTurnsWithInvincibilityLeft")); }
 
             //Enemy values
             if(valuesFile.get("enemyName") != null) {                           Enemy.defaultName = (String)valuesFile.get("enemyName"); }
@@ -831,9 +831,9 @@ public class TextFighter {
             int metalscraps = player.defaultMetalscraps;                                if(stats.get("metalscraps") != null)                {metalscraps = Integer.parseInt((String)stats.get("metalscraps"));}
             int healthPotions = player.defaultHealthPotions;                            if(stats.get("healthPotions") != null)              {healthPotions = Integer.parseInt((String)stats.get("healthPotions"));}
             int strengthPotions = player.defaultStrengthPotions;                        if(stats.get("strengthPotions") != null)            {strengthPotions = Integer.parseInt((String)stats.get("strengthPotions"));}
-            int invinsibilityPotions = Player.defaultInvinsibilityPotions;              if(stats.get("invinsibilityPotions") != null)       {invinsibilityPotions = Integer.parseInt((String)stats.get("invinsibilityPotions"));}
-            int turnsWithStrengthLeft = Player.defaultTurnsWithStrengthLeft;            if(stats.get("turnsWithStrengthLeft") != null)      {turnsWithStrengthLeft = Integer.parseInt((String)stats.get("turnsWithInvinsibilityLeft"));}
-            int turnsWithInvinsibilityLeft = Player.defaultTurnsWithInvinsibilityLeft;  if(stats.get("turnsWithInvinsibilityLeft") != null) {turnsWithInvinsibilityLeft = Integer.parseInt((String)stats.get("turnsWithInvinsibilityLeft"));}
+            int invincibilityPotions = Player.defaultInvincibilityPotions;              if(stats.get("invincibilityPotions") != null)       {invincibilityPotions = Integer.parseInt((String)stats.get("invincibilityPotions"));}
+            int turnsWithStrengthLeft = Player.defaultTurnsWithStrengthLeft;            if(stats.get("turnsWithStrengthLeft") != null)      {turnsWithStrengthLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
+            int turnsWithInvincibilityLeft = Player.defaultTurnsWithInvincibilityLeft;  if(stats.get("turnsWithInvincibilityLeft") != null) {turnsWithInvincibilityLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
             Weapon currentWeapon = null;
             String currentWeaponString = Player.defaultCurrentWeaponString;             if(stats.get("currentWeapon") != null)              {currentWeaponString = (String)stats.get("currentWeapon");}
             System.out.println(weapons.size());
@@ -912,7 +912,7 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invinsibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, specialItems);
+            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, specialItems);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -952,9 +952,9 @@ public class TextFighter {
         stats.put("magic", Integer.toString(Player.defaultMagic));
         stats.put("hppotions", Integer.toString(Player.defaultHealthPotions));
         stats.put("strpotions", Integer.toString(Player.defaultStrengthPotions));
-        stats.put("invinsibilityPotions", Integer.toString(Player.defaultInvinsibilityPotions));
+        stats.put("invincibilityPotions", Integer.toString(Player.defaultInvincibilityPotions));
         stats.put("turnsWithStrengthLeft", Integer.toString(Player.defaultTurnsWithStrengthLeft));
-        stats.put("turnsWithInvinsibilityLeft", Integer.toString(Player.defaultTurnsWithInvinsibilityLeft));
+        stats.put("turnsWithInvincibilityLeft", Integer.toString(Player.defaultTurnsWithInvincibilityLeft));
         stats.put("currentWeapon", Player.defaultCurrentWeaponString);
 
         JSONObject inventory = new JSONObject();
@@ -1001,9 +1001,9 @@ public class TextFighter {
         stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
         stats.put("healthPotions", Integer.toString(player.getHealthPotions()));
         stats.put("strengthpotions", Integer.toString(player.getStrengthPotions()));
-        stats.put("invinsibilityPotions", Integer.toString(player.getInvinsibilityPotions()));
+        stats.put("invincibilityPotions", Integer.toString(player.getInvincibilityPotions()));
         stats.put("turnsWithStrengthLeft", Integer.toString(player.getTurnsWithStrengthLeft()));
-        stats.put("turnsWithInvinsibilityLeft", Integer.toString(player.getTurnsWithInvinsibilityLeft()));
+        stats.put("turnsWithInvincibilityLeft", Integer.toString(player.getTurnsWithInvincibilityLeft()));
         if(player.getCurrentWeapon() != null) {stats.put("currentWeapon", player.getCurrentWeapon().getName());} else { stats.put("currentWeapon", "fists"); }
 
         JSONObject inventory = new JSONObject();
@@ -1126,12 +1126,17 @@ public class TextFighter {
         possibleEnemies = possible;
     }
     public static void sortEnemies() {
+        if(enemies == null) { return; } //If there are no enemies, then dont do anything
+
         //Sorts by difficulty
         ArrayList<Enemy> sortedList = new ArrayList<Enemy>();
-        int highestDifficulty = 0;
-        for(Enemy e : enemies) {
-            if(e.getDifficulty() > highestDifficulty) {
-                sortedList.add(e);
+        while(sortedList.size() < enemies.size()) {
+            for(Enemy e : enemies) {
+                int highestDifficulty = 0;
+                if(e.getDifficulty() > highestDifficulty) {
+                    sortedList.add(e);
+                    continue;
+                }
             }
         }
         enemies=sortedList;
@@ -1243,7 +1248,7 @@ public class TextFighter {
                 //Invokes enemyInput and continues if invalid
                 if(!invokePlayerInput()) { continue; }
                 player.decreaseTurnsWithStrengthLeft(1);
-                player.decreaseTurnsWithInvinsibilityLeft(1);
+                player.decreaseTurnsWithInvincibilityLeft(1);
                 // Does enemy actions
                 Random random = new Random();
                 if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
@@ -1289,9 +1294,9 @@ public class TextFighter {
         return false;
     }
 
-    public static int calculateFromTwoIntegers(int value1, String comparison, int value2) {
-        if(comparison != null) {
-            switch(comparison) {
+    public static int calculateFromTwoIntegers(int value1, String calculation, int value2) {
+        if(calculation != null) {
+            switch(calculation) {
                 case "+":
                     return(value1 + value2);
                 case "-":
@@ -1301,7 +1306,7 @@ public class TextFighter {
                 case "/":
                     return(Math.round(value1 / value2));
                 default:
-                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
+                    Display.displayError("The pack gave an invalid comparison operator (" + calculation + ")");
             }
         }
         return 0;
