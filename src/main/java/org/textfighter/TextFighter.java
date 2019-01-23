@@ -45,6 +45,7 @@ public class TextFighter {
     // All default pack directories
     public static File resourcesDir;
     public static File tagFile;
+    public static File defaultValuesFile;
     public static File interfaceDir;
     public static File locationDir;
     public static File enemyDir;
@@ -91,6 +92,7 @@ public class TextFighter {
         //Loads all the directories
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir.getPath() + "/tags/tags.json");
+        defaultValuesFile = new File(resourcesDir.getPath() + "/defaultValues.json");
         interfaceDir = new File(resourcesDir.getPath() + "/userInterfaces/");
         locationDir = new File(resourcesDir.getPath() + "/locations");
         savesDir = new File("../../../saves");
@@ -737,7 +739,7 @@ public class TextFighter {
         //Custom parsing tags are located in interface packs
         try {
             Display.displayProgressMessage("Loading the default player/enemy/item values...");
-            File file = null;
+            File file = defaultValuesFile;
             //Determine if there is a pack to be loaded
             if(packUsed != null && packUsed.exists() && packUsed.isDirectory() && packUsed.list() != null) {
                 for(String s : packUsed.list()) {
@@ -750,7 +752,6 @@ public class TextFighter {
                     }
                 }
             } else { return; }
-            if(file == null) { Display.displayProgressMessage("No default player/enemy/item values to load."); return; }
             JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(tagFile));
 
             //Player values
