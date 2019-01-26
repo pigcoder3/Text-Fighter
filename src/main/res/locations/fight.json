@@ -5,8 +5,8 @@
     "interfaces" : [
 
         "playerStats",
-        "enemyStats"
-        "choices",
+        "enemyStats",
+        "choices"
 
     ],
 
@@ -51,7 +51,7 @@
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : ["You used a health potion and healed yourself 30"],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 },
                 {
                     "method" : "decreaseHealthPotions",
@@ -72,8 +72,8 @@
                             "class" : "org.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "org.textfighter.TextFighter"
-                        }
-                        ">"
+                    	},
+                        ">",
                         "0"
                     ],
                     "argumentTypes" : ["1","0","1"]
@@ -96,7 +96,7 @@
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : ["You used a strength potion and gave yourself double strength for 2 turns"],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 },
                 {
                     "method" : "decreaseStrengthPotions",
@@ -117,8 +117,8 @@
                             "class" : "org.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "org.textfighter.TextFighter"
-                        }
-                        ">"
+                        },
+                        ">",
                         "0"
                     ],
                     "argumentTypes" : ["1","0","1"]
@@ -126,11 +126,11 @@
             ]
         },
         {
-            "name" : "invinsibilityPotion",
+            "name" : "invincibilityPotion",
             "description" : "uses a healthPotion",
             "methods" : [
                 {
-                    "method" : "setTurnsWithInvinsibilityLeft",
+                    "method" : "setTurnsWithInvincibilityLeft",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["2"],
                     "argumentTypes" : ["1"],
@@ -140,11 +140,11 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You used an invinsibility potion and gave yourself invinsibility for 2 turns"],
-                    "argumentTypes" : ["0"],
+                    "arguments" : ["You used an invincibility potion and gave yourself invincibility for 2 turns"],
+                    "argumentTypes" : ["0"]
                 },
                 {
-                    "method" : "decreaseInvinsibilityPotions",
+                    "method" : "decreaseInvincibilityPotions",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["1"],
                     "argumentTypes" : ["1"],
@@ -158,12 +158,12 @@
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : [
                         {
-                            "method" : "getInvinsibilityPotions",
+                            "method" : "getInvincibilityPotions",
                             "class" : "org.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "org.textfighter.TextFighter"
-                        }
-                        ">"
+                        },
+                        ">",
                         "0"
                     ],
                     "argumentTypes" : ["1","0","1"]
@@ -178,7 +178,7 @@
                     "method" : "movePlayer",
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : ["inGameMenu"],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 },
                 {
                     "method" : "spendCoins",
@@ -205,8 +205,8 @@
                             "class" : "org.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "org.textfighter.TextFighter"
-                        }
-                        ">="
+                        },
+                        ">=",
                         "300"
                     ],
                     "argumentTypes" : ["1","0","1"]

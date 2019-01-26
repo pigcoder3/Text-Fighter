@@ -33,7 +33,7 @@ public class Requirement {
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
-        //Invokes all the arguments that are methods
+		//Invokes all the arguments that are methods
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
@@ -41,7 +41,7 @@ public class Requirement {
                 }
             }
         }
-        try {
+		try {
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {
                     return((boolean)method.invoke(field.get(null), arguments.toArray()) == neededBoolean);

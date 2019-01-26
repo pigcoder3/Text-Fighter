@@ -116,7 +116,17 @@ public class Player {
     }
 
     public Weapon getCurrentWeapon() { return currentWeapon; }
-    public void setCurrentWeapon(Weapon weapon) { currentWeapon = weapon; calculateStrength();}
+    public void setCurrentWeapon(Weapon weapon) {
+        if(weapon != null){
+            currentWeapon = weapon;
+        } else {
+            for(Weapon w : TextFighter.weapons) {
+                if(weapon.getName().equals(defaultCurrentWeaponString)) {
+                    currentWeapon = w;
+                }
+            }
+        }
+        calculateStrength();}
     public void calculateStrength() {
         if(currentWeapon != null) {
             strength = currentWeapon.getDamage();

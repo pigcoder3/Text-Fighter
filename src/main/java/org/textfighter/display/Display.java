@@ -50,7 +50,7 @@ public class Display {
 
     public static void displayPackError(String e) {
         // Displays errors that deal with packs
-        if((TextFighter.testMode && TextFighter.parsingPack) || (!TextFighter.parsingPack && TextFighter.defaultpackmsgs)) {
+        if(TextFighter.testMode) {
             if(ANSI) {
                 System.err.println(error + packTabbing + "[PackError] " + e + RESET);
             } else {
@@ -61,7 +61,7 @@ public class Display {
 
     public static void displayPackMessage(String e) {
         // Displays messages that deal with packs
-        if((TextFighter.testMode && TextFighter.parsingPack) || (!TextFighter.parsingPack && TextFighter.defaultpackmsgs)) {
+        if(TextFighter.testMode) {
             if(ANSI) {
                 System.err.println(progress + packTabbing + "[PackMessage] " + e + RESET);
             } else {

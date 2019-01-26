@@ -33,10 +33,13 @@ public class TFMethod {
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
-                    arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
+                    System.out.println("e" + ((TFMethod)(arguments.get(i))).getMethod());
+					arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
                 }
             }
         }
+
+		System.out.println(method.toString());
 
         Object a;
 

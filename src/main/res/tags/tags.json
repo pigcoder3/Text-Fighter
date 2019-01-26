@@ -8,7 +8,7 @@
         {
             "tag" : "<enemies>",
             "class" : "org.textfighter.TextFighter",
-            "method" : "getPossibleEnemyOutputs",
+            "method" : "getPossibleEnemyOutputs"
         },
         {
             "tag" : "<choices>",
@@ -81,23 +81,23 @@
             "field" : "player"
         },
         {
-            "tag" : "<hppotions>",
+            "tag" : "<healthPotions>",
             "class" : "org.textfighter.Player",
             "method" : "getHealthPotions",
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
         {
-            "tag" : "<strpotions>",
+            "tag" : "<strengthPotions>",
             "class" : "org.textfighter.Player",
             "method" : "getStrengthPotions",
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
         {
-            "tag" : "<invinpotions>",
+            "tag" : "<invincibilityPotions>",
             "class" : "org.textfighter.Player",
-            "method" : "getInvinsibilityPotions",
+            "method" : "getInvincibilityPotions",
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
@@ -109,9 +109,9 @@
             "field" : "player"
         },
         {
-            "tag" : "<turnsWithInvinsibilityLeft>",
+            "tag" : "<turnsWithInvincibilityLeft>",
             "class" : "org.textfighter.Player",
-            "method" : "getTurnsWithInvinsibilityLeft",
+            "method" : "getTurnsWithInvincibilityLeft",
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
@@ -153,7 +153,7 @@
             "method" : "getDifficulty",
             "field" : "currentEnemy",
             "fieldclass" : "org.textfighter.TextFighter"
-        },
+        }
 
     ]
 }

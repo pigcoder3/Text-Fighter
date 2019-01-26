@@ -102,11 +102,11 @@
             ]
         },
         {
-            "name" : "invinsibilityPotion",
+            "name" : "invincibilityPotion",
             "description" : "Cost: 200 coins, makes you invinsible for 2 turns",
             "methods" : [
                 {
-                    "method" : "increaseInvinsibilityPotions",
+                    "method" : "increaseInvincibilityPotions",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["1"],
                     "argumentTypes" : ["1"],
@@ -124,11 +124,11 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You bought an invinsibility potion."],
+                    "arguments" : ["You bought an invincibility potion."],
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "invinsibilityPotion",
+            "usage" : "invincibilityPotion",
             "requirements" : [
                 {
                     "method" : "variableComparison",

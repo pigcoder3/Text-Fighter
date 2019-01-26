@@ -13,7 +13,7 @@
             "description" : "mines 1 metal scrap",
             "methods" : [
                 {
-                    "method" : "getMetalScraps",
+                    "method" : "gainMetalScraps",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["1"],
                     "argumentTypes" : ["1"],

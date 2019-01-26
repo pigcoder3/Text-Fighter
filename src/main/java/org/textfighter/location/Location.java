@@ -85,7 +85,7 @@ public class Location {
         possibleChoices.clear();
         if(allChoices == null) { return; }
         for(Choice c : allChoices) {
-            boolean valid = true;
+			boolean valid = true;
             if(c.getRequirements() != null){
                 for(Requirement r : c.getRequirements()) {
                     if(!r.invokeMethod()) {

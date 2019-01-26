@@ -51,7 +51,7 @@
             "usage" : "mine",
             "requirements" : [
                 {
-                    "methods" : "isCarrying",
+                    "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["pickaxe"],
                     "argumentTypes" : ["0"],

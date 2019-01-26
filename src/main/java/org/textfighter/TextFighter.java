@@ -24,7 +24,6 @@ public class TextFighter {
     // Pack testing variables
     public static boolean testMode = false;
     public static boolean parsingPack = false;
-    public static boolean defaultpackmsgs = false;
 
     //Version
     public static File versionFile = new File("../../../VERSION.txt");
@@ -45,7 +44,7 @@ public class TextFighter {
     // All default pack directories
     public static File resourcesDir;
     public static File tagFile;
-    public static File defaultValuesFile;
+    public static File defaultValuesDirectory;
     public static File interfaceDir;
     public static File locationDir;
     public static File enemyDir;
@@ -92,7 +91,7 @@ public class TextFighter {
         //Loads all the directories
         resourcesDir = new File("../res");
         tagFile = new File(resourcesDir.getPath() + "/tags/tags.json");
-        defaultValuesFile = new File(resourcesDir.getPath() + "/defaultValues.json");
+        defaultValuesDirectory = new File(resourcesDir.getPath() + "/defaultvalues");
         interfaceDir = new File(resourcesDir.getPath() + "/userInterfaces/");
         locationDir = new File(resourcesDir.getPath() + "/locations");
         savesDir = new File("../../../saves");
@@ -186,7 +185,7 @@ public class TextFighter {
         if(argumentsRaw != null) {
             for (int p=0; p<argumentTypes.size(); p++) {
                 if(argumentsRaw.get(p).getClass().equals(JSONObject.class)) {
-                    arguments.add(loadMethod(TFMethod.class, (JSONObject)argumentsRaw.get(p), type));
+					arguments.add(loadMethod(TFMethod.class, (JSONObject)argumentsRaw.get(p), type));
                 } else {
                     if(argumentTypes.get(p).equals(int.class)) {
                         arguments.add(Integer.parseInt((String)argumentsRaw.get(p)));
@@ -492,6 +491,7 @@ public class TextFighter {
                 directory=enemyDir;
                 parsingPack=false;
             }
+            sortEnemies();
             Display.displayProgressMessage("Enemies loaded.");
         } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
         Display.changePackTabbing(false);
@@ -507,11 +507,11 @@ public class TextFighter {
             //Determine if there is a pack to be loaded
             if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
                 for(String s : packUsed.list()) {
-                    if(s.equals("interfaces")) {
-                        File pack = new File(packUsed.getPath() + "/interfaces");
-                        if(pack.exists() && pack.isDirectory()) {
-                            File thefile = new File(pack + "/tags.json");
-                            if(thefile.exists()) {
+                    if(s.equals("tags")) {
+                        File dir = new File(packUsed.getPath() + "/tags");
+                        if(dir.exists() && dir.isDirectory()) {
+                            File thefile = new File(dir + "/tags.json");
+                            if(thefile.exists() && !thefile.isDirectory()) {
                                 file = thefile;
                                 Display.displayPackMessage("loading tags from pack '" + packUsed.getName() + "'");
                                 parsingPack = true;
@@ -522,7 +522,7 @@ public class TextFighter {
             }
             for(int num=0; num<2; num++) {
                 if(!parsingPack) { num++; Display.displayPackMessage("Loading parsing tags from the default pack."); }
-                JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(tagFile));
+                JSONObject tagsFile = (JSONObject)parser.parse(new FileReader(file));
                 JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
                 if(tagsArray == null) { continue; }
                 for(UiTag t : (ArrayList<UiTag>)loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null)) {
@@ -737,72 +737,108 @@ public class TextFighter {
 
     public static void loadDefaultValues() {
         //Custom parsing tags are located in interface packs
-        try {
-            Display.displayProgressMessage("Loading the default player/enemy/item values...");
-            File file = defaultValuesFile;
-            //Determine if there is a pack to be loaded
-            if(packUsed != null && packUsed.exists() && packUsed.isDirectory() && packUsed.list() != null) {
-                for(String s : packUsed.list()) {
-                    if(s.equals("defaultValues")) {
-                        file = new File(packUsed + "/defaultValues.json");
-                        if(file.exists()) {
-                            Display.displayPackMessage("loading default player/enemy/item values from pack '" + packUsed.getName() + "'");
-                            parsingPack = true;
-                        }
+        Display.displayProgressMessage("Loading the default player/enemy/item values...");
+        File directory = defaultValuesDirectory;
+        //Determine if there is a pack to be loaded
+        if(packUsed != null && packUsed.exists() && packUsed.isDirectory() && packUsed.list() != null) {
+            for(String s : packUsed.list()) {
+                if(s.equals("defaultValues")) {
+                    File possibleDirectory = new File(packUsed.getPath() + "/defaultValues");
+                    if(possibleDirectory.isDirectory()) {
+                        directory = possibleDirectory;
+                        Display.displayPackMessage("loading default player/enemy/item values from pack '" + packUsed.getName() + "'");
+                        parsingPack = true;
                     }
                 }
-            } else { return; }
-            JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(tagFile));
-
-            //Player values
-            if(valuesFile.get("playerCoins") != null) {                         Player.defaultCoins = Integer.parseInt((String)valuesFile.get("playerCoins")); }
-            if(valuesFile.get("playerMagic") != null) {                         Player.defaultMagic = Integer.parseInt((String)valuesFile.get("playerMagic")); }
-            if(valuesFile.get("playerMetalscraps") != null) {                   Player.defaultMetalscraps = Integer.parseInt((String)valuesFile.get("playerMetalscraps")); }
-            if(valuesFile.get("playerStrength") != null) {                      Player.defaultStrength = Integer.parseInt((String)valuesFile.get("playerStrength")); }
-            if(valuesFile.get("playerHp") != null) {                            Player.defaulthp = Integer.parseInt((String)valuesFile.get("playerHp")); }
-            if(valuesFile.get("playerMaxhp") != null) {                         Player.defaultMaxhp = Integer.parseInt((String)valuesFile.get("playerMaxhp")); }
-            if(valuesFile.get("playerHealthPotions") != null) {                 Player.defaultHealthPotions = Integer.parseInt((String)valuesFile.get("playerHealthPotions")); }
-            if(valuesFile.get("playerStrengthPotions") != null) {               Player.defaultStrength = Integer.parseInt((String)valuesFile.get("playerStrengthPotions")); }
-            if(valuesFile.get("playerInvincibilityPotions") != null) {          Player.defaultInvincibilityPotions = Integer.parseInt((String)valuesFile.get("playerInvincibilityPotions")); }
-            if(valuesFile.get("playerHpHealthPotionsGive") != null) {           Player.hpHealthPotionsGive = Integer.parseInt((String)valuesFile.get("playerHpHealthPotionsGive")); }
-            if(valuesFile.get("playerTurnsStrengthPotionsGive") != null) {      Player.turnsStrengthPotionsGive = Integer.parseInt((String)valuesFile.get("playerTurnsStrengthPotionsGive")); }
-            if(valuesFile.get("playerTurnsInvincibilityPotionsGive") != null) { Player.turnsInvincibilityPotionsGive = Integer.parseInt((String)valuesFile.get("playerTurnsInvincibilityPotionsGive")); }
-            if(valuesFile.get("playerTurnsWithStrengthLeft") != null) {         Player.defaultTurnsWithStrengthLeft = Integer.parseInt((String)valuesFile.get("playerTurnsWithStrengthLeft")); }
-            if(valuesFile.get("playerTurnsWithInvincibilityLeft") != null) {    Player.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("playerTurnsWithInvincibilityLeft")); }
-
-            //Enemy values
-            if(valuesFile.get("enemyName") != null) {                           Enemy.defaultName = (String)valuesFile.get("enemyName"); }
-            if(valuesFile.get("enemyHp") != null) {                             Enemy.defaultHp = Integer.parseInt((String)valuesFile.get("enemyHp")); }
-            if(valuesFile.get("enemyMaxhp") != null) {                          Enemy.defaultMaxhp = Integer.parseInt((String)valuesFile.get("enemyMaxhp")); }
-            if(valuesFile.get("enemyStrength") != null) {                       Enemy.defaultStrength = Integer.parseInt((String)valuesFile.get("enemyStrength")); }
-            if(valuesFile.get("enemyLevelRequirement") != null) {               Enemy.defaultLevelRequirement = Integer.parseInt((String)valuesFile.get("enemyLevelRequirement")); }
-
-            //Item values
-            if(valuesFile.get("itemName") != null) {                            Item.defaultName = (String)valuesFile.get("itemName"); }
-            if(valuesFile.get("itemDescription") != null) {                     Item.defaultDescription = (String)valuesFile.get("itemDescription"); }
-
-            //Weapon values
-            if(valuesFile.get("weaponName") != null) {                          Weapon.defaultName = (String)valuesFile.get("weaponName"); }
-            if(valuesFile.get("weaponDescription") != null) {                   Weapon.defaultDescription = (String)valuesFile.get("weaponDescription"); }
-            if(valuesFile.get("weaponDamage") != null) {                        Weapon.defaultDamage = Integer.parseInt((String)valuesFile.get("weaponDamage")); }
-            if(valuesFile.get("weaponCritChance") != null) {                    Weapon.defaultCritChance = Integer.parseInt((String)valuesFile.get("weaponCritChance")); }
-            if(valuesFile.get("weaponMissChance") != null) {                    Weapon.defaultMissChance = Integer.parseInt((String)valuesFile.get("weaponMissChance")); }
-
-            //Armor values
-            if(valuesFile.get("armorName") != null) {                           Armor.defaultName = (String)valuesFile.get("armorName"); }
-            if(valuesFile.get("armorDescription") != null) {                    Armor.defaultDescription = (String)valuesFile.get("armorDescription"); }
-            if(valuesFile.get("armorProtectionAmount") != null) {               Armor.defaultName = (String)valuesFile.get("armorProtectionAmount"); }
-
-            //Tool values
-            if(valuesFile.get("toolName") != null) {                            Tool.defaultName = (String)valuesFile.get("toolName"); }
-            if(valuesFile.get("toolDescription") != null) {                     Tool.defaultDescription = (String)valuesFile.get("toolDescription"); }
-
-            //SpecialItem values
-            if(valuesFile.get("specialItemName") != null) {                     SpecialItem.defaultName = (String)valuesFile.get("specialItemName"); }
-            if(valuesFile.get("specialItemDescription") != null) {              SpecialItem.defaultDescription = (String)valuesFile.get("specialItemDescription"); }
-
+            }
+        } else { return; }
+        for(String s : directory.list()) {
+            if(s.equals("player.json")) {
+                File file = new File(directory.getPath() + "/enemy.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //Player values
+                    if(valuesFile.get("coins") != null) {                           Player.defaultCoins = Integer.parseInt((String)valuesFile.get("coins")); }
+                    if(valuesFile.get("magic") != null) {                           Player.defaultMagic = Integer.parseInt((String)valuesFile.get("magic")); }
+                    if(valuesFile.get("metalscraps") != null) {                     Player.defaultMetalscraps = Integer.parseInt((String)valuesFile.get("metalscraps")); }
+                    if(valuesFile.get("strength") != null) {                        Player.defaultStrength = Integer.parseInt((String)valuesFile.get("strength")); }
+                    if(valuesFile.get("health") != null) {                          Player.defaulthp = Integer.parseInt((String)valuesFile.get("health")); }
+                    if(valuesFile.get("maxhp") != null) {                           Player.defaultMaxhp = Integer.parseInt((String)valuesFile.get("maxhp")); }
+                    if(valuesFile.get("healthPotions") != null) {                   Player.defaultHealthPotions = Integer.parseInt((String)valuesFile.get("healthPotions")); }
+                    if(valuesFile.get("strengthPotions") != null) {                 Player.defaultStrength = Integer.parseInt((String)valuesFile.get("strengthPotions")); }
+                    if(valuesFile.get("invincibilityPotions") != null) {            Player.defaultInvincibilityPotions = Integer.parseInt((String)valuesFile.get("invincibilityPotions")); }
+                    if(valuesFile.get("hpHealthPotionsGive") != null) {             Player.hpHealthPotionsGive = Integer.parseInt((String)valuesFile.get("hpHealthPotionsGive")); }
+                    if(valuesFile.get("turnsStrengthPotionsGive") != null) {        Player.turnsStrengthPotionsGive = Integer.parseInt((String)valuesFile.get("turnsStrengthPotionsGive")); }
+                    if(valuesFile.get("turnsInvincibilityPotionsGive") != null) {   Player.turnsInvincibilityPotionsGive = Integer.parseInt((String)valuesFile.get("turnsInvincibilityPotionsGive")); }
+                    if(valuesFile.get("turnsWithStrengthLeft") != null) {           Player.defaultTurnsWithStrengthLeft = Integer.parseInt((String)valuesFile.get("turnsWithStrengthLeft")); }
+                    if(valuesFile.get("turnsWithInvincibilityLeft") != null) {      Player.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvincibilityLeft")); }
+                } catch (IOException | ParseException e) {continue; }
+            } else if(s.equals("enemy.json")) {
+                File file = new File(directory.getPath() + "/enemy.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //Enemy values
+                    if(valuesFile.get("name") != null) {                        Enemy.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("health") != null) {                      Enemy.defaultHp = Integer.parseInt((String)valuesFile.get("health")); }
+                    if(valuesFile.get("maxhp") != null) {                       Enemy.defaultMaxhp = Integer.parseInt((String)valuesFile.get("maxhp")); }
+                    if(valuesFile.get("strength") != null) {                    Enemy.defaultStrength = Integer.parseInt((String)valuesFile.get("strength")); }
+                    if(valuesFile.get("levelRequirement") != null) {            Enemy.defaultLevelRequirement = Integer.parseInt((String)valuesFile.get("levelRequirement")); }
+                } catch (IOException | ParseException e) {continue; }
+            } else if(s.equals("item.json")) {
+                File file = new File(directory.getPath() + "/enemy.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //Item values
+                    if(valuesFile.get("name") != null) {                        Item.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("description") != null) {                 Item.defaultDescription = (String)valuesFile.get("description"); }
+                } catch (IOException | ParseException e) { continue; }
+            } else if(s.equals("weapon.json")) {
+                File file = new File(directory.getPath() + "/weapon.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //Weapon values
+                    if(valuesFile.get("name") != null) {                        Weapon.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("description") != null) {                 Weapon.defaultDescription = (String)valuesFile.get("description"); }
+                    if(valuesFile.get("damage") != null) {                      Weapon.defaultDamage = Integer.parseInt((String)valuesFile.get("damage")); }
+                    if(valuesFile.get("critChance") != null) {                  Weapon.defaultCritChance = Integer.parseInt((String)valuesFile.get("critChance")); }
+                    if(valuesFile.get("missChance") != null) {                  Weapon.defaultMissChance = Integer.parseInt((String)valuesFile.get("missChance")); }
+                } catch (IOException | ParseException e) { continue; }
+            } else if(s.equals("armor.json")) {
+                File file = new File(directory.getPath() + "/armor.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //Armor values
+                    if(valuesFile.get("name") != null) {                        Armor.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("description") != null) {                 Armor.defaultDescription = (String)valuesFile.get("description"); }
+                    if(valuesFile.get("protectionAmount") != null) {            Armor.defaultName = (String)valuesFile.get("protectionAmount"); }
+                } catch (IOException | ParseException e) { continue; }
+            } else if(s.equals("tool.json")) {
+                File file = new File(directory.getPath() + "/tool.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //Tool values
+                    if(valuesFile.get("name") != null) {                        Tool.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("description") != null) {                 Tool.defaultDescription = (String)valuesFile.get("description"); }
+                } catch (IOException | ParseException e) { continue; }
+            } else if(s.equals("specialitem.json")) {
+                File file = new File(directory.getPath() + "/specialitem.json");
+                if(!file.exists()) { continue; }
+                try {
+                    JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
+                    //SpecialItem values
+                    if(valuesFile.get("name") != null) {                        SpecialItem.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("description") != null) {                 SpecialItem.defaultDescription = (String)valuesFile.get("description"); }
+                } catch (IOException | ParseException e) { continue; }
+            }
             parsingPack = false;
-        } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return; }
+            directory = defaultValuesDirectory;
+        }
         Display.changePackTabbing(false);
         Display.displayPackError("Loaded default player/enemy/item values");
         return;
@@ -1106,7 +1142,6 @@ public class TextFighter {
         return outputs;
     }
     public static void setPossibleEnemies() {
-        sortEnemies();
         ArrayList<Enemy> possible = new ArrayList<Enemy>();
         for(Enemy e : enemies) {
             boolean valid = true;
@@ -1126,22 +1161,27 @@ public class TextFighter {
         }
         possibleEnemies = possible;
     }
-    public static void sortEnemies() {
-        if(enemies == null) { return; } //If there are no enemies, then dont do anything
 
-        //Sorts by difficulty
-        ArrayList<Enemy> sortedList = new ArrayList<Enemy>();
-        while(sortedList.size() < enemies.size()) {
-            for(Enemy e : enemies) {
-                int highestDifficulty = 0;
-                if(e.getDifficulty() > highestDifficulty) {
-                    sortedList.add(e);
-                    continue;
+    public static void sortEnemies() {
+        if(enemies.size() < 2) { return; } //There is no need to sort if there are no enemies or just one
+        ArrayList<Enemy> sorted = new ArrayList<Enemy>();
+        ArrayList<Enemy> remaining = enemies;
+        while(sorted.size() != enemies.size()) {
+            int lowestDiffIndex = 0;
+            int lowestKnownDifficulty = 0;
+            for(int i=0; i<remaining.size(); i++) {
+                if(i == 0) {
+                    lowestKnownDifficulty = remaining.get(i).getDifficulty();
+                } else if(remaining.get(i).getDifficulty() < lowestKnownDifficulty) {
+                    lowestDiffIndex = i;
                 }
             }
+            sorted.add(remaining.get(lowestDiffIndex));
+            remaining.remove(lowestDiffIndex);
         }
-        enemies=sortedList;
+        enemies = sorted;
     }
+
     public static ArrayList<String> getPossibleEnemyOutputs() {
         setPossibleEnemies();
         ArrayList<String> outputs = new ArrayList<String>();
@@ -1417,10 +1457,8 @@ public class TextFighter {
     public static void main(String[] args) {
         //Determine if the game is run in pack test mode
         for(String a : args) {
-            if(a.equals("testpacks")) {
+            if(a.equals("test")) {
                 testMode = true;
-            } else if (a.equals("defaultpackmsgs") && testMode) {
-                defaultpackmsgs = true;
             }
         }
         if(!testMode) { Display.clearScreen(); }

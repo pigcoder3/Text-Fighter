@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 mode=0
-defaultpackmsgs=0
 compile=0
 cpresources=0
 run() {
@@ -14,7 +13,7 @@ run() {
 	fi
 	if [ "$2" = 1 ]; then
 		find src/main/java/org -name "*.java" > sourceFiles.txt
-		javac -classpath ".:lib/json-simple-1.1.1.jar" -Xlint:unchecked -d bin/main/java @sourceFiles.txt
+		javac -g -classpath ".:lib/json-simple-1.1.1.jar" -Xlint:unchecked -d bin/main/java @sourceFiles.txt
 		rm sourceFiles.txt
 	fi
 	if [ "$4" = 1 ] || [ "$2" = 1 ]; then
@@ -22,11 +21,7 @@ run() {
 	fi
 	cd bin/main/java || exit
 	if [ "$1" = 1 ]; then
-		if [ "$3" = 1 ]; then
-			java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter testpacks defaultpackmsgs
-		else
-			java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter testpacks
-		fi
+		java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter test
 	elif [ "$1" = 0 ]; then
 		java -classpath ".:../../../lib/json-simple-1.1.1.jar" org.textfighter.TextFighter
 	fi
@@ -47,10 +42,6 @@ main() {
 				;;
 			"--test")
 				mode=1
-				shift
-				;;
-			"--defaultpackmsgs")
-				defaultpackmsgs=1
 				shift
 				;;
 			"--cpres")
