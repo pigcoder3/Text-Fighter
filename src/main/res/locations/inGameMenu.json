@@ -59,6 +59,28 @@
                     "fieldclass" : "org.textfighter.TextFighter"
                 }
             ]
+        },
+        {
+            "name" : "witchHut",
+            "description" : "Goes to the witch hut",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["witchHut"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["witchMap"],
+                    "argumentTypes" : ["0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
         }
 
     ]

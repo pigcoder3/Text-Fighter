@@ -57,7 +57,7 @@
         },
         {
             "name" : "strengthPotion",
-            "description" : "Cost: 40 coins, doubles your strength for 2 turns",
+            "description" : "Cost: 50 coins, doubles your strength for 2 turns",
             "methods" : [
                 {
                     "method" : "increaseStrengthPotions",
@@ -70,7 +70,7 @@
                 {
                     "method" : "spendCoins",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["40"],
+                    "arguments" : ["50"],
                     "argumentTypes" : ["1"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
