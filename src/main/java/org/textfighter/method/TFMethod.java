@@ -13,6 +13,7 @@ import java.lang.reflect.*;
 public class TFMethod {
 
     private ArrayList<Object> arguments;
+    private ArrayList<Object> originalArguments;
     private Class clazz;
     private Method method;
     private Field field;
@@ -33,13 +34,10 @@ public class TFMethod {
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
-                    System.out.println("e" + ((TFMethod)(arguments.get(i))).getMethod());
 					arguments.set(i,((TFMethod)(arguments.get(i))).invokeMethod());
                 }
             }
         }
-
-		System.out.println(method.toString());
 
         Object a;
 
@@ -58,14 +56,19 @@ public class TFMethod {
                     a=method.invoke(null, new Object[0]);
                 }
             }
-            if(method.getReturnType() != void.class) { return a; } else { return null; }
+            resetArguments();
+            return a;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        resetArguments();
         return null;
     }
+
+    public void resetArguments() { arguments = originalArguments; }
 
     public TFMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
         this.method = method;
         this.arguments = arguments;
+        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;

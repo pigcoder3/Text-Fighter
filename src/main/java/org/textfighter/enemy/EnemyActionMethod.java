@@ -15,6 +15,7 @@ public class EnemyActionMethod {
     private Field field;
     private Class fieldclass;
     private ArrayList<Object> arguments = new ArrayList<Object>();
+    private ArrayList<Object> originalArguments = new ArrayList<Object>();
 
     private boolean valid = true;
 
@@ -48,14 +49,19 @@ public class EnemyActionMethod {
                     method.invoke(null, new Object[0]);
                 }
             }
+            resetArguments();
             return true;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        resetArguments();
         return false;
     }
+
+    public void resetArguments() { arguments = originalArguments; }
 
     public EnemyActionMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
         this.method = method;
         this.arguments = arguments;
+        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments); }
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;

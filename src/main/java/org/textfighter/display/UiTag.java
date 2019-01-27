@@ -18,7 +18,8 @@ public class UiTag {
     private Method method;
     private Field field;
     private Class fieldclass;
-    private ArrayList<Object> arguments;
+    private ArrayList<Object> arguments = new ArrayList<Object>();
+    private ArrayList<Object> originalArguments = new ArrayList<Object>();
     private ArrayList<Requirement> requirements;
 
     public String getTag() { return tag; }
@@ -37,28 +38,35 @@ public class UiTag {
             }
         }
         try {
+            Object output = null;
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {
-                    return(method.invoke(field.get(null), arguments.toArray()));
+                    output = method.invoke(field.get(null), arguments.toArray());
                 } else {
-                    return(method.invoke(field.get(null)));
+                    output = method.invoke(field.get(null));
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
-                    return(method.invoke(null, arguments.toArray()));
+                    output = method.invoke(null, arguments.toArray());
                 } else {
-                    return(method.invoke(null));
+                    output = method.invoke(null);
                 }
             }
+            resetArguments();
+            return output;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        resetArguments();
         return null;
     }
+
+    public void resetArguments() { arguments = originalArguments; }
 
     public UiTag(String tag, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
         this.tag = tag;
         this.method = method;
         this.clazz = clazz;
         this.arguments = arguments;
+        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.field = field;
         this.fieldclass = fieldclass;
         this.requirements = requirements;

@@ -32,7 +32,7 @@ public class TextFighter {
     // Important game variables
     public static String gameName;
 
-    public static Player player = new Player();
+    public static Player player;
     public static Enemy currentEnemy = new Enemy();
 
     public static File currentSaveFile;
@@ -72,6 +72,12 @@ public class TextFighter {
     public static ArrayList<Tool> tools = new ArrayList<Tool>();
 
     public static boolean needsSaving = false;
+
+    public static Weapon getWeaponByName(String name) { for(Weapon w : weapons) { if(w.getName().equals(name)) { return w; } } return null; }
+    public static Armor getArmorByName(String name) { for(Armor a : armors) { if(a.getName().equals(name)) { return a; } } return null; }
+    public static Tool getToolByName(String name) { for(Tool t : tools) { if(t.getName().equals(name)) { return t; } } return null; }
+    public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { return sp; } } return null; }
+    public static Enemy getEnemyByName(String name) { for(Enemy e : enemies) { if(e.getName().equals(name)) { return e; } } return null; }
 
     public static void addToOutput(String msg) { output+=msg + "\n"; }
 
@@ -255,7 +261,8 @@ public class TextFighter {
     public static boolean loadInterfaces() {
         try {
             Display.displayProgressMessage("Loading the interfaces...");
-            if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory."); return false;}
+            Display.changePackTabbing(true);
+            if(!interfaceDir.exists()) { Display.displayError("Could not find the default interfaces directory."); Display.changePackTabbing(false); return false;}
             ArrayList<String> usedNames = new ArrayList<String>(); // Used to override default interfaces with ones in packs
             File directory = interfaceDir;
             //Determine if there is a pack to be loaded
@@ -320,7 +327,8 @@ public class TextFighter {
     public static boolean loadLocations() {
         try {
             Display.displayProgressMessage("Loading the locations...");
-            if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); return false;}
+            Display.changePackTabbing(true);
+            if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); Display.changePackTabbing(false); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = locationDir;
             //Determine if there is a pack to be loaded
@@ -430,7 +438,8 @@ public class TextFighter {
     public static boolean loadEnemies() {
         try {
             Display.displayProgressMessage("Loading the enemies...");
-            if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); return false;}
+            Display.changePackTabbing(true);
+            if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); Display.changePackTabbing(false); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = enemyDir;
             //Determine if there is a pack to be loaded
@@ -501,7 +510,8 @@ public class TextFighter {
         //Custom parsing tags are located in interface packs
         try {
             Display.displayProgressMessage("Loading the parsing tags...");
-            if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); return false;}
+            Display.changePackTabbing(true);
+            if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); Display.changePackTabbing(false); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File file = tagFile;
             //Determine if there is a pack to be loaded
@@ -540,7 +550,8 @@ public class TextFighter {
     public static boolean loadAchievements() {
         try {
             Display.displayProgressMessage("Loading the achievements...");
-            if(!achievementDir.exists()) { Display.displayError("Could not find the default achievements directory."); return false;}
+            Display.changePackTabbing(true);
+            if(!achievementDir.exists()) { Display.displayError("Could not find the default achievements directory."); Display.changePackTabbing(false); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = achievementDir;
             //Determine if there is a pack to be loaded
@@ -596,7 +607,8 @@ public class TextFighter {
     public static boolean loadItems() {
         try {
             Display.displayProgressMessage("Loading the items...");
-            if(!enemyDir.exists()) { Display.displayError("Could not find the default items directory."); return false;}
+            Display.changePackTabbing(true);
+            if(!enemyDir.exists()) { Display.displayError("Could not find the default items directory."); Display.changePackTabbing(false); return false;}
             ArrayList<String> usedNames = new ArrayList<String>();
             File directory = itemDir;
             //Determine if there is a pack to be loaded
@@ -659,7 +671,7 @@ public class TextFighter {
                                     JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(armorDirectory.getAbsolutePath() + "/" + f)));
                                     String name = Armor.defaultName;                            if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
                                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
-                                    Display.displayPackMessage("Loading item '" + name + "' of type 'armord'");
+                                    Display.displayPackMessage("Loading item '" + name + "' of type 'armor'");
                                     double protectionamount = Armor.defaultProtectionAmount;    if(itemFile.get("protectionamount") != null) { protectionamount = Double.parseDouble((String)itemFile.get("protectionamount")); }
                                     String description = Armor.defaultDescription;              if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                                     armors.add(new Armor(name, description, protectionamount));
@@ -744,7 +756,7 @@ public class TextFighter {
         //Determine if there is a pack to be loaded
         if(packUsed != null && packUsed.exists() && packUsed.isDirectory() && packUsed.list() != null) {
             for(String s : packUsed.list()) {
-                if(s.equals("defaultValues")) {
+                if(s.equals("defaultvalues")) {
                     File possibleDirectory = new File(packUsed.getPath() + "/defaultValues");
                     if(possibleDirectory.isDirectory()) {
                         directory = possibleDirectory;
@@ -753,13 +765,13 @@ public class TextFighter {
                     }
                 }
             }
-        } else { return; }
+        }
         for(String s : directory.list()) {
             if(s.equals("player.json")) {
-                System.out.println("Loading player values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/player.json");
-                if(!file.exists()) { Display.changePackTabbing(false); continue; }
+                if(!file.exists()) { continue; }
+                Display.displayPackMessage("Loading player values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //Player values
@@ -780,10 +792,10 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             } else if(s.equals("enemy.json")) {
-                System.out.println("Loading enemy values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/enemy.json");
-                if(!file.exists()) { Display.changePackTabbing(false); continue; }
+                if(!file.exists()) { continue; }
+                Display.displayPackMessage("Loading enemy values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //Enemy values
@@ -795,22 +807,22 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) {Display.changePackTabbing(false); continue; }
             } else if(s.equals("item.json")) {
-                System.out.println("Loading item values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/item.json");
                 if(!file.exists()) { continue; }
+                Display.displayPackMessage("Loading item values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //Item values
                     if(valuesFile.get("name") != null) {                        Item.defaultName = (String)valuesFile.get("name"); }
                     if(valuesFile.get("description") != null) {                 Item.defaultDescription = (String)valuesFile.get("description"); }
-                    Display.changePackTabbing(true);
-                } catch (IOException | ParseException e) { Display.changePackTabbing(true); continue; }
+                    Display.changePackTabbing(false);
+                } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             } else if(s.equals("weapon.json")) {
-                System.out.println("Loading weapon values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/weapon.json");
-                if(!file.exists()) { Display.changePackTabbing(true); continue; }
+                if(!file.exists()) { continue; }
+                Display.displayPackMessage("Loading weapon values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //Weapon values
@@ -819,51 +831,51 @@ public class TextFighter {
                     if(valuesFile.get("damage") != null) {                      Weapon.defaultDamage = Integer.parseInt((String)valuesFile.get("damage")); }
                     if(valuesFile.get("critChance") != null) {                  Weapon.defaultCritChance = Integer.parseInt((String)valuesFile.get("critChance")); }
                     if(valuesFile.get("missChance") != null) {                  Weapon.defaultMissChance = Integer.parseInt((String)valuesFile.get("missChance")); }
-                    Display.changePackTabbing(true);
-                } catch (IOException | ParseException e) { Display.changePackTabbing(true); continue; }
+                    Display.changePackTabbing(false);
+                } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); continue; }
             } else if(s.equals("armor.json")) {
-                System.out.println("Loading armor values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/armor.json");
-                if(!file.exists()) { Display.changePackTabbing(true); continue; }
+                if(!file.exists()) { continue; }
+                Display.displayPackMessage("Loading armor values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //Armor values
                     if(valuesFile.get("name") != null) {                        Armor.defaultName = (String)valuesFile.get("name"); }
                     if(valuesFile.get("description") != null) {                 Armor.defaultDescription = (String)valuesFile.get("description"); }
                     if(valuesFile.get("protectionAmount") != null) {            Armor.defaultName = (String)valuesFile.get("protectionAmount"); }
-                    Display.changePackTabbing(true);
-                } catch (IOException | ParseException e) { Display.changePackTabbing(true); continue; }
+                    Display.changePackTabbing(false);
+                } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             } else if(s.equals("tool.json")) {
-                System.out.println("Loading tool values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/tool.json");
-                if(!file.exists()) { Display.changePackTabbing(true); continue; }
+                if(!file.exists()) { continue; }
+                Display.displayPackMessage("Loading tool values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //Tool values
                     if(valuesFile.get("name") != null) {                        Tool.defaultName = (String)valuesFile.get("name"); }
                     if(valuesFile.get("description") != null) {                 Tool.defaultDescription = (String)valuesFile.get("description"); }
-                    Display.changePackTabbing(true);
-                } catch (IOException | ParseException e) { Display.changePackTabbing(true); continue; }
+                    Display.changePackTabbing(false);
+                } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             } else if(s.equals("specialitem.json")) {
-                System.out.println("Loading specialitem values");
-                Display.changePackTabbing(true);
                 File file = new File(directory.getPath() + "/specialitem.json");
-                if(!file.exists()) { Display.changePackTabbing(true); continue; }
+                if(!file.exists()) {continue; }
+                Display.displayPackMessage("Loading specialitem values");
+                Display.changePackTabbing(true);
                 try {
                     JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
                     //SpecialItem values
                     if(valuesFile.get("name") != null) {                        SpecialItem.defaultName = (String)valuesFile.get("name"); }
                     if(valuesFile.get("description") != null) {                 SpecialItem.defaultDescription = (String)valuesFile.get("description"); }
-                    Display.changePackTabbing(true);
-                } catch (IOException | ParseException e) { Display.changePackTabbing(true); continue; }
+                    Display.changePackTabbing(false);
+                } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             }
             parsingPack = false;
             directory = defaultValuesDirectory;
         }
         Display.changePackTabbing(false);
-        Display.displayPackError("Loaded default player/enemy/item values");
+        Display.displayPackMessage("Default player/enemy/item values loaded.");
         return;
     }
 
@@ -894,21 +906,6 @@ public class TextFighter {
             int invincibilityPotions = Player.defaultInvincibilityPotions;              if(stats.get("invincibilityPotions") != null)       {invincibilityPotions = Integer.parseInt((String)stats.get("invincibilityPotions"));}
             int turnsWithStrengthLeft = Player.defaultTurnsWithStrengthLeft;            if(stats.get("turnsWithStrengthLeft") != null)      {turnsWithStrengthLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
             int turnsWithInvincibilityLeft = Player.defaultTurnsWithInvincibilityLeft;  if(stats.get("turnsWithInvincibilityLeft") != null) {turnsWithInvincibilityLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
-            Weapon currentWeapon = null;
-            String currentWeaponString = Player.defaultCurrentWeaponString;             if(stats.get("currentWeapon") != null)              {currentWeaponString = (String)stats.get("currentWeapon");}
-            System.out.println(weapons.size());
-            for(Weapon w : weapons) {
-                if(w.getName().equals(currentWeaponString)) {
-                    currentWeapon = w;
-                }
-            }
-            if(currentWeapon == null) {
-                for(Weapon w : weapons) {
-                    if(w.getName().equals(player.defaultCurrentWeaponString)) {
-                        currentWeapon = w;
-                    }
-                }
-            }
             boolean gameBeaten = false;                                                 if(stats.get("gameBeaten") != null)                 {gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));}
 
             JSONObject inventory = (JSONObject)file.get("inventory");
@@ -919,27 +916,44 @@ public class TextFighter {
             if(inventory != null) {
                 for (Object key : inventory.keySet()) {
                     JSONObject jsonobj = (JSONObject)inventory.get(key);
+                    if(jsonobj.get("name") == null) { continue; }
                     if(jsonobj.get("itemtype") != null) {
                         if(jsonobj.get("itemtype").equals("armor")) {
-                            String name = Armor.defaultName;                            if(jsonobj.get("name") != null) { name = (String)jsonobj.get("name"); }
-                            String description = Armor.defaultDescription;              if(jsonobj.get("description") != null) { description = (String)jsonobj.get("description"); }
-                            double protectionAmount = Armor.defaultProtectionAmount;    if(jsonobj.get("protectionAmount") != null) { protectionAmount = Double.parseDouble((String)jsonobj.get("protectionAmount")); }
-                            Armor item = new Armor(name, description, protectionAmount);
-                            newInventory.add(item);
+                            for(Armor a : armors){
+                                if(a.getName().equals(jsonobj.get("name"))) {
+                                    newInventory.add(a);
+                                }
+                            }
                         } else if(jsonobj.get("itemtype").equals("weapon")) {
-                            String name = Weapon.defaultName;                           if(jsonobj.get("name") != null) { name = (String)jsonobj.get("name"); }
-                            String description = Weapon.defaultDescription;             if(jsonobj.get("description") != null) { description = (String)jsonobj.get("description"); }
-                            int damage = Weapon.defaultDamage;                          if(jsonobj.get("damage") != null) { damage = Integer.parseInt((String)jsonobj.get("damage")); }
-                            int missChance = Weapon.defaultMissChance;                  if(jsonobj.get("missChance") != null) { missChance = Integer.parseInt((String)jsonobj.get("missChance")); }
-                            int critChance = Weapon.defaultCritChance;                  if(jsonobj.get("critChance") != null) { critChance = Integer.parseInt((String)jsonobj.get("critChance")); }
-                            Weapon item = new Weapon(name, description, damage, critChance, critChance);
-                            newInventory.add(item);
-                        }  else if(jsonobj.get("itemtype").equals("tool")) {
-                            String name = Tool.defaultName;                             if(jsonobj.get("name") != null) { name = (String)jsonobj.get("name"); }
-                            String description = Tool.defaultDescription;               if(jsonobj.get("description") != null) { description = (String)jsonobj.get("description"); }
-                            Tool item = new Tool(name, description);
-                            newInventory.add(item);
+                            for(Weapon w : weapons){
+                                if(w.getName().equals(jsonobj.get("name"))) {
+                                    newInventory.add(w);
+                                }
+                            }
+                        } else if(jsonobj.get("itemtype").equals("tool")) {
+                            for(Tool t : tools){
+                                if(t.getName().equals(jsonobj.get("name"))) {
+                                    newInventory.add(t);
+                                }
+                            }
                         }
+                    }
+                }
+            }
+
+            Weapon currentWeapon = null;
+            String currentWeaponString = Player.defaultCurrentWeaponString;             if(stats.get("currentWeapon") != null)              {currentWeaponString = (String)stats.get("currentWeapon");}
+            if(newInventory.contains(getWeaponByName(currentWeaponString))) {
+                for(Weapon w : weapons) {
+                    if(w.getName().equals(currentWeaponString)) {
+                        currentWeapon = w;
+                    }
+                }
+            }
+            if(currentWeapon == null) {
+                for(Weapon w : weapons) {
+                    if(w.getName().equals(player.defaultCurrentWeaponString)) {
+                        currentWeapon = w;
                     }
                 }
             }
@@ -951,10 +965,11 @@ public class TextFighter {
             if(specialitemsArray != null) {
                 for (Object key : specialitemsArray.keySet()) {
                     JSONObject jsonobj = (JSONObject)inventory.get(key);
-                    String name = SpecialItem.defaultName;                          if(jsonobj.get("name") != null) { name = (String)jsonobj.get("name"); }
-                    String description = SpecialItem.defaultDescription;            if(jsonobj.get("description") != null) { description = (String)jsonobj.get("description"); }
-                    SpecialItem item = new SpecialItem(name, description);
-                    specialItems.add(item);
+                    if(jsonobj.get("name") == null) { continue; }
+                    for(SpecialItem si : specialItems){
+                        if(si.getName().equals(jsonobj.get("name")))
+                        specialItems.add(si);
+                    }
                 }
             }
 
@@ -1017,8 +1032,6 @@ public class TextFighter {
         stats.put("turnsWithInvincibilityLeft", Integer.toString(Player.defaultTurnsWithInvincibilityLeft));
         stats.put("currentWeapon", Player.defaultCurrentWeaponString);
 
-        JSONObject inventory = new JSONObject();
-
         base.put("stats", stats);
         base.put("name", name);
 
@@ -1071,13 +1084,8 @@ public class TextFighter {
         if(player.getInventory() != null) {
             for(Item i : player.getInventory()) {
                 JSONObject jsonobj = new JSONObject();
+                jsonobj.put("name", i.getName());
                 jsonobj.put("itemtype", i.getItemType());
-                if(i.getClass().getSuperclass().equals(Armor.class)) {
-                    jsonobj.put("protectionAmount", String.valueOf(((Armor)i).getProtectionAmount()));
-                }
-                if(i.getClass().getSuperclass().equals(Weapon.class)) {
-                    jsonobj.put("damage", Integer.toString(((Weapon)i).getDamage()));
-                }
                 inventory.put(i.getClass().getSimpleName(), jsonobj);
             }
         }
@@ -1087,8 +1095,8 @@ public class TextFighter {
         if(player.getSpecialItems() != null) {
             for(SpecialItem si : player.getSpecialItems()) {
                 JSONObject jsonobj = new JSONObject();
-                jsonobj.put("itemtype", si.getClass().getSimpleName());
-                specialitems.put(si.getClass().getSimpleName(), jsonobj);
+                jsonobj.put("name", si.getName());
+                specialitems.put("SpecialItem", jsonobj);
             }
         }
 
@@ -1489,6 +1497,7 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
+        player = new Player();
         if(!testMode) {
             getSaveFiles();
             player.setLocation("start");

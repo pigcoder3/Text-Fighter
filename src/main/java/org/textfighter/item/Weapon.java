@@ -10,7 +10,7 @@ public class Weapon extends Item {
     public static int defaultMissChance = 10; // 10%
     public static String defaultDescription = "A weapon";
 
-    private final String ITEMTYPE = "tool";
+    private final String ITEMTYPE = "weapon";
     private String name = defaultName;
     private int damage = defaultDamage;
     private int critchance = defaultCritChance;
@@ -34,6 +34,8 @@ public class Weapon extends Item {
 
     public Weapon(String name, String description, int damage, int critchance, int misschance) {
         super(name, description);
+        this.name = name;
+        this.description = description;
         this.damage = damage;
         this.critchance = critchance;
         this.misschance = misschance;

@@ -23,6 +23,7 @@ public class Reward {
     private Class fieldclass;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
     private ArrayList<Object> arguments;
+    private ArrayList<Object> originalArguments;
     //Chance is 1-100
     private int chance = defaultChance;
     private String rewardItem;
@@ -51,7 +52,7 @@ public class Reward {
             Random random = new Random();
             //"random" number between 1 and 99
             int number = random.nextInt(98)+1;
-            if(number > chance) { return null; }
+            if(number > chance) { resetArguments(); return null; }
             if(field != null ) {
                 if(arguments != null && arguments.size() > 0) {
                     method.invoke(field.get(null), arguments.toArray());
@@ -65,13 +66,17 @@ public class Reward {
                     method.invoke(null);
                 }
             }
+            resetArguments();
             return rewardItem;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); return null; }
+        } catch (IllegalAccessException | InvocationTargetException e) { resetArguments(); e.printStackTrace(); return null; }
     }
+
+public void resetArguments() { arguments = originalArguments; }
 
     public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance, String rewardItem) {
         this.method = method;
         this.arguments = arguments;
+        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;

@@ -16,6 +16,7 @@ public class Requirement {
 
     public static boolean defaultNeededBoolean = true;
 
+    private ArrayList<Object> originalArguments = new ArrayList<Object>();
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private Class clazz;
     private Method method;
@@ -42,26 +43,33 @@ public class Requirement {
             }
         }
 		try {
+            boolean output = !neededBoolean;
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {
-                    return((boolean)method.invoke(field.get(null), arguments.toArray()) == neededBoolean);
+                    output = (boolean)method.invoke(field.get(null), arguments.toArray()) == neededBoolean;
                 } else {
-                    return((boolean)method.invoke(field.get(null)) == neededBoolean);
+                    output = (boolean)method.invoke(field.get(null)) == neededBoolean;
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
-                    return((boolean)method.invoke(null, arguments.toArray()) == neededBoolean);
+                    output = (boolean)method.invoke(null, arguments.toArray()) == neededBoolean;
                 } else {
-                    return((boolean)method.invoke(null) == neededBoolean);
+                    output = (boolean)method.invoke(null) == neededBoolean;
                 }
             }
+            resetArguments();
+            return output;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        resetArguments();
         return false;
     }
+
+    public void resetArguments() { arguments = originalArguments; }
 
     public Requirement(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, boolean neededBoolean) {
         this.method = method;
         this.arguments = arguments;
+        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;

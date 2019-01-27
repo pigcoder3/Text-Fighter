@@ -53,12 +53,13 @@
                 {
                     "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["pickaxe"],
-                    "argumentTypes" : ["0"],
+                    "arguments" : ["pickaxe", "tool"],
+                    "argumentTypes" : ["0", "0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
                 }
-            ]
+            ],
+            "usage" : "mine"
         },
         {
             "name" : "witchHut",
@@ -73,16 +74,28 @@
             ],
             "requirements" : [
                 {
-                    "method" : "isCarrying",
+                    "method" : "isCarryingSpecialItem",
                     "class" : "org.textfighter.Player",
                     "arguments" : ["witchMap"],
                     "argumentTypes" : ["0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
                 }
-            ]
+            ],
+            "usage" : "witchHit"
+        },
+        {
+            "name" : "weaponSmith",
+            "description" : "Goes to the weapon smith",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["weaponSmith"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "weaponSmith"
         }
-
     ]
-
 }

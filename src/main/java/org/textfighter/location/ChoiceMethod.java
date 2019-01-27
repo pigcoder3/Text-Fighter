@@ -71,7 +71,7 @@ public class ChoiceMethod {
         this.argumentTypes = argumentTypes;
         this.method = method;
         this.arguments = arguments;
-        this.originalArguments = arguments;
+        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.clazz = clazz;
         this.field = field;
         this.fieldclass = fieldclass;
