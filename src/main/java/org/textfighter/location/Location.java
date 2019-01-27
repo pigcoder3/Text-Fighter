@@ -82,8 +82,8 @@ public class Location {
 
 
     public void filterPossibleChoices() {
-        possibleChoices.clear();
         if(allChoices == null) { return; }
+        possibleChoices.clear();
         for(Choice c : allChoices) {
 			boolean valid = true;
             if(c.getRequirements() != null){

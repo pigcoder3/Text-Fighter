@@ -23,6 +23,8 @@ public class Armor extends Item {
 
     public Armor (String name, String description, double protectionAmount) {
         super(name, description);
+        this.name = name;
+        this.description = description;
         this.protectionAmount = protectionAmount;
     }
 

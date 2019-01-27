@@ -75,7 +75,7 @@ public class Display {
         if(plusOrMinus) {
             packTabbing+="  ";
         } else {
-            if(packTabbing != null && packTabbing.length() > 2)
+            if(packTabbing != null && packTabbing.length() > 1)
             packTabbing=packTabbing.substring(0,packTabbing.length()-2);
         }
     }

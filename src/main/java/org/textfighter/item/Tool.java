@@ -20,6 +20,8 @@ public class Tool extends Item {
 
     public Tool (String name, String description) {
         super(name, description);
+        this.name = name;
+        this.description = description;
     }
 
 }

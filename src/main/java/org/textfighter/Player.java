@@ -20,7 +20,7 @@ public class Player {
     static int defaulthp = 50;
     static int defaultMaxhp = 50;
 
-    static int defaultCoins = 10;
+    static int defaultCoins = 50;
     static int defaultMagic = 0;
     static int defaultMetalscraps = 0;
 
@@ -205,9 +205,9 @@ public class Player {
     public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { coins=0; } TextFighter.needsSaving=true;}
     public void gainCoins(int a) { coins+=a; TextFighter.needsSaving=true; }
 
-    public int getMagic() { if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return 0; } return magic; }
-    public void spendMagic(int a) { if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return; } if (magic-a >= 0) { magic-=a; } else { magic=0; } TextFighter.needsSaving=true;}
-    public void gainMagic(int a) { if(!TextFighter.player.isCarryingSpecialItem("ManaPouch")) { return; }  magic+=a; TextFighter.needsSaving=true; }
+    public int getMagic() { return magic; }
+    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { magic=0; } TextFighter.needsSaving=true;}
+    public void gainMagic(int a) { if(!TextFighter.player.isCarryingSpecialItem("manapouch")) { return; }  magic+=a; TextFighter.needsSaving=true; }
 
     public int getMetalScraps() { return magic; }
     public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; } TextFighter.needsSaving=true; }
@@ -230,88 +230,107 @@ public class Player {
     public void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn = b; }
 
     public ArrayList<Item> getInventory() { return inventory; }
-    public void addToInventory(String classname) {
-        if(classname != null && !isCarrying(classname)) {
-            try {
-                try {
-                    Item item = (Item)Class.forName(classname).getDeclaredConstructor(new Class[] {int.class,int.class,int.class}).newInstance();
-                    inventory.add(item);
-                } catch (NoSuchMethodException | InvocationTargetException e) {}
-            } catch(ClassNotFoundException | InstantiationException | IllegalAccessException e) { Display.displayPackError("Unknown class for item '" + classname + "'"); return; }
-            TextFighter.needsSaving=true;
-        }
-    }
-    public void removeFromInventory(String classname) {
-        for(int i=0;i<inventory.size();i++) {
-            try {
-                if(inventory.get(i).getClass().equals(Class.forName(classname))) {
-                    if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
-                    inventory.remove(i);
+    public void addToInventory(String name, String type) {
+        if(name == null || type == null) { return;}
+        if(type.equals("weapon")) {
+            for(Weapon i : TextFighter.weapons) {
+                if(i.getName().equals(name) && i.getItemType().equals(type) && !isCarrying(name, "weapon")) {
+                    inventory.add(i);
+                    TextFighter.addToOutput("A " + name + " was added to your inventory.");
                     TextFighter.needsSaving=true;
-                    break;
                 }
-            } catch (ClassNotFoundException e) { Display.displayPackError("Unknown class for item '" + classname + "'"); return ; }
+            }
+        }
+        else if(type.equals("armor")) {
+            for(Armor i : TextFighter.armors) {
+                if(i.getName().equals(name) && i.getItemType().equals(type) && !isCarrying(name, "armor")) {
+                    inventory.add(i);
+                    TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                    TextFighter.needsSaving=true;
+                }
+            }
+        }
+        else if(type.equals("tool")) {
+            for(Tool i : TextFighter.tools) {
+                if(i.getName().equals(name) && i.getItemType().equals(type) && !isCarrying(name, "tool")) {
+                    inventory.add(i);
+                    TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                    TextFighter.needsSaving=true;
+                }
+            }
         }
     }
 
-    public boolean isCarrying(String classname) {
+    public void removeFromInventory(String name, String type) {
+        for(int i=0;i<inventory.size();i++) {
+            if(name.equals(inventory.get(i).getName()) && type.equals(inventory.get(i).getItemType())) {
+                if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
+                inventory.remove(i);
+                TextFighter.needsSaving=true;
+                break;
+            }
+        }
+    }
+
+    public boolean isCarrying(String name, String type) {
+        if(name == null || type == null) { return false;}
         for(Item i : inventory) {
-            try {
-                if(i.getClass().equals(Class.forName(classname))) { return true; }
-            } catch (ClassNotFoundException e) { Display.displayPackError("Unknown class for item '" + classname + "'"); return false; }
+            if(i.getItemType().equals(type) && i.getName().equals(name)) {
+                return true;
+            }
         }
         return false;
     }
 
-    public Item getFromInventory(String classname) {
+    public Item getFromInventory(String name, String type) {
+        if(name == null || type == null) { return null;}
         for(Item i : inventory) {
-            try {
-                if(i.getClass().equals(Class.forName(classname))) { return i; }
-            } catch (ClassNotFoundException e) { Display.displayPackError("Unknown class for item '" + classname + "'"); return null; }
+            if(i.getName().equals(name) && i.getItemType().equals(type)) {
+                return i;
+            }
         }
         return null;
     }
 
     public ArrayList<SpecialItem> getSpecialItems() { return specialItems; }
 
-    public void addToSpecialItems(String classname) {
-        if(classname != null && !isCarryingSpecialItem(classname)) {
-            try {
-                try {
-                    SpecialItem specialitem = (SpecialItem)Class.forName(classname).getDeclaredConstructor().newInstance();
-                    specialItems.add(specialitem);
-                } catch (NoSuchMethodException | InvocationTargetException e) {}
-            } catch(ClassNotFoundException | InstantiationException | IllegalAccessException e) { Display.displayPackError("Unknown class for special item '" + classname + "'"); return;}
-            TextFighter.needsSaving = true;
+    public void addToSpecialItems(String name) {
+        if(name == null) { return; }
+        for(SpecialItem sp : TextFighter.specialItems) {
+            if(sp.getName().equals(name)){
+                specialItems.add(sp);
+                TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                TextFighter.needsSaving = true;
+            }
         }
     }
 
-    public void removeFromSpecialItems(String classname) {
+    public void removeFromSpecialItems(String name) {
         for(int i=0;i<specialItems.size();i++) {
-            try {
-                if(specialItems.get(i).getClass().equals(Class.forName(classname))) {
-                    specialItems.remove(i);
-                    TextFighter.needsSaving=true;
-                    break;
-                }
-            } catch (ClassNotFoundException e) { Display.displayPackError("Unknown class for spcial item '" + classname + "'"); return; }
+            if(name.equals(specialItems.get(i).getName())) {
+                specialItems.remove(i);
+                TextFighter.needsSaving=true;
+                break;
+            }
         }
     }
 
-    public boolean isCarryingSpecialItem(String classname) {
+    public boolean isCarryingSpecialItem(String name) {
+        if(name == null) { return false;}
         for(SpecialItem i : specialItems) {
-            try {
-                if(i.getClass().equals(Class.forName(classname))) { return true; }
-            } catch (ClassNotFoundException e) { Display.displayPackError("Unknown class for special item '" + classname + "'"); return false; }
+            if(i.getName().equals(name)) {
+                return true;
+            }
         }
         return false;
     }
 
-    public SpecialItem getFromSpecialItems(String classname) {
+    public SpecialItem getFromSpecialItems(String name) {
+        if(name == null) { return null;}
         for(SpecialItem i : specialItems) {
-            try {
-                if(i.getClass().equals(Class.forName(classname))) { return i; }
-            } catch (ClassNotFoundException e) { Display.displayPackError("Unknown class for special item '" + classname + "'"); return null; }
+            if(i.getName().equals(name)) {
+                return i;
+            }
         }
         return null;
     }
@@ -351,5 +370,4 @@ public class Player {
     }
 
     public Player() { }
-
 }
