@@ -19,10 +19,17 @@ public class Armor extends Item {
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     public Object getCustomVariableFromName(String name) {
+        if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) { return cv.getValue(); }
         }
         return null;
+    }
+    public void setCustomVariableByName(String name, Object value) {
+        if(name == null) { return; }
+        for(CustomVariable cv : customVariables) {
+            if(cv.getName().equals(name)) { cv.setValue(value); return;}
+        }
     }
 
     public String getItemType() { return ITEMTYPE; }
