@@ -119,12 +119,15 @@ public class Player {
     public String getCurrentWeaponString() { if(currentWeapon != null) { return currentWeapon.getName(); } else { return null; } }
     public void setCurrentWeapon(String name) {
         if(name == null) { name = defaultCurrentWeaponString; }
-        for(Weapon w : TextFighter.weapons) {
-            if(w.getName().equals(name)) {
-                currentWeapon = w;
-            }
+        Weapon weapon = TextFighter.getWeaponByName(name);
+        if(weapon == null) { return; }
+        if(!isCarrying(name, "weapon")) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
+        else {    
+            currentWeapon = weapon;
+            TextFighter.addToOutput("Equiped weapon '" + name + "'");
+            calculateStrength();
+            return;
         }
-        calculateStrength();
     }
     public void calculateStrength() {
         if(currentWeapon != null) {
@@ -154,12 +157,12 @@ public class Player {
     public void setInvincibilityPotions(int a) { invincibilityPotions=a; if(invincibilityPotions<0){invincibilityPotions=0;} TextFighter.needsSaving=true;}
     public int getInvincibilityPotions() { return invincibilityPotions; }
 
-    public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; TextFighter.needsSaving=true;}
+    public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
     public void decreaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft-=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
     public int getTurnsWithStrengthLeft() {return turnsWithStrengthLeft;}
     public void setTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft=a; if(turnsWithStrengthLeft<0) {turnsWithStrengthLeft=0;}}
 
-    public void increaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft+=a; TextFighter.needsSaving=true;}
+    public void increaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft+=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
     public void decreaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft-=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
     public int getTurnsWithInvincibilityLeft() {return turnsWithInvincibilityLeft;}
     public void setTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft=a; if(turnsWithInvincibilityLeft<0) {turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}

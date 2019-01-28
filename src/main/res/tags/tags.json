@@ -160,7 +160,13 @@
             "method" : "getDifficulty",
             "field" : "currentEnemy",
             "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<turnsWithInvinciblityLeft>",
+            "class" : "org.textfighter.enemy.Enemy",
+            "method" : "getTurnsWithInvincibilityLeft",
+            "field" : "currentEnemy",
+            "fieldclass" : "org.textfighter.TextFighter"
         }
-
     ]
 }
