@@ -85,6 +85,18 @@
             "usage" : "witchHit"
         },
         {
+            "name" : "home",
+            "description" : "Goes to your home",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["home"],
+                    "argumentTypes" : ["0"]
+                },
+            ]
+        },
+        {
             "name" : "weaponSmith",
             "description" : "Goes to the weapon smith",
             "methods" : [

@@ -1,0 +1,51 @@
+{
+
+    "name" : "home",
+
+    "interfaces" : [
+
+        "playerStats",
+        "home",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "equipWeapon",
+            "description" : "Equips a weapon for use in a fight.",
+            "methods" : [
+                {
+                    "method" : "setCurrentWeapon",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        {
+                            "method" : "getWeaponByName",
+                            "class" : "org.textfighter.TextFighter",
+                            "arguments" : ["%ph%"],
+                            "argumentTypes" : ["0"]
+                        }
+                    ],
+                    "argumentTypes" : ["0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "equipWeapon <name>"
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}

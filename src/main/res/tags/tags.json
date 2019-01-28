@@ -115,6 +115,13 @@
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },
+        {
+            "tag" : "<weapon>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCurrentWeaponString",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
 
 
 

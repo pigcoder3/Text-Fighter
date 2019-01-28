@@ -224,7 +224,7 @@ public class TextFighter {
         } else if(type.equals(EnemyActionMethod.class)) {
             o=new EnemyActionMethod(method, arguments, clazz, field, fieldclass);
         } else if(type.equals(TFMethod.class)) {
-            o=new TFMethod(method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
+            o=new TFMethod(method, arguments, argumentTypes, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
                 int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}

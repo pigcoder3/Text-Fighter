@@ -13,6 +13,7 @@ import java.lang.reflect.*;
 public class TFMethod {
 
     private ArrayList<Object> arguments;
+    private ArrayList<Class> argumentTypes;
     private ArrayList<Object> originalArguments;
     private Class clazz;
     private Method method;
@@ -63,11 +64,34 @@ public class TFMethod {
         return null;
     }
 
+    public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
+        ArrayList<Object> methodArgs = new ArrayList<Object>();
+        if(arguments == null || argumentTypes == null) { return inputArgsIndex; }
+        for(int i=0; i<argumentTypes.size(); i++) {
+            if(originalArguments.get(i) == null) { methodArgs.add(null); continue;}
+            if(!arguments.get(i).equals("%ph%") && !arguments.get(i).getClass().equals(TFMethod.class)) { methodArgs.add(arguments.get(i)); continue; }
+            if(arguments.get(i).getClass() == TFMethod.class) { inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); }
+            if(inputArgsIndex <= inputArgs.size() - 1) {
+                if(argumentTypes.get(i).equals(int.class)) {
+                    methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
+                } else if(argumentTypes.get(i).equals(String.class)) {
+                    methodArgs.add(inputArgs.get(inputArgsIndex));
+                } else if(argumentTypes.get(i).equals(Boolean.class)) {
+                    methodArgs.add(Boolean.parseBoolean(inputArgs.get(inputArgsIndex)));
+                }
+                inputArgsIndex++;
+            }
+        }
+        arguments = methodArgs;
+        return inputArgsIndex;
+    }
+
     public void resetArguments() { arguments = originalArguments; }
 
-    public TFMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
+    public TFMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
         this.method = method;
         this.arguments = arguments;
+        this.argumentTypes = argumentTypes;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.clazz = clazz;
         this.field = field;

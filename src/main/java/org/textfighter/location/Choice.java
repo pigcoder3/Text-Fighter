@@ -35,9 +35,9 @@ public class Choice {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
             if(m.getArguments() == null || m.getArguments().size() < 1) { continue; }
             for(int i=0; i<m.getArgumentTypes().size(); i++) {
-                // Found out that this is somehow null even though that should be impossible in the tests that I am running
                 if(m.getOriginalArguments().get(i) == null) { methodArgs.add(null); continue;}
-                if(!m.getArguments().get(i).equals("%ph%")) { methodArgs.add(m.getArguments().get(i)); continue; }
+                if(!m.getArguments().get(i).equals("%ph%") && !m.getArguments().get(i).getClass().equals(TFMethod.class)) { methodArgs.add(m.getArguments().get(i)); continue; }
+                if(m.getArguments().get(i).getClass() == TFMethod.class) { ((TFMethod)m.getArguments().get(i)).putInputInArguments(inputArgs, inputArgsIndex); }
                 if(inputArgsIndex <= inputArgs.size() - 1) {
                     if(m.getArgumentTypes().get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));

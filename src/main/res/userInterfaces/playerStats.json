@@ -17,6 +17,7 @@
         "  Strength turns left: <turnsWithStrengthLeft>",
         "  Invincibility turns left: <turnsWithInvincibilityLeft>",
         "",
+        "  weapon: <weapon>",
         "  strength: <str>",
         "",
         "  level: <level>",
