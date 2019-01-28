@@ -56,4 +56,4 @@ setup:
 
 #Remove the output directory
 clean:
-	$(RM) $(OUTPUTSRCDIR)
+	$(RM) bin
