@@ -73,11 +73,11 @@ public class TextFighter {
 
     public static boolean needsSaving = false;
 
-    public static Weapon getWeaponByName(String name) { for(Weapon w : weapons) { if(w.getName().equals(name)) { return w; } } return null; }
-    public static Armor getArmorByName(String name) { for(Armor a : armors) { if(a.getName().equals(name)) { return a; } } return null; }
-    public static Tool getToolByName(String name) { for(Tool t : tools) { if(t.getName().equals(name)) { return t; } } return null; }
-    public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { return sp; } } return null; }
-    public static Enemy getEnemyByName(String name) { for(Enemy e : enemies) { if(e.getName().equals(name)) { return e; } } return null; }
+    public static Weapon getWeaponByName(String name) { for(Weapon w : weapons) { if(w.getName().equals(name)) { return w; } } addToOutput("No such weapon '" + name + "'"); return null; }
+    public static Armor getArmorByName(String name) { for(Armor a : armors) { if(a.getName().equals(name)) { return a; } } addToOutput("No such armor '" + name + "'"); return null; }
+    public static Tool getToolByName(String name) { for(Tool t : tools) { if(t.getName().equals(name)) { return t; } } addToOutput("No such tool '" + name + "'"); return null; }
+    public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { addToOutput("No such specialitem '" + name + "'"); return sp; } } return null; }
+    public static Enemy getEnemyByName(String name) { for(Enemy e : enemies) { if(e.getName().equals(name)) { return e; } } addToOutput("No such enemy '" + name + "'"); return null; }
 
     public static void addToOutput(String msg) { output+=msg + "\n"; }
 
@@ -299,7 +299,9 @@ public class TextFighter {
                     for (String f : directory.list()) {
                         if(f.equals("tags.json")) { continue; }
                         if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                        JSONObject interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f)));
+                        JSONObject interfaceFile = null; 
+                        try { interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f))); } catch(ParseException e) { Display.displayError("Having trouble parsing interface file '" + f + "'"); continue; }
+                        if(interfaceFile == null) { continue; }
                         JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
                         String name = (String)interfaceFile.get("name");
                         if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
@@ -322,7 +324,6 @@ public class TextFighter {
             return true;
         } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file. It was likely deleted after the program got all files in the interfaces directory."); Display.changePackTabbing(false); return false; }
         catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces. The permissions are likely set to be unreadable."); Display.changePackTabbing(false); return false;}
-        catch (ParseException e) { Display.displayError("Having trouble parsing the interface files. Will continue as expected though."); Display.changePackTabbing(false); return false; }
     }
     public static boolean loadLocations() {
         try {
@@ -804,7 +805,7 @@ public class TextFighter {
                     if(valuesFile.get("maxhp") != null) {                       Enemy.defaultMaxhp = Integer.parseInt((String)valuesFile.get("maxhp")); }
                     if(valuesFile.get("strength") != null) {                    Enemy.defaultStrength = Integer.parseInt((String)valuesFile.get("strength")); }
                     if(valuesFile.get("levelRequirement") != null) {            Enemy.defaultLevelRequirement = Integer.parseInt((String)valuesFile.get("levelRequirement")); }
-                    if(valuesFile.get("turnsWithInvincibilityLeft") != null) {  Enemy.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvisibilityLeft")); }
+                    if(valuesFile.get("turnsWithInvincibilityLeft") != null) {  Enemy.defaultTurnsWithInvincibiltyLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvisibilityLeft")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) {Display.changePackTabbing(false); continue; }
             } else if(s.equals("item.json")) {
@@ -1198,7 +1199,7 @@ public class TextFighter {
         if(enemies.size() < 2) { return; } //There is no need to sort if there are no enemies or just one
         ArrayList<Enemy> sorted = new ArrayList<Enemy>();
         ArrayList<Enemy> remaining = enemies;
-        while(sorted.size() != enemies.size()) {
+        while(remaining.size() != 0) {
             int lowestDiffIndex = 0;
             int lowestKnownDifficulty = 0;
             for(int i=0; i<remaining.size(); i++) {
@@ -1362,7 +1363,7 @@ public class TextFighter {
             }
         } else {
             addToOutput("Invalid enemy: '" + en + "'");
-            ("enemyChoices");
+            movePlayer("enemyChoices");
             return false;
         }
         return false;

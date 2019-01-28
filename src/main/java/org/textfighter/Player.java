@@ -119,12 +119,15 @@ public class Player {
     public String getCurrentWeaponString() { if(currentWeapon != null) { return currentWeapon.getName(); } else { return null; } }
     public void setCurrentWeapon(String name) {
         if(name == null) { name = defaultCurrentWeaponString; }
-        for(Weapon w : TextFighter.weapons) {
-            if(w.getName().equals(name)) {
-                currentWeapon = w;
-            }
+        Weapon weapon = TextFighter.getWeaponByName(name);
+        if(weapon == null) { return; }
+        if(!isCarrying(name, "weapon")) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
+        else {    
+            currentWeapon = weapon;
+            TextFighter.addToOutput("Equiped weapon '" + name + "'");
+            calculateStrength();
+            return;
         }
-        calculateStrength();
     }
     public void calculateStrength() {
         if(currentWeapon != null) {

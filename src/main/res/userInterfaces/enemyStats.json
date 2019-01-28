@@ -4,16 +4,18 @@
 
     "interface" : [
 
-        "----------------------"
+        "----------------------",
         "      ENEMY STATS     ",
-        "----------------------"
+        "----------------------",
         " hp: <enemyhp>",
         " maxhp: <enemymaxhp>",
         "",
         " strength: <enemystr>",
         "",
+        " Turns with Invincibility Left: <turnsWithInvincibilityLeft>",
+        "",
         " level requirement: <enemylevelreq>",
-        " difficulty: <enemydifficulty>",
+        " difficulty: <enemydifficulty>"
 
     ]
 
