@@ -43,6 +43,15 @@ public class Enemy implements Cloneable {
 
     private boolean canBeHurtThisTurn = true;
 
+    private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+
+    public Object getCustomVariableFromName(String name) {
+        for(CustomVariable cv : customVariables) {
+            if(cv.getName().equals(name)) { return cv.getValue(); }
+        }
+        return null;
+    }
+
     public String getName() { return name; }
     public void setName(String n) { name=n; }
 
@@ -206,7 +215,7 @@ public class Enemy implements Cloneable {
         }
     }
 
-    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions) {
+    public Enemy(String name, int hp, int str, int levelRequirement, ArrayList<Requirement> requirements, boolean finalBoss, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions, ArrayList<CustomVariable> customVariables) {
 
         //Sets the variables
         this.name = name;
@@ -223,12 +232,17 @@ public class Enemy implements Cloneable {
         this.allPremethods = premethods;
         this.allPostmethods = allPostmethods;
         this.allRewardMethods = rewardMethods;
+        this.customVariables = customVariables;
         //Filters out invalid enemy actions
         for(EnemyAction ea : actions) {
             if(ea.getValid()) { allActions.add(ea); }
         }
     }
 
-    public Enemy() { }
+    public Enemy(ArrayList<CustomVariable> customVariables) {
+        this.customVariables = customVariables;
+    }
+
+    public Enemy() {}
 
 }
