@@ -63,7 +63,7 @@ public class Enemy implements Cloneable {
             TextFighter.addToOutput("You enemy cannot be hurt this turn!");
         }
     }
-    public void healed(int a) {
+    public void heal(int a) {
         hp = hp + a;
         if (hp > maxhp) { hp = 0; }
         TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");

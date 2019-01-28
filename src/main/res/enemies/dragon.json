@@ -40,7 +40,7 @@
             "methods" : [
                 {
                     "method" : "heal",
-                    "class" : "org.textfighter.Enemy",
+                    "class" : "org.textfighter.enemy.Enemy",
                     "arguments" : ["15"],
                     "argumentTypes" : ["1"],
                     "field" : "currentEnemy",
@@ -52,8 +52,8 @@
             "methods" : [
 
                 {
-                    "method" : "increaseTurnsWithInvinsibilityLeft",
-                    "class" : "org.textfighter.Enemy",
+                    "method" : "increaseTurnsWithInvincibilityLeft",
+                    "class" : "org.textfighter.enemy.Enemy",
                     "arguments" : ["1"],
                     "argumentTypes" : ["1"],
                     "field" : "currentEnemy",

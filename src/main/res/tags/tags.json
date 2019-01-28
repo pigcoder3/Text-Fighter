@@ -162,7 +162,7 @@
             "fieldclass" : "org.textfighter.TextFighter"
         },
         {
-            "tag" : "<turnsWithInvinciblityLeft>",
+            "tag" : "<enemyTurnsWithInvincibilityLeft>",
             "class" : "org.textfighter.enemy.Enemy",
             "method" : "getTurnsWithInvincibilityLeft",
             "field" : "currentEnemy",

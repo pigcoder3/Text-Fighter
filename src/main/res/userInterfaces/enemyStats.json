@@ -12,7 +12,7 @@
         "",
         " strength: <enemystr>",
         "",
-        " Turns with Invincibility Left: <turnsWithInvincibilityLeft>",
+        " Turns with Invincibility Left: <enemyTurnsWithInvincibilityLeft>",
         "",
         " level requirement: <enemylevelreq>",
         " difficulty: <enemydifficulty>"
