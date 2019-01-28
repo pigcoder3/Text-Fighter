@@ -804,6 +804,7 @@ public class TextFighter {
                     if(valuesFile.get("maxhp") != null) {                       Enemy.defaultMaxhp = Integer.parseInt((String)valuesFile.get("maxhp")); }
                     if(valuesFile.get("strength") != null) {                    Enemy.defaultStrength = Integer.parseInt((String)valuesFile.get("strength")); }
                     if(valuesFile.get("levelRequirement") != null) {            Enemy.defaultLevelRequirement = Integer.parseInt((String)valuesFile.get("levelRequirement")); }
+                    if(valuesFile.get("turnsWithInvincibilityLeft") != null) {  Enemy.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvisibilityLeft")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) {Display.changePackTabbing(false); continue; }
             } else if(s.equals("item.json")) {
@@ -1334,6 +1335,7 @@ public class TextFighter {
                 } else {
                     currentEnemy.attack(null);
                 }
+                currentEnemy.decreaseTurnsWithInvincibilityLeft(1);
                 Display.clearScreen();
                 Display.displayPreviousCommand();
                 if(output != null) {
@@ -1360,7 +1362,7 @@ public class TextFighter {
             }
         } else {
             addToOutput("Invalid enemy: '" + en + "'");
-            movePlayer("enemyChoices");
+            ("enemyChoices");
             return false;
         }
         return false;
