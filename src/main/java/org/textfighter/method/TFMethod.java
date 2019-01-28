@@ -70,14 +70,18 @@ public class TFMethod {
         for(int i=0; i<argumentTypes.size(); i++) {
             if(originalArguments.get(i) == null) { methodArgs.add(null); continue;}
             if(!arguments.get(i).equals("%ph%") && !arguments.get(i).getClass().equals(TFMethod.class)) { methodArgs.add(arguments.get(i)); continue; }
-            if(arguments.get(i).getClass() == TFMethod.class) { inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); }
+            if(arguments.get(i).getClass() == TFMethod.class) { inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1){ return -1; } continue; }
             if(inputArgsIndex <= inputArgs.size() - 1) {
                 if(argumentTypes.get(i).equals(int.class)) {
                     methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
                 } else if(argumentTypes.get(i).equals(String.class)) {
                     methodArgs.add(inputArgs.get(inputArgsIndex));
-                } else if(argumentTypes.get(i).equals(Boolean.class)) {
+                } else if(argumentTypes.get(i).equals(boolean.class)) {
                     methodArgs.add(Boolean.parseBoolean(inputArgs.get(inputArgsIndex)));
+                } else if(argumentTypes.get(i).equals(double.class)) {
+                    methodArgs.add(Double.parseDouble(inputArgs.get(inputArgsIndex)));
+                } else if(argumentTypes.get(i).equals(Class.class)) {
+                    try { methodArgs.add(Class.forName(inputArgs.get(inputArgsIndex))); } catch(ClassNotFoundException e) { return inputArgsIndex;  }
                 }
                 inputArgsIndex++;
             }
