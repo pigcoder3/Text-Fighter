@@ -1,6 +1,9 @@
 package org.textfighter.item;
 
 import org.textfighter.item.Item;
+import org.textfighter.CustomVariable;
+
+import java.util.ArrayList;
 
 public class Tool extends Item {
 
@@ -11,6 +14,15 @@ public class Tool extends Item {
     private String name = defaultName;
     protected String description = defaultDescription;
 
+    private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+
+    public Object getCustomVariableFromName(String name) {
+        for(CustomVariable cv : customVariables) {
+            if(cv.getName().equals(name)) { return cv.getValue(); }
+        }
+        return null;
+    }
+
     public String getItemType() { return ITEMTYPE; }
 
     public String getName() { return name; }
@@ -18,10 +30,11 @@ public class Tool extends Item {
     public String getDescription() { return description; }
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
-    public Tool (String name, String description) {
+    public Tool (String name, String description, ArrayList<CustomVariable> customVariables) {
         super(name, description);
         this.name = name;
         this.description = description;
+        this.customVariables = customVariables;
     }
 
 }

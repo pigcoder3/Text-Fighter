@@ -51,6 +51,7 @@ public class TextFighter {
     public static File savesDir;
     public static File achievementDir;
     public static File itemDir;
+    public static File customVariablesDir;
 
     // Config
     public static File configDir;
@@ -70,6 +71,13 @@ public class TextFighter {
     public static ArrayList<Weapon> weapons = new ArrayList<Weapon>();
     public static ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
     public static ArrayList<Tool> tools = new ArrayList<Tool>();
+
+    public static ArrayList<CustomVariable> playerCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> enemyCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> toolCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> armorCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> weaponCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<CustomVariable>();
 
     public static boolean needsSaving = false;
 
@@ -107,10 +115,11 @@ public class TextFighter {
         configDir = new File("../../../config");
         packFile = new File(configDir.getPath() + "/pack");
         packDir = new File("../../../packs");
+        customVariablesDir = new File(resourcesDir.getPath() + "/customVariables");
         version = readVersionFromFile();
         loadConfig();
         loadDefaultValues();
-
+        loadCustomVariables();
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
         if (!loadItems() || !loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
@@ -299,7 +308,7 @@ public class TextFighter {
                     for (String f : directory.list()) {
                         if(f.equals("tags.json")) { continue; }
                         if(!f.substring(f.lastIndexOf(".")).equals(".json")) { continue; }
-                        JSONObject interfaceFile = null; 
+                        JSONObject interfaceFile = null;
                         try { interfaceFile = (JSONObject)parser.parse(new FileReader(new File(directory.getPath() + "/" + f))); } catch(ParseException e) { Display.displayError("Having trouble parsing interface file '" + f + "'"); continue; }
                         if(interfaceFile == null) { continue; }
                         JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
@@ -493,7 +502,13 @@ public class TextFighter {
                                 enemyActions.add(new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), Enemy.class)));
                             }
                         }
-                        enemies.add(new Enemy(name, health, strength, levelRequirement, loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class), Boolean.parseBoolean((String)enemyFile.get("finalBoss")), loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class), loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class), loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class), enemyActions));
+                        enemies.add(new Enemy(name, health, strength, levelRequirement,
+                                    loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class),
+                                    Boolean.parseBoolean((String)enemyFile.get("finalBoss")),
+                                    loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class),
+                                    loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class),
+                                    loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class),
+                                    enemyActions, enemyCustomVariables));
                         usedNames.add(name);
                         Display.changePackTabbing(false);
                     }
@@ -606,125 +621,194 @@ public class TextFighter {
     }
 
     public static boolean loadItems() {
-        try {
-            Display.displayProgressMessage("Loading the items...");
+        Display.displayProgressMessage("Loading the items...");
+        Display.changePackTabbing(true);
+        if(!enemyDir.exists()) { Display.displayError("Could not find the default items directory."); Display.changePackTabbing(false); return false;}
+        ArrayList<String> usedNames = new ArrayList<String>();
+        File directory = itemDir;
+        //Determine if there is a pack to be loaded
+        if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+            for(String s : packUsed.list()) {
+                if(s.equals("items")) {
+                    File pack = new File(packUsed.getPath() + "/items");
+                    if(pack.exists() && pack.isDirectory()) {
+                        directory = pack;
+                        Display.displayPackMessage("loading items from pack '" + packUsed.getName() + "'");
+                        parsingPack = true;
+                    }
+                }
+            }
+        }
+        //Gets omitted names
+        ArrayList<String> namesToBeOmitted = new ArrayList<String>();
+        if(parsingPack) {
+            File omissionFile = new File(directory + "/" + "omit.txt");
+            if(omissionFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        namesToBeOmitted.add(line);
+                    }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally..."); }
+            }
+        }
+        for(int num=0; num<2; num++) {
+            if(!parsingPack) { num++; Display.displayPackMessage("Loading items from the default pack."); }
             Display.changePackTabbing(true);
-            if(!enemyDir.exists()) { Display.displayError("Could not find the default items directory."); Display.changePackTabbing(false); return false;}
-            ArrayList<String> usedNames = new ArrayList<String>();
-            File directory = itemDir;
-            //Determine if there is a pack to be loaded
-            if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
-                for(String s : packUsed.list()) {
-                    if(s.equals("items")) {
-                        File pack = new File(packUsed.getPath() + "/items");
-                        if(pack.exists() && pack.isDirectory()) {
-                            directory = pack;
-                            Display.displayPackMessage("loading items from pack '" + packUsed.getName() + "'");
-                            parsingPack = true;
+            if(directory.list() != null) {
+                for(String s : directory.list()) {
+                    if(s.equals("weapons")) {
+                        File weaponsDirectory = new File(directory.getPath() + "/weapons");
+                        if(weaponsDirectory.exists() && weaponsDirectory.list() != null) {
+                            Display.displayPackMessage("Loading weapons");
+                            for(String f : weaponsDirectory.list()) {
+                                Display.changePackTabbing(true);
+                                JSONObject itemFile = null;
+                                try{ itemFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/weapons/" + f))); } catch(ParseException | IOException e) { Display.displayError("Having problems with parsing weapon in file '" + f + "'"); }
+                                if(itemFile == null) { continue; }
+                                String name = Weapon.defaultName;                           if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
+                                if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
+                                Display.displayPackMessage("Loading item '" + name + "' of type 'weapon'");
+                                int damage = Weapon.defaultDamage;                          if(itemFile.get("damage") != null) { damage = Integer.parseInt((String)itemFile.get("damage")); }
+                                int critChance = Weapon.defaultCritChance;                  if(itemFile.get("critchance") != null) { critChance = Integer.parseInt((String)itemFile.get("critchance")); }
+                                int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
+                                String description = Weapon.defaultDescription;             if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
+                                weapons.add(new Weapon(name, description, damage, critChance, missChance, weaponCustomVariables));
+                                usedNames.add(name);
+                                Display.changePackTabbing(false);
+                            }
+                        }
+                    }
+                    if(s.equals("armor")) {
+                        File armorDirectory = new File(directory.getPath() + "/armor");
+                        if(armorDirectory.exists() && armorDirectory.list() != null) {
+                            Display.displayPackMessage("Loading armor");
+                            for(String f : armorDirectory.list()) {
+                                Display.changePackTabbing(true);
+                                JSONObject itemFile = null;
+                                try{ itemFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/armor/" + f))); } catch(ParseException | IOException e) { Display.displayError("Having problems with parsing armor in file '" + f + "'"); }
+                                if(itemFile == null) { continue; }
+                                String name = Armor.defaultName;                            if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
+                                if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
+                                Display.displayPackMessage("Loading item '" + name + "' of type 'armor'");
+                                double protectionamount = Armor.defaultProtectionAmount;    if(itemFile.get("protectionamount") != null) { protectionamount = Double.parseDouble((String)itemFile.get("protectionamount")); }
+                                String description = Armor.defaultDescription;              if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
+                                armors.add(new Armor(name, description, protectionamount, armorCustomVariables));
+                                usedNames.add(name);
+                                Display.changePackTabbing(false);
+                            }
+                        }
+                    }
+                    if(s.equals("tools")) {
+                        File toolsDirectory = new File(directory.getPath() + "/tools");
+                        if(toolsDirectory.exists() && toolsDirectory.list() != null) {
+                            Display.displayPackMessage("Loading tools");
+                            for(String f : toolsDirectory.list()) {
+                                Display.changePackTabbing(true);
+                                JSONObject itemFile = null;
+                                try{ itemFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/tools/" + f)));  } catch(ParseException | IOException e) { Display.displayError("Having problems with parsing tool in file '" + f + "'"); }
+                                if(itemFile == null) { continue; }
+                                String name = Tool.defaultName; if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
+                                if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
+                                Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
+                                String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
+                                tools.add(new Tool(name, description, toolCustomVariables));
+                                usedNames.add(name);
+                                Display.changePackTabbing(false);
+                            }
+                        }
+                    }
+                    if(s.equals("specialitems")) {
+                        File specialitemsDirectory = new File(directory.getPath() + "/specialitems");
+                        if(specialitemsDirectory.exists() && specialitemsDirectory.list() != null) {
+                            Display.displayPackMessage("Loading specialitems");
+                            for(String f : specialitemsDirectory.list()) {
+                                Display.changePackTabbing(true);
+                                JSONObject itemFile = null;
+                                try{ itemFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/specialitems/" + f))); } catch(ParseException | IOException e) { Display.displayError("Having problems with parsing special item in file '" + f + "'"); }
+                                if(itemFile == null) { continue; }
+                                String name = SpecialItem.defaultName;                      if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
+                                if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
+                                Display.displayPackMessage("Loading item '" + name + "' of type 'specialitem'");
+                                String description = SpecialItem.defaultDescription;        if(itemFile.get("description") != null) { name = (String)itemFile.get("description"); }
+                                specialItems.add(new SpecialItem(name, description, specialitemCustomVariables));
+                                usedNames.add(name);
+                                Display.changePackTabbing(false);
+                            }
                         }
                     }
                 }
             }
-            //Gets omitted names
-            ArrayList<String> namesToBeOmitted = new ArrayList<String>();
-            if(parsingPack) {
-                File omissionFile = new File(directory + "/" + "omit.txt");
-                if(omissionFile.exists()) {
-                    try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            namesToBeOmitted.add(line);
-                        }
-                    } catch (IOException e) { Display.displayWarning("IOException when attempting to read the pack's omit file (The file does exist). Continuing normally..."); }
-                }
-            }
-            for(int num=0; num<2; num++) {
-                if(!parsingPack) { num++; Display.displayPackMessage("Loading items from the default pack."); }
-                Display.changePackTabbing(true);
-                if(directory.list() != null) {
-                    for(String s : directory.list()) {
-                        if(s.equals("weapons")) {
-                            File weaponsDirectory = new File(directory.getPath() + "/weapons");
-                            if(weaponsDirectory.exists() && weaponsDirectory.list() != null) {
-                                Display.displayPackMessage("Loading weapons");
-                                for(String f : weaponsDirectory.list()) {
-                                    Display.changePackTabbing(true);
-                                    JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(weaponsDirectory.getAbsolutePath() + "/" + f)));
-                                    String name = Weapon.defaultName;                           if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
-                                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
-                                    Display.displayPackMessage("Loading item '" + name + "' of type 'weapon'");
-                                    int damage = Weapon.defaultDamage;                          if(itemFile.get("damage") != null) { damage = Integer.parseInt((String)itemFile.get("damage")); }
-                                    int critChance = Weapon.defaultCritChance;                  if(itemFile.get("critchance") != null) { critChance = Integer.parseInt((String)itemFile.get("critchance")); }
-                                    int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
-                                    String description = Weapon.defaultDescription;             if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                                    weapons.add(new Weapon(name, description, damage, critChance, missChance));
-                                    usedNames.add(name);
-                                    Display.changePackTabbing(false);
-                                }
-                            }
-                        }
-                        if(s.equals("armor")) {
-                            File armorDirectory = new File(directory.getPath() + "/armor");
-                            if(armorDirectory.exists() && armorDirectory.list() != null) {
-                                Display.displayPackMessage("Loading armor");
-                                for(String f : armorDirectory.list()) {
-                                    Display.changePackTabbing(true);
-                                    JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(armorDirectory.getAbsolutePath() + "/" + f)));
-                                    String name = Armor.defaultName;                            if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
-                                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
-                                    Display.displayPackMessage("Loading item '" + name + "' of type 'armor'");
-                                    double protectionamount = Armor.defaultProtectionAmount;    if(itemFile.get("protectionamount") != null) { protectionamount = Double.parseDouble((String)itemFile.get("protectionamount")); }
-                                    String description = Armor.defaultDescription;              if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                                    armors.add(new Armor(name, description, protectionamount));
-                                    usedNames.add(name);
-                                    Display.changePackTabbing(false);
-                                }
-                            }
-                        }
-                        if(s.equals("tools")) {
-                            File toolsDirectory = new File(directory.getPath() + "/tools");
-                            if(toolsDirectory.exists() && toolsDirectory.list() != null) {
-                                Display.displayPackMessage("Loading tools");
-                                for(String f : toolsDirectory.list()) {
-                                    Display.changePackTabbing(true);
-                                    JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(toolsDirectory.getAbsolutePath() + "/" + f)));
-                                    String name = Tool.defaultName;                             if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
-                                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
-                                    Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
-                                    String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                                    tools.add(new Tool(name, description));
-                                    usedNames.add(name);
-                                    Display.changePackTabbing(false);
-                                }
-                            }
-                        }
-                        if(s.equals("specialitems")) {
-                            File specialitemsDirectory = new File(directory.getPath() + "/specialitems");
-                            if(specialitemsDirectory.exists() && specialitemsDirectory.list() != null) {
-                                Display.displayPackMessage("Loading specialitems");
-                                for(String f : specialitemsDirectory.list()) {
-                                    Display.changePackTabbing(true);
-                                    JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(specialitemsDirectory.getAbsolutePath() + "/" + f)));
-                                    String name = SpecialItem.defaultName;                      if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
-                                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
-                                    Display.displayPackMessage("Loading item '" + name + "' of type 'specialitem'");
-                                    String description = SpecialItem.defaultDescription;        if(itemFile.get("description") != null) { name = (String)itemFile.get("description"); }
-                                    specialItems.add(new SpecialItem(name, description));
-                                    usedNames.add(name);
-                                    Display.changePackTabbing(false);
-                                }
-                            }
-                        }
-                    }
-                }
-                directory=enemyDir;
-                parsingPack=false;
-            }
-            Display.changePackTabbing(false);
-            Display.displayProgressMessage("Items loaded.");
-        } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); return false; }
+            directory=enemyDir;
+            parsingPack=false;
+        }
+        Display.changePackTabbing(false);
+        Display.displayProgressMessage("Items loaded.");
         Display.changePackTabbing(false);
         return true;
+    }
+
+    public static void loadCustomVariables() {
+        Display.displayProgressMessage("Loading the custom variables...");
+        Display.changePackTabbing(true);
+        if(!enemyDir.exists()) { Display.displayError("Could not find the custom variables directory."); Display.changePackTabbing(false); return;}
+        ArrayList<String> usedNames = new ArrayList<String>();
+        File directory = customVariablesDir;
+        //Determine if there is a pack to be loaded
+        if(packUsed != null && packUsed.exists() && packUsed.isDirectory()) {
+            for(String s : packUsed.list()) {
+                if(s.equals("customVariables")) {
+                    File pack = new File(packUsed.getPath() + "/customVariables");
+                    if(pack.exists() && pack.isDirectory()) {
+                        directory = pack;
+                        Display.displayPackMessage("loading custom variables from pack '" + packUsed.getName() + "'");
+                        parsingPack = true;
+                    }
+                }
+            }
+        }
+        for(int num=0; num<2; num++) {
+            if(!parsingPack) { num++; Display.displayPackMessage("Loading custom variables from the default pack."); }
+            Display.changePackTabbing(true);
+            if(directory.list() != null) {
+                for(String s : directory.list()) {
+                    ArrayList<CustomVariable> variables = new ArrayList<CustomVariable>();
+                    try {
+                        Display.displayPackMessage("Loading custom variables from file '" + s + "'");
+                        JSONObject itemFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + s)));
+                        if(itemFile != null) {
+                            for (Object key : itemFile.keySet()) {
+                                JSONObject obj = (JSONObject)itemFile.get(key);
+                                String name = null;
+                                if(obj.get("name") != null) {
+                                    name = (String)obj.get("type");
+                                } else { Display.displayPackError("This custom variable does not have a name. Omitting..."); continue; }
+                                Display.displayPackMessage("Loading custom variable '" + name + "'");
+                                Object value = null;
+                                if(obj.get("value") != null) {
+                                    value = obj.get("value");
+                                } else { Display.displayPackError("This custom variable does not have a value. Omitting..."); continue; }
+                                Class type = null;
+                                if(obj.get("type") != null) {
+                                    try {
+                                        type = Class.forName((String)obj.get("type"));
+                                    } catch(ClassNotFoundException e) { Display.displayPackError("This custom variable has an invalid type. Omitting..."); continue; }
+                                } else { Display.displayPackError("This customVariables does not have a type. Omitting..."); continue; }
+                                variables.add(new CustomVariable(name, value, type));
+                            }
+                        }
+                    } catch(IOException | ParseException e) { Display.displayError("Having trouble parsing custom variables from file '" + s + "'"); continue; }
+                    if(s.equals("player.json")) { playerCustomVariables = variables; }
+                    else if(s.equals("enemy.json")) { enemyCustomVariables = variables; }
+                    else if(s.equals("weapon.json")) { weaponCustomVariables = variables; }
+                    else if(s.equals("armor.json")) { armorCustomVariables = variables; }
+                    else if(s.equals("specialitem.json")) { specialitemCustomVariables = variables; }
+                    else if(s.equals("tool.json")) { toolCustomVariables = variables; }
+                }
+            }
+            directory = customVariablesDir;
+            parsingPack = false;
+        }
     }
 
     public static void loadConfig() {
@@ -989,7 +1073,7 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, specialItems);
+            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, specialItems, playerCustomVariables);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -1047,7 +1131,7 @@ public class TextFighter {
         }
 
         //Initializes the game with a default player
-        player = new Player(currentWeapon);
+        player = new Player(currentWeapon, playerCustomVariables);
         player.setLocation("saves");
 
         addToOutput("Added new save '" + name + "'");
@@ -1500,7 +1584,7 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
-        player = new Player();
+        player = new Player(playerCustomVariables);
         if(!testMode) {
             getSaveFiles();
             player.setLocation("start");

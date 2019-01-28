@@ -78,6 +78,15 @@ public class Player {
 
     private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
+    private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+
+    public Object getCustomVariableFromName(String name) {
+        for(CustomVariable cv : customVariables) {
+            if(cv.getName().equals(name)) { return cv.getValue(); }
+        }
+        return null;
+    }
+
     public void attack(String customString) {
         int newStrength = strength;
         if(currentWeapon == null) { TextFighter.addToOutput("You do not have a weapon, so you attack with your fists."); }
@@ -122,7 +131,7 @@ public class Player {
         Weapon weapon = TextFighter.getWeaponByName(name);
         if(weapon == null) { return; }
         if(!isCarrying(name, "weapon")) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
-        else {    
+        else {
             currentWeapon = weapon;
             TextFighter.addToOutput("Equiped weapon '" + name + "'");
             calculateStrength();
@@ -344,7 +353,7 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems) {
+    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems, ArrayList<CustomVariable> customVariables) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -361,15 +370,21 @@ public class Player {
         this.inventory = inventory;
         this.achievements = achievements;
         this.specialItems = specialItems;
+        this.customVariables = customVariables;
         for(Location l : TextFighter.locations) {
             if(l.getName().equals("saves")) { this.location = l; }
         }
         calculateTotalProtection();
     }
 
-    public Player(Weapon currentWeapon) {
+    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables) {
         this.currentWeapon = currentWeapon;
+        this.customVariables = customVariables;
     }
 
-    public Player() { }
+    public Player(ArrayList<CustomVariable> customVariables) {
+        this.customVariables = customVariables;
+    }
+
+    public Player() {}
 }
