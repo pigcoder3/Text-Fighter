@@ -135,7 +135,7 @@ public class Player {
         if(name == null) { name = defaultCurrentWeaponString; }
         Weapon weapon = TextFighter.getWeaponByName(name);
         if(weapon == null) { return; }
-        if(!isCarrying(name, "weapon")) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
+        if(name != "fists" && !isCarrying(name, "weapon")) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
         else {
             currentWeapon = weapon;
             TextFighter.addToOutput("Equiped weapon '" + name + "'");
@@ -249,7 +249,7 @@ public class Player {
     public void addToInventory(String name, String type) {
         if(name == null || type == null) { return;}
         if(type.equals("weapon")) {
-            if(isCarrying(name, "weapon")) { return; }
+            if(isCarrying(name, "weapon")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Weapon item = TextFighter.getWeaponByName(name);
             if(item != null) {
                 inventory.add(item);
@@ -258,7 +258,7 @@ public class Player {
             }
         }
         else if(type.equals("armor")) {
-            if(isCarrying(name, "armor")) { return; }
+            if(isCarrying(name, "armor")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Armor item = TextFighter.getArmorByName(name);
             if(item != null) {
                 inventory.add(item);
@@ -267,7 +267,7 @@ public class Player {
             }
         }
         else if(type.equals("tool")) {
-            if(isCarrying(name, "tool")) { return; }
+            if(isCarrying(name, "tool")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Tool item = TextFighter.getToolByName(name);
             if(item != null) {
                 inventory.add(item);
@@ -276,7 +276,7 @@ public class Player {
             }
         }
         else if(type.equals("specialitem")) {
-            if(isCarrying(name, "specialitem")) { return; }
+            if(isCarrying(name, "specialitem")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             SpecialItem item = TextFighter.getSpecialItemByName(name);
             if(item != null) {
                 inventory.add(item);
@@ -290,11 +290,13 @@ public class Player {
         for(int i=0;i<inventory.size();i++) {
             if(name.equals(inventory.get(i).getName()) && type.equals(inventory.get(i).getItemType())) {
                 if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
-                inventory.remove(i);
-                TextFighter.needsSaving=true;
-                break;
+				inventory.remove(i);
+				TextFighter.addToOutput("'" + name + "' has been removed from your inventory");
+				TextFighter.needsSaving=true;
+                return;
             }
         }
+		TextFighter.addToOutput("You are not carrying a(n) '" + name + "' of type '" + type + "'");
     }
 
     public boolean isCarrying(String name, String type) {
@@ -315,7 +317,7 @@ public class Player {
                 return i;
             }
         }
-        TextFighter.addToOutput("You are not carrying a '" + name + "' of type + '" + type + "'");
+        TextFighter.addToOutput("You are not carrying a(n) '" + name + "' of type + '" + type + "'");
         return null;
     }
 

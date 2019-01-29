@@ -32,11 +32,26 @@
                             }
                         }
                     ],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "inspectItem <name> <itemType>"
+            "usage" : "inspectItem <nameofitem> <itemtype>"
         },
+		{
+			"name" : "throwaway",
+			"description" : "throws away an item in your inventory",
+			"methods" : [
+				{
+					"method" : "removeFromInventory",
+					"class" : "org.textfighter.Player",
+					"arguments" : ["%ph%","%ph%"],
+					"argumentTypes" : ["0","0"],
+					"field" : "player",
+					"fieldclass" : "org.textfighter.TextFighter"
+				}
+			],
+			"usage" : "throwaway <nameofitem> <itemtype>"
+		},
         {
             "name" : "equipweapon",
             "description" : "equips a weapon",
@@ -51,7 +66,8 @@
                         "argumentTypes" : ["0"]
                     }
                 }
-            ]
+            ],
+			"usage" : "equipweapon <nameofweapon>"
         },
         {
             "name" : "back",
@@ -61,7 +77,7 @@
                     "method" : "movePlayer",
                     "class" : "org.textfighter.TextFighter",
                     "arguments" : ["home"],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "back"
