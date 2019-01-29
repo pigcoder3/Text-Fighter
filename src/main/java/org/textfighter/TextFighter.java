@@ -1005,23 +1005,17 @@ public class TextFighter {
                     if(jsonobj.get("name") == null) { continue; }
                     if(jsonobj.get("itemtype") != null) {
                         if(jsonobj.get("itemtype").equals("armor")) {
-                            for(Armor a : armors){
-                                if(a.getName().equals(jsonobj.get("name"))) {
-                                    newInventory.add(a);
-                                }
-                            }
+                            Armor item = getArmorByName((String)jsonobj.get("name"));
+                            if(item != null) { newInventory.add(item); }
                         } else if(jsonobj.get("itemtype").equals("weapon")) {
-                            for(Weapon w : weapons){
-                                if(w.getName().equals(jsonobj.get("name"))) {
-                                    newInventory.add(w);
-                                }
-                            }
+                            Weapon item = getWeaponByName((String)jsonobj.get("name"));
+                            if(item != null) { newInventory.add(item); }
                         } else if(jsonobj.get("itemtype").equals("tool")) {
-                            for(Tool t : tools){
-                                if(t.getName().equals(jsonobj.get("name"))) {
-                                    newInventory.add(t);
-                                }
-                            }
+                            Tool item = getToolByName((String)jsonobj.get("name"));
+                            if(item != null) { newInventory.add(item); }
+                        } else if(jsonobj.get("itemtype").equals("specialitem")) {
+                            SpecialItem item = getSpecialItemByName((String)jsonobj.get("name"));
+                            if(item != null) { newInventory.add(item); }
                         }
                     }
                 }
@@ -1044,21 +1038,6 @@ public class TextFighter {
                 }
             }
 
-            // SpecialItems
-            ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
-            JSONObject specialitemsArray = (JSONObject)file.get("specialitems");
-
-            if(specialitemsArray != null) {
-                for (Object key : specialitemsArray.keySet()) {
-                    JSONObject jsonobj = (JSONObject)inventory.get(key);
-                    if(jsonobj.get("name") == null) { continue; }
-                    for(SpecialItem si : specialItems){
-                        if(si.getName().equals(jsonobj.get("name")))
-                        specialItems.add(si);
-                    }
-                }
-            }
-
             ArrayList<Achievement> playerAchievements = new ArrayList<Achievement>();
             JSONArray achievementsArray = (JSONArray)file.get("achievements");
 
@@ -1073,7 +1052,7 @@ public class TextFighter {
                 }
             }
 
-            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, specialItems, playerCustomVariables);
+            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -1176,16 +1155,6 @@ public class TextFighter {
             }
         }
 
-        JSONObject specialitems = new JSONObject();
-        //For all special specialitems
-        if(player.getSpecialItems() != null) {
-            for(SpecialItem si : player.getSpecialItems()) {
-                JSONObject jsonobj = new JSONObject();
-                jsonobj.put("name", si.getName());
-                specialitems.put("SpecialItem", jsonobj);
-            }
-        }
-
         JSONArray earnedAchievements = new JSONArray();
         //For all achievements
         if(player.getAchievements() != null) {
@@ -1196,7 +1165,6 @@ public class TextFighter {
 
         base.put("achievements", earnedAchievements);
         base.put("inventory", inventory);
-        base.put("specialitems", specialitems);
         base.put("stats", stats);
         base.put("name", gameName);
 

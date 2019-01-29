@@ -74,8 +74,6 @@ public class Player {
 
     private ArrayList<Item> inventory = new ArrayList<Item>();
 
-    private ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
-
     private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
@@ -225,7 +223,7 @@ public class Player {
 
     public int getMagic() { return magic; }
     public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { magic=0; } TextFighter.needsSaving=true;}
-    public void gainMagic(int a) { if(!TextFighter.player.isCarryingSpecialItem("manapouch")) { return; }  magic+=a; TextFighter.needsSaving=true; }
+    public void gainMagic(int a) { magic+=a; TextFighter.needsSaving=true; }
 
     public int getMetalScraps() { return magic; }
     public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; } TextFighter.needsSaving=true; }
@@ -251,30 +249,39 @@ public class Player {
     public void addToInventory(String name, String type) {
         if(name == null || type == null) { return;}
         if(type.equals("weapon")) {
-            for(Weapon i : TextFighter.weapons) {
-                if(i.getName().equals(name) && i.getItemType().equals(type) && !isCarrying(name, "weapon")) {
-                    inventory.add(i);
-                    TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                    TextFighter.needsSaving=true;
-                }
+            if(isCarrying(name, "weapon")) { return; }
+            Weapon item = TextFighter.getWeaponByName(name);
+            if(item != null) {
+                inventory.add(item);
+                TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                TextFighter.needsSaving=true;
             }
         }
         else if(type.equals("armor")) {
-            for(Armor i : TextFighter.armors) {
-                if(i.getName().equals(name) && i.getItemType().equals(type) && !isCarrying(name, "armor")) {
-                    inventory.add(i);
-                    TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                    TextFighter.needsSaving=true;
-                }
+            if(isCarrying(name, "armor")) { return; }
+            Armor item = TextFighter.getArmorByName(name);
+            if(item != null) {
+                inventory.add(item);
+                TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                TextFighter.needsSaving=true;
             }
         }
         else if(type.equals("tool")) {
-            for(Tool i : TextFighter.tools) {
-                if(i.getName().equals(name) && i.getItemType().equals(type) && !isCarrying(name, "tool")) {
-                    inventory.add(i);
-                    TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                    TextFighter.needsSaving=true;
-                }
+            if(isCarrying(name, "tool")) { return; }
+            Tool item = TextFighter.getToolByName(name);
+            if(item != null) {
+                inventory.add(item);
+                TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                TextFighter.needsSaving=true;
+            }
+        }
+        else if(type.equals("specialitem")) {
+            if(isCarrying(name, "specialitem")) { return; }
+            SpecialItem item = TextFighter.getSpecialItemByName(name);
+            if(item != null) {
+                inventory.add(item);
+                TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                TextFighter.needsSaving=true;
             }
         }
     }
@@ -310,49 +317,6 @@ public class Player {
         return null;
     }
 
-    public ArrayList<SpecialItem> getSpecialItems() { return specialItems; }
-
-    public void addToSpecialItems(String name) {
-        if(name == null) { return; }
-        for(SpecialItem sp : TextFighter.specialItems) {
-            if(sp.getName().equals(name)){
-                specialItems.add(sp);
-                TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                TextFighter.needsSaving = true;
-            }
-        }
-    }
-
-    public void removeFromSpecialItems(String name) {
-        for(int i=0;i<specialItems.size();i++) {
-            if(name.equals(specialItems.get(i).getName())) {
-                specialItems.remove(i);
-                TextFighter.needsSaving=true;
-                break;
-            }
-        }
-    }
-
-    public boolean isCarryingSpecialItem(String name) {
-        if(name == null) { return false;}
-        for(SpecialItem i : specialItems) {
-            if(i.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public SpecialItem getFromSpecialItems(String name) {
-        if(name == null) { return null;}
-        for(SpecialItem i : specialItems) {
-            if(i.getName().equals(name)) {
-                return i;
-            }
-        }
-        return null;
-    }
-
     public void achievementEarned(Achievement a) {
         achievements.add(a);
         Display.achievementEarned(a.getName());
@@ -360,7 +324,7 @@ public class Player {
 
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<SpecialItem> specialItems, ArrayList<CustomVariable> customVariables) {
+    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -376,7 +340,6 @@ public class Player {
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;
         this.achievements = achievements;
-        this.specialItems = specialItems;
         this.customVariables = customVariables;
         for(Location l : TextFighter.locations) {
             if(l.getName().equals("saves")) { this.location = l; }
