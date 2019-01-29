@@ -14,17 +14,14 @@ import java.util.ArrayList;
 public class UiTag {
 
     private String tag;
-    private Class clazz;
     private Method method;
-    private Field field;
-    private Class fieldclass;
+    private Object field;
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private ArrayList<Object> originalArguments = new ArrayList<Object>();
     private ArrayList<Requirement> requirements;
 
     public String getTag() { return tag; }
-    public Method getFunction() { return method; }
-    public Class getClassname() { return clazz; }
+    public Method getMethod() { return method; }
     public ArrayList<Object> getArguments() { return arguments; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
@@ -37,13 +34,26 @@ public class UiTag {
                 }
             }
         }
+
+        Object fieldvalue = null;
+
+        if(field != null) {
+            if(field.getClass().equals(FieldMethod.class)) {
+                fieldvalue = ((FieldMethod)field).invokeMethod();
+            } else if(field.getClass().equals(Field.class)){
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+            }
+
+            if(fieldvalue == null) { return ""; }
+        }
+
         try {
             Object output = null;
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {
-                    output = method.invoke(field.get(null), arguments.toArray());
+                    output = method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    output = method.invoke(field.get(null));
+                    output = method.invoke(fieldvalue);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
@@ -61,14 +71,12 @@ public class UiTag {
 
     public void resetArguments() { arguments = originalArguments; }
 
-    public UiTag(String tag, Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements) {
+    public UiTag(String tag, Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements) {
         this.tag = tag;
         this.method = method;
-        this.clazz = clazz;
         this.arguments = arguments;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
         this.field = field;
-        this.fieldclass = fieldclass;
         this.requirements = requirements;
     }
 }

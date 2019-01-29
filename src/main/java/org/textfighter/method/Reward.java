@@ -17,10 +17,8 @@ public class Reward {
 
     public static int defaultChance = 100;
 
-    private Class clazz;
     private Method method;
-    private Field field;
-    private Class fieldclass;
+    private Object field;
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
     private ArrayList<Object> arguments;
     private ArrayList<Object> originalArguments;
@@ -31,7 +29,6 @@ public class Reward {
     private boolean valid;
 
     public ArrayList<Object> getArguments() { return arguments; }
-    public Class getClazz() { return clazz; }
     public Method getMethod() { return method; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
@@ -47,6 +44,17 @@ public class Reward {
             }
         }
 
+        Object fieldvalue = null;
+
+        if(field != null) {
+            if(field.getClass().equals(FieldMethod.class)) {
+                fieldvalue = ((FieldMethod)field).invokeMethod();
+            } else if(field.getClass().equals(Field.class)){
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+            }
+            if(fieldvalue == null) { return ""; }
+        }
+
         try {
             //Does the random chance thing to detemine if the player gets the reward
             Random random = new Random();
@@ -55,9 +63,9 @@ public class Reward {
             if(number > chance) { resetArguments(); return null; }
             if(field != null ) {
                 if(arguments != null && arguments.size() > 0) {
-                    method.invoke(field.get(null), arguments.toArray());
+                    method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    method.invoke(field.get(null));
+                    method.invoke(fieldvalue);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
@@ -73,13 +81,11 @@ public class Reward {
 
 public void resetArguments() { arguments = originalArguments; }
 
-    public Reward(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass, ArrayList<Requirement> requirements, int chance, String rewardItem) {
+    public Reward(Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements, int chance, String rewardItem) {
         this.method = method;
         this.arguments = arguments;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
-        this.clazz = clazz;
         this.field = field;
-        this.fieldclass = fieldclass;
         this.requirements = requirements;
         this.chance = chance;
         this.rewardItem = rewardItem;

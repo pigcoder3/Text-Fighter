@@ -9,7 +9,7 @@
 
     "choices" : [
         {
-            "name" : "invincibilityPotion",
+            "name" : "invincibilitypotion",
             "description" : "Cost: 20 magic. Invincibility potions make you invincible for 2 turns",
             "methods" : [
                 {
@@ -51,7 +51,8 @@
                     ],
                     "argumentTypes" : ["1", "0", "1"]
                 }
-            ]
+            ],
+            "usage" : "invincibilitypotion"
         },
         {
             "name" : "back",

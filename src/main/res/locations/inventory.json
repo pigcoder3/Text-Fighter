@@ -1,0 +1,72 @@
+{
+
+    "name" : "inventory",
+
+    "interfaces" : [
+
+        "inventory",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "inspectitem",
+            "description" : "shows you details about the item",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutput",
+                            "class" : "org.textfighter.item.Weapon",
+                            "field" : {
+                                "method" : "getFromInventory",
+                                "class" : "org.textfighter.Player",
+                                "arguments" : ["%ph%", "%ph%"],
+                                "argumentTypes" : ["0","0"],
+                                "field" : "player",
+                                "fieldclass" : "org.textfighter.TextFighter"
+                            }
+                        }
+                    ],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "inspectItem <name> <itemType>"
+        },
+        {
+            "name" : "equipweapon",
+            "description" : "equips a weapon",
+            "methods" : [
+                {
+                    "method" : "equip",
+                    "class" : "org.textfighter.item.Weapon",
+                    "field" : {
+                        "method" : "getWeaponByName",
+                        "class" : "org.textfighter.TextFighter",
+                        "arguments" : ["%ph%"],
+                        "argumentTypes" : ["0"]
+                    }
+                }
+            ]
+        },
+        {
+            "name" : "back",
+            "description" : "Takes you out of your inventory view",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["home"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+
+    ]
+
+}

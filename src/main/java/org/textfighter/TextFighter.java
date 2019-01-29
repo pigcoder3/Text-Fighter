@@ -87,6 +87,46 @@ public class TextFighter {
     public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { addToOutput("No such specialitem '" + name + "'"); return sp; } } return null; }
     public static Enemy getEnemyByName(String name) { for(Enemy e : enemies) { if(e.getName().equals(name)) { return e; } } addToOutput("No such enemy '" + name + "'"); return null; }
 
+    public static String getAllItemSimpleOutputs() {
+        String s = " ";
+        if(player.getInventory() == null) { return "Your inventory is empty"; }
+        for(Item i : player.getInventory()) {
+            //The items must be casted so that they can get their own getSimpleOutput() methods
+            if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getSimpleOutput(); }
+            if(i.getItemType().equals("armor")) { s=s+((Armor)i).getSimpleOutput(); }
+            if(i.getItemType().equals("tool")) { s=s+((Tool)i).getSimpleOutput(); }
+            if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getSimpleOutput(); }
+        }
+        return s;
+    }
+    public static String getAllItemOutputs() {
+        String s = " ";
+        if(player.getInventory() == null) { return "Your inventory is empty"; }
+        for(Item i : player.getInventory()) {
+            //The items must be casted so that they can get their own getOutput() methods
+            if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getOutput(); }
+            if(i.getItemType().equals("armor")) { s=s+((Armor)i).getOutput(); }
+            if(i.getItemType().equals("tool")) { s=s+((Tool)i).getOutput(); }
+            if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getOutput(); }
+        }
+        return s;
+    }
+
+    public static String getOutputByNameAndType(String name, String type) {
+        if(name == null || type == null) { return ""; }
+        if(player.getInventory() == null) { return ""; }
+        for(Item i : player.getInventory()) {
+            if(i == null) { continue; }
+            if(i.getName().equals(name)) {
+                if(type.equals("weapon")) { return ((Weapon)i).getOutput(); }
+                else if(type.equals("armor")) { return ((Armor)i).getOutput(); }
+                else if(type.equals("tool")) { return ((Tool)i).getOutput(); }
+                else if(type.equals("specialitem")) { return ((SpecialItem)i).getOutput(); }
+            }
+        }
+        return "";
+    }
+
     public static void addToOutput(String msg) { output+=msg + "\n"; }
 
     public static String readVersionFromFile() {
@@ -142,10 +182,15 @@ public class TextFighter {
         String methodString = (String)obj.get("method");
         Display.displayPackMessage("Loading method '" + methodString + "' of type '" + type.getSimpleName() + "'");
         Display.changePackTabbing(true);
-        String clazzString = (String)obj.get("class");
-        String fieldString = (String)obj.get("field");
-        String fieldclassString = (String)obj.get("fieldclass");
-        if(methodString == null || clazzString == null) { Display.displayPackError("This method has no class or method. Omitting..."); Display.changePackTabbing(false); return null; }
+        String rawClass = (String)obj.get("class");
+        Object rawField = obj.get("field");
+        if(rawField != null) {
+            if(rawField.getClass().equals(JSONObject.class)) {
+                rawField = loadMethod(FieldMethod.class, (JSONObject)rawField, type);
+            }
+        }
+        String rawFieldClass = (String)obj.get("fieldclass");
+        if(methodString == null || rawClass == null) { Display.displayPackError("This method has no class or method. Omitting..."); Display.changePackTabbing(false); return null; }
         if(!((argumentsRaw != null && argumentTypesString != null) && (argumentsRaw.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsRaw == null))) { Display.displayPackError("This method's does not have the same amount of arguments as argumentTypes. Omitting..."); Display.changePackTabbing(false); return null; }
         //Fields and fieldclasses can be null (Which just means the method does not act upon a field
         if(argumentTypesString != null && argumentTypesString.size() > 0) {
@@ -171,19 +216,24 @@ public class TextFighter {
 
         //Gets the class
         Class clazz = null;
-        try { clazz = Class.forName(clazzString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); Display.changePackTabbing(false); return null; }
+        try { clazz = Class.forName(rawClass); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); Display.changePackTabbing(false); return null; }
 
-        //Gets the fieldclass
         Class fieldclass = null;
-        if(fieldclassString != null && fieldString != null) { try { fieldclass = Class.forName(fieldclassString); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); Display.changePackTabbing(false); return null; } }
+        Object field = null;
 
-        //Gets the field from the class
-        Field field = null;
-        try {
-            if(fieldString != null && fieldclassString != null) {
-                field = fieldclass.getField(fieldString);
-            }
-        } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); Display.changePackTabbing(false); return null; }
+        if(rawField != null && !rawField.getClass().equals(FieldMethod.class)) {
+            //Gets the fieldclass
+            if(rawFieldClass != null && rawField != null) { try { fieldclass = Class.forName((String)rawFieldClass); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); Display.changePackTabbing(false); return null; } }
+
+            //Gets the field from the class
+            try {
+                if(rawField != null && rawFieldClass != null) {
+                    field = fieldclass.getField((String)rawField);
+                }
+            } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); Display.changePackTabbing(false); return null; }
+        } else if (rawField != null){
+            field = rawField;
+        }
 
         //Gets the method from the class
         Method method = null;
@@ -193,7 +243,7 @@ public class TextFighter {
             } else {
                 method = clazz.getMethod(methodString);
             }
-        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + clazzString + "' with given arguments could not be found. Omitting..."); Display.changePackTabbing(false); return null; }
+        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + rawClass + "' with given arguments could not be found. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Makes the arguments the correct type (String, int, or boolean)
         ArrayList<Object> arguments = new ArrayList<Object>();
@@ -226,26 +276,28 @@ public class TextFighter {
 
         //Creates the correct Method type
         if(type.equals(ChoiceMethod.class)) {
-            o=new ChoiceMethod(method, arguments, argumentTypes, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), ChoiceMethod.class));
+            o=new ChoiceMethod(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), ChoiceMethod.class));
         } else if(type.equals(Requirement.class)) {
             boolean neededBoolean = Requirement.defaultNeededBoolean; if(obj.get("neededBoolean") != null) {neededBoolean=Boolean.parseBoolean((String)obj.get("neededBoolean"));}
-            o=new Requirement(method, arguments, clazz, field, fieldclass, neededBoolean);
+            o=new Requirement(method, arguments, field, neededBoolean);
         } else if(type.equals(EnemyActionMethod.class)) {
-            o=new EnemyActionMethod(method, arguments, clazz, field, fieldclass);
+            o=new EnemyActionMethod(method, arguments, field);
         } else if(type.equals(TFMethod.class)) {
-            o=new TFMethod(method, arguments, argumentTypes, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
+            o=new TFMethod(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
                 int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
                 if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
-                o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
+                o=new Reward(method, arguments, field, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
-                o=new Reward(method, arguments, clazz, field, fieldclass, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
+                o=new Reward(method, arguments, field, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
             }
         } else if(type.equals(UiTag.class)) {
             String tag = (String)obj.get("tag");
             if(tag == null) { Display.displayPackError("This tag has no tagname. Omitting..."); Display.changePackTabbing(false); return null; }
-            o=new UiTag(tag, method, arguments, clazz, field, fieldclass, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), UiTag.class));
+            o=new UiTag(tag, method, arguments, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), UiTag.class));
+        } else if(type.equals(FieldMethod.class)) {
+            o=new FieldMethod(method, arguments, argumentTypes, field);
         }
         Display.changePackTabbing(false);
         return o;
@@ -426,7 +478,7 @@ public class TextFighter {
                             } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); Display.changePackTabbing(false); continue; }
                             ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
                             ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
-                            ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, org.textfighter.TextFighter.class, null, null, null));
+                            ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, null, null));
                             choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null));
                             Display.changePackTabbing(false);
                         }
@@ -673,7 +725,8 @@ public class TextFighter {
                                 int critChance = Weapon.defaultCritChance;                  if(itemFile.get("critchance") != null) { critChance = Integer.parseInt((String)itemFile.get("critchance")); }
                                 int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
                                 String description = Weapon.defaultDescription;             if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                                weapons.add(new Weapon(name, description, damage, critChance, missChance, weaponCustomVariables));
+                                int durability = Weapon.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
+                                weapons.add(new Weapon(name, description, damage, critChance, missChance, weaponCustomVariables, durability));
                                 usedNames.add(name);
                                 Display.changePackTabbing(false);
                             }
@@ -712,7 +765,8 @@ public class TextFighter {
                                 if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                                 Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
                                 String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                                tools.add(new Tool(name, description, toolCustomVariables));
+                                int durability = Tool.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
+                                tools.add(new Tool(name, description, toolCustomVariables, durability));
                                 usedNames.add(name);
                                 Display.changePackTabbing(false);
                             }
@@ -783,6 +837,7 @@ public class TextFighter {
                                 if(obj.get("name") != null) {
                                     name = (String)obj.get("type");
                                 } else { Display.displayPackError("This custom variable does not have a name. Omitting..."); continue; }
+                                if(usedNames.contains(name)) { Display.displayPackError("Found duplicate custom varaible '" + name + "'"); continue; };
                                 Display.displayPackMessage("Loading custom variable '" + name + "'");
                                 Object value = null;
                                 if(obj.get("value") != null) {
@@ -793,8 +848,12 @@ public class TextFighter {
                                     try {
                                         type = Class.forName((String)obj.get("type"));
                                     } catch(ClassNotFoundException e) { Display.displayPackError("This custom variable has an invalid type. Omitting..."); continue; }
-                                } else { Display.displayPackError("This customVariables does not have a type. Omitting..."); continue; }
-                                variables.add(new CustomVariable(name, value, type));
+                                } else { Display.displayPackError("This custom variable does not have a type. Omitting..."); continue; }
+                                //InOuptut is true by default
+                                boolean inOutput = true;
+                                if(obj.get("inoutput") != null) { inOutput = Boolean.parseBoolean((String)obj.get("inoutput")); }
+                                variables.add(new CustomVariable(name, value, type, inOutput));
+                                usedNames.add(name);
                             }
                         }
                     } catch(IOException | ParseException e) { Display.displayError("Having trouble parsing custom variables from file '" + s + "'"); continue; }
@@ -917,6 +976,7 @@ public class TextFighter {
                     if(valuesFile.get("damage") != null) {                      Weapon.defaultDamage = Integer.parseInt((String)valuesFile.get("damage")); }
                     if(valuesFile.get("critChance") != null) {                  Weapon.defaultCritChance = Integer.parseInt((String)valuesFile.get("critChance")); }
                     if(valuesFile.get("missChance") != null) {                  Weapon.defaultMissChance = Integer.parseInt((String)valuesFile.get("missChance")); }
+                    if(valuesFile.get("durability") != null) {                  Weapon.defaultDurability = Integer.parseInt((String)valuesFile.get("durability")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); continue; }
             } else if(s.equals("armor.json")) {
@@ -942,6 +1002,7 @@ public class TextFighter {
                     //Tool values
                     if(valuesFile.get("name") != null) {                        Tool.defaultName = (String)valuesFile.get("name"); }
                     if(valuesFile.get("description") != null) {                 Tool.defaultDescription = (String)valuesFile.get("description"); }
+                    if(valuesFile.get("durability") != null) {                  Tool.defaultDurability = Integer.parseInt((String)valuesFile.get("durability")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             } else if(s.equals("specialitem.json")) {
@@ -1009,9 +1070,11 @@ public class TextFighter {
                             if(item != null) { newInventory.add(item); }
                         } else if(jsonobj.get("itemtype").equals("weapon")) {
                             Weapon item = getWeaponByName((String)jsonobj.get("name"));
+                            if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
                             if(item != null) { newInventory.add(item); }
                         } else if(jsonobj.get("itemtype").equals("tool")) {
                             Tool item = getToolByName((String)jsonobj.get("name"));
+                            if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
                             if(item != null) { newInventory.add(item); }
                         } else if(jsonobj.get("itemtype").equals("specialitem")) {
                             SpecialItem item = getSpecialItemByName((String)jsonobj.get("name"));

@@ -11,7 +11,7 @@
     "choices" : [
 
         {
-            "name" : "playAgain",
+            "name" : "playagain",
             "description" : "Takes you back to the saves menu to load or create a new game",
             "methods" : [
                 {

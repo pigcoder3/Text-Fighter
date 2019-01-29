@@ -13,26 +13,17 @@
     "choices" : [
 
         {
-            "name" : "equipWeapon",
-            "description" : "Equips a weapon for use in a fight.",
+            "name" : "inventory",
+            "description" : "View your inventory.",
             "methods" : [
                 {
-                    "method" : "setCurrentWeapon",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : [
-                        {
-                            "method" : "getWeaponByName",
-                            "class" : "org.textfighter.TextFighter",
-                            "arguments" : ["%ph%"],
-                            "argumentTypes" : ["0"]
-                        }
-                    ],
-                    "argumentTypes" : ["0"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter"
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["inventory"],
+                    "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "equipWeapon <name>"
+            "usage" : "inventory"
         },
         {
             "name" : "back",

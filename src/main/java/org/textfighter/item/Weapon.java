@@ -2,6 +2,7 @@ package org.textfighter.item;
 
 import org.textfighter.item.Item;
 import org.textfighter.CustomVariable;
+import org.textfighter.TextFighter;
 
 import java.util.ArrayList;
 
@@ -12,13 +13,15 @@ public class Weapon extends Item {
     public static int defaultCritChance = 0;
     public static int defaultMissChance = 10; // 10%
     public static String defaultDescription = "A weapon";
+    public static int defaultDurability = 100;
 
     private final String ITEMTYPE = "weapon";
     private String name = defaultName;
     private int damage = defaultDamage;
     private int critchance = defaultCritChance;
     private int misschance = defaultMissChance;
-    protected String description = defaultDescription;
+    private String description = defaultDescription;
+    private int durability = defaultDurability;
 
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
@@ -51,7 +54,42 @@ public class Weapon extends Item {
     public String getDescription() { return description; }
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
-    public Weapon(String name, String description, int damage, int critchance, int misschance, ArrayList<CustomVariable> customVariables) {
+    public int getDurability() { return durability; }
+    public void setDurability(int a) { durability=a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
+    public void increaseDurability(int a) { durability=+a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
+    public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
+
+    public String getSimpleOutput(){
+        return name + " -\n " +
+               "  type:  " + ITEMTYPE + "\n" +
+               "    durability: " + durability;
+
+    }
+    public String getOutput() {
+        String output = name + " -\n" +
+                        "  desc:  " + description + "\n" +
+                        "  type:  " + ITEMTYPE + "\n" +
+                        "  damage:  " + damage + "\n" +
+                        "  crit chance:  " + critchance + "\n" +
+                        "  miss chance:  " + misschance + "\n" +
+                        "  durability:  " + durability + "\n";
+        //Adds the custom variables to the output
+        for(CustomVariable cv : customVariables) {
+            if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }
+        }
+        System.out.println("Giving the output to the player.");
+        return output;
+    }
+
+    public void equip() { TextFighter.player.setCurrentWeapon(name); }
+
+    public void broken() {
+        TextFighter.player.removeFromInventory(name, ITEMTYPE);
+        TextFighter.addToOutput("Your " + name + " has broken!");
+        TextFighter.needsSaving=true;
+    }
+
+    public Weapon(String name, String description, int damage, int critchance, int misschance, ArrayList<CustomVariable> customVariables, int durability) {
         super(name, description);
         this.name = name;
         this.description = description;
@@ -59,6 +97,8 @@ public class Weapon extends Item {
         this.critchance = critchance;
         this.misschance = misschance;
         this.customVariables = customVariables;
+        if(durability < 1) { broken(); }
+        this.durability = durability;
     }
 
 }

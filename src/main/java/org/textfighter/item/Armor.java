@@ -2,6 +2,7 @@ package org.textfighter.item;
 
 import org.textfighter.item.Item;
 import org.textfighter.CustomVariable;
+import org.textfighter.TextFighter;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,24 @@ public class Armor extends Item {
     public void setProtectionAmount(double a) { protectionAmount=a; if(protectionAmount<0.0){protectionAmount=0.0;}}
     public String getDescription() { return description; }
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
+
+    public String getSimpleOutput(){
+        return name + " -\n " +
+               "  type:  " + ITEMTYPE + "\n" +
+               "  durability: " + ITEMTYPE;
+
+    }
+    public String getOutput() {
+        String output = name + " -\n" +
+                        "  desc:  " + description + "\n" +
+                        "  type:  " + ITEMTYPE + "\n" +
+                        "  protection amount:  " + protectionAmount + "%\n";
+        //Adds the custom variables to the output
+        for(CustomVariable cv : customVariables) {
+            if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }
+        }
+        return output;
+    }
 
     public Armor (String name, String description, double protectionAmount, ArrayList<CustomVariable> customVariables) {
         super(name, description);

@@ -4,12 +4,12 @@
 
     "requirements" : [
         {
-            "method" : "isCarryingSpecialItem",
+            "method" : "isCarrying",
             "class" : "org.textfighter.Player",
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter",
-            "arguments" : ["ManaPouch"],
-            "argumentTypes" : ["0"]
+            "arguments" : ["ManaPouch", "specialitem"],
+            "argumentTypes" : ["0", "0"]
         }
     ],
 

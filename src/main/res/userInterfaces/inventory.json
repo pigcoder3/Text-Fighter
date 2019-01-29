@@ -1,0 +1,13 @@
+{
+
+    "name" : "inventory",
+
+    "interface" : [
+
+        "----------------------",
+        "       INVENTORY      ",
+        "<allItemSimpleOutputs>"
+
+    ]
+
+}

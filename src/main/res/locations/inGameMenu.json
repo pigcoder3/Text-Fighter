@@ -74,15 +74,15 @@
             ],
             "requirements" : [
                 {
-                    "method" : "isCarryingSpecialItem",
+                    "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["witchMap"],
-                    "argumentTypes" : ["0"],
+                    "arguments" : ["witchMap", "specialitem"],
+                    "argumentTypes" : ["0", "0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
                 }
             ],
-            "usage" : "witchHit"
+            "usage" : "witchhut"
         },
         {
             "name" : "home",
@@ -97,7 +97,7 @@
             ]
         },
         {
-            "name" : "weaponSmith",
+            "name" : "weaponsmith",
             "description" : "Goes to the weapon smith",
             "methods" : [
                 {

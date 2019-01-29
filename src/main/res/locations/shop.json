@@ -10,7 +10,7 @@
 
     "choices" : [
         {
-            "name" : "healthPotion",
+            "name" : "healthpotion",
             "description" : "Cost: 20 coins, heals you for 30 health",
             "methods" : [
                 {
@@ -36,7 +36,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "healthPotion",
+            "usage" : "healthpotion",
             "requirements" : [
                 {
                     "method" : "variableComparison",
@@ -56,7 +56,7 @@
             ]
         },
         {
-            "name" : "strengthPotion",
+            "name" : "strengthpotion",
             "description" : "Cost: 50 coins, doubles your strength for 2 turns",
             "methods" : [
                 {
@@ -82,7 +82,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "strengthPotion",
+            "usage" : "strengthpotion",
             "requirements" : [
                 {
                     "method" : "variableComparison",
@@ -102,7 +102,7 @@
             ]
         },
         {
-            "name" : "invincibilityPotion",
+            "name" : "invincibilitypotion",
             "description" : "Cost: 200 coins, makes you invinsible for 2 turns",
             "methods" : [
                 {
@@ -128,7 +128,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "invincibilityPotion",
+            "usage" : "invincibilitypotion",
             "requirements" : [
                 {
                     "method" : "variableComparison",

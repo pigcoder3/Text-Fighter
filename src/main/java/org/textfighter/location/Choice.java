@@ -31,34 +31,15 @@ public class Choice {
 
     public boolean invokeMethods(ArrayList<String> inputArgs) {
         int inputArgsIndex = 0;
-        for(ChoiceMethod m : methods) {
-            ArrayList<Object> methodArgs = new ArrayList<Object>();
-            if(m.getArguments() == null || m.getArguments().size() < 1) { continue; }
-            for(int i=0; i<m.getArgumentTypes().size(); i++) {
-                if(m.getOriginalArguments().get(i) == null) { methodArgs.add(null); continue;}
-                if(!m.getArguments().get(i).equals("%ph%") && !m.getArguments().get(i).getClass().equals(TFMethod.class)) { methodArgs.add(m.getArguments().get(i)); continue; }
-                if(m.getArguments().get(i).getClass() == TFMethod.class) { inputArgsIndex = ((TFMethod)m.getArguments().get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1) { TextFighter.addToOutput("Usage: " + usage); return false; } continue; }
-                if(inputArgsIndex <= inputArgs.size() - 1) {
-                    if(m.getArgumentTypes().get(i).equals(int.class)) {
-                        methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
-                    } else if(m.getArgumentTypes().get(i).equals(String.class)) {
-                        methodArgs.add(inputArgs.get(inputArgsIndex));
-                    } else if(m.getArgumentTypes().get(i).equals(boolean.class)) {
-                        methodArgs.add(Boolean.parseBoolean(inputArgs.get(inputArgsIndex)));
-                    } else if(m.getArgumentTypes().get(i).equals(double.class)) {
-                        methodArgs.add(Double.parseDouble(inputArgs.get(inputArgsIndex)));
-                    } else if(m.getArgumentTypes().get(i).equals(Class.class)) {
-                        try { methodArgs.add(Class.forName(inputArgs.get(inputArgsIndex))); } catch(ClassNotFoundException e) { TextFighter.addToOutput("Usage: " + usage); return false; }
-                    }
-                    inputArgsIndex++;
-                } else {
-                    if(m.getArgumentTypes().size() != m.getMethod().getParameterTypes().length) {
-                        TextFighter.addToOutput("Usage: " + usage);
-                        return false;
-                    }
+        for(ChoiceMethod cm : methods) {
+            inputArgsIndex = cm.putInputInArguments(inputArgs, inputArgsIndex);
+            if(inputArgsIndex == -1) {
+                for(ChoiceMethod m : methods) {
+                    m.resetArguments();
                 }
+                TextFighter.addToOutput("Problem with parsing input.\nUsage: " + usage);
+                return false;
             }
-            m.setArguments(methodArgs);
         }
         for(ChoiceMethod m : methods) {
             boolean valid = true;
@@ -72,7 +53,7 @@ public class Choice {
             }
             if(valid) {
                 if(!m.invokeMethod()) {
-                    TextFighter.addToOutput("Usage: " + usage);
+                    TextFighter.addToOutput("Problem with invoking method with given arguments.\nUsage: " + usage);
                     return false;
                 }
             }

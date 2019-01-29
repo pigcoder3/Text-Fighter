@@ -3,6 +3,7 @@ package org.textfighter.enemy;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import org.textfighter.method.TFMethod;
+import org.textfighter.method.FieldMethod;
 
 import org.textfighter.display.Display;
 
@@ -11,17 +12,14 @@ import org.textfighter.display.Display;
 public class EnemyActionMethod {
 
     private Method method;
-    private Class clazz;
-    private Field field;
-    private Class fieldclass;
+    private Object field;
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private ArrayList<Object> originalArguments = new ArrayList<Object>();
 
     private boolean valid = true;
 
     public Method getMethod() { return method; }
-    public Class getClazz() { return clazz; }
-    public Field getField() { return field; }
+    public Object getField() { return field; }
     public ArrayList<Object> getArguments() { return arguments; }
 
     public boolean getValid() { return valid; }
@@ -35,12 +33,24 @@ public class EnemyActionMethod {
                 }
             }
         }
+
+        Object fieldvalue = null;
+
+        if(field != null) {
+            if(field.getClass().equals(FieldMethod.class)) {
+                fieldvalue = ((FieldMethod)field).invokeMethod();
+            } else if(field.getClass().equals(Field.class)){
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+            }
+            if(fieldvalue == null) { return false; }
+        }
+
         try {
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {
-                    method.invoke(field.get(null), arguments.toArray());
+                    method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    method.invoke(field.get(null), new Object[0]);
+                    method.invoke(fieldvalue, new Object[0]);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
@@ -58,12 +68,10 @@ public class EnemyActionMethod {
 
     public void resetArguments() { arguments = originalArguments; }
 
-    public EnemyActionMethod(Method method, ArrayList<Object> arguments, Class clazz, Field field, Class fieldclass) {
+    public EnemyActionMethod(Method method, ArrayList<Object> arguments, Object field) {
         this.method = method;
         this.arguments = arguments;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments); }
-        this.clazz = clazz;
         this.field = field;
-        this.fieldclass = fieldclass;
     }
 }

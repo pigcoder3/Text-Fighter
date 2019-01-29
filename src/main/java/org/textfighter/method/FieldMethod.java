@@ -1,31 +1,24 @@
 package org.textfighter.method;
 
-import org.textfighter.location.Location;
-import org.textfighter.display.Display;
 import org.textfighter.method.*;
 
 import java.util.ArrayList;
-
 import java.lang.reflect.*;
 
-@SuppressWarnings("unchecked")
-
-public class TFMethod {
+public class FieldMethod {
 
     private ArrayList<Object> arguments;
     private ArrayList<Class> argumentTypes;
     private ArrayList<Object> originalArguments;
     private Method method;
     private Object field;
-    private ArrayList<Requirement> requirements;
 
-    private boolean valid = true;
-
-    public ArrayList<Object> getArguments() { return arguments; }
     public Method getMethod() { return method; }
-    public ArrayList<Requirement> getRequirements() { return requirements; }
-
-    public boolean getValid() { return valid; }
+    public Object getField() { return field; }
+    public ArrayList<Object> getArguments() { return arguments; }
+    public void setArguments(ArrayList<Object> args) { arguments=args; }
+    public ArrayList<Object> getOriginalArguments() { return originalArguments; }
+    public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
 
     public Object invokeMethod() {
         //Invokes all the arguments that are methods
@@ -76,9 +69,9 @@ public class TFMethod {
         if(arguments != null && argumentTypes != null) {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
             for(int i=0; i<argumentTypes.size(); i++) {
-                if(originalArguments.get(i) == null) { methodArgs.add(null); continue;}
+                if(arguments.get(i) == null) { methodArgs.add(null); continue;}
                 if(!arguments.get(i).equals("%ph%") && !arguments.get(i).getClass().equals(TFMethod.class)) { methodArgs.add(arguments.get(i)); continue; }
-                if(arguments.get(i).getClass() == TFMethod.class) { methodArgs.add(arguments.get(i)); inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1){ return -1; } continue; }
+                if(arguments.get(i).getClass() == TFMethod.class) { methodArgs.add(arguments.get(i)); inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1){ resetArguments(); return -1; } continue; }
                 if(inputArgsIndex <= inputArgs.size() - 1) {
                     if(argumentTypes.get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
@@ -89,7 +82,7 @@ public class TFMethod {
                     } else if(argumentTypes.get(i).equals(double.class)) {
                         methodArgs.add(Double.parseDouble(inputArgs.get(inputArgsIndex)));
                     } else if(argumentTypes.get(i).equals(Class.class)) {
-                        try { methodArgs.add(Class.forName(inputArgs.get(inputArgsIndex))); } catch(ClassNotFoundException e) { return -1;  }
+                        try { methodArgs.add(Class.forName(inputArgs.get(inputArgsIndex))); } catch(ClassNotFoundException e) { resetArguments(); return -1;  }
                     }
                     inputArgsIndex++;
                 }
@@ -117,12 +110,11 @@ public class TFMethod {
         arguments = originalArguments;
     }
 
-    public TFMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field, ArrayList<Requirement> requirements) {
+    public FieldMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field) {
         this.method = method;
         this.arguments = arguments;
-        this.argumentTypes = argumentTypes;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
+        this.argumentTypes = argumentTypes;
         this.field = field;
-        this.requirements = requirements;
     }
 }

@@ -12,7 +12,7 @@
     "choices" : [
 
         {
-            "name" : "newGame",
+            "name" : "newgame",
             "description" : "Creates a new game",
             "methods" : [
                 {
@@ -34,10 +34,10 @@
                     ]
                 }
             ],
-            "usage" : "newGame <name>"
+            "usage" : "newgame <name>"
         },
         {
-            "name" : "loadGame",
+            "name" : "loadgame",
             "description" : "Loads an existing game",
             "methods" : [
                 {
@@ -59,7 +59,7 @@
                     ]
                 }
             ],
-            "usage" : "loadGame <name>",
+            "usage" : "loadgame <name>",
             "requirements" : [
                 {
                     "method" : "areThereAnySaves",
@@ -68,7 +68,7 @@
             ]
         },
         {
-            "name" : "removeSave",
+            "name" : "removesave",
             "description" : "Removes an existing save",
             "methods" : [
                 {
@@ -78,7 +78,7 @@
                     "class" : "org.textfighter.TextFighter"
                 }
             ],
-            "usage" : "removeSave <name>",
+            "usage" : "removesave <name>",
             "requirements" : [
                 {
                     "method" : "areThereAnySaves",

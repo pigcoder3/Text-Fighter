@@ -20,6 +20,11 @@
             "class" : "org.textfighter.TextFighter",
             "method" : "getVersion"
         },
+        {
+            "tag" : "<allItemSimpleOutputs>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getAllItemSimpleOutputs"
+        }
 
 
 
