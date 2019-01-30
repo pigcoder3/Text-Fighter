@@ -67,6 +67,61 @@
             "usage" : "sword"
         },
         {
+            "name" : "deagle",
+            "description" : "Cost: 300 coins. A powerful pistol.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["deagle", "weapon"],
+                    "argumentTypes" : ["0", "0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendCoins",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["300"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You bought a deagle."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "300"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                },
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["deagle", "weapon"],
+                    "argumentTypes" : ["0", "0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ],
+            "usage" : "deagle"
+        },
+        {
             "name" : "back",
             "description" : "Moves you back to the menu",
             "methods" : [
@@ -80,5 +135,4 @@
             "usage" : "back"
         }
     ]
-
 }

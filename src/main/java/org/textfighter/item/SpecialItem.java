@@ -39,9 +39,7 @@ public class SpecialItem extends Item {
 
     public String getSimpleOutput(){
         return name + " -\n " +
-               "  type:  " + ITEMTYPE + "\n" +
-               "  durability: " + ITEMTYPE;
-
+               "  type:  " + ITEMTYPE + "\n";
     }
     public String getOutput() {
         String output = name + " -\n" +

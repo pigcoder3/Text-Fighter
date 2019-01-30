@@ -15,7 +15,7 @@ public class Armor extends Item {
     private final String ITEMTYPE = "tool";
     private String name = defaultName;
     private double protectionAmount = defaultProtectionAmount;
-    protected String description = defaultDescription;
+    private String description = defaultDescription;
 
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
@@ -44,7 +44,7 @@ public class Armor extends Item {
     public String getSimpleOutput(){
         return name + " -\n " +
                "  type:  " + ITEMTYPE + "\n" +
-               "  durability: " + ITEMTYPE;
+               "  protection amount: " + protectionAmount + "\n";
 
     }
     public String getOutput() {

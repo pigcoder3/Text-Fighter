@@ -5,7 +5,9 @@
     "interface" : [
 
         "----------------------",
-        "     WEAPON SMITH     "
+        "     WEAPON SMITH     ",
+        "                      ",
+        "<allWeaponSimpleOutputs>",
 
     ]
 

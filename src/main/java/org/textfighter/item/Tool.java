@@ -47,15 +47,13 @@ public class Tool extends Item {
 
     public String getSimpleOutput(){
         return name + " -\n " +
-               "  type:  " + ITEMTYPE + "\n" +
-               "  durability: " + durability;
+               "  type:  " + ITEMTYPE + "\n";
 
     }
     public String getOutput() {
         String output = name + " -\n" +
                         "  desc:  " + description + "\n" +
-                        "  type:  " + ITEMTYPE + "\n" +
-                        "  durability:  " + durability + "\n";
+                        "  type:  " + ITEMTYPE + "\n";
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {
             if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }

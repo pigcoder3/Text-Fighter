@@ -23,8 +23,38 @@
         {
             "tag" : "<allItemSimpleOutputs>",
             "class" : "org.textfighter.TextFighter",
-            "method" : "getAllItemSimpleOutputs"
-        }
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["all"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allWeaponSimpleOutputs>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["weapon"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allArmorSimpleOutputs>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["armor"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allToolSimpleOutputs>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["tool"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allSpecialItemSimpleOutputs>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["specialitem"],
+            "argumentTypes" : ["0"]
+        },
 
 
 

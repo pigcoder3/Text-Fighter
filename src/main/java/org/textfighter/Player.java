@@ -137,7 +137,7 @@ public class Player {
         if(weapon == null) { return; }
         if(name != "fists" && !isCarrying(name, "weapon")) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
         else {
-            currentWeapon = weapon;
+            try { currentWeapon = (Weapon)weapon.clone();  } catch(CloneNotSupportedException e) { e.printStackTrace(); }
             TextFighter.addToOutput("Equiped weapon '" + name + "'");
             calculateStrength();
             return;
@@ -252,7 +252,7 @@ public class Player {
             if(isCarrying(name, "weapon")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Weapon item = TextFighter.getWeaponByName(name);
             if(item != null) {
-                inventory.add(item);
+                try { inventory.add((Weapon)item.clone()); } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 TextFighter.needsSaving=true;
             }
@@ -261,7 +261,7 @@ public class Player {
             if(isCarrying(name, "armor")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Armor item = TextFighter.getArmorByName(name);
             if(item != null) {
-                inventory.add(item);
+                try { inventory.add((Armor)item.clone());  } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 TextFighter.needsSaving=true;
             }
@@ -270,7 +270,7 @@ public class Player {
             if(isCarrying(name, "tool")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Tool item = TextFighter.getToolByName(name);
             if(item != null) {
-                inventory.add(item);
+                try { inventory.add((Tool)item.clone()); } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 TextFighter.needsSaving=true;
             }
@@ -279,7 +279,7 @@ public class Player {
             if(isCarrying(name, "specialitem")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             SpecialItem item = TextFighter.getSpecialItemByName(name);
             if(item != null) {
-                inventory.add(item);
+                try { inventory.add((SpecialItem)item.clone());  } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 TextFighter.needsSaving=true;
             }

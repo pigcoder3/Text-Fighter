@@ -62,7 +62,7 @@ public class Weapon extends Item {
     public String getSimpleOutput(){
         return name + " -\n " +
                "  type:  " + ITEMTYPE + "\n" +
-               "    durability: " + durability;
+               "  durability: " + durability + "\n";
 
     }
     public String getOutput() {

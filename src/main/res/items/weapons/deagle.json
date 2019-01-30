@@ -1,0 +1,9 @@
+{
+
+    "name" : "deagle",
+    "description" : "A powerful gun.",
+    "damage" : "20",
+    "critchance" : "10",
+    "misschance" : "30"
+
+}
