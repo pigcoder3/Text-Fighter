@@ -12,6 +12,30 @@
 
     "choices" : [
         {
+            "name" : "inspectweapon",
+            "description" : "shows you details about the item",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutput",
+                            "class" : "org.textfighter.item.Weapon",
+                            "field" : {
+                                "method" : "getWeaponByName",
+                                "class" : "org.textfighter.TextFighter",
+                                "arguments" : ["%ph%"],
+                                "argumentTypes" : ["0"]
+                            }
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectweapon <nameofweapon>"
+        },
+        {
             "name" : "sword",
             "description" : "Cost: 100 coins. A standard weapon.",
             "methods" : [

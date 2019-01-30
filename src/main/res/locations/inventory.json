@@ -35,7 +35,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "inspectItem <nameofitem> <itemtype>"
+            "usage" : "inspectitem <nameofitem> <itemtype>"
         },
 		{
 			"name" : "throwaway",

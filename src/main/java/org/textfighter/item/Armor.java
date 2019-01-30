@@ -42,7 +42,7 @@ public class Armor extends Item {
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
     public String getSimpleOutput(){
-        return name + " -\n " +
+        return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
                "  protection amount: " + protectionAmount + "\n";
 

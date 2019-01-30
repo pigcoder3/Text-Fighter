@@ -60,7 +60,7 @@ public class Weapon extends Item {
     public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
 
     public String getSimpleOutput(){
-        return name + " -\n " +
+        return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
                "  durability: " + durability + "\n";
 
@@ -70,8 +70,8 @@ public class Weapon extends Item {
                         "  desc:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
                         "  damage:  " + damage + "\n" +
-                        "  crit chance:  " + critchance + "\n" +
-                        "  miss chance:  " + misschance + "\n" +
+                        "  crit chance:  " + critchance + "%\n" +
+                        "  miss chance:  " + misschance + "%\n" +
                         "  durability:  " + durability + "\n";
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {

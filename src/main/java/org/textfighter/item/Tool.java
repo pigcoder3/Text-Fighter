@@ -46,7 +46,7 @@ public class Tool extends Item {
     public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
 
     public String getSimpleOutput(){
-        return name + " -\n " +
+        return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n";
 
     }
