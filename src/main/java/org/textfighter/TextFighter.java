@@ -1038,14 +1038,14 @@ public class TextFighter {
             int turnsWithInvincibilityLeft = Player.defaultTurnsWithInvincibilityLeft;  if(stats.get("turnsWithInvincibilityLeft") != null) {turnsWithInvincibilityLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
             boolean gameBeaten = false;                                                 if(stats.get("gameBeaten") != null)                 {gameBeaten = Boolean.parseBoolean((String)stats.get("gameBeaten"));}
 
-            JSONObject inventory = (JSONObject)file.get("inventory");
+            JSONArray inventory = (JSONArray)file.get("inventory");
 
             ArrayList<Item> newInventory = new ArrayList<Item>();
 
             //Inventory items
             if(inventory != null && inventory.size()>0) {
-                for (Object key : inventory.keySet()) {
-                    JSONObject jsonobj = (JSONObject)inventory.get(key);
+                for (int i=0; i<newInventory.size(); i++) {
+                    JSONObject jsonobj = (JSONObject)inventory.get(i);
                     if(jsonobj.get("name") == null) { continue; }
                     if(jsonobj.get("itemtype") != null) {
                         if(jsonobj.get("itemtype").equals("armor")) {

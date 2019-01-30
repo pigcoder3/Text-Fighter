@@ -85,6 +85,8 @@ public class FieldMethod {
                         try { methodArgs.add(Class.forName(inputArgs.get(inputArgsIndex))); } catch(ClassNotFoundException e) { resetArguments(); return -1;  }
                     }
                     inputArgsIndex++;
+                } else if(methodArgs.size() != argumentTypes.size()) {
+                    return -1;
                 }
             }
             arguments = methodArgs;
