@@ -25,7 +25,7 @@
                     "method" : "movePlayer",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "requirements" : [
                         {
                             "method" : "gameLoaded",
@@ -50,7 +50,7 @@
                     "method" : "movePlayer",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "requirements" : [
                         {
                             "method" : "gameLoaded",
@@ -63,7 +63,7 @@
             "requirements" : [
                 {
                     "method" : "areThereAnySaves",
-                    "class" : "org.textfighter.TextFighter"
+                    "class" : "org.textfighter.PackMethods"
                 }
             ]
         },
@@ -82,7 +82,7 @@
             "requirements" : [
                 {
                     "method" : "areThereAnySaves",
-                    "class" : "org.textfighter.TextFighter"
+                    "class" : "org.textfighter.PackMethods"
                 }
             ]
         },
@@ -94,7 +94,7 @@
                     "method" : "movePlayer",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
+                    "class" : "org.textfighter.PackMethods"
                 }
             ],
             "usage" : "menu",

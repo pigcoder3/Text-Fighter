@@ -41,7 +41,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getCoins",
@@ -96,7 +96,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getCoins",
@@ -127,7 +127,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
                 }

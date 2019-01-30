@@ -2,17 +2,17 @@
     "tags" : [
         {
             "tag" : "<saves>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getSaveFiles"
         },
         {
             "tag" : "<enemies>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getPossibleEnemyOutputs"
         },
         {
             "tag" : "<choices>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getChoiceOutputs"
         },
         {
@@ -22,35 +22,35 @@
         },
         {
             "tag" : "<allItemSimpleOutputs>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputs",
             "arguments" : ["all"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allWeaponSimpleOutputs>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputs",
             "arguments" : ["weapon"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allArmorSimpleOutputs>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputs",
             "arguments" : ["armor"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allToolSimpleOutputs>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputs",
             "arguments" : ["tool"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allSpecialItemSimpleOutputs>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputs",
             "arguments" : ["specialitem"],
             "argumentTypes" : ["0"]
@@ -159,35 +159,35 @@
         },
         {
             "tag" : "<allItemSimpleOutputsFromInventory>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputsFromInventory",
             "arguments" : ["all"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allWeaponSimpleOutputsFromInventory>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputsFromInventory",
             "arguments" : ["weapon"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allArmorSimpleOutputsFromInventory>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputsFromInventory",
             "arguments" : ["armor"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allToolSimpleOutputsFromInventory>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputsFromInventory",
             "arguments" : ["tool"],
             "argumentTypes" : ["0"]
         },
         {
             "tag" : "<allSpecialItemSimpleOutputsFromInventory>",
-            "class" : "org.textfighter.TextFighter",
+            "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputsFromInventory",
             "arguments" : ["specialitem"],
             "argumentTypes" : ["0"]

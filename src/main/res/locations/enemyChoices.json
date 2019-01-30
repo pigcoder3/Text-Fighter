@@ -1,6 +1,6 @@
 {
 
-    "name" : "enemy_choices",
+    "name" : "enemyChoices",
 
     "interfaces" : [
 
@@ -30,7 +30,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
                 }

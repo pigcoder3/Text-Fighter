@@ -18,7 +18,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["inventory"],
                     "argumentTypes" : ["0"]
                 }
@@ -31,7 +31,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"],
                 }

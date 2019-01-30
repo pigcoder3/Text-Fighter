@@ -38,7 +38,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getMagic",
@@ -60,7 +60,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"]
                 }

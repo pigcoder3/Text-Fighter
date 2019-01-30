@@ -15,7 +15,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["saves"],
                     "argumentTypes" : ["0"]
                 }

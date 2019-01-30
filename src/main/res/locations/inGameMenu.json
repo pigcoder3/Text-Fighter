@@ -19,7 +19,7 @@
                     "method" : "movePlayer",
                     "arguments" : ["enemy_choices"],
                     "argumentTypes" : ["0"],
-                    "class" : "org.textfighter.TextFighter"
+                    "class" : "org.textfighter.PackMethods"
                 }
             ],
             "usage" : "fight"
@@ -30,7 +30,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["shop"],
                     "argumentTypes" : ["0"]
                 }
@@ -43,7 +43,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["mine"],
                     "argumentTypes" : ["0"]
                 }
@@ -67,7 +67,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["witchHut"],
                     "argumentTypes" : ["0"]
                 }
@@ -76,7 +76,7 @@
                 {
                     "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["witchMap", "specialitem"],
+                    "arguments" : ["witchmap", "specialitem"],
                     "argumentTypes" : ["0", "0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
@@ -90,7 +90,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["home"],
                     "argumentTypes" : ["0"]
                 },
@@ -102,7 +102,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["weaponSmith"],
                     "argumentTypes" : ["0"]
                 }

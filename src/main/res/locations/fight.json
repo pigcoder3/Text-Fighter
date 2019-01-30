@@ -65,7 +65,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getHealthPotions",
@@ -110,7 +110,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getStrengthPotions",
@@ -155,7 +155,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getInvincibilityPotions",
@@ -176,7 +176,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : ["inGameMenu"],
                     "argumentTypes" : ["0"]
                 },
@@ -198,7 +198,7 @@
             "requirements" : [
                 {
                     "method" : "variableComparison",
-                    "class" : "org.textfighter.TextFighter",
+                    "class" : "org.textfighter.PackMethods",
                     "arguments" : [
                         {
                             "method" : "getCoins",

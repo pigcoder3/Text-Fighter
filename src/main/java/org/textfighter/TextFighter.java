@@ -12,6 +12,7 @@ import org.textfighter.*;
 import org.textfighter.location.*;
 import org.textfighter.enemy.*;
 import org.textfighter.method.*;
+import org.textfighter.*;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -86,116 +87,6 @@ public class TextFighter {
     public static Tool getToolByName(String name) { for(Tool t : tools) { if(t.getName().equals(name)) { return t; } } addToOutput("No such tool '" + name + "'"); return null; }
     public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { addToOutput("No such specialitem '" + name + "'"); return sp; } } return null; }
     public static Enemy getEnemyByName(String name) { for(Enemy e : enemies) { if(e.getName().equals(name)) { return e; } } addToOutput("No such enemy '" + name + "'"); return null; }
-
-    public static String getAllItemSimpleOutputsFromInventory(String type) {
-        //If type equals "all", then get all things
-        String s = "";
-        if(player.getInventory() == null) { return "Your inventory is empty"; }
-        for(Item i : player.getInventory()) {
-            //The items must be casted so that they can get their own getSimpleOutput() methods
-            if(i.getItemType().equals(type) || type.equals("all")) {
-                if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getSimpleOutput(); }
-                else if(i.getItemType().equals("armor")) { s=s+((Armor)i).getSimpleOutput(); }
-                else if(i.getItemType().equals("tool")) { s=s+((Tool)i).getSimpleOutput(); }
-                else if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getSimpleOutput(); }
-            }
-        }
-        return s;
-    }
-    public static String getAllItemOutputsFromInventory(String type) {
-        if(type == null) { type = "all";}
-        //If type equals "all", then get all things
-        String s = "";
-        if(player.getInventory() == null) { return "Your inventory is empty"; }
-        for(Item i : player.getInventory()) {
-            //The items must be casted so that they can get their own getOutput() methods
-            if(i.getItemType().equals(type) || type.equals("all")) {
-                if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getOutput(); }
-                else if(i.getItemType().equals("armor")) { s=s+((Armor)i).getOutput(); }
-                else if(i.getItemType().equals("tool")) { s=s+((Tool)i).getOutput(); }
-                else if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getOutput(); }
-            }
-        }
-        return s;
-    }
-
-    //These next two get the outputs of the items in the arrays that store all of them
-    public static String getAllItemSimpleOutputs(String type) {
-        if(type == null) { type = "all";}
-        //If type equals "all", then get all things
-        String s = "";
-        if(type.equals("armor") || type.equals("all")) {
-            for(Armor i : armors) {
-                s=s+i.getSimpleOutput();
-            }
-        } if(type.equals("weapon") || type.equals("all")) {
-            for(Weapon i : weapons) {
-                s=s+i.getSimpleOutput();
-            }
-        } if(type.equals("tool") || type.equals("all")) {
-            for(Tool i : tools) {
-                s=s+i.getSimpleOutput();
-            }
-        } if(type.equals("specialitem") || type.equals("all")) {
-            for(SpecialItem i : specialItems) {
-                s=s+i.getSimpleOutput();
-            }
-        }
-        return s;
-    }
-    public static String getAllItemOutputs(String type) {
-        if(type == null) { type = "all";}
-        //If type equals "all", then get all things
-        String s = "";
-        if(type.equals("armor") || type.equals("all")) {
-            for(Armor i : armors) {
-                s=s+i.getOutput();
-            }
-        } if(type.equals("weapon") || type.equals("all")) {
-            for(Weapon i : weapons) {
-                s=s+i.getOutput();
-            }
-        } if(type.equals("tool") || type.equals("all")) {
-            for(Tool i : tools) {
-                s=s+i.getOutput();
-            }
-        } if(type.equals("specialitem") || type.equals("all")) {
-            for(SpecialItem i : specialItems) {
-                s=s+i.getOutput();
-            }
-        }
-        return s;
-    }
-
-    public static String getOutputByNameAndType(String name, String type) {
-        if(name == null || type == null) { return ""; }
-        if(type.equals("armor")) {
-            for(Armor i : armors) {
-                if(i.getName().equals(name)) {
-                    return i.getOutput();
-                }
-            }
-        } else if(type.equals("weapon")) {
-            for(Weapon i : weapons) {
-                if(i.getName().equals(name)) {
-                    return i.getOutput();
-                }
-            }
-        } else if(type.equals("tool")) {
-            for(Tool i : tools) {
-                if(i.getName().equals(name)) {
-                    return i.getOutput();
-                }
-            }
-        } else if(type.equals("specialitem")) {
-            for(SpecialItem i : specialItems) {
-                if(i.getName().equals(name)) {
-                    return i.getOutput();
-                }
-            }
-        }
-        return "";
-    }
 
     public static void addToOutput(String msg) { output+=msg + "\n"; }
 
@@ -1120,7 +1011,7 @@ public class TextFighter {
 
     public static boolean loadGame(String saveName) {
 
-        if(!areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
+        if(!PackMethods.areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
 
         File f = new File(savesDir.getPath() + "/" + saveName + ".json");
         if(!f.exists()) { addToOutput("Unable to find a save with that name."); return false; }
@@ -1259,7 +1150,7 @@ public class TextFighter {
     public static void newGame(String name) {
 
         // Tells the player if they would overwrite a game (And doesnt allow them to do so)
-        if(getSaveFiles().contains(name)) {
+        if(PackMethods.getSaveFiles().contains(name)) {
             addToOutput("There is already a save with that name. Pick another.");
             return;
         }
@@ -1436,7 +1327,7 @@ public class TextFighter {
     public static void removeSave(String name) {
         if(name == null) { return; }
         if(name.lastIndexOf(".") != -1) { name = name.substring(0,name.lastIndexOf(".")); }
-        getSaveFiles();
+        PackMethods.getSaveFiles();
         //Makes sure the player isnt attempting to delete the save that is currently being used and the player hasnt beaten the game
         //When the game has been beaten, saves are not deleted when the player dies
         if(currentSaveFile != null && ( ( (name+".json").equals(currentSaveFile.getName()) && player.getAlive()) || player.getGameBeaten())) {return; }
@@ -1458,49 +1349,6 @@ public class TextFighter {
             addToOutput("File with that name not found. No action performed");
         }
     }
-    public static boolean areThereAnySaves() { return(getSaveFiles().size() > 0); }
-    public static ArrayList<String> getSaveFiles() {
-        ArrayList<String> filteredSaves = new ArrayList<String>();
-        for(String s : savesDir.list()) {
-            if(s.substring(s.lastIndexOf(".")).equals(".json")) {
-                filteredSaves.add(s.substring(0,s.lastIndexOf(".")));
-            }
-        }
-        saves = filteredSaves;
-        return filteredSaves;
-    }
-    public static ArrayList<String> getChoiceOutputs() {
-        Location l = player.getLocation();
-        ArrayList<String> outputs = new ArrayList<String>();
-        if(l != null && l.getPossibleChoices() != null) {
-            for(Choice c : l.getPossibleChoices()) {
-                if(c.getOutput() != null){
-                    outputs.add(c.getOutput());
-                }
-            }
-        }
-        return outputs;
-    }
-    public static void setPossibleEnemies() {
-        ArrayList<Enemy> possible = new ArrayList<Enemy>();
-        for(Enemy e : enemies) {
-            boolean valid = true;
-            if(e.getLevelRequirement() <= player.getLevel()) {
-                if(e.getRequirements() != null) {
-                    for(Requirement r : e.getRequirements()) {
-                        if(!r.invokeMethod()) {
-                            valid=false;
-                            break;
-                        }
-                    }
-                }
-                if(valid) {
-                    possible.add(e);
-                }
-            }
-        }
-        possibleEnemies = possible;
-    }
 
     public static void sortEnemies() {
         if(enemies.size() < 2) { return; } //There is no need to sort if there are no enemies or just one
@@ -1520,31 +1368,6 @@ public class TextFighter {
             remaining.remove(lowestDiffIndex);
         }
         enemies = sorted;
-    }
-
-    public static ArrayList<String> getPossibleEnemyOutputs() {
-        setPossibleEnemies();
-        ArrayList<String> outputs = new ArrayList<String>();
-        for(Enemy e : possibleEnemies) {
-            outputs.add(e.getOutput());
-        }
-        return outputs;
-    }
-
-    public static boolean movePlayer(String location) {
-        if(player.getLocation() != null && location.equals(player.getLocation())) { return true; }
-        for(Location l : locations) {
-            if(l.getName().equals(location)) {
-                //Invokes the post methods of the previous location
-                player.getLocation().invokePostmethods();
-                player.setLocation(location);
-                addToOutput("Moved to " + location);
-                //Invokes the pre methods of the previous location
-                l.invokePremethods();
-                return true;
-            }
-        }
-        return false;
     }
 
     public static boolean invokePlayerInput() {
@@ -1612,7 +1435,7 @@ public class TextFighter {
             }
         }
         if(validEnemy) {
-            movePlayer("fight");
+            PackMethods.movePlayer("fight");
             player.setInFight(true);
             currentEnemy.invokePremethods();
             //Does a lot of basic things from playGame(), but if they werent here, then things would look quite strange (screen not being cleared, no output from previous command, etc.)
@@ -1664,102 +1487,20 @@ public class TextFighter {
                     currentEnemy.invokeRewardMethods();
                     if(currentEnemy.getIsFinalBoss()) { playerWins(); }
                     currentEnemy=null;
-                    movePlayer("inGameMenu");
+                    PackMethods.movePlayer("inGameMenu");
                     return true;
                 }
             }
         } else {
             addToOutput("Invalid enemy: '" + en + "'");
-            movePlayer("enemyChoices");
+            PackMethods.movePlayer("enemyChoices");
             return false;
         }
         return false;
     }
 
-    public static int calculateFromTwoIntegers(int value1, String calculation, int value2) {
-        if(calculation != null) {
-            switch(calculation) {
-                case "+":
-                    return(value1 + value2);
-                case "-":
-                    return(value1 - value2);
-                case "*":
-                    return(value1 * value2);
-                case "/":
-                    return(Math.round(value1 / value2));
-                default:
-                    Display.displayError("The pack gave an invalid comparison operator (" + calculation + ")");
-            }
-        }
-        return 0;
-    }
-
-    public static double calculateFromTwoDoubles(double value1, String comparison, double value2) {
-        if(comparison != null) {
-            switch(comparison) {
-                case "+":
-                    return(value1 + value2);
-                case "-":
-                    return(value1 - value2);
-                case "*":
-                    return(value1 * value2);
-                case "/":
-                    return(value1 / value2);
-                default:
-                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
-            }
-        }
-        return 0;
-    }
-
-    public static boolean variableComparison(String value1, String value2) { return(value1.equals(value2)); } //No comparison operator necessary because you can only do '=' on strings
-
-    public static boolean variableComparison(double value1, String comparison, double value2) {
-
-        //Make the comparison
-        if(comparison != null) {
-            switch(comparison) {
-                case "=":
-                    return((double)value1 == (double)value2);
-                case ">":
-                    return((double)value1 > (double)value2);
-                case "<":
-                    return((double)value1 < (double)value2);
-                case ">=":
-                    return((double)value1 >= (double)value2);
-                case "<=":
-                    return((double)value1 <= (double)value2);
-                default:
-                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
-            }
-        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
-        return false;
-    }
-
-    public static boolean variableComparison(int value1, String comparison, int value2) {
-
-        //Make the comparison
-        if(comparison != null) {
-            switch(comparison) {
-                case "=":
-                    return((int)value1 == (int)value2);
-                case ">":
-                    return((int)value1 > (int)value2);
-                case "<":
-                    return((int)value1 < (int)value2);
-                case ">=":
-                    return((int)value1 >= (int)value2);
-                case "<=":
-                    return((int)value1 <= (int)value2);
-                default:
-                    Display.displayError("The pack gave an invalid comparison operator (" + comparison + ")");
-            }
-        } else { Display.displayError("The pack did not give a comparison operator"); return false; }
-        return false;
-    }
-
     public static void playerWins() {
-        movePlayer("Win");
+        PackMethods.movePlayer("Win");
     }
 
     public static void exitGame(int code) { System.exit(code); }
@@ -1809,7 +1550,7 @@ public class TextFighter {
         }
         player = new Player(playerCustomVariables);
         if(!testMode) {
-            getSaveFiles();
+            PackMethods.getSaveFiles();
             player.setLocation("start");
             while(player.getAlive() || player.getGameBeaten()) {
                 playGame();
