@@ -94,10 +94,10 @@ public class TextFighter {
         for(Item i : player.getInventory()) {
             //The items must be casted so that they can get their own getSimpleOutput() methods
             if(i.getItemType().equals(type) || type.equals("all")) {
-                if(type.equals("weapon")) { s=s+((Weapon)i).getSimpleOutput(); }
-                else if(type.equals("armor")) { s=s+((Armor)i).getSimpleOutput(); }
-                else if(type.equals("tool")) { s=s+((Tool)i).getSimpleOutput(); }
-                else if(type.equals("specialitem")) { s=s+((SpecialItem)i).getSimpleOutput(); }
+                if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getSimpleOutput(); }
+                else if(i.getItemType().equals("armor")) { s=s+((Armor)i).getSimpleOutput(); }
+                else if(i.getItemType().equals("tool")) { s=s+((Tool)i).getSimpleOutput(); }
+                else if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getSimpleOutput(); }
             }
         }
         return s;
@@ -110,10 +110,10 @@ public class TextFighter {
         for(Item i : player.getInventory()) {
             //The items must be casted so that they can get their own getOutput() methods
             if(i.getItemType().equals(type) || type.equals("all")) {
-                if(type.equals("weapon")) { s=s+((Weapon)i).getOutput(); }
-                else if(type.equals("armor")) { s=s+((Armor)i).getOutput(); }
-                else if(type.equals("tool")) { s=s+((Tool)i).getOutput(); }
-                else if(type.equals("specialitem")) { s=s+((SpecialItem)i).getOutput(); }
+                if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getOutput(); }
+                else if(i.getItemType().equals("armor")) { s=s+((Armor)i).getOutput(); }
+                else if(i.getItemType().equals("tool")) { s=s+((Tool)i).getOutput(); }
+                else if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getOutput(); }
             }
         }
         return s;
@@ -128,15 +128,15 @@ public class TextFighter {
             for(Armor i : armors) {
                 s=s+i.getSimpleOutput();
             }
-        } else if(type.equals("weapon") || type.equals("all")) {
+        } if(type.equals("weapon") || type.equals("all")) {
             for(Weapon i : weapons) {
                 s=s+i.getSimpleOutput();
             }
-        } else if(type.equals("tool") || type.equals("all")) {
+        } if(type.equals("tool") || type.equals("all")) {
             for(Tool i : tools) {
                 s=s+i.getSimpleOutput();
             }
-        } else if(type.equals("specialitem") || type.equals("all")) {
+        } if(type.equals("specialitem") || type.equals("all")) {
             for(SpecialItem i : specialItems) {
                 s=s+i.getSimpleOutput();
             }
@@ -151,15 +151,15 @@ public class TextFighter {
             for(Armor i : armors) {
                 s=s+i.getOutput();
             }
-        } else if(type.equals("weapon") || type.equals("all")) {
+        } if(type.equals("weapon") || type.equals("all")) {
             for(Weapon i : weapons) {
                 s=s+i.getOutput();
             }
-        } else if(type.equals("tool") || type.equals("all")) {
+        } if(type.equals("tool") || type.equals("all")) {
             for(Tool i : tools) {
                 s=s+i.getOutput();
             }
-        } else if(type.equals("specialitem") || type.equals("all")) {
+        } if(type.equals("specialitem") || type.equals("all")) {
             for(SpecialItem i : specialItems) {
                 s=s+i.getOutput();
             }
@@ -918,6 +918,10 @@ public class TextFighter {
                             if(obj.get("type") != null) {
                                 typeRaw = Integer.parseInt((String)obj.get("type"));
                             } else { Display.displayPackError("This custom variable does not have a type. Omitting..."); continue; }
+                            boolean isSaved = false;
+                            if(obj.get("isSaved") != null) {
+                                isSaved = Boolean.parseBoolean((String)obj.get("isSaved"));
+                            }
 
                             if(typeRaw == 0) {
                                 value = Integer.parseInt((String)value);
@@ -937,7 +941,7 @@ public class TextFighter {
                             //InOuptut is true by default
                             boolean inOutput = true;
                             if(obj.get("inoutput") != null) { inOutput = Boolean.parseBoolean((String)obj.get("inoutput")); }
-                            variables.add(new CustomVariable(name, value, type, inOutput));
+                            variables.add(new CustomVariable(name, value, type, inOutput, isSaved));
                             usedNames.add(name);
                         }
                     }
@@ -1148,7 +1152,7 @@ public class TextFighter {
             ArrayList<Item> newInventory = new ArrayList<Item>();
 
             //Inventory items
-            if(inventory != null) {
+            if(inventory != null && inventory.size()>0) {
                 for (Object key : inventory.keySet()) {
                     JSONObject jsonobj = (JSONObject)inventory.get(key);
                     if(jsonobj.get("name") == null) { continue; }
@@ -1193,7 +1197,7 @@ public class TextFighter {
             JSONArray achievementsArray = (JSONArray)file.get("achievements");
 
             // Adds the previously earned achievements to a new array
-            if(achievementsArray != null) {
+            if(achievementsArray != null  && achievementsArray.size()>0) {
                 for(int i=0; i<achievementsArray.size(); i++) {
                     for(Achievement a : achievements) {
                         if(achievementsArray.get(i) == a.getName()) {
@@ -1201,6 +1205,47 @@ public class TextFighter {
                         }
                     }
                 }
+            }
+
+            ArrayList<CustomVariable> newPlayerCustomVariables = new ArrayList<CustomVariable>();
+            JSONArray customVariables = (JSONArray)file.get("customVariables");
+
+            ArrayList<CustomVariable> unusedCustomVariables = new ArrayList<CustomVariable>(playerCustomVariables);
+
+            //loads the custom variables that were saved
+            if((customVariables != null && customVariables.size()>0) && (playerCustomVariables != null && playerCustomVariables.size()>0)) {
+                for(int i=0; i<customVariables.size(); i++) {
+                    JSONObject obj = (JSONObject)customVariables.get(i);
+                    if(obj.get("name") != null && obj.get("type") != null && obj.get("value") != null) {
+                        String name = "";
+                        int type = Integer.parseInt((String)obj.get("type"));
+                        Object value = null;
+                        if(type == 0) {
+                            if(((String)obj.get("value")).equals("%null%")) { value = null;}
+                            else { value = (String)obj.get("value"); }
+                        } else if(type == 1) {
+                            value = Integer.parseInt((String)obj.get("value"));
+                        } else if(type == 2) {
+                            value = Double.parseDouble((String)obj.get("value"));
+                        } else if(type == 3) {
+                            value = Boolean.parseBoolean((String)obj.get("value"));
+                        } else if(type == 4) {
+                            try { value = Class.forName((String)obj.get("value")); } catch(ClassNotFoundException e) { continue; }
+                        }
+
+                        for(int p=0; p<unusedCustomVariables.size(); i++) {
+                            CustomVariable cv = unusedCustomVariables.get(i);
+                            if(cv.getName().equals(obj.get("name"))) {
+                                cv.setValue(value);
+                                newPlayerCustomVariables.add(cv);
+                                unusedCustomVariables.remove(p);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //Add any remaining custom variables
+                for(CustomVariable cv : unusedCustomVariables) { newPlayerCustomVariables.add(cv); }
             }
 
             player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables);
@@ -1248,14 +1293,17 @@ public class TextFighter {
         stats.put("turnsWithInvincibilityLeft", Integer.toString(Player.defaultTurnsWithInvincibilityLeft));
         stats.put("currentWeapon", Player.defaultCurrentWeaponString);
 
-        base.put("stats", stats);
-        base.put("name", name);
+        JSONArray inventory = new JSONArray();
 
         Weapon currentWeapon = null;
         if(currentWeapon == null) {
             for(Weapon w : weapons) {
                 if(w.getName().equals(player.defaultCurrentWeaponString)) {
                     currentWeapon = w;
+                    JSONObject weapon = new JSONObject();
+                    weapon.put("name", w.getName());
+                    weapon.put("itemtype", "weapon");
+                    inventory.add(weapon);
                 }
             }
         }
@@ -1263,6 +1311,36 @@ public class TextFighter {
         //Initializes the game with a default player
         player = new Player(currentWeapon, playerCustomVariables);
         player.setLocation("saves");
+
+        JSONArray customVariables = new JSONArray();
+        //for all customvariables that are to be saved
+        if(player.getCustomVariables() != null) {
+            for(CustomVariable cv : player.getCustomVariables()) {
+                if(cv.getIsSaved()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("name",cv.getName());
+                    if(cv.getValueType().equals(String.class)) {
+                        obj.put("type", "0");
+                    } else if(cv.getValueType().equals(int.class)) {
+                        obj.put("type", "1");
+                    } else if(cv.getValueType().equals(double.class)) {
+                        obj.put("type", "2");
+                    } else if(cv.getValueType().equals(boolean.class)) {
+                        obj.put("type", "3");
+                    } else if(cv.getValueType().equals(Class.class)) {
+                        obj.put("type", "4");
+                    } else {
+                        continue;
+                    }
+                    customVariables.add(obj);
+                }
+            }
+        }
+
+        base.put("customVariables", customVariables);
+        base.put("inventory", inventory);
+        base.put("stats", stats);
+        base.put("name", name);
 
         addToOutput("Added new save '" + name + "'");
 
@@ -1295,14 +1373,14 @@ public class TextFighter {
         stats.put("turnsWithInvincibilityLeft", Integer.toString(player.getTurnsWithInvincibilityLeft()));
         if(player.getCurrentWeapon() != null) {stats.put("currentWeapon", player.getCurrentWeapon().getName());} else { stats.put("currentWeapon", "fists"); }
 
-        JSONObject inventory = new JSONObject();
+        JSONArray inventory = new JSONArray();
         //For items in inventory
         if(player.getInventory() != null) {
             for(Item i : player.getInventory()) {
-                JSONObject jsonobj = new JSONObject();
-                jsonobj.put("name", i.getName());
-                jsonobj.put("itemtype", i.getItemType());
-                inventory.put(i.getClass().getSimpleName(), jsonobj);
+                JSONObject jsonarray = new JSONObject();
+                jsonarray.put("name", i.getName());
+                jsonarray.put("itemtype", i.getItemType());
+                inventory.add(jsonarray);
             }
         }
 
@@ -1314,6 +1392,32 @@ public class TextFighter {
             }
         }
 
+        JSONArray customVariables = new JSONArray();
+        //for all customvariables that are to be saved
+        if(player.getCustomVariables() != null) {
+            for(CustomVariable cv : player.getCustomVariables()) {
+                if(cv.getIsSaved()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("name",cv.getName());
+                    if(cv.getValueType().equals(String.class)) {
+                        obj.put("type", "0");
+                    } else if(cv.getValueType().equals(int.class)) {
+                        obj.put("type", "1");
+                    } else if(cv.getValueType().equals(double.class)) {
+                        obj.put("type", "2");
+                    } else if(cv.getValueType().equals(boolean.class)) {
+                        obj.put("type", "3");
+                    } else if(cv.getValueType().equals(Class.class)) {
+                        obj.put("type", "4");
+                    } else {
+                        continue;
+                    }
+                    customVariables.add(obj);
+                }
+            }
+        }
+
+        base.put("customVariables", customVariables);
         base.put("achievements", earnedAchievements);
         base.put("inventory", inventory);
         base.put("stats", stats);

@@ -78,6 +78,8 @@ public class Player {
 
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
+    public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
+
     public Object getCustomVariableFromName(String name) {
         if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
