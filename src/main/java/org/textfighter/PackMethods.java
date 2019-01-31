@@ -124,6 +124,8 @@ public class PackMethods {
     }
 
     public static ArrayList<String> getChoiceOutputs() {
+        //Returns all of the current possible choice outputs
+        //The outputs give the name, description, and usage
         Location l = TextFighter.player.getLocation();
         ArrayList<String> outputs = new ArrayList<String>();
         if(l != null && l.getPossibleChoices() != null) {
@@ -143,6 +145,7 @@ public class PackMethods {
     public static ArrayList<String> getSaveFiles() {
         ArrayList<String> filteredSaves = new ArrayList<String>();
         for(String s : TextFighter.savesDir.list()) {
+            //Find out if the file is a json file
             if(s.substring(s.lastIndexOf(".")).equals(".json")) {
                 filteredSaves.add(s.substring(0,s.lastIndexOf(".")));
             }
@@ -158,6 +161,7 @@ public class PackMethods {
             boolean valid = true;
             if(e.getLevelRequirement() <= TextFighter.player.getLevel()) {
                 if(e.getRequirements() != null) {
+                    //Make sure the requirements are met for the player to be able to fight the enemy
                     for(Requirement r : e.getRequirements()) {
                         if(!r.invokeMethod()) {
                             valid=false;
@@ -237,7 +241,7 @@ public class PackMethods {
     }
 
     //comparison methods
-    public static boolean variableComparison(String value1, String value2) { return(value1.equals(value2)); } //No comparison operator necessary because you can only do '=' on strings
+    public static boolean variableComparison(String value1, String value2) { if(value1 == null || value2 == null) { return false; } return(value1.equals(value2)); } //No comparison operator necessary because you can only do '=' on strings
 
     public static boolean variableComparison(double value1, String comparison, double value2) {
 

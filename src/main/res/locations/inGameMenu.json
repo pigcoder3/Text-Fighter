@@ -17,7 +17,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "arguments" : ["enemy_choices"],
+                    "arguments" : ["enemyChoices"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.PackMethods"
                 }
@@ -93,7 +93,7 @@
                     "class" : "org.textfighter.PackMethods",
                     "arguments" : ["home"],
                     "argumentTypes" : ["0"]
-                },
+                }
             ]
         },
         {
