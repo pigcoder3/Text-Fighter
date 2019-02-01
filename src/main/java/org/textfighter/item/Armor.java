@@ -17,6 +17,7 @@ public class Armor extends Item {
     private double protectionAmount = defaultProtectionAmount;
     private String description = defaultDescription;
 
+    //Custom variable stuff
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     public Object getCustomVariableFromName(String name) {
@@ -33,20 +34,25 @@ public class Armor extends Item {
         }
     }
 
+    //Basic info stuff
     public String getItemType() { return ITEMTYPE; }
     public String getName() { return name; }
     public void setName(String s) { name=s; }
-    public double getProtectionAmount() { return protectionAmount; }
-    public void setProtectionAmount(double a) { protectionAmount=a; if(protectionAmount<0.0){protectionAmount=0.0;}}
     public String getDescription() { return description; }
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
+    //protectionAmount methods
+    public double getProtectionAmount() { return protectionAmount; }
+    public void setProtectionAmount(double a) { protectionAmount=a; if(protectionAmount<0.0){protectionAmount=0.0;}}
+
+    //Just get output of the basic stuff
     public String getSimpleOutput(){
         return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
                "  protection amount: " + protectionAmount + "\n";
 
     }
+    //Get the output of all the variables
     public String getOutput() {
         String output = name + " -\n" +
                         "  desc:  " + description + "\n" +

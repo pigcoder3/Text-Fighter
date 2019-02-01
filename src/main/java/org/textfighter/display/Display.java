@@ -157,6 +157,7 @@ public class Display {
         }
     }
 
+    //Load the colors from the display file
     public static void loadDesiredColors() {
         displayProgressMessage("Loading the display colors...");
         File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/display");
@@ -164,7 +165,7 @@ public class Display {
         try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {
             String line;
             boolean colorWarning = true;
-            while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) { //Make sure the line isnt null
                 String key = "";
                 String value = "";
                 if(key == null && value == null) { continue; }
@@ -180,6 +181,7 @@ public class Display {
                         colorWarning = false;
                     }
                 }
+                //Set each field to the value specified by the key
                 if(key.equals("error")) {
                     for(int i=0; i<colorNames.length; i++) {
                         if(colorNames[i].equals(value)) {
@@ -222,6 +224,7 @@ public class Display {
             }
             if(!TextFighter.testMode) {
                 displayProgressMessage("Display colors loaded.");
+                //The warning is there just so that the users know about this
                 if(ANSI && colorWarning) {
                     displayWarning("Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the display config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
                 } else if(!ANSI && colorWarning) {

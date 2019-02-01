@@ -20,6 +20,7 @@ public class Requirement {
     private ArrayList<Object> arguments = new ArrayList<Object>();
     private Method method;
     private Object field;
+    //Needed boolean tells InvokeMethod() what the method needs to output for the requirement to be met
     private boolean neededBoolean = defaultNeededBoolean;
 
     private boolean valid;
@@ -31,7 +32,7 @@ public class Requirement {
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
-		//Invokes all the arguments that are methods
+		//Invokes all the arguments that are methods and sets the argument in its place to the output
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
@@ -44,8 +45,10 @@ public class Requirement {
 
         if(field != null) {
             if(field.getClass().equals(FieldMethod.class)) {
+                //If the field is a method, then set the fieldvalue to the output of the field
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
+                //If the field is a regular field, then set the field value to the value it holds
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
             if(fieldvalue == null) { return false; }
@@ -73,7 +76,7 @@ public class Requirement {
         return false;
     }
 
-    public void resetArguments() { arguments = originalArguments; }
+    public void resetArguments() { arguments = originalArguments; } //Set the arguments to the original arguments because arguments that are methods may have changed it
 
     public Requirement(Method method, ArrayList<Object> arguments, Object field, boolean neededBoolean) {
         this.method = method;

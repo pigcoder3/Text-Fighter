@@ -18,6 +18,7 @@ public class EnemyAction {
     public boolean getValid() { return valid; }
 
     public void invokeMethods() {
+        //Invoke all of the methods of the enemy action
         for(int i=0; i<methods.size(); i++) {
             if(!methods.get(i).getValid()) {
                 methods.remove(i);

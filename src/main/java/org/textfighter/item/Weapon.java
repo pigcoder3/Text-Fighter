@@ -23,6 +23,7 @@ public class Weapon extends Item {
     private String description = defaultDescription;
     private int durability = defaultDurability;
 
+    //Custom variable things
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     public Object getCustomVariableFromName(String name) {
@@ -39,32 +40,40 @@ public class Weapon extends Item {
         }
     }
 
+    //Basic info methods
     public String getItemType() { return ITEMTYPE; }
     public String getName() { return name; }
     public void setName(String s) { name = s; }
     public int getDamage(){ return damage; }
     public void setDamage(int a){ damage=a; }
 
+    //critChance methods
     public int getCritChance() { return critchance; }
     public void setCritChance(int a) { critchance=a; if(critchance<0){critchance=0;}else if(critchance>100){critchance=100;}}
 
+    //misschance methods
     public int getMissChance() { return misschance; }
     public void setMissChance(int a) { misschance=a; if(misschance<0){misschance=0;}else if(misschance>100){misschance=100;}}
 
+    //description methods
     public String getDescription() { return description; }
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
+    //durability methods
     public int getDurability() { return durability; }
     public void setDurability(int a) { durability=a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
     public void increaseDurability(int a) { durability=+a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
     public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
 
+    //Get the output of just the type and durability
     public String getSimpleOutput(){
         return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
                "  durability: " + durability + "\n";
 
     }
+
+    //Get the output of all the variables
     public String getOutput() {
         String output = name + " -\n" +
                         "  desc:  " + description + "\n" +
@@ -81,8 +90,10 @@ public class Weapon extends Item {
         return output;
     }
 
+    //Equip the weapon (Set it to the currentWeapon)
     public void equip() { TextFighter.player.setCurrentWeapon(name); }
 
+    //When the weapon breaks, remove it from the player's inventory
     public void broken() {
         TextFighter.player.removeFromInventory(name, ITEMTYPE);
         TextFighter.addToOutput("Your " + name + " has broken!");

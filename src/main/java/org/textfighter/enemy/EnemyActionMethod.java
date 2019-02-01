@@ -25,7 +25,7 @@ public class EnemyActionMethod {
     public boolean getValid() { return valid; }
 
     public boolean invokeMethod() {
-        //Invokes all the arguments that are methods
+        //Invokes all the arguments that are methods and set the argument to its output
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
@@ -38,11 +38,12 @@ public class EnemyActionMethod {
 
         if(field != null) {
             if(field.getClass().equals(FieldMethod.class)) {
+                //If the field is a method, then set the output of the method to the fieldvalue
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
+                //If the field is a regular field, then set the value of the field to the fieldvalue
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
-            if(fieldvalue == null) { return false; }
         }
 
         try {

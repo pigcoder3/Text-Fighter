@@ -43,6 +43,7 @@ public class Enemy implements Cloneable {
 
     private boolean canBeHurtThisTurn = true;
 
+    //Custom variable stuff
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     public Object getCustomVariableFromName(String name) {
@@ -59,18 +60,20 @@ public class Enemy implements Cloneable {
         }
     }
 
+    //name methods
     public String getName() { return name; }
     public void setName(String n) { name=n; }
 
+    //hp methods
     public int getMaxHp() { return maxhp; }
     public void setMaxHp(int a) {
         maxhp=a;
         if(maxhp<1) { maxhp=1; }
     }
-
     public int getHp() { return hp; }
     public void damaged(int a, String customString) {
         if(canBeHurtThisTurn) {
+            //If the enemy cannot be hurt, then dont damage it
             hp-=a;
             if (hp < 1) { hp = 0; }
             if(customString != null) { TextFighter.addToOutput(customString); }
@@ -81,29 +84,36 @@ public class Enemy implements Cloneable {
     }
     public void heal(int a) {
         hp = hp + a;
-        if (hp > maxhp) { hp = 0; }
+        if (hp > maxhp) { hp = 0; } //Make sure the health doesnt go above the maxhealth
         TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");
     }
 
+    //strength methods
     public int getStrength() { return strength; }
     public void setStrength(int a) {
         strength = a;
         if(strength < 0) { strength = 0; }
     }
 
+    //difficulty method
     public int getDifficulty() { return difficulty; }
 
+    //turnsWithInvincibilityLeft methods
     public int getTurnsWithInvincibilityLeft() { return turnsWithInvincibilityLeft; }
     public void increaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft=+a; if(turnsWithInvincibilityLeft < 0) { turnsWithInvincibilityLeft = 0; } }
     public void decreaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft=-a; if(turnsWithInvincibilityLeft < 0) { turnsWithInvincibilityLeft = 0; } }
 
+    //output method
     public String getOutput() { return output; }
 
+    //levelRequirement method
     public int getLevelRequirement() { return levelRequirement; }
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
+    //possibleAction methods
     public ArrayList<EnemyAction> getPossibleActions() { filterPossibleActions(); return possibleActions; }
     public void filterPossibleActions() {
+        //Filter out all of the actions that dont meet the requiremenets
         possibleActions.clear();
         for(EnemyAction ea : allActions) {
             boolean valid = true;
@@ -118,19 +128,23 @@ public class Enemy implements Cloneable {
             }
         }
     }
+
+    //finalBoss method
     public boolean getIsFinalBoss() { return finalBoss; }
 
+    //canBeHurtThisTurn method
     public boolean getCanBeHurtThisTurn() { return canBeHurtThisTurn; }
     public void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn=b; }
 
+    //posmethod methods
     public void invokePostmethods() {
         filterPostmethods();
         for(TFMethod pm : possiblePostmethods) {
             pm.invokeMethod();
         }
     }
-
     public void filterPostmethods() {
+        //Filter out any postmethods that do not meet the requirements
         possiblePostmethods.clear();
         if(allPostmethods != null) {
             for(TFMethod pm : allPostmethods) {
@@ -150,6 +164,7 @@ public class Enemy implements Cloneable {
         }
     }
 
+    //premethod methods
     public void invokePremethods() {
         filterPremethods();
         if(possiblePremethods != null) {
@@ -158,8 +173,8 @@ public class Enemy implements Cloneable {
             }
         }
     }
-
     public void filterPremethods() {
+        //Filter out any pretmethods that do not meet the requirements
         possiblePremethods.clear();
         if(allPremethods != null){
             for(TFMethod pm : allPremethods) {
@@ -179,6 +194,7 @@ public class Enemy implements Cloneable {
         }
     }
 
+    //reward methods
     public void invokeRewardMethods() {
         filterRewardMethods();
         if(possibleRewardMethods != null) {
@@ -188,8 +204,8 @@ public class Enemy implements Cloneable {
             }
         }
     }
-
     public void filterRewardMethods() {
+        //Filter out any rewards that do not meet the requirements
         possibleRewardMethods.clear();
         if(allRewardMethods != null){
             for(Reward r : allRewardMethods) {
@@ -212,11 +228,13 @@ public class Enemy implements Cloneable {
         }
     }
 
+    //Needed so that a new enemy can be cloned from the enemies array
     public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
+    //Attakc the player
     public void attack(String customString) {
-        if(TextFighter.player.getCanBeHurtThisTurn()) {
-            if(strength > 0) {
+        if(TextFighter.player.getCanBeHurtThisTurn()) { // Make sure the player canBeHurtThisTurn
+            if(strength > 0) { //If the strength is less than 1, then dont attack
                 TextFighter.player.damaged(strength, customString);
             }
         }

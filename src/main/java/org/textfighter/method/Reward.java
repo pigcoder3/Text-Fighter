@@ -35,7 +35,7 @@ public class Reward {
     public boolean getValid() { return valid; }
 
     public String invokeMethod() {
-        //Invokes all the arguments that are methods
+        //Invokes all the arguments that are methods and sets the argument to its output
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
@@ -48,11 +48,12 @@ public class Reward {
 
         if(field != null) {
             if(field.getClass().equals(FieldMethod.class)) {
+                //If the field is a method, then invoke the method and set the fieldvalue to the output
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
+                //If the field is a regular field, then set the field value to the value it holds
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
-            if(fieldvalue == null) { return ""; }
         }
 
         try {
@@ -76,10 +77,12 @@ public class Reward {
             }
             resetArguments();
             return rewardItem;
-        } catch (IllegalAccessException | InvocationTargetException e) { resetArguments(); e.printStackTrace(); return null; }
+        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace();}
+        resetArguments();
+        return ""; 
     }
 
-public void resetArguments() { arguments = originalArguments; }
+    public void resetArguments() { arguments = originalArguments; }
 
     public Reward(Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements, int chance, String rewardItem) {
         this.method = method;

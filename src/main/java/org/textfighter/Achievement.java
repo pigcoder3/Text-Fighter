@@ -30,7 +30,7 @@ public class Achievement {
         if(rewardsString != null) {
             return "Rewards: \n" + rewardsString;
         } else {
-            return null;
+            return "";
         }
     }
 

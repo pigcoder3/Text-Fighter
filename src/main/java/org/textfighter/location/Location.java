@@ -32,14 +32,15 @@ public class Location {
     public ArrayList<TFMethod> getPremethods() { return possiblePremethods; }
     public ArrayList<TFMethod> getPostmethods() { return possiblePostmethods; }
 
+    //premethod methods
     public void invokePremethods() {
         filterPremethods();
         for(TFMethod pm : possiblePremethods) {
             pm.invokeMethod();
         }
     }
-
     public void filterPremethods() {
+        //Filter through all premethods that meet their requirements
         possiblePremethods.clear();
         if(allPremethods == null) { return; }
         for(TFMethod pm : allPremethods) {
@@ -56,14 +57,15 @@ public class Location {
         }
     }
 
+    //postmethod methods
     public void invokePostmethods() {
         filterPostmethods();
         for(TFMethod pm : possiblePostmethods) {
             pm.invokeMethod();
         }
     }
-
     public void filterPostmethods() {
+        //Filter through all postmethod that meet their requirements
         possiblePostmethods.clear();
         if(allPostmethods == null) { return; }
         for(TFMethod pm : allPostmethods) {
@@ -80,7 +82,7 @@ public class Location {
         }
     }
 
-
+    //Filter out all choices that do not meet the requirements
     public void filterPossibleChoices() {
         if(allChoices == null) { return; }
         possibleChoices.clear();

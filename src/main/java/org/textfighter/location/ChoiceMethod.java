@@ -75,13 +75,20 @@ public class ChoiceMethod {
     }
 
     public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
+        //returns -1 if there are not enough arguments and there is a problem
         if(arguments != null && argumentTypes != null) {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
             for(int i=0; i<argumentTypes.size(); i++) {
+                //If the argument is null, just add null to the array
+                //If it was to continue normally, a NullPointerException would be thrown
                 if(arguments.get(i) == null) { methodArgs.add(null); continue;}
+                //If the argument is a regular argument, then just put it in the methodArgs array
                 if(!arguments.get(i).equals("%ph%") && !arguments.get(i).getClass().equals(TFMethod.class)) { methodArgs.add(arguments.get(i)); continue; }
+                //If the argument is a method, then put input in the arguments
                 if(arguments.get(i).getClass() == TFMethod.class) { methodArgs.add(arguments.get(i)); inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1){ return -1; } continue; }
+                //If it has made it this far then the argument is a placeholder ("%ph%")
                 if(inputArgsIndex < inputArgs.size()) {
+                    //Cast the input to the correct type
                     if(argumentTypes.get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
                     } else if(argumentTypes.get(i).equals(String.class)) {
@@ -100,8 +107,11 @@ public class ChoiceMethod {
             }
             arguments = methodArgs;
         }
+        //If the field is a method, then put input argumetns in the method
+        //If a -1 is recieved, then there was a problem, and must return a -1
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             inputArgsIndex = ((FieldMethod)field).putInputInArguments(inputArgs, inputArgsIndex);
+            if(inputArgsIndex == -1) { return -1 ;}
         }
         return inputArgsIndex;
     }
@@ -110,6 +120,7 @@ public class ChoiceMethod {
         if(arguments != null) {
             for(Object o : arguments) {
                 if(o == null) { continue; }
+                //If the argument is a method, then reset its methods
                 if(o.getClass().equals(TFMethod.class)) {
                     ((TFMethod)o).resetArguments();
                 }

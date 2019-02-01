@@ -18,6 +18,32 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/* HOW IT WORKS
+
+    Mods are loaded.
+Methods are extracted from the mods.
+Methods are specified in the method JSONObjects and their
+classes are specified with them.
+The methods are extracted from the classes specified.
+The pack also specifies arguments.
+
+    Methods are invoked to do different things:
+Determine if another method should be invoked (Among other things),
+Just do regular things like set a value,
+show output to the user,
+make an enemy perform an action,
+And a lot more.
+
+ChoiceMethods have arguments that are inputted by the user.
+These areguments are specified by "%ph%", and are replaced
+jsutu before they are invoked. If an argument is a method,
+then placeholder arguments are replaced by input.
+    If there are not enough arguments, then it tells the
+user so by outputing the usage of the choice the user
+chose.
+
+*/
+
 @SuppressWarnings("unchecked")
 
 public class TextFighter {
@@ -579,7 +605,7 @@ public class TextFighter {
             }
         }
         //Load them
-        for(int numa=0; num<2; num++) {
+        for(int num=0; num<2; num++) {
             if(!parsingPack) { num++; Display.displayPackMessage("Loading parsing tags from the default pack."); }
             JSONObject tagsFile = null;
             try { tagsFile = (JSONObject)parser.parse(new FileReader(file));  } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from tags file"); e.printStackTrace(); continue; }
@@ -639,7 +665,7 @@ public class TextFighter {
                     try { achievementFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f))); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + f + "'"); e.printStackTrace(); continue; }
                     if(achievementFile == null) { continue; }
                     String name = (String)achievementFile.get("name");
-                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Pack.displayPackError("An achievement does not have a name") Display.changePackTabbing(false); continue; }
+                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.displayPackError("An achievement does not have a name"); Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading achievement '" + name + "'");
                     Display.changePackTabbing(true);
                     achievements.add(new Achievement(name, loadMethods(Requirement.class, (JSONArray)achievementFile.get("requirements"), Achievement.class), loadMethods(Reward.class, (JSONArray)achievementFile.get("rewards"), Achievement.class)));
@@ -1326,8 +1352,8 @@ public class TextFighter {
                     JSONObject obj = new JSONObject();
                     obj.put("name",cv.getName());
                     //Saves the type with the correct number
-                    if(cv.getValue() == null) { obj.put("%null%"); }
-                    else { obj.put(cv.toString()); }
+                    if(cv.getValue() == null) { obj.put("value", "%null%"); }
+                    else { obj.put("value", cv.toString()); }
                     if(cv.getValueType().equals(String.class)) {
                         obj.put("type", "0");
                     } else if(cv.getValueType().equals(int.class)) {
@@ -1611,5 +1637,6 @@ public class TextFighter {
         }
     }
 
+    //Do nothing at all lmao
     public static void doNothing() { return; }
 }

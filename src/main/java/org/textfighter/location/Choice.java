@@ -32,6 +32,7 @@ public class Choice {
     public boolean invokeMethods(ArrayList<String> inputArgs) {
         int inputArgsIndex = 0;
         for(ChoiceMethod cm : methods) {
+            //Put the input in the arguments of all the ChoiceMethod
             inputArgsIndex = cm.putInputInArguments(inputArgs, inputArgsIndex);
             if(inputArgsIndex == -1) {
                 for(ChoiceMethod m : methods) {

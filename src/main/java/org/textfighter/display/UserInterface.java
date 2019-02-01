@@ -22,15 +22,19 @@ public class UserInterface {
         int beginningIndex = 0;
         boolean inTag = false;
         for(int i=0; i<unparsedui.length(); i++) {
+            //If there is a beginning of a tag (Starts recording to see if it is one)
             if(unparsedui.charAt(i) == '<') {
                 currentTag="<";
                 inTag = true;
+            //If there is an end of a tag (Still needs to find out if it is one)
             } else if (unparsedui.charAt(i) == '>' & inTag) {
                 currentTag+=">";
                 boolean tagUsed = false;
                 //Matches the tag string with a tag in the interfaceTags
                 for(UiTag t : Display.interfaceTags) {
                     if(t.getTag().equals(currentTag)) {
+                        //Make sure the uitag's requirements are met.
+                        //If not, then just remove the tag from the string and dont put anything in
                         if(t.getRequirements() != null) {
                             boolean valid = true;
                             for(Requirement r : t.getRequirements()) {
@@ -57,12 +61,15 @@ public class UserInterface {
                         tagUsed = true;
                     }
                 }
+                //If it is not used or doesnt exist, just add the tag back to the interface
                 if(!tagUsed) { uiInProgress+=currentTag; }
                 tagUsed=false;
                 inTag=false;
             } else if (inTag){
+                //Continue recording the tag
                 currentTag+=unparsedui.charAt(i);
             } else {
+                //Just put the character to the parsed array
                 uiInProgress+=unparsedui.charAt(i);
             }
         }

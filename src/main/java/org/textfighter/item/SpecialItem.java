@@ -15,6 +15,7 @@ public class SpecialItem extends Item {
     private String name = defaultName;
     protected String description = defaultDescription;
 
+    //Custom variable stuff
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     public Object getCustomVariableFromName(String name) {
@@ -31,16 +32,19 @@ public class SpecialItem extends Item {
         }
     }
 
+    //Basic info methods
     public String getItemType() { return ITEMTYPE; }
     public String getName() { return name; }
     public void setName(String s) { name=s; if(name == null) { name=defaultName; }}
     public String getDescription() { return description; }
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
+    //Get the output of just the type and durability
     public String getSimpleOutput(){
         return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n";
     }
+    //Get the output of all the variables
     public String getOutput() {
         String output = name + " -\n" +
                         "  desc:  " + description + "\n" +

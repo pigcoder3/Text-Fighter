@@ -41,11 +41,12 @@ public class TFMethod {
 
         if(field != null) {
             if(field.getClass().equals(FieldMethod.class)) {
+                //If the field is a method, then invoke the method and set the fieldvalue to the output
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+                //If the field is a regular field, then set the field value to the value it holds
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) {e.printStackTrace(); return null; }
             }
-            if(fieldvalue == null) { return null; }
         }
 
         Object a;
@@ -65,21 +66,26 @@ public class TFMethod {
                     a=method.invoke(null, new Object[0]);
                 }
             }
-            resetArguments();
             return a;
         } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
-        resetArguments();
         return null;
     }
 
     public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
+        //Returns -1 if there are not enough inputArgs and indicates there is a problem
         if(arguments != null && argumentTypes != null) {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
             for(int i=0; i<argumentTypes.size(); i++) {
+                //If the argument is null, just add null to the array
+                //If it was to continue normally, a NullPointerException would be thrown
                 if(originalArguments.get(i) == null) { methodArgs.add(null); continue;}
+                //If it is not a placeholder or method, just put it in the array
                 if(!arguments.get(i).equals("%ph%") && !arguments.get(i).getClass().equals(TFMethod.class)) { methodArgs.add(arguments.get(i)); continue; }
+                //If it is a method, then put arguments into the method.
                 if(arguments.get(i).getClass() == TFMethod.class) { methodArgs.add(arguments.get(i)); inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1){ return -1; } continue; }
+                //If it has gotten this far, then the original argument is a placeholder ("%ph%")
                 if(inputArgsIndex <= inputArgs.size() - 1) {
+                    //Cast the placeholder to the correct type
                     if(argumentTypes.get(i).equals(int.class)) {
                         methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
                     } else if(argumentTypes.get(i).equals(String.class)) {
@@ -98,21 +104,27 @@ public class TFMethod {
             }
             arguments = methodArgs;
         }
+        //If the field is a method, then put input argumetns in the method
+        //If a -1 is recieved, then there was a problem, and must return a -1
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             inputArgsIndex = ((FieldMethod)field).putInputInArguments(inputArgs, inputArgsIndex);
+            if(inputArgsIndex == -1) { return -1 ;}
         }
         return inputArgsIndex;
     }
 
     public void resetArguments() {
+        //Reset the arguments to the original arguments because arguments that are methods may have changed them
         if(arguments != null) {
             for(Object o : arguments) {
                 if(o == null) { continue; }
+                //If the argument is a TFMethod, then reset its arguments
                 if(o.getClass().equals(TFMethod.class)) {
                     ((TFMethod)o).resetArguments();
                 }
             }
         }
+        //If the field is a TFMethod, then reset its arguments
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }

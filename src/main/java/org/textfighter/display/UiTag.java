@@ -26,7 +26,7 @@ public class UiTag {
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
     public Object invokeMethod() {
-        //Invokes all the arguments that are methods
+        //Invokes all the arguments that are methods and put the output of the method in as the argument
         if(arguments != null) {
             for(int i=0; i<arguments.size(); i++) {
                 if(arguments.get(i) != null && arguments.get(i).getClass().equals(TFMethod.class)) {
@@ -39,12 +39,12 @@ public class UiTag {
 
         if(field != null) {
             if(field.getClass().equals(FieldMethod.class)) {
+                //If the field is a class, set the field value to the output of the method
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
+                //If the field is a regular field, set the field value to the value of the field
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
-
-            if(fieldvalue == null) { return ""; }
         }
 
         try {
