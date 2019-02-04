@@ -15,8 +15,7 @@ import org.textfighter.method.*;
 import org.textfighter.*;
 
 import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.simple.parser.*;
 
 /* HOW IT WORKS
 
@@ -25,7 +24,7 @@ Methods are extracted from the mods.
 Methods are specified in the method JSONObjects and their
 classes are specified with them.
 The methods are extracted from the classes specified.
-The pack also specifies arguments.
+The pack also specifies arguments and classes of the arguments.
 
     Methods are invoked to do different things:
 Determine if another method should be invoked (Among other things),
@@ -34,7 +33,7 @@ show output to the user,
 make an enemy perform an action,
 And a lot more.
 
-ChoiceMethods have arguments that are inputted by the user.
+    ChoiceMethods have arguments that are inputted by the user.
 These areguments are specified by "%ph%", and are replaced
 jsutu before they are invoked. If an argument is a method,
 then placeholder arguments are replaced by input.
@@ -46,80 +45,159 @@ chose.
 
 @SuppressWarnings("unchecked")
 
+/**
+ * @author      Sean Johnson <smjohns1@gmail.com>
+ * @version     0.2.5
+ */
+
+
 public class TextFighter {
 
     // Pack testing variables
+    /** True if testing packs.*/
     public static boolean testMode = false;
+    /**True if loading resources from a pack.*/
     public static boolean parsingPack = false;
 
     //Version
+    /**The file that the version of the game is stored in.*/
     public static File versionFile = new File("../../../VERSION.txt");
+    /**Stores the current version.*/
     public static String version;
 
     // Important game variables
+    /**Stores the name of the save currently being used.*/
     public static String gameName;
 
+    /**Stores the player instance.*/
     public static Player player;
+    /**Stores the enemy instance that the player is fighting (Assuming the player is in a fight).*/
     public static Enemy currentEnemy = new Enemy();
 
+    /**Stores the file that the save is stored in*/
     public static File currentSaveFile;
 
+    /**Stores the String that is outputted after every turn*/
     public static String output = "";
 
+    /**
+     * Stores the directory of the used pack.
+     * If there is no pack, this will remain null.
+     */
     public static File packUsed;
 
-    // All default pack directories
+    /**Stores the directory where all of the default resources are located*/
     public static File resourcesDir;
+    /**Stores the file where the default tags are located*/
     public static File tagFile;
+    /**Stores the directory where the default pack default values are located*/
     public static File defaultValuesDirectory;
+    /**Stores the directory where the default interfaces are located*/
     public static File interfaceDir;
+    /**Stores the directory where the default locations are located*/
     public static File locationDir;
+    /**Stores the directory where the default enemies are located*/
     public static File enemyDir;
+    /**Stores the directory where the saves are located*/
     public static File savesDir;
+    /**Stores the directory where the default achievements are located*/
     public static File achievementDir;
+    /**Stores the directory where the items are located*/
     public static File itemDir;
+    /**Stores the directory where the default custom variables are located*/
     public static File customVariablesDir;
 
-    // Config
+    /**Stores the directory where all config files are located*/
     public static File configDir;
 
-    // All pack directories
+    /**Stores the file where the pack used is defined*/
     public static File packFile;
+    /**Stores the directory where all packs are to be put*/
     public static File packDir;
 
+    /**The parser for all resources and saves*/
     public static JSONParser parser = new JSONParser();
 
     //All things in the game
+    /**All locations are stored here*/
     public static ArrayList<Location> locations = new ArrayList<Location>();
+    /**All save names are stored here*/
     public static ArrayList<String> saves = new ArrayList<String>();
+    /**All enemies are stored here*/
     public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    /**All possible enemies are stored here*/
     public static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
+    /**All achievements are stored here*/
     public static ArrayList<Achievement> achievements = new ArrayList<Achievement>();
+    /**All armors are stored here*/
     public static ArrayList<Armor> armors = new ArrayList<Armor>();
+    /**All weapons are stored here*/
     public static ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+    /**All specialitems are stored here*/
     public static ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
+    /**All tools are stored here*/
     public static ArrayList<Tool> tools = new ArrayList<Tool>();
 
     //All custom variable arrays
+    /**All player custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> playerCustomVariables = new ArrayList<CustomVariable>();
+    /**All enemy custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> enemyCustomVariables = new ArrayList<CustomVariable>();
+    /**All tool custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> toolCustomVariables = new ArrayList<CustomVariable>();
+    /**All armor custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> armorCustomVariables = new ArrayList<CustomVariable>();
+    /**All weapon custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> weaponCustomVariables = new ArrayList<CustomVariable>();
+    /**All special item custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<CustomVariable>();
 
+    /**Stores whether or not the game needs to be saved. The game needs to be saved if a value that is saved is changed*/
     public static boolean needsSaving = false;
 
-    //Get items
+    /**
+     * Gets a weapon from the {@link #weapons} arraylist.
+     * @param name  the name of the weapon that is to be found.
+     * @return      If a weapon is found, then return it. Else, return null.
+     */
     public static Weapon getWeaponByName(String name) { for(Weapon w : weapons) { if(w.getName().equals(name)) { return w; } } addToOutput("No such weapon '" + name + "'"); return null; }
+    /**
+     * Gets an armor from the {@link #armors} arraylist.
+     * @param name  the name of the armor that is to be found.
+     * @return      If a armor is found, then return it. Else, return null.
+     */
     public static Armor getArmorByName(String name) { for(Armor a : armors) { if(a.getName().equals(name)) { return a; } } addToOutput("No such armor '" + name + "'"); return null; }
+    /**
+     * Gets a tool from the {@link #tools} arraylist.
+     * @param name  the name of the tool that is to be found.
+     * @return      If a tool is found, then return it. Else, return null.
+     */
     public static Tool getToolByName(String name) { for(Tool t : tools) { if(t.getName().equals(name)) { return t; } } addToOutput("No such tool '" + name + "'"); return null; }
+    /**
+     * Gets a special item from the {@link #specialItems} arraylist.
+     * @param name  the name of the special item that is to be found.
+     * @return      If a special item is found, then return it. Else, return null.
+     */
     public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { addToOutput("No such specialitem '" + name + "'"); return sp; } } return null; }
+    /**
+     * Gets a enemy from the {@link #enemies} arraylist
+     * @param name  the name of the enemy that is to be found
+     * @return      If a enemy is found, then return it. Else, return null.
+     */
     public static Enemy getEnemyByName(String name) { for(Enemy e : enemies) { if(e.getName().equals(name)) { return e; } } addToOutput("No such enemy '" + name + "'"); return null; }
 
-    public static void addToOutput(String msg) { output+=msg + "\n"; }
+    /**
+     * Add a string to the {@link #output}.
+     * <p>If the string given is null, then do not do anything.</p>
+     * @param msg   The string that is to be added to the {@link #output}.
+     */
+    public static void addToOutput(String msg) { if(msg != null) { output+=msg + "\n";}  }
 
     //Things to get the current version
+    /**
+     * Get the version from the {@link #versionFile}.
+     * @return      returns the version that is read. If no version was read, then returns "unknown".
+     */
     public static String readVersionFromFile() {
         if(versionFile == null) { Display.displayWarning("Could not read the version from file"); return "Unknown"; }
         try (BufferedReader br = new BufferedReader(new FileReader(versionFile))) {
@@ -129,8 +207,16 @@ public class TextFighter {
         return "Unknown";
     }
 
+    /**
+     * Get the version of the game from {@link #version}.
+     * @return      The {@link #version}.
+     */
     public static String getVersion() { return version; }
 
+    /**
+     * Defines all resource directories then loads all the resources needed for the game.
+     * @return      True if successful. False is unsuccessful.
+     */
     public static boolean loadResources() {
         Display.displayProgressMessage("Loading the resources...");
         //Loads all the directories
@@ -162,9 +248,13 @@ public class TextFighter {
         return true;
     }
 
-    /*
-      Loads a singular method
-      Useful for loading a Method that is an argument that you wouldnt pass a JSONArray to
+    /**
+     * Loads a singular method.
+     * <p> Useful for loading a Method that is an argument that you wouldnt/cant pass a JSONArray to </p>
+     * @param type          The type of the method.
+     * @param obj           The JSONObject that the method is located in.
+     * @param parentType    The class of the parent of the method.
+     * @return              The new method that was loaded.
     */
     public static Object loadMethod(Class type, JSONObject obj, Class parentType) {
         ArrayList<Object> argumentsRaw = (JSONArray)obj.get("arguments");
@@ -301,9 +391,14 @@ public class TextFighter {
         return o;
     }
 
-    /*
-      Loads the methods in things like requirements, choicemethods, and others
-      Used if you have a JSONArray full of methods (And only methods) to parse
+    /**
+     * Loads a JSONArray of methods
+     * <p>Loads the methods in things like requirements, choicemethods, and others
+     * Used if you have a JSONArray full of methods (And only methods) to parse</p>
+     * @param type          The type of methods that are being loaded (ChoiceMethod, Requirement, etc.).
+     * @param methodArray   The JSONArray that the methods are located in.
+     * @param parentType    The class of the parent of the methods.
+     * @return              An ArrayList of the type of methods loaded.
     */
     public static ArrayList loadMethods(Class type, JSONArray methodArray, Class parentType) {
         ArrayList<Object> methods = new ArrayList<Object>();
@@ -317,6 +412,11 @@ public class TextFighter {
         } else { return null; }
     }
 
+    /**
+     * Loads the interfaces.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      True if successful, False if unsuccessful
+     */
     public static boolean loadInterfaces() {
         try {
             Display.displayProgressMessage("Loading the interfaces...");
@@ -387,6 +487,12 @@ public class TextFighter {
         } catch (FileNotFoundException e) { Display.displayError("Could not find an interface file. It was likely deleted after the program got all files in the interfaces directory."); Display.changePackTabbing(false); return false; }
         catch (IOException e) { Display.displayError("IOException when attempting to load the interfaces. The permissions are likely set to be unreadable."); Display.changePackTabbing(false); return false;}
     }
+
+    /**
+     * Loads the locations.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      True if successful, false if unsuccessful.
+     */
     public static boolean loadLocations() {
         Display.displayProgressMessage("Loading the locations...");
         Display.changePackTabbing(true);
@@ -502,6 +608,12 @@ public class TextFighter {
         Display.changePackTabbing(false);
         return true;
     }
+
+    /**
+     * Loads the enemies.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      True if successful, false if unsuccessful.
+     */
     public static boolean loadEnemies() {
         Display.displayProgressMessage("Loading the enemies...");
         Display.changePackTabbing(true);
@@ -581,6 +693,12 @@ public class TextFighter {
         Display.changePackTabbing(false);
         return true;
     }
+
+    /**
+     * Loads the parsing (interface) tags.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      True if successful, false if unsuccessful.
+     */
     public static boolean loadParsingTags() {
         //Custom parsing tags are located in interface packs
         Display.displayProgressMessage("Loading the parsing tags...");
@@ -624,6 +742,11 @@ public class TextFighter {
         return true;
     }
 
+    /**
+     * Loads theachievements.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      True if successful, false if unsuccessful.
+     */
     public static boolean loadAchievements() {
         Display.displayProgressMessage("Loading the achievements...");
         Display.changePackTabbing(true);
@@ -681,6 +804,11 @@ public class TextFighter {
         return true;
     }
 
+    /**
+     * Loads the items.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      True if successful, false if unsuccessful.
+     */
     public static boolean loadItems() {
         Display.displayProgressMessage("Loading the items...");
         Display.changePackTabbing(true);
@@ -815,6 +943,10 @@ public class TextFighter {
         return true;
     }
 
+    /**
+     * Loads the custom variables.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     */
     public static void loadCustomVariables() {
         Display.displayProgressMessage("Loading the custom variables...");
         Display.changePackTabbing(true);
@@ -910,6 +1042,10 @@ public class TextFighter {
         Display.changePackTabbing(false);
     }
 
+    /**
+     * Loads the configured colors.
+     * <p>If the config directory does not exist, then a new one is created</p>
+     */
     public static void loadConfig() {
         Display.displayProgressMessage("Loading config...");
         if(configDir.exists()) {
@@ -933,6 +1069,10 @@ public class TextFighter {
         }
     }
 
+    /**
+     * Loads the default calues.
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     */
     public static void loadDefaultValues() {
         //Custom parsing tags are located in interface packs
         Display.displayProgressMessage("Loading the default player/enemy/item values...");
@@ -1068,6 +1208,12 @@ public class TextFighter {
         return;
     }
 
+    /**
+     * Loads a save from the given file name.
+     * <p>Loads all values from the file and creates a new player instance with those values.
+     * @param saveName  The name of the save file.
+     * @return          True if successful. False is unsuccessful.
+     */
     public static boolean loadGame(String saveName) {
 
         if(!PackMethods.areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
@@ -1208,6 +1354,12 @@ public class TextFighter {
         return true;
 
     }
+
+    /**
+     * Creates a new save file.
+     * <p>Fails if there is already a save with the name given.</p>
+     * @param name  The name of the new save.
+     */
     public static void newGame(String name) {
 
         // Tells the player if they would overwrite a game (And doesnt allow them to do so)
@@ -1301,6 +1453,12 @@ public class TextFighter {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
+
+    /**
+     * Saves the game.
+     * <p>Rewrites the whole file.</p>
+     * @return      True if successful, False if unsuccessful.
+     */
     public static boolean saveGame() {
 
         if(currentSaveFile != null && !currentSaveFile.exists()) { try { currentSaveFile.createNewFile(); } catch (IOException e) { addToOutput("Unable to save game!"); return false; }}
@@ -1387,7 +1545,16 @@ public class TextFighter {
 
     }
 
+    /**
+     * Adds a save to the {@link saves} arraylist.
+     * @param name  The name to be added.
+     */
     public static void addSave(String name) { saves.add(name); }
+    /**
+     * Removes a save file.
+     * <p>Removes the save from the {@link saves} arraylist.<p>
+     * @param name  The name of the save.
+     */
     public static void removeSave(String name) {
         if(name == null) { return; }
         if(name.lastIndexOf(".") != -1) { name = name.substring(0,name.lastIndexOf(".")); }
@@ -1415,6 +1582,9 @@ public class TextFighter {
         }
     }
 
+    /**
+     * Sorts the enemies by difficulty from lowest to highest and sets {@link enemies}.
+     */
     public static void sortEnemies() {
         if(enemies.size() < 2) { return; } //There is no need to sort if there are no enemies or just one
         //Iterate through the enemies and find out which has the lowest difficulty in the array
@@ -1439,6 +1609,10 @@ public class TextFighter {
         enemies = sorted;
     }
 
+    /**
+     * Gets and handles player input.
+     * @return      True if a valid choice. False if not.
+     */
     public static boolean invokePlayerInput() {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -1498,6 +1672,11 @@ public class TextFighter {
         return false;
     }
 
+    /**
+     * Makes the player fight an enemy.
+     * @param en    The name of the enemy to be fought.
+     * @return      False if invalid enemy. True if enemy dies.
+     */
     public static boolean fight(String en) {
         boolean validEnemy = false;
         for(int i=0; i<enemies.size(); i++) {
@@ -1572,15 +1751,29 @@ public class TextFighter {
         return false;
     }
 
+    /**
+     * Moves the player to the "win" location.
+     */
     public static void playerWins() {
         PackMethods.movePlayer("Win");
     }
 
     //Exit game. The reason I need this method is because it wont let me use System.exit(code) in packs (Because Class.forName() claims the class doesn't exist)
+    /**
+     * Calls System.exit()
+     * @param code  The exit code.
+     */
     public static void exitGame(int code) { System.exit(code); }
 
+    /**
+     * Determine if a save is loaded.
+     * @return      True if a game is loaded. False if not.
+     */
     public static boolean gameLoaded() { return (currentSaveFile != null); }
 
+    /**
+     * Orchestrates player turns.
+     */
     public static void playGame() {
         //Display the interface for the user
         Display.displayInterfaces(player.getLocation());
@@ -1612,6 +1805,10 @@ public class TextFighter {
         needsSaving = false;
     }
 
+    /**
+     * Detemine if the game is in test mode, load resources, and main game loop
+     * @param args  Command line input.
+     */
     public static void main(String[] args) {
         //Determine if the game is run in pack test mode
         //When in pack test mode, the game just loads the resources and tells the user if there is anything wrong
@@ -1638,5 +1835,8 @@ public class TextFighter {
     }
 
     //Do nothing at all lmao
+    /**
+     * Does literally nothing.
+     */
     public static void doNothing() { return; }
 }

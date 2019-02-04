@@ -13,69 +13,238 @@ import java.util.*;
 
 public class Player {
 
-    static int defaultLevel = 1;
-    static int defaultExperience = 0;
-    static int defaultScore = 0;
+    /**
+     * Default level.
+     * <p>Set to 1.</p>
+     */
+    public static int defaultLevel = 1;
+    /**
+     * Default experience.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultExperience = 0;
+    /**
+     * Default score.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultScore = 0;
 
-    static int defaulthp = 50;
-    static int defaultMaxhp = 50;
+    /**
+     * Default health.
+     * <p>Set to 50.</p>
+     */
+    public static int defaulthp = 50;
+    /**
+     * Default maximum health.
+     * <p>Set to 50.</p>
+     */
+    public static int defaultMaxhp = 50;
 
-    static int defaultCoins = 50;
-    static int defaultMagic = 0;
+    /**
+     * Default coins.
+     * <p>Set to 50.</p>
+     */
+    public static int defaultCoins = 50;
+    /**
+     * Default magic points.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultMagic = 0;
+    /**
+     * Default metalScraps.
+     * <p>Set to 0.</p>
+     */
     static int defaultMetalscraps = 0;
 
-    static int defaultStrength = 5;  //Strength of just your fists
+    /**
+     * Default strength.
+     * <p>The strength of your fists.</p>
+     * <p>Set to 5.</p>
+     */
+    public static int defaultStrength = 5;  //Strength of just your fists
 
-    static String defaultCurrentWeaponString = "fists";
+    /**
+     * Default current weapon string.
+     * <p>Set to "fists".</p>
+     */
+    public static String defaultCurrentWeaponString = "fists";
 
-    static int defaultHealthPotions = 0;
-    static int defaultStrengthPotions = 0;
-    static int defaultInvincibilityPotions = 0;
+    /**
+     * Default health potions.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultHealthPotions = 0;
+    /**
+     * Default strength potions.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultStrengthPotions = 0;
+    /**
+     * Default invincibility potions.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultInvincibilityPotions = 0;
 
-    static int defaultTurnsWithStrengthLeft = 0;
-    static int defaultTurnsWithInvincibilityLeft = 0;
+    /**
+     * Default turns with strength left.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultTurnsWithStrengthLeft = 0;
+    /**
+     * Default turns with invincibility left.
+     * <p>Set to 0.</p>
+     */
+    public static int defaultTurnsWithInvincibilityLeft = 0;
 
-    static int hpHealthPotionsGive = 30;
-    static int turnsStrengthPotionsGive = 2;
-    static int turnsInvincibilityPotionsGive = 2;
+    /**
+     * Default hit point that health potions give.
+     * <p>Set to 30.</p>
+     */
+    public static int defaultHpHealthPotionsGive = 30;
+    /**
+     * Default turns strength potions give.
+     * <p>Set to 2.</p>
+     */
+    public static int defaultTurnsStrengthPotionsGive = 2;
+    /**
+     * Default turns invincibility potion give
+     * <p>Set to 2.</p>
+     */
+    public static int defaultTurnsInvincibilityPotionsGive = 2;
 
+    /**
+     * Stores whether or not the player is alive.
+     * <p>Set to true.</p>
+     */
     private boolean alive = true;
+    /**
+     * Stores whether or not the player is in a fight.
+     * <p>Set to false.</p>
+     */
     private boolean inFight = false;
 
-    private double totalProtection = 1;
+    /**
+     * Stores the total protection.
+     * <p>Set to 0.</p>
+     */
+    private double totalProtection = 0;
 
+    /**
+     * Stores the equipped weapon.
+     * <p>Set to null.</p>
+     */
     private Weapon currentWeapon;
 
+    /**
+     * Stores the player's level.
+     * <p>Set to {@link #defaultLevel}.</p>
+     */
     private int level = defaultLevel;
+    /**
+     * Stores the player's experience.
+     * <p>Set to {@link #defaultExperience}.</p>
+     */
     private int experience = defaultExperience;
+    /**
+     * Stores the player's score.
+     * <p>Set to {@link #defaultScore}.</p>
+     */
     private int score = defaultScore;
 
+    /**
+     * Stores the player's health.
+     * <p>Set to {@link #defaulthp}.</p>
+     */
     private int hp = defaulthp;
-    private int maxhp = defaulthp;
+    /**
+     * Stores the player's max health.
+     * <p>Set to {@link #defaultMaxhp}.</p>
+     */
+    private int maxhp = defaultMaxhp;
 
+    /**
+     * Stores the player's strength.
+     * <p>Set to {@link #defaultStrength}.</p>
+     */
     private int strength = defaultStrength;
 
+    /**
+     * Stores the player's health potion amount.
+     * <p>Set to {@link #defaultHealthPotions}.</p>
+     */
     private int healthPotions = defaultHealthPotions;
+    /**
+     * Stores the player's strength potion amount.
+     * <p>Set to {@link #defaultStrengthPotions}.</p>
+     */
     private int strengthPotions = defaultStrengthPotions;
+    /**
+     * Stores the player's invincibility potion amount.
+     * <p>Set to {@link #defaultInvincibilityPotions}.</p>
+     */
     private int invincibilityPotions = defaultInvincibilityPotions;
 
+    /**
+     * Stores the player's turns with strength left.
+     * <p>Set to {@link #defaultTurnsWithStrengthLeft}.</p>
+     */
     private int turnsWithStrengthLeft = defaultTurnsWithStrengthLeft;
+    /**
+     * Stores the player's turns with invincibility left.
+     * <p>Set to {@link #defaultTurnsWithInvincibilityLeft}.</p>
+     */
     private int turnsWithInvincibilityLeft = defaultTurnsWithInvincibilityLeft;
 
+    /**
+     * Stores the player's coins.
+     * <p>Set to {@link #defaultCoins}.</p>
+     */
     private int coins = defaultCoins;
+    /**
+     * Stores the player's magic points.
+     * <p>Set to {@link #defaultMagic}.</p>
+     */
     private int magic = defaultMagic;
+    /**
+     * Stores the player's metal scraps.
+     * <p>Set to {@link #defaultMetalscraps}.</p>
+     */
     private int metalScraps = defaultMetalscraps;
 
+    /**
+     * Stores the player's current location.
+     * <p>Set to null.</p>
+     */
     private Location location;
 
+    /**
+     * Stores whether or not the game has been beaten.
+     * <p>Set to false.</p>
+     */
     private boolean gameBeaten = false;
 
+    /**
+     * Stores whether or not the player can be hurt this turn.
+     * <p>Set to true.</p>
+     */
     private boolean canBeHurtThisTurn = true;
 
+    /**
+     * Stores the player's inventory.
+     * <p>Set to an empty ArrayList of Item.</p>
+     */
     private ArrayList<Item> inventory = new ArrayList<Item>();
 
+    /**
+     * Stores the earned achievements.
+     * <p>Set to an empty ArrayList of Achievement.</p>
+     */
     private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
+    /**
+     * Stores the custom variables.
+     * <p>Set to an empty ArrayList of CustomVariable.</p>
+     */
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
