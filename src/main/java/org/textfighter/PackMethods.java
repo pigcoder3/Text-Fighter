@@ -13,36 +13,47 @@ import java.util.ArrayList;
 public class PackMethods {
 
     //Output methods
-    public static String getAllItemSimpleOutputsFromInventory(String type) {
+    /**
+     * Returns all of the simple outputs from all items of the given type in the player's inventory.
+     * <p>If the type is null or "all", then the method returns simple outputs of all items in the player's inventory.</p>
+     * @return      All of the item simple outputs of the given type in the player's inventory all put into one ArrayList.
+     */
+    public static ArrayList<String> getAllItemSimpleOutputsFromInventory(String type) {
+        if(type == null) { type = "all"; }
         //If type equals "all", then get all things
-        String s = "";
+        ArrayList<String> outputs = new ArrayList<String>();
         if(TextFighter.player.getInventory() == null) { return "Your inventory is empty"; }
         for(Item i : TextFighter.player.getInventory()) {
             //The items must be casted so that they can get their own getSimpleOutput() methods
             if(i.getItemType().equals(type) || type.equals("all")) {
-                if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getSimpleOutput(); }
-                else if(i.getItemType().equals("armor")) { s=s+((Armor)i).getSimpleOutput(); }
-                else if(i.getItemType().equals("tool")) { s=s+((Tool)i).getSimpleOutput(); }
-                else if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getSimpleOutput(); }
+                if(i.getItemType().equals("weapon")) { outputs.add(((Weapon)i).getSimpleOutput()); }
+                else if(i.getItemType().equals("armor")) { outputs.add(((Armor)i).getSimpleOutput()); }
+                else if(i.getItemType().equals("tool")) { outputs.add(((Tool)i).getSimpleOutput()); }
+                else if(i.getItemType().equals("specialitem")) { outputs.add(((SpecialItem)i).getSimpleOutput()); }
             }
         }
-        return s;
+        return outputs;
     }
+    /**
+     * Returns all of the outputs from all items of the given type in the player's inventory.
+     * <p>If the type is null or "all", then the method returns outputs of all items in the player's inventory.</p>
+     * @return      All of the item outputs of the given type in the player's inventory all put into one ArrayList.
+     */
     public static String getAllItemOutputsFromInventory(String type) {
         if(type == null) { type = "all";}
         //If type equals "all", then get all things
-        String s = "";
+        ArrayList<String> outputs = new ArrayList<String>();
         if(TextFighter.player.getInventory() == null) { return "Your inventory is empty"; }
         for(Item i : TextFighter.player.getInventory()) {
             //The items must be casted so that they can get their own getOutput() methods
             if(i.getItemType().equals(type) || type.equals("all")) {
-                if(i.getItemType().equals("weapon")) { s=s+((Weapon)i).getOutput(); }
-                else if(i.getItemType().equals("armor")) { s=s+((Armor)i).getOutput(); }
-                else if(i.getItemType().equals("tool")) { s=s+((Tool)i).getOutput(); }
-                else if(i.getItemType().equals("specialitem")) { s=s+((SpecialItem)i).getOutput(); }
+                if(i.getItemType().equals("weapon")) { outputs.add(((Weapon)i).getOutput()); }
+                else if(i.getItemType().equals("armor")) { outputs.add(((Armor)i).getOutput()); }
+                else if(i.getItemType().equals("tool")) { outputs.add(((Tool)i).getOutput()); }
+                else if(i.getItemType().equals("specialitem")) { outputs.add(((SpecialItem)i).getOutput()); }
             }
         }
-        return s;
+        return outputs;
     }
 
     //These next two get the outputs of the items in the arrays that store all of them

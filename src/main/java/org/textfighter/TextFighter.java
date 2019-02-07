@@ -1546,13 +1546,13 @@ public class TextFighter {
     }
 
     /**
-     * Adds a save to the {@link saves} arraylist.
+     * Adds a save to the {@link #saves} arraylist.
      * @param name  The name to be added.
      */
     public static void addSave(String name) { saves.add(name); }
     /**
      * Removes a save file.
-     * <p>Removes the save from the {@link saves} arraylist.<p>
+     * <p>Removes the save from the {@link #saves} arraylist.<p>
      * @param name  The name of the save.
      */
     public static void removeSave(String name) {
@@ -1583,7 +1583,7 @@ public class TextFighter {
     }
 
     /**
-     * Sorts the enemies by difficulty from lowest to highest and sets {@link enemies}.
+     * Sorts the enemies by difficulty from lowest to highest and sets {@link #enemies}.
      */
     public static void sortEnemies() {
         if(enemies.size() < 2) { return; } //There is no need to sort if there are no enemies or just one

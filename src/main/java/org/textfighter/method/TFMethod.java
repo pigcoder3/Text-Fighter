@@ -12,21 +12,61 @@ import java.lang.reflect.*;
 
 public class TFMethod {
 
+    /**
+     * Stores the arguments of the method.
+     * <p>Arguments can store ints, doubles, Strings, classes, and other TFMethods</p>
+     */
     private ArrayList<Object> arguments;
+    /**
+     * Stores the classes of the arguments.
+     * <p>Each argument type corresponds with an argument by index</p>
+     */
     private ArrayList<Class> argumentTypes;
+    /**
+     * Stores the original arguments of this TFMethod.
+     * <p>These are useful because arguments that are methods are replaced with their output in the arguments.</p>
+     * <p>This will allow the methods to be used again.</p>
+     */
     private ArrayList<Object> originalArguments;
+    /**
+     * Stores the method of the TFMethod to be invoked.
+     */
     private Method method;
+    /**
+     * Stores the Object that the {@link #method} will be invoked on.
+     * </p>Fields can be of the field class or TFMethods that return a value that is then used as the field.</p>
+     */
     private Object field;
+    /**
+     * Stores the requirements of the method (Only used in premethods and postmethods of locations and enemies).
+     * </p>These are used to determine if the conditions are right for the method to be invoked.
+     */
     private ArrayList<Requirement> requirements;
 
-    private boolean valid = true;
-
+    /**
+     * Returns the {@link #arguments}.
+     * @return      {@link #arguments}
+     */
     public ArrayList<Object> getArguments() { return arguments; }
+    /**
+     * Returns the {@link #method}.
+     * @return      {@link #method}
+     */
     public Method getMethod() { return method; }
+    /**
+     * Returns the {@link #requirements}.
+     * @return      {@link #requirements}
+     */
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
-    public boolean getValid() { return valid; }
-
+    /**
+     * returns the output of the (method)[] - ADD A LINK.
+     * <p>First, the game invokes all arguments that are methods and replaces the argument that the method occupied with its output.
+     * Next, the game determines if the (field)[] - ADD A LINK is a Field or a TFMethod. If it is a TFMethod, then it invokes the
+     * method and sets the fieldvalue to the output of the field method (the fieldvalue is a local variable, that is used in invoking
+     * the method). If it is a regular Field, then set fieldvalue to the value that the (field)[] - ADD A LINK stores.</p>
+     * @return      The output of the method.
+     */
     public Object invokeMethod() {
         //Invokes all the arguments that are methods
         if(arguments != null) {
@@ -71,6 +111,21 @@ public class TFMethod {
         return null;
     }
 
+    /**
+     * The method replaces any placeholders ("%ph%") with inputArgs and replaces any placeholders in any arguments that are TFMethods.
+     *
+     * <p>This is only called if it is a child of a ChoiceMethod or a distant child of one.</p>
+     * <p>If everything goes well, the method returns the inputArgsIndex. The method returns -1 if there were not enough inputArgs to
+     * fill the (arguments)[] - ADD A LINK array to the correct size (The size of the (argumentTypes)[] - ADD A LINK array).</p>
+     * <p>If an argument (not the inputArgs) is null, the game just places null into the new methodArgs array.</p>
+     * <p>If an argument is just a regular argument, the game just places the argument into the new methodArgs array.</p>
+     * <p>If an argument is a TFMethod, thez the game invokes putInputInArguments() on it (Replaces placeholders with the inputArgs).
+     * If a -1 is returned from this, then return a -1, because that means there is a problem. If an argument is a placeholder ("%ph%"),
+     * then the game does inputArgs.get(inputArgsIndex), casts the output to the (argumentType), and increases inputArgsIndex by one.
+     * When done, (arguments)[] - ADD A LINK is set to methodArgs.</p>
+     * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here). 
+     * If that returns -1, then return -1, because that means there is a problem (Likely from not enough input arguments).</p>
+     */
     public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
         //Returns -1 if there are not enough inputArgs and indicates there is a problem
         if(arguments != null && argumentTypes != null) {
@@ -113,6 +168,11 @@ public class TFMethod {
         return inputArgsIndex;
     }
 
+    /**
+     * resetArguments sets the {@link #arguments} to the {@link #originalArguments}.
+     * The method loops through each argument and invokes resetArguments() on each TFMethod.
+     * It invokes resetArguments() on the field if it is a FieldMethod.
+     */
     public void resetArguments() {
         //Reset the arguments to the original arguments because arguments that are methods may have changed them
         if(arguments != null) {
