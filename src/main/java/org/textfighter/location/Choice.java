@@ -16,8 +16,6 @@ public class Choice {
     private String description;
     /***Stores the usage of this choice.*/
     private String usage;
-    /***Stores whether or not the method is valid (not valid when has not methods).*/
-    private boolean valid = true;
 
     /**
      * Stores the methods of this choice.
@@ -45,11 +43,6 @@ public class Choice {
      * @return      {@link #usage}
      */
     public String getUsage() { return usage; }
-    /**
-     * Returns the {@link #valid}.
-     * @return      {@link #valid}
-     */
-    public boolean getValid() { return valid; }
     /**
      * Returns the {@link #methods}.
      * @return      {@link #methods}
@@ -115,11 +108,7 @@ public class Choice {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        if(methods == null) { valid = false; }
         this.methods = methods;
         this.requirements = requirements;
-        this.output = name + "\n" +
-                        "\tdesc  - " + description + "\n" +
-                        "\tusage - " + usage;
     }
 }

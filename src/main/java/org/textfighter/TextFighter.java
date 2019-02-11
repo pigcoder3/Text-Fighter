@@ -574,7 +574,8 @@ public class TextFighter {
                             String usage = (String)obj.get("usage");
                             if(obj.get("methods") == null) { Display.displayPackError("This choice has no methods. Omitting..."); Display.changePackTabbing(false); continue; }
                             if(choicename == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
-                            choices.add(new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class)));
+                            Choice c = new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class)); 
+                            if(c.getMethods() != null && c.getMethods().size() > 0) { choices.add(c) ; }
                             Display.changePackTabbing(false);
                         }
                     }
@@ -668,7 +669,8 @@ public class TextFighter {
                     if(enemyActionArray != null && enemyActionArray.size() > 0) {
                         for (int i=0; i<enemyActionArray.size(); i++) {
                             JSONObject obj = (JSONObject)enemyActionArray.get(i);
-                            enemyActions.add(new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), Enemy.class)));
+                            EnemyAction a = new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), Enemy.class));
+                            if(a.getMethods() != null && a.getMethods().size() > 1) { enemyActions.add(a); }
                         }
                     }
                     //Add the enemy to the enemies arraylist
@@ -683,7 +685,6 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            //
             directory=enemyDir;
             parsingPack=false;
         }

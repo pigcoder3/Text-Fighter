@@ -121,7 +121,7 @@ public class Reward {
 
     //Reset the arguments to the original arguments because arguments that are methods may have changed them
     /**
-     * Sets the {@link #arguments} to the {@link originalArguments}.
+     * Sets the {@link #arguments} to the {@link #originalArguments}.
      * The method loops through each argument and invokes resetArguments() on each TFMethod.
      * It invokes resetArguments() on the field if it is a FieldMethod.
      */
