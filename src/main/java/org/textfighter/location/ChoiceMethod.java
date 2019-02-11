@@ -12,25 +12,73 @@ import java.util.ArrayList;
 
 public class ChoiceMethod {
 
+    /***Stores the method*/
     private Method method;
+    /**
+     * Stores the field
+     * <p>Can be a Field or a FieldMethod.</p>
+     */
     private Object field;
+    /**
+     * Stores the arguments.
+     * <p>Set to an empty ArrayList of Objects.</p>
+     */
     private ArrayList<Object> arguments = new ArrayList<Object>();
+    /**
+     * Stores the arguments that are originally given to the ChoiceMethod.
+     * <p>Set to an empty ArrayList of Objects.</p>
+     */
     private ArrayList<Object> originalArguments = new ArrayList<Object>();
+    /**
+     * Stores the classes of the {@link #arguments} and corresponds by index.
+     * <p>Set to an empty ArrayList of Classes.
+     */
     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
+    /**
+     * Stores the requirements of this ChoiceMethod.
+     * <p>Set to an empty ArrayList of Requirements.
+     */
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
-    private boolean valid;
-
+    /**
+     * Returns the {@link #method}.
+     * @return      {@link #method}
+     */
     public Method getMethod() { return method; }
+    /**
+     * Returns the {@link #field}.
+     * @return      {@link #field}
+     */
     public Object getField() { return field; }
+    /**
+     * Returns the {@link #arguments}.
+     * @return      {@link #arguments}
+     */
     public ArrayList<Object> getArguments() { return arguments; }
-    public void setArguments(ArrayList<Object> args) { arguments=args; }
+    /**
+     * Returns the {@link #originalArguments}.
+     * @return      {@link #originalArguments}
+     */
     public ArrayList<Object> getOriginalArguments() { return originalArguments; }
+    /**
+     * Returns the {@link #argumentTypes}.
+     * @return      {@link #argumentTypes}
+     */
     public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
+    /**
+     * Returns the {@link #requirements}.
+     * @return      {@link #requirements}
+     */
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
-    public boolean getValid() { return valid; }
-
+    /**
+     * returns the output of the method.
+     * <p>First, the game invokes all arguments that are methods and replaces the argument that the method occupied with its output.
+     * Next, the game determines if the field is a Field or a FieldMethod. If it is a FieldMethod, then it invokes the
+     * method and sets the fieldvalue to the output of the field method (the fieldvalue is a local variable, that is used in invoking
+     * the method). If it is a regular Field, then set fieldvalue to the value that the {@link #field} stores.</p>
+     * @return      The output of the method.
+     */
     public boolean invokeMethod() {
         //Invokes all the arguments that are methods
         if(arguments != null) {
@@ -74,6 +122,24 @@ public class ChoiceMethod {
         return false;
     }
 
+    /**
+     * The method replaces any placeholders ("%ph%") with inputArgs and replaces any placeholders in any arguments that are TFMethods.
+     *
+     * <p>This is only called if it is a child of a ChoiceMethod or a distant child of one.</p>
+     * <p>If everything goes well, the method returns the inputArgsIndex. The method returns -1 if there were not enough inputArgs to
+     * fill the {@link #arguments} array to the correct size (The size of the {@link #argumentTypes}).</p>
+     * <p>If an argument (not the inputArgs) is null, the game just places null into the new methodArgs array.</p>
+     * <p>If an argument is just a regular argument, the game just places the argument into the new methodArgs array.</p>
+     * <p>If an argument is a TFMethod, thez the game invokes putInputInArguments() on it (Replaces placeholders with the inputArgs).
+     * If a -1 is returned from this, then return a -1, because that means there is a problem. If an argument is a placeholder ("%ph%"),
+     * then the game does inputArgs.get(inputArgsIndex), casts the output to the (argumentType), and increases inputArgsIndex by one.
+     * When done, {@link #arguments} is set to methodArgs.</p>
+     * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here).
+     * If that returns -1, then return -1, because that means there is a problem (Likely from not enough input arguments).</p>
+     * @param inputArgs         The arraylist of the player's input arguments.
+     * @param inputArgsIndex    The current index of the inputArgs arraylist argument.
+     * @return                  The inputArgsIndex after input arguments have been put into the arguments.
+     */
     public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
         //returns -1 if there are not enough arguments and there is a problem
         if(arguments != null && argumentTypes != null) {
@@ -116,11 +182,16 @@ public class ChoiceMethod {
         return inputArgsIndex;
     }
 
+    /**
+     * resetArguments sets the {@link #arguments} to the {@link #originalArguments}.
+     * The method loops through each argument and invokes resetArguments() on each TFMethod.
+     * It invokes resetArguments() on the field if it is a FieldMethod.
+     */
     public void resetArguments() {
         if(arguments != null) {
             for(Object o : arguments) {
                 if(o == null) { continue; }
-                //If the argument is a method, then reset its methods
+                //If the argument is a method, then reset arguments
                 if(o.getClass().equals(TFMethod.class)) {
                     ((TFMethod)o).resetArguments();
                 }

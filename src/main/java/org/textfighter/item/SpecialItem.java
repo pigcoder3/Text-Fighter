@@ -8,16 +8,45 @@ import java.util.ArrayList;
 
 public class SpecialItem extends Item {
 
+    /**
+     * Stores the default name for special items.
+     * <p>Set to "specialItemName".</p>
+     */
     public static String defaultName = "specialItemName";
+    /**
+     * Stores the default description for special items.
+     * <p>Set to "A special item".</p>
+     */
     public static String defaultDescription = "A special item";
 
-    private final String ITEMTYPE = "tool";
+    /**
+     * Stores the item type for tools. Cannot be changed.
+     * <p>Set to "tool".</p>
+     */
+    private final String ITEMTYPE = "specialitem";
+    /**
+     * Stores the name of this special item.
+     * <p>Set to {@link #defaultName}.</p>
+     */
     private String name = defaultName;
+    /**
+     * Stores the description of this special item.
+     * <p>Set to {@link #defaultDescription}.</p>
+     */
     protected String description = defaultDescription;
 
-    //Custom variable stuff
+    /**
+     * Stores the custom variables for this special item.
+     * <p>Set to an empty ArrayList of CustomVariables.</p>
+     */
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
+    /**
+     * Returns the value of the custom variable in {@link #customVariables} with the name given.
+     * <p>If name is null, or no variable with that name is found, return null.</p>
+     * @param name  The name of the custom variable.
+     * @return      The value of the customvariable with the name given. If no name given or one not found, return null.
+     */
     public Object getCustomVariableFromName(String name) {
         if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
@@ -25,6 +54,12 @@ public class SpecialItem extends Item {
         }
         return null;
     }
+    /**
+     * Sets the value of the variable in {@link #customVariables} with the name given.
+     * <p>If no name given, then dont do anything.</p>
+     * @param name      The name of the custom variable.
+     * @param value     The value that the custom variable will be set to.
+     */
     public void setCustomVariableByName(String name, Object value) {
         if(name == null) { return; }
         for(CustomVariable cv : customVariables) {
@@ -33,18 +68,48 @@ public class SpecialItem extends Item {
     }
 
     //Basic info methods
+    /**
+     * Returns the {@link #ITEMTYPE}.
+     * @return       {@link #ITEMTYPE}
+     */
     public String getItemType() { return ITEMTYPE; }
+    /**
+     * Returns the {@link #ITEMTYPE}.
+     * @return       {@link #ITEMTYPE}
+     */
     public String getName() { return name; }
+    /**
+     * Sets the value of {@link #name}.
+     * <p>If the name given is null, then dont do anything.</p>
+     * @param s     The new value.
+     */
     public void setName(String s) { name=s; if(name == null) { name=defaultName; }}
+    /**
+     * Returns the {@link #description}.
+     * @return       {@link #description}
+     */
     public String getDescription() { return description; }
+    /**
+     * Sets the value of {@link #description}.
+     * <p>If the value is null, then set the description to the {@link #defaultDescription}.</p>
+     * @param s     The new value.
+     */
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
     //Get the output of just the type and durability
+    /**
+     * Returns the {@link #name}, {@link #ITEMTYPE}.
+     * @return      {@link #name}, {@link #ITEMTYPE}
+     */
     public String getSimpleOutput(){
         return name + " -\n" +
                "  type:  " + ITEMTYPE + "\n";
     }
     //Get the output of all the variables
+    /**
+     * Returns the {@link #name}, {@link #description}, {@link #ITEMTYPE}, and any {@link #customVariables} with inOutput to true.
+     * @return       {@link #name}, {@link #description}, {@link #ITEMTYPE}, and any {@link #customVariables} with inOutput to true.
+     */
     public String getOutput() {
         String output = name + " -\n" +
                         "  desc:  " + description + "\n" +

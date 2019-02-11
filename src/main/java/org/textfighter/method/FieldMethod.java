@@ -15,19 +15,51 @@ import java.lang.reflect.*;
 
 public class FieldMethod {
 
+    /***Stores the arguments of the method.*/
     private ArrayList<Object> arguments;
+    /***Stores all types of the arguments that correspond by index*/
     private ArrayList<Class> argumentTypes;
+    /***Stores the original arguments that are given when the FieldMethod is created*/
     private ArrayList<Object> originalArguments;
+    /***Stores the method*/
     private Method method;
+    /***Stores the field*/
     private Object field;
 
+    /**
+     * Returns the {@link #method}.
+     * @return      {@link #method}
+     */
     public Method getMethod() { return method; }
+    /**
+     * Returns the {@link #field}.
+     * @return      {@link #field}
+     */
     public Object getField() { return field; }
+    /**
+     * Returns the {@link #arguments}.
+     * @return      {@link #arguments}
+     */
     public ArrayList<Object> getArguments() { return arguments; }
-    public void setArguments(ArrayList<Object> args) { arguments=args; }
+    /**
+     * Returns the {@link #originalArguments}.
+     * @return      {@link #originalArguments}
+     */
     public ArrayList<Object> getOriginalArguments() { return originalArguments; }
+    /**
+     * Returns the {@link #argumentTypes}.
+     * @return      {@link #argumentTypes}
+     */
     public ArrayList<Class> getArgumentTypes() { return argumentTypes; }
 
+    /**
+     * returns the output of the method.
+     * <p>First, the game invokes all arguments that are methods and replaces the argument that the method occupied with its output.
+     * Next, the game determines if the field is a Field or a FieldMethod. If it is a FieldMethod, then it invokes the
+     * method and sets the fieldvalue to the output of the field method (the fieldvalue is a local variable, that is used in invoking
+     * the method). If it is a regular Field, then set fieldvalue to the value that the {@link #field} stores.</p>
+     * @return      The output of the method.
+     */
     public Object invokeMethod() {
         //Invokes all the arguments that are methods and sets the argument to the output
         if(arguments != null) {
@@ -73,6 +105,24 @@ public class FieldMethod {
         return null;
     }
 
+    /**
+     * The method replaces any placeholders ("%ph%") with inputArgs and replaces any placeholders in any arguments that are TFMethods.
+     *
+     * <p>This is only called if it is a child of a ChoiceMethod or a distant child of one.</p>
+     * <p>If everything goes well, the method returns the inputArgsIndex. The method returns -1 if there were not enough inputArgs to
+     * fill the {@link #arguments} array to the correct size (The size of the {@link #argumentTypes}).</p>
+     * <p>If an argument (not the inputArgs) is null, the game just places null into the new methodArgs array.</p>
+     * <p>If an argument is just a regular argument, the game just places the argument into the new methodArgs array.</p>
+     * <p>If an argument is a TFMethod, thez the game invokes putInputInArguments() on it (Replaces placeholders with the inputArgs).
+     * If a -1 is returned from this, then return a -1, because that means there is a problem. If an argument is a placeholder ("%ph%"),
+     * then the game does inputArgs.get(inputArgsIndex), casts the output to the (argumentType), and increases inputArgsIndex by one.
+     * When done, {@link #arguments} is set to methodArgs.</p>
+     * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here).
+     * If that returns -1, then return -1, because that means there is a problem (Likely from not enough input arguments).</p>
+     * @param inputArgs         The arraylist of the player's input arguments.
+     * @param inputArgsIndex    The current index of the inputArgs arraylist argument.
+     * @return                  The inputArgsIndex after input arguments have been put into the arguments.
+     */
     public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
         //Return -1 if there are not enough inputarguments or an argument is incorrect and indicates there is a problem
         if(arguments != null && argumentTypes != null) {
@@ -115,6 +165,11 @@ public class FieldMethod {
         return inputArgsIndex;
     }
 
+    /**
+     * resetArguments sets the {@link #arguments} to the {@link #originalArguments}.
+     * The method loops through each argument and invokes resetArguments() on each TFMethod.
+     * It invokes resetArguments() on the field if it is a FieldMethod.
+     */
     public void resetArguments() {
         if(arguments != null) {
             for(Object o : arguments) {

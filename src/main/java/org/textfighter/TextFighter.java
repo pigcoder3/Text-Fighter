@@ -50,7 +50,6 @@ chose.
  * @version     0.2.5
  */
 
-
 public class TextFighter {
 
     // Pack testing variables

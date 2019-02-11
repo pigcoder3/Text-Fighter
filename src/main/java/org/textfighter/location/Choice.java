@@ -10,25 +10,74 @@ import java.util.*;
 
 public class Choice {
 
+    /***Stores the name of this choice.*/
     private String name;
+    /***Stores the description of this choice.*/
     private String description;
+    /***Stores the usage of this choice.*/
     private String usage;
-    private String output;
-
+    /***Stores whether or not the method is valid (not valid when has not methods).*/
     private boolean valid = true;
 
+    /**
+     * Stores the methods of this choice.
+     * <p>Set to an empty ArrayList of ChoiceMethods.</p>
+     */
     private ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
+    /**
+     * Stores the requirements of this choice.
+     * <p>Set to an empty ArrayList of Requirements.</p>
+     */
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
+    /**
+     * Returns the {@link #name}.
+     * @return      {@link #name}
+     */
     public String getName() { return name; }
+    /**
+     * Returns the {@link #usage}.
+     * @return      {@link #usage}
+     */
     public String getDescription() { return description; }
+    /**
+     * Returns the {@link #usage}.
+     * @return      {@link #usage}
+     */
     public String getUsage() { return usage; }
-    public String getOutput() { return output; }
-    public void setOutput(String o) { output = o;}
+    /**
+     * Returns the {@link #valid}.
+     * @return      {@link #valid}
+     */
     public boolean getValid() { return valid; }
+    /**
+     * Returns the {@link #methods}.
+     * @return      {@link #methods}
+     */
     public ArrayList<ChoiceMethod> getMethods() { return methods; }
+    /**
+     * Returns the {@link #requirements}.
+     * @return      {@link #requirements}
+     */
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
+    /**
+     * Returns the name, description, and usage of the choice.
+     * @return      name, description, and usage
+     */
+    public String getOutput() {
+        return name + "\n" +
+            "\tdesc  - " + description + "\n" +
+            "\tusage - " + usage;
+    }
+
+    /**
+     * Puts the arguments in the {@link #methods} and invokes them.
+     * <p>First loops through the {@link #methods} and puts arguments in placeholders and then invokes them.
+     * If there is a problem with invoking the methods, then say so and print out the usage.</p>
+     * @param inputArgs     The player's input arguments.
+     * @return              Returns whether or not successful.
+     */
     public boolean invokeMethods(ArrayList<String> inputArgs) {
         int inputArgsIndex = 0;
         for(ChoiceMethod cm : methods) {

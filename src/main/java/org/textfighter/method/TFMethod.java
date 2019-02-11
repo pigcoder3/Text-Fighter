@@ -34,12 +34,12 @@ public class TFMethod {
     private Method method;
     /**
      * Stores the Object that the {@link #method} will be invoked on.
-     * </p>Fields can be of the field class or TFMethods that return a value that is then used as the field.</p>
+     * <p>Fields can be of the field class or TFMethods that return a value that is then used as the field.</p>
      */
     private Object field;
     /**
      * Stores the requirements of the method (Only used in premethods and postmethods of locations and enemies).
-     * </p>These are used to determine if the conditions are right for the method to be invoked.
+     * <p>These are used to determine if the conditions are right for the method to be invoked.
      */
     private ArrayList<Requirement> requirements;
 
@@ -60,11 +60,11 @@ public class TFMethod {
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
     /**
-     * returns the output of the (method)[] - ADD A LINK.
+     * returns the output of the method.
      * <p>First, the game invokes all arguments that are methods and replaces the argument that the method occupied with its output.
-     * Next, the game determines if the (field)[] - ADD A LINK is a Field or a TFMethod. If it is a TFMethod, then it invokes the
+     * Next, the game determines if the field is a Field or a FieldMethod. If it is a FieldMethod, then it invokes the
      * method and sets the fieldvalue to the output of the field method (the fieldvalue is a local variable, that is used in invoking
-     * the method). If it is a regular Field, then set fieldvalue to the value that the (field)[] - ADD A LINK stores.</p>
+     * the method). If it is a regular Field, then set fieldvalue to the value that the {@link #field} stores.</p>
      * @return      The output of the method.
      */
     public Object invokeMethod() {
@@ -116,15 +116,18 @@ public class TFMethod {
      *
      * <p>This is only called if it is a child of a ChoiceMethod or a distant child of one.</p>
      * <p>If everything goes well, the method returns the inputArgsIndex. The method returns -1 if there were not enough inputArgs to
-     * fill the (arguments)[] - ADD A LINK array to the correct size (The size of the (argumentTypes)[] - ADD A LINK array).</p>
+     * fill the {@link #arguments} array to the correct size (The size of the {@link #argumentTypes}).</p>
      * <p>If an argument (not the inputArgs) is null, the game just places null into the new methodArgs array.</p>
      * <p>If an argument is just a regular argument, the game just places the argument into the new methodArgs array.</p>
      * <p>If an argument is a TFMethod, thez the game invokes putInputInArguments() on it (Replaces placeholders with the inputArgs).
      * If a -1 is returned from this, then return a -1, because that means there is a problem. If an argument is a placeholder ("%ph%"),
      * then the game does inputArgs.get(inputArgsIndex), casts the output to the (argumentType), and increases inputArgsIndex by one.
-     * When done, (arguments)[] - ADD A LINK is set to methodArgs.</p>
-     * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here). 
+     * When done, {@link #arguments} is set to methodArgs.</p>
+     * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here).
      * If that returns -1, then return -1, because that means there is a problem (Likely from not enough input arguments).</p>
+     * @param inputArgs         The arraylist of the player's input arguments.
+     * @param inputArgsIndex    The current index of the inputArgs arraylist argument.
+     * @return                  The inputArgsIndex after input arguments have been put into the arguments.
      */
     public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
         //Returns -1 if there are not enough inputArgs and indicates there is a problem

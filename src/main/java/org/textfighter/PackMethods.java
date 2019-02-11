@@ -16,6 +16,7 @@ public class PackMethods {
     /**
      * Returns all of the simple outputs from all items of the given type in the player's inventory.
      * <p>If the type is null or "all", then the method returns simple outputs of all items in the player's inventory.</p>
+     * @param type  The type of the item. If null is given, then searches for all types.
      * @return      All of the item simple outputs of the given type in the player's inventory all put into one ArrayList.
      */
     public static ArrayList<String> getAllItemSimpleOutputsFromInventory(String type) {
@@ -37,9 +38,10 @@ public class PackMethods {
     /**
      * Returns all of the outputs from all items of the given type in the player's inventory.
      * <p>If the type is null or "all", then the method returns outputs of all items in the player's inventory.</p>
+     * @param type  The type of the item. If null is given, then searches for all types.
      * @return      All of the item outputs of the given type in the player's inventory all put into one ArrayList.
      */
-    public static String getAllItemOutputsFromInventory(String type) {
+    public static ArrayList<String> getAllItemOutputsFromInventory(String type) {
         if(type == null) { type = "all";}
         //If type equals "all", then get all things
         ArrayList<String> outputs = new ArrayList<String>();
@@ -57,10 +59,15 @@ public class PackMethods {
     }
 
     //These next two get the outputs of the items in the arrays that store all of them
-    public static String getAllItemSimpleOutputs(String type) {
+    /** Returns all of the outputs of all items in the TextFighter item arraylists.
+     * <p>If the type is null or "all", then the method returns the outputs of all items.</p>
+     * @param type  The type of the item. If null is given, then searches for all types.
+     * @return      all of the outputs of all items in the TextFighter item arraylists.
+     */
+    public static ArrayList<String> getAllItemSimpleOutputs(String type) {
         if(type == null) { type = "all";}
         //If type equals "all", then get all things
-        String s = "";
+        ArrayList<String> outputs = new ArrayList<String>();
         if(type.equals("armor") || type.equals("all")) {
             for(Armor i : TextFighter.armors) {
                 s=s+i.getSimpleOutput();
@@ -78,12 +85,18 @@ public class PackMethods {
                 s=s+i.getSimpleOutput();
             }
         }
-        return s;
+        return outputs;
     }
-    public static String getAllItemOutputs(String type) {
+    //These next two get the outputs of the items in the arrays that store all of them
+    /** Returns all of the outputs of all items in the TextFighter item arraylists.
+     * <p>If the type is null or "all", then the method returns the outputs of all items.</p>
+     * @param type  The type of the item. If null is given, then searches for all types.
+     * @return      all of the outputs of all items in the TextFighter item arraylists.
+     */
+    public static ArrayList<String> getAllItemOutputs(String type) {
         if(type == null) { type = "all";}
         //If type equals "all", then get all things
-        String s = "";
+        ArrayList<String> outputs = new ArrayList<String>();
         if(type.equals("armor") || type.equals("all")) {
             for(Armor i : TextFighter.armors) {
                 s=s+i.getOutput();
@@ -101,11 +114,20 @@ public class PackMethods {
                 s=s+i.getOutput();
             }
         }
-        return s;
+        return outputs;
     }
 
+    /**
+     * Returns the output of an item with the given name and type from TextFighter's item arraylists.
+     * <p> If name or type is null, return null. </p>
+     * <p>Note that there is no equivalent method for getting from the inventory because item values do not change after they are cloned to it.</p>
+     * @param name  The name of the item. If null is given, then returns null.
+     * @param type  The type of the item. If null is given, then returns null.
+     * @return      output of an item with the given name and type from TextFighter's item arraylists. If name or type is null, return null.
+     */
     public static String getOutputByNameAndType(String name, String type) {
         if(name == null || type == null) { return ""; }
+        //Note that getting from the inventory is uneccessary because items values do not change after they are cloned to it.
         if(type.equals("armor")) {
             for(Armor i : TextFighter.armors) {
                 if(i.getName().equals(name)) {
@@ -134,6 +156,10 @@ public class PackMethods {
         return "";
     }
 
+    /**
+     * Returns all of the possible choice outputs of the player's location.
+     * @return      The possible choice outputs of the location of the player.
+     */
     public static ArrayList<String> getChoiceOutputs() {
         //Returns all of the current possible choice outputs
         //The outputs give the name, description, and usage
@@ -152,7 +178,15 @@ public class PackMethods {
 
 
     //Save methods
+    /**
+     * Returns whether or not the save directory has any json files in it.
+     * @return      If any saves are in the save directory.
+     */
     public static boolean areThereAnySaves() { return(getSaveFiles().size() > 0); }
+    /**
+     * Returns an arraylist of strings containing all of the names of the saves in the saves directory.
+     * @return      An arraylist of strings containing all of the names of the saves in the saves directory.
+     */
     public static ArrayList<String> getSaveFiles() {
         ArrayList<String> filteredSaves = new ArrayList<String>();
         for(String s : TextFighter.savesDir.list()) {
@@ -166,6 +200,7 @@ public class PackMethods {
     }
 
     //Enemy methods
+    /*** Sets the possible enemies arraylist in TextFighter with enemies that meet their requirements for the player to fight.*/
     public static void setPossibleEnemies() {
         ArrayList<Enemy> possible = new ArrayList<Enemy>();
         for(Enemy e : TextFighter.enemies) {
@@ -187,6 +222,10 @@ public class PackMethods {
         }
         TextFighter.possibleEnemies = possible;
     }
+    /**
+     * Returns an ArrayList of Strings containing the outputs of all enemies in TextFighter's possibleEnemies arraylist.
+     * @return      An ArrayList of Strings containing the outputs of all enemies in TextFighter's possibleEnemies arraylist.
+     */
     public static ArrayList<String> getPossibleEnemyOutputs() {
         setPossibleEnemies();
         ArrayList<String> outputs = new ArrayList<String>();
@@ -197,6 +236,15 @@ public class PackMethods {
     }
 
     //Moves the player
+    /**
+     * moves the player to a new location.
+     * <p> If the given location name is null, then return false (signaling failure).
+     * If a location with the name given does not exist, return false (signaling failure).</p>
+     * <p>the game invokes all possible postmethods of the previous location, sets the new location,
+     * then invokes the possible premethods of the new location.</p>
+     * @param location  The name of the location.
+     * @return          Whether or not the move was successful.
+     */
     public static boolean movePlayer(String location) {
         if(TextFighter.player.getLocation() != null && location.equals(TextFighter.player.getLocation())) { return true; }
         for(Location l : TextFighter.locations) {
@@ -215,6 +263,14 @@ public class PackMethods {
 
 
     //Calculation methods
+    /**
+     * Does calculations on the integers given using the given operator. Only takes ints.
+     * <p>Calculations should be "+","-","*","/". If none of these are given, then 0 is returned.</p>
+     * @param value1        The first integer.
+     * @param calculation   The operator (+,-,*,/).
+     * @param value2        The second integer.
+     * @return              The value calculated from the two integers.
+     */
     public static int calculateFromTwoIntegers(int value1, String calculation, int value2) {
         if(calculation != null) {
             switch(calculation) {
@@ -233,6 +289,14 @@ public class PackMethods {
         return 0;
     }
 
+    /**
+     * Does calculations on the integers given using the given operator. Only takes doubless.
+     * <p>Calculations should be "+","-","*","/". If none of these are given, then 0 is returned.</p>
+     * @param value1        The first double.
+     * @param comparison   The operator (+,-,*,/).
+     * @param value2        The second double.
+     * @return              The value calculated from the two doubles.
+     */
     public static double calculateFromTwoDoubles(double value1, String comparison, double value2) {
         if(comparison != null) {
             switch(comparison) {
@@ -252,8 +316,23 @@ public class PackMethods {
     }
 
     //comparison methods
+    /**
+     * Compares the two String given.
+     * <p>If either string given is null, then false is returned.</p>
+     * @param value1        The first string.
+     * @param value2        The second string.
+     * @return              Whether or not the two string are equal.
+     */
     public static boolean variableComparison(String value1, String value2) { if(value1 == null || value2 == null) { return false; } return(value1.equals(value2)); } //No comparison operator necessary because you can only do '=' on strings
 
+    /**
+     * Compares the doubless given using the given operator. Only takes doubles.
+     * <p>comparison should be equals, less than, more than, less than or equal, more than or equal. If none of these are given, then false is returned.</p>
+     * @param value1        The first double.
+     * @param comparison   The comparison operator.
+     * @param value2        The second double.
+     * @return              whether or not the comparison returned true.
+     */
     public static boolean variableComparison(double value1, String comparison, double value2) {
 
         //Make the comparison
@@ -276,6 +355,14 @@ public class PackMethods {
         return false;
     }
 
+    /**
+     * Compares the ints given using the given operator. Only takes ints.
+     * <p>comparison should be equals, less than, more than, less than or equal, more than or equal. If none of these are given, then false is returned.</p>
+     * @param value1        The first integer.
+     * @param comparison   The comparison operator.
+     * @param value2        The second integer.
+     * @return              whether or not the comparison returned true.
+     */
     public static boolean variableComparison(int value1, String comparison, int value2) {
 
         //Make the comparison
