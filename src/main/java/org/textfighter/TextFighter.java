@@ -574,7 +574,7 @@ public class TextFighter {
                             String usage = (String)obj.get("usage");
                             if(obj.get("methods") == null) { Display.displayPackError("This choice has no methods. Omitting..."); Display.changePackTabbing(false); continue; }
                             if(choicename == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
-                            Choice c = new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class)); 
+                            Choice c = new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class));
                             if(c.getMethods() != null && c.getMethods().size() > 0) { choices.add(c) ; }
                             Display.changePackTabbing(false);
                         }
@@ -658,6 +658,7 @@ public class TextFighter {
                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading enemy '" + name + "'");
                     Display.changePackTabbing(true);
+                    String description = Enemy.defaultDescription;          if(enemyFile.get("description") != null){       description=(String)enemyFile.get("description");}
                     int health = Enemy.defaultHp;                           if(enemyFile.get("health") != null){            health=Integer.parseInt((String)enemyFile.get("health"));}
                     int maxhealth = Enemy.defaultMaxhp;                     if(enemyFile.get("maxhp") != null){             maxhealth=Integer.parseInt((String)enemyFile.get("maxhp"));}
                     int strength = Enemy.defaultStrength;                   if(enemyFile.get("strength") != null){          strength=Integer.parseInt((String)enemyFile.get("strength"));}
@@ -674,9 +675,8 @@ public class TextFighter {
                         }
                     }
                     //Add the enemy to the enemies arraylist
-                    enemies.add(new Enemy(name, health, strength, levelRequirement,
+                    enemies.add(new Enemy(name, description, health, strength, levelRequirement, finalBoss,
                                 loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class),
-                                Boolean.parseBoolean((String)enemyFile.get("finalBoss")),
                                 loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class),
                                 loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class),
                                 loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class),
@@ -1110,11 +1110,12 @@ public class TextFighter {
                     if(valuesFile.get("healthPotions") != null) {                   Player.defaultHealthPotions = Integer.parseInt((String)valuesFile.get("healthPotions")); }
                     if(valuesFile.get("strengthPotions") != null) {                 Player.defaultStrength = Integer.parseInt((String)valuesFile.get("strengthPotions")); }
                     if(valuesFile.get("invincibilityPotions") != null) {            Player.defaultInvincibilityPotions = Integer.parseInt((String)valuesFile.get("invincibilityPotions")); }
-                    if(valuesFile.get("hpHealthPotionsGive") != null) {             Player.hpHealthPotionsGive = Integer.parseInt((String)valuesFile.get("hpHealthPotionsGive")); }
-                    if(valuesFile.get("turnsStrengthPotionsGive") != null) {        Player.turnsStrengthPotionsGive = Integer.parseInt((String)valuesFile.get("turnsStrengthPotionsGive")); }
-                    if(valuesFile.get("turnsInvincibilityPotionsGive") != null) {   Player.turnsInvincibilityPotionsGive = Integer.parseInt((String)valuesFile.get("turnsInvincibilityPotionsGive")); }
+                    if(valuesFile.get("hpHealthPotionsGive") != null) {             Player.defaultHpHealthPotionsGive = Integer.parseInt((String)valuesFile.get("hpHealthPotionsGive")); }
+                    if(valuesFile.get("turnsStrengthPotionsGive") != null) {        Player.defaultTurnsStrengthPotionsGive = Integer.parseInt((String)valuesFile.get("turnsStrengthPotionsGive")); }
+                    if(valuesFile.get("turnsInvincibilityPotionsGive") != null) {   Player.defaultTurnsInvincibilityPotionsGive = Integer.parseInt((String)valuesFile.get("turnsInvincibilityPotionsGive")); }
                     if(valuesFile.get("turnsWithStrengthLeft") != null) {           Player.defaultTurnsWithStrengthLeft = Integer.parseInt((String)valuesFile.get("turnsWithStrengthLeft")); }
                     if(valuesFile.get("turnsWithInvincibilityLeft") != null) {      Player.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvincibilityLeft")); }
+                    if(valuesFile.get("strengthPotionMultiplier") != null) {        Player.defaultStrengthPotionMultiplier = Integer.parseInt((String)valuesFile.get("strengthPotionMultiplier")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             } else if(s.equals("enemy.json")) {
@@ -1710,13 +1711,13 @@ public class TextFighter {
                 if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
                     int number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()*2))+1;
                     if(number > currentEnemy.getPossibleActions().size()) {
-                        currentEnemy.attack(null);
+                        currentEnemy.attack(currentEnemy.getStrength(), null);
                     } else {
                         currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
                     }
                     player.setCanBeHurtThisTurn(true);
                 } else {
-                    currentEnemy.attack(null);
+                    currentEnemy.attack(currentEnemy.getStrength(), null);
                 }
                 currentEnemy.decreaseTurnsWithInvincibilityLeft(1);
                 Display.clearScreen();

@@ -176,16 +176,11 @@ public class Location {
     }
 
     public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postmethods) {
-
         //Sets all variables
         this.name = name;
         this.interfaces = interfaces;
+        this.allChoices = choices;
         this.allPremethods = premethods;
         this.allPostmethods = postmethods;
-
-        //Filters out any invalid choices
-        for(int i=0; i<choices.size(); i++) {
-            if(choices.get(i).getValid()) { allChoices.add(choices.get(i)); }
-        }
     }
 }

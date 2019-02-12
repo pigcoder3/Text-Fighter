@@ -125,7 +125,7 @@ public class Reward {
      * The method loops through each argument and invokes resetArguments() on each TFMethod.
      * It invokes resetArguments() on the field if it is a FieldMethod.
      */
-    public static void resetArguments() {
+    public void resetArguments() {
         if(arguments != null) {
             for(Object o : arguments) {
                 if(o == null) { continue; }

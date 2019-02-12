@@ -11,19 +11,39 @@ import org.textfighter.display.Display;
 
 public class EnemyActionMethod {
 
+    /***Stores the method*/
     private Method method;
+    /***Stores the field*/
     private Object field;
+    /***Stores the arguments of the method.*/
     private ArrayList<Object> arguments = new ArrayList<Object>();
+    /***Stores the original arguments that are given when the FieldMethod is created*/
     private ArrayList<Object> originalArguments = new ArrayList<Object>();
 
-    private boolean valid = true;
-
+    /**
+     * Returns the {@link #method}.
+     * @return      {@link #method}
+     */
     public Method getMethod() { return method; }
+    /**
+     * Returns the {@link #field}.
+     * @return      {@link #field}
+     */
     public Object getField() { return field; }
+    /**
+     * Returns the {@link #arguments}.
+     * @return      {@link #arguments}
+     */
     public ArrayList<Object> getArguments() { return arguments; }
 
-    public boolean getValid() { return valid; }
-
+    /**
+     * returns the output of the method.
+     * <p>First, the game invokes all arguments that are methods and replaces the argument that the method occupied with its output.
+     * Next, the game determines if the field is a Field or a FieldMethod. If it is a FieldMethod, then it invokes the
+     * method and sets the fieldvalue to the output of the field method (the fieldvalue is a local variable, that is used in invoking
+     * the method). If it is a regular Field, then set fieldvalue to the value that the {@link #field} stores.</p>
+     * @return      The output of the method.
+     */
     public boolean invokeMethod() {
         //Invokes all the arguments that are methods and set the argument to its output
         if(arguments != null) {
@@ -67,7 +87,27 @@ public class EnemyActionMethod {
         return false;
     }
 
-    public void resetArguments() { arguments = originalArguments; }
+    /**
+     * resetArguments sets the {@link #arguments} to the {@link #originalArguments}.
+     * The method loops through each argument and invokes resetArguments() on each TFMethod.
+     * It invokes resetArguments() on the field if it is a FieldMethod.
+     */
+    public void resetArguments() {
+        if(arguments != null) {
+            for(Object o : arguments) {
+                if(o == null) { continue; }
+                //If the argument is a method, then reset the arguments
+                if(o.getClass().equals(TFMethod.class)) {
+                    ((TFMethod)o).resetArguments();
+                }
+            }
+        }
+        //If the field is a method, then reset the arguments
+        if(field != null && field.getClass().equals(FieldMethod.class)) {
+            ((FieldMethod)field).resetArguments();
+        }
+        arguments = originalArguments;
+    }
 
     public EnemyActionMethod(Method method, ArrayList<Object> arguments, Object field) {
         this.method = method;

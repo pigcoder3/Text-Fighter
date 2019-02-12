@@ -8,14 +8,26 @@ import java.util.ArrayList;
 
 public class UserInterface {
 
+    /***The name of the interface*/
     private String name;
 
+    /***The raw interface that contains tags*/
     private String unparsedui;
+    /***The parsed ui*/
     private String ui;
 
+    /**
+     * Returns the {@link #name}.
+     * @return      {@link #name}
+     */
     public String getName() { return name; }
+    /**
+     * Returns the {@link #ui}.
+     * @return      {@link #ui}
+     */
     public String getParsedUI() { return ui; }
 
+    /*** Parses interface tags and replaces each tag with the output of that tag's method. Then sets the {@link #ui} to the parsed ui.*/
     public void parseInterface() {
         String uiInProgress = "";
         String currentTag = "";

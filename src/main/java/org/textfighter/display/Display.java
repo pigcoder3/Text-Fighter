@@ -10,35 +10,68 @@ import java.io.*;
 
 public class Display {
 
+    /***The tabbing the is displayed before pack messages, warnings and errors*/
     public static String packTabbing = "";
 
+    /***The prompt*/
     public static String promptString = " > ";
 
-    public static final String[] colorNames = {"black", "red", "green", "yellow", "blue", "purple", "cyan", "white"};
+    /***The name of all colors*/
+    public static final String[] COLORNAMES = {"black", "red", "green", "yellow", "blue", "purple", "cyan", "white"};
 
-    public static final String[] colorCodes = {"\u001B[30m", "\u001B[31m", "\u001B[32m", "\u001B[33m", "\u001B[34m", "\u001B[35m", "\u001B[36m", "\u001B[37m"};
+    /***The name of all color codes. They correspond with the {@link #COLORNAMES} by index.*/
+    public static final String[] COLORCODES = {"\u001B[30m", "\u001B[31m", "\u001B[32m", "\u001B[33m", "\u001B[34m", "\u001B[35m", "\u001B[36m", "\u001B[37m"};
 
+    /***The ansi code for reseting formatting.*/
     public static final String RESET = "\u001B[0m";
+    /***The ansi code for bold text.*/
     public static final String BOLD = "\u001B[1m]";
 
+    /***Stores the previous player command.*/
     public static String previousCommandString = "";
 
-    public static String previousCommand = colorCodes[2];
-    public static String error = colorCodes[1];
-    public static String warning = colorCodes[3];
-    public static String progress = colorCodes[4];
-    public static String output = colorCodes[2];
-    public static String prompt = colorCodes[2];
+    /***The default code for previous command.*/
+    public static String previousCommand = COLORCODES[2];
+    /***The default code for error.*/
+    public static String error = COLORCODES[1];
+    /***The default code for warning.*/
+    public static String warning = COLORCODES[3];
+    /***The default code for progress.*/
+    public static String progress = COLORCODES[4];
+    /***The default code for output.*/
+    public static String output = COLORCODES[2];
+    /***The default code for prompt.*/
+    public static String prompt = COLORCODES[2];
 
+    /***whether or not ansi codes whould be used.*/
     public static boolean ANSI = true;
 
+    /**
+     * Stores all the interface tags.
+     * <p>Set to an empty ArrayList of UiTags.</p>
+     */
     public static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
+    /**
+     * Stores all the interfaces.
+     * <p>Set to an empty ArrayList of UserInterfaces.</p>
+     */
     public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
-    public static UserInterface choiceInterface;
 
+    /**
+     * Returns the {@link #interfaceTags}.
+     * @return      {@link #interfaceTags}
+     */
     public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
+    /**
+     * Returns the {@link #interfaces}.
+     * @return      {@link #interfaces}
+     */
     public static ArrayList<UserInterface> getInterfaces() { return interfaces; }
 
+    /**
+     * Displays an error message.
+     * @param e     The message
+     */
     public static void displayError(String e) {
         // Used for displaying errors such as something could not be found
         if(ANSI) {
@@ -48,6 +81,10 @@ public class Display {
         }
     }
 
+    /**
+     * Displays an error message.
+     * @param e     The message
+     */
     public static void displayPackError(String e) {
         // Displays errors that deal with packs
         if(TextFighter.testMode) {
@@ -59,6 +96,10 @@ public class Display {
         }
     }
 
+    /**
+     * Displays a pack message.
+     * @param e     The message
+     */
     public static void displayPackMessage(String e) {
         // Displays messages that deal with packs
         if(TextFighter.testMode) {
@@ -70,6 +111,10 @@ public class Display {
         }
     }
 
+    /**
+     * Changes the pack tabbing. True increases, false decreases.
+     * @param plusOrMinus   The message
+     */
     public static void changePackTabbing(boolean plusOrMinus) {
         // true: add, false: remove
         if(plusOrMinus) {
@@ -80,6 +125,10 @@ public class Display {
         }
     }
 
+    /**
+     * Displays a warning.
+     * @param e     The message
+     */
     public static void displayWarning(String e) {
         // Displays warnings
         if(ANSI) {
@@ -89,6 +138,10 @@ public class Display {
         }
     }
 
+    /**
+     * Displays an output message.
+     * @param e     The message
+     */
     public static void displayOutputMessage(String e) {
         // Used for displaying messages that explain loading resource progess
         if(ANSI) {
@@ -99,6 +152,10 @@ public class Display {
 
     }
 
+     /**
+     * Displays a loading progress message.
+     * @param e     The message
+     */
     public static void displayProgressMessage(String e) {
         // Used for displaying the output field in TextFighter class
         if(ANSI) {
@@ -108,6 +165,7 @@ public class Display {
         }
     }
 
+    /*** Displays the previous command.*/
     public static void displayPreviousCommand() {
         //Displays the command the user previously inputted
         if(ANSI) {
@@ -117,6 +175,7 @@ public class Display {
         }
     }
 
+    /***Displays the {@link #prompt}.*/
     public static void promptUser() {
         //Displays the prompt
         if(ANSI) {
@@ -126,6 +185,10 @@ public class Display {
         }
     }
 
+    /**
+     * Displays the achievement earned.
+     * @param name      The name of the achievement.
+     */
     public static void achievementEarned(String name) {
         if(ANSI) {
             TextFighter.addToOutput(BOLD + "You have earned the achievement '" + name + "'!" + RESET);
@@ -134,6 +197,7 @@ public class Display {
         }
     }
 
+    /***Resets text styling.*/
     public static void resetColors() {
         //Resets the colors for err and out
         if(ANSI) {
@@ -142,6 +206,7 @@ public class Display {
         }
     }
 
+    /***Clears the screen.*/
     public static void clearScreen() {
         //Puts the character back to the home and clears the screen
         if(ANSI) {
@@ -149,6 +214,10 @@ public class Display {
         }
     }
 
+    /**
+     * Display all the interfaces of the location given (generally uses the player's current location).
+     * @param l     The location.
+     */
     public static void displayInterfaces(Location l) {
         l.filterPossibleChoices();
         for(UserInterface ui : l.getInterfaces()) {
@@ -157,7 +226,15 @@ public class Display {
         }
     }
 
-    //Load the colors from the display file
+    /**
+     * Loads colors from the display file in the config directory.
+     * <p>It loads each color by key and value. The values should correspond with the names
+     * of the colors in {@link #COLORNAMES}, which corresponds with a color code by index.</p>
+     * <p>If a line equals "disable", then colors are disabled. If a line equals "disableWarning",
+     * then the color warning is disabled.</p>
+     * <p>If the color warning is not disabled it will tell the user that, if they are using a console
+     * that does not support ANSI, then ANSI codes will start showing up everywhere, and that they can disable it in the display config file.</p>
+     */
     public static void loadDesiredColors() {
         displayProgressMessage("Loading the display colors...");
         File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/display");
@@ -183,39 +260,39 @@ public class Display {
                 }
                 //Set each field to the value specified by the key
                 if(key.equals("error")) {
-                    for(int i=0; i<colorNames.length; i++) {
-                        if(colorNames[i].equals(value)) {
-                            error = colorCodes[i];
+                    for(int i=0; i<COLORNAMES.length; i++) {
+                        if(COLORNAMES[i].equals(value)) {
+                            error = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("progress")) {
-                    for(int i=0; i<colorNames.length; i++) {
-                        if(colorNames[i].equals(value)) {
-                            progress = colorCodes[i];
+                    for(int i=0; i<COLORNAMES.length; i++) {
+                        if(COLORNAMES[i].equals(value)) {
+                            progress = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("output")) {
-                    for(int i=0; i<colorNames.length; i++) {
-                        if(colorNames[i].equals(value)) {
-                            output = colorCodes[i];
+                    for(int i=0; i<COLORNAMES.length; i++) {
+                        if(COLORNAMES[i].equals(value)) {
+                            output = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("prompt")) {
-                    for(int i=0; i<colorNames.length; i++) {
-                        if(colorNames[i].equals(value)) {
-                            prompt = colorCodes[i];
+                    for(int i=0; i<COLORNAMES.length; i++) {
+                        if(COLORNAMES[i].equals(value)) {
+                            prompt = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("previousCommand")) {
-                    for(int i=0; i<colorNames.length; i++) {
-                        if(colorNames[i].equals(value)) {
-                            previousCommand = colorCodes[i];
+                    for(int i=0; i<COLORNAMES.length; i++) {
+                        if(COLORNAMES[i].equals(value)) {
+                            previousCommand = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("warning")) {
-                    for(int i=0; i<colorNames.length; i++) {
-                        if(colorNames[i].equals(value)) {
-                            warning = colorCodes[i];
+                    for(int i=0; i<COLORNAMES.length; i++) {
+                        if(COLORNAMES[i].equals(value)) {
+                            warning = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("promptString")) {

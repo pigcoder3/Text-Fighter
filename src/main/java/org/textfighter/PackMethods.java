@@ -23,7 +23,7 @@ public class PackMethods {
         if(type == null) { type = "all"; }
         //If type equals "all", then get all things
         ArrayList<String> outputs = new ArrayList<String>();
-        if(TextFighter.player.getInventory() == null) { return "Your inventory is empty"; }
+        if(TextFighter.player.getInventory() == null) { return new ArrayList<String>(); }
         for(Item i : TextFighter.player.getInventory()) {
             //The items must be casted so that they can get their own getSimpleOutput() methods
             if(i.getItemType().equals(type) || type.equals("all")) {
@@ -45,7 +45,7 @@ public class PackMethods {
         if(type == null) { type = "all";}
         //If type equals "all", then get all things
         ArrayList<String> outputs = new ArrayList<String>();
-        if(TextFighter.player.getInventory() == null) { return "Your inventory is empty"; }
+        if(TextFighter.player.getInventory() == null) { return new ArrayList<String>(); }
         for(Item i : TextFighter.player.getInventory()) {
             //The items must be casted so that they can get their own getOutput() methods
             if(i.getItemType().equals(type) || type.equals("all")) {
@@ -70,19 +70,19 @@ public class PackMethods {
         ArrayList<String> outputs = new ArrayList<String>();
         if(type.equals("armor") || type.equals("all")) {
             for(Armor i : TextFighter.armors) {
-                s=s+i.getSimpleOutput();
+                outputs.add(i.getSimpleOutput());
             }
         } if(type.equals("weapon") || type.equals("all")) {
             for(Weapon i : TextFighter.weapons) {
-                s=s+i.getSimpleOutput();
+                outputs.add(i.getSimpleOutput());
             }
         } if(type.equals("tool") || type.equals("all")) {
             for(Tool i : TextFighter.tools) {
-                s=s+i.getSimpleOutput();
+                outputs.add(i.getSimpleOutput());
             }
         } if(type.equals("specialitem") || type.equals("all")) {
             for(SpecialItem i : TextFighter.specialItems) {
-                s=s+i.getSimpleOutput();
+                outputs.add(i.getSimpleOutput());
             }
         }
         return outputs;
@@ -99,19 +99,19 @@ public class PackMethods {
         ArrayList<String> outputs = new ArrayList<String>();
         if(type.equals("armor") || type.equals("all")) {
             for(Armor i : TextFighter.armors) {
-                s=s+i.getOutput();
+                outputs.add(i.getOutput());
             }
         } if(type.equals("weapon") || type.equals("all")) {
             for(Weapon i : TextFighter.weapons) {
-                s=s+i.getOutput();
+                outputs.add(i.getOutput());
             }
         } if(type.equals("tool") || type.equals("all")) {
             for(Tool i : TextFighter.tools) {
-                s=s+i.getOutput();
+                outputs.add(i.getOutput());
             }
         } if(type.equals("specialitem") || type.equals("all")) {
             for(SpecialItem i : TextFighter.specialItems) {
-                s=s+i.getOutput();
+                outputs.add(i.getOutput());
             }
         }
         return outputs;
