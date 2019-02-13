@@ -259,6 +259,7 @@ public class TextFighter {
         ArrayList<Object> argumentsRaw = (JSONArray)obj.get("arguments");
         ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
         ArrayList<Class> argumentTypes = new ArrayList<Class>();
+        ArrayList<Class> parameterArgumentTypes = new ArrayList<Class>(); //Used for getting methods that need Object as a parameter type
         if(type.equals(UiTag.class) && obj.get("tag") != null) { Display.displayPackMessage("Loading tag '" + (String)obj.get("tag") + "'"); }
         String methodString = (String)obj.get("method");
         Display.displayPackMessage("Loading method '" + methodString + "' of type '" + type.getSimpleName() + "'");
@@ -278,17 +279,30 @@ public class TextFighter {
             //Translates the raw argument types to classes
             //0 is String, 1 is int, 2 is double, 3 is boolean, 4 is class
             for (int g=0; g<argumentTypesString.size(); g++) {
+                String argType = argumentTypesString.get(g);
+                if(argType == null) { Display.displayPackError("This methods has a null value for an argument. Omitting..."); }
+                // Check to see if the method recieving these arguments wants an Object
+                if(argType.length() > 1 && argType.substring(0,1) == "!") {
+                    System.out.println("Object");
+                    parameterArgumentTypes.set(g, Object.class);
+                    argumentTypesString.set(g, argType.substring(1, argType.length()));
+                }
                 int num = Integer.parseInt(argumentTypesString.get(g));
                 if(num == 0) {
                     argumentTypes.add(String.class);
+                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(String.class); }
                 } else if(num == 1) {
                     argumentTypes.add(int.class);
+                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(int.class); }
                 } else if(num == 2) {
                     argumentTypes.add(double.class);
+                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(double.class); }
                 } else if(num == 3) {
                     argumentTypes.add(boolean.class);
+                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(boolean.class); }
                 } else if(num == 4) {
                     argumentTypes.add(Class.class);
+                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(Class.class); }
                 } else {
                     Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                     Display.changePackTabbing(false);
@@ -322,7 +336,7 @@ public class TextFighter {
         Method method = null;
         try {
             if(argumentTypes != null ) {
-                method = clazz.getMethod(methodString, argumentTypes.toArray(new Class[argumentTypes.size()]));
+                method = clazz.getMethod(methodString, parameterArgumentTypes.toArray(new Class[parameterArgumentTypes.size()]));
             } else {
                 method = clazz.getMethod(methodString);
             }

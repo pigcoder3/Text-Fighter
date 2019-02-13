@@ -12,7 +12,7 @@ JSON-SIMPLE = lib/json-simple-1.1.1.jar
 #Directories for source and output
 SRCDIR = src
 OUTPUTSRCDIR = bin/main/java
-RESDIR = $(SRCDIR)/main/res
+RESDIR = $(SRCDIR)/res
 RESOUTPUTDIR = bin/main/
 
 #The main class

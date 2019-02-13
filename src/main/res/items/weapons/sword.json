@@ -1,9 +1,0 @@
-{
-
-    "name" : "sword",
-    "description" : "A standard weapon for many rpg games",
-    "damage" : "10",
-    "critchance" : "25",
-    "misschance" : "25"
-
-}
