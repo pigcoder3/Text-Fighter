@@ -1,0 +1,228 @@
+{
+
+    "name" : "fight",
+
+    "interfaces" : [
+
+        "playerStats",
+        "enemyStats",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "attack",
+            "description" : "attacks the enemy",
+            "methods" : [
+                {
+                    "method" : "attack",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["You attacked your enemy."],
+                    "argumentTypes" : ["0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "getCanBeHurtThisTurn",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "attack"
+        },
+        {
+            "name" : "healthPotion",
+            "description" : "uses a health potion, which heals you for 30",
+            "methods" : [
+                {
+                    "method" : "heal",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["30"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You used a health potion and healed yourself 30"],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "decreaseHealthPotions",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getHealthPotions",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                    	},
+                        ">",
+                        "0"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "strengthPotion",
+            "description" : "uses a strength potion, which gives you double strength for 2 turns",
+            "methods" : [
+                {
+                    "method" : "setTurnsWithStrengthLeft",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["2"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You used a strength potion and gave yourself double strength for 2 turns"],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "decreaseStrengthPotions",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclassString" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getStrengthPotions",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">",
+                        "0"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "invincibilityPotion",
+            "description" : "uses a healthPotion",
+            "methods" : [
+                {
+                    "method" : "setTurnsWithInvincibilityLeft",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["2"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You used an invincibility potion and gave yourself invincibility for 2 turns"],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "decreaseInvincibilityPotions",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclassString" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getInvincibilityPotions",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">",
+                        "0"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "bribe",
+            "description" : "Cost: 300 coins, bribe the enemy to let you go",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "spendCoins",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["300"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You bribed your enemy to let you go"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "300"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "nothing",
+            "description" : "do nothing",
+            "methods" : [
+                {
+                    "method" : "doNothing",
+                    "class" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "nothing"
+        }
+    ]
+}

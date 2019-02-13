@@ -54,7 +54,7 @@ public class Player {
      * Default metalScraps.
      * <p>Set to 0.</p>
      */
-    static int defaultMetalscraps = 0;
+    public static int defaultMetalscraps = 0;
 
     /**
      * Default strength.
@@ -67,7 +67,7 @@ public class Player {
      * Default current weapon string.
      * <p>Set to "fists".</p>
      */
-    public static String defaultCurrentWeaponString = "fists";
+    public static String defaultCurrentWeaponName = "fists";
 
     /**
      * Default health potions.
@@ -135,9 +135,9 @@ public class Player {
 
     /**
      * Stores the total protection.
-     * <p>Set to 0.</p>
+     * <p>Set to {@link #totalProtection} and can only go up to 75% protection.</p>
      */
-    private double totalProtection = 0;
+    private double totalProtection = defaultTotalProtection;
 
     /**
      * Stores the equipped weapon.
@@ -285,7 +285,11 @@ public class Player {
     public void setCustomVariableByName(String name, Object value) {
         if(name == null) { return; }
         for(CustomVariable cv : customVariables) {
-            if(cv.getName().equals(name)) { cv.setValue(value); return;}
+            if(cv.getName().equals(name)) {
+                cv.setValue(value);
+                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
+                return;
+            }
         }
     }
 
@@ -344,12 +348,13 @@ public class Player {
      * @return      {@link #totalProtection}
      */
     public double getTotalProtection() { return totalProtection; }
-    /*** Calculates the total protection and sets {@link #totalProtection} to the new amount.*/
+    /*** Calculates the total protection and sets {@link #totalProtection} to the new amount (Can only go up to 75%).*/
     public void calculateTotalProtection() {
         totalProtection=defaultTotalProtection;
         for(Item i : inventory) {
             if(i instanceof Armor) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
+        if(totalProtection > 75) { totalProtection = 75; }
     }
 
     //currentWeapon methods
@@ -362,13 +367,13 @@ public class Player {
      * Gets the {@link #currentWeapon}'s name.
      * @return      {@link #currentWeapon}'s name.
      */
-    public String getCurrentWeaponString() { if(currentWeapon != null) { return currentWeapon.getName(); } else { return null; } }
+    public String getCurrentWeaponName() { if(currentWeapon != null) { return currentWeapon.getName(); } else { return null; } }
     /**
      * Sets {@link #inFight} to the new weapoon with the name given. If the player is not carrying a weapon with that name (with the exception of fists), then don't do anything.
      * @param name  The new weapon's name.
      */
     public void setCurrentWeapon(String name) {
-        if(name == null) { name = defaultCurrentWeaponString; }
+        if(name == null) { name = defaultCurrentWeaponName; }
         if(name == "fists") {
             currentWeapon = TextFighter.getWeaponByName("fists");
             calculateStrength();
@@ -448,7 +453,7 @@ public class Player {
      */
     public void decreaseStrengthPotions(int a) { strengthPotions-=a; if(strengthPotions<0){strengthPotions=0;} TextFighter.needsSaving=true;}
     /*** Sets {@link #turnsWithStrengthLeft} to {@link #defaultTurnsStrengthPotionsGive} and decreases the number of {@link #strengthPotions} by one if the player has one.*/
-    public void useStrengthPotion() { if(strengthPotions < 1) {return;} decreaseStrengthPotions(1); turnsWithStrengthLeft = defaultTurnsStrengthPotionsGive; TextFighter.needsSaving=true;}
+    public void useStrengthPotion() { if(strengthPotions < 1) {return;} decreaseStrengthPotions(1); turnsWithStrengthLeft = defaultTurnsStrengthPotionsGive; calculateStrength(); TextFighter.needsSaving=true;}
     /**
      * Sets the {@link #strengthPotions}.
      * <p>If the new value is less than 0, then it is set to 0.</p>
@@ -621,10 +626,11 @@ public class Player {
      * @param customString  The custom string to be outted next to the default output.
      */
     public void damaged(int a, String customString) {
-        if(!canBeHurtThisTurn || turnsWithInvincibilityLeft>0) { return; }
+        if(!canBeHurtThisTurn || turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
         calculateTotalProtection();
-        if (hp-(a/totalProtection) < 0) { hp = 0; }
-        else { hp-=(a/totalProtection); }
+        hp-=Math.round(a/totalProtection);
+        if(hp < 0) { hp = 0; }
+        if(hp > maxhp) { hp = maxhp; } 
         TextFighter.needsSaving=true;
         if(customString != null) { TextFighter.addToOutput(customString);}
         TextFighter.addToOutput("You have been hurt for " + a + " hp.");
@@ -642,10 +648,15 @@ public class Player {
     public int getMaxHp() { return maxhp; }
     /**
      * Sets the value of {@link #maxhp} to the value given.
-     * <p>If the value given is less than 1, Then set it to 1.</p>
+     * <p>If the value given is less than 1, Then set it to 1. If the new maxhp is less than health, then set the health to the new maxhp.</p>
      * @param a     The new value.
      */
-    public void setMaxHp(int a) { maxhp=a; TextFighter.needsSaving=true; }
+    public void setMaxHp(int a) {
+        maxhp=a;
+        if(maxhp < 1) { maxhp = 0; }
+        if(hp > maxhp) { hp = maxhp; }
+        TextFighter.needsSaving=true;
+    }
 
     //Coins methods
     /**
@@ -654,11 +665,18 @@ public class Player {
      */
     public int getCoins() { return coins; }
     /**
-     * Decreases the {@link #coins}.
+     * Spends {@link #coins}. Do not use this for just decreasing coins.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { coins=0; } TextFighter.needsSaving=true;}
+    public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " coins because you do not have enough"); } TextFighter.needsSaving=true;}
+    /**
+     * Decreases {@link #coins}.
+     * <p>If the bew value is less than 0, set it to 0.</p>
+     * @param a     The amount to increase by.
+     */
+    public void decreaseCoins(int a) { coins-=a; if(coins < 0) { coins=0; } TextFighter.needsSaving = true; }
+
     /**
      * Increases the {@link #coins}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -778,6 +796,7 @@ public class Player {
             if(item != null) {
                 try { inventory.add((Armor)item.clone());  } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
+                calculateTotalProtection(); //Recalculate the total protection because there is more armor
                 TextFighter.needsSaving=true;
             }
         }
@@ -878,15 +897,14 @@ public class Player {
         this.inventory = inventory;
         this.achievements = achievements;
         this.customVariables = customVariables;
-        for(Location l : TextFighter.locations) {
-            if(l.getName().equals("saves")) { this.location = l; }
-        }
         calculateTotalProtection();
+        calculateStrength();
     }
 
     public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables) {
         this.currentWeapon = currentWeapon;
         this.customVariables = customVariables;
+        calculateStrength();
     }
 
     public Player(ArrayList<CustomVariable> customVariables) {

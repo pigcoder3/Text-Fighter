@@ -156,27 +156,6 @@ public class PackMethods {
         return "";
     }
 
-    /**
-     * Returns all of the possible choice outputs of the player's location.
-     * @return      The possible choice outputs of the location of the player.
-     */
-    public static ArrayList<String> getChoiceOutputs() {
-        //Returns all of the current possible choice outputs
-        //The outputs give the name, description, and usage
-        Location l = TextFighter.player.getLocation();
-        ArrayList<String> outputs = new ArrayList<String>();
-        if(l != null && l.getPossibleChoices() != null) {
-            for(Choice c : l.getPossibleChoices()) {
-                if(c.getOutput() != null){
-                    outputs.add(c.getOutput());
-                }
-            }
-        }
-        return outputs;
-    }
-
-
-
     //Save methods
     /**
      * Returns whether or not the save directory has any json files in it.
@@ -199,35 +178,12 @@ public class PackMethods {
         return filteredSaves;
     }
 
-    //Enemy methods
-    /*** Sets the possible enemies arraylist in TextFighter with enemies that meet their requirements for the player to fight.*/
-    public static void setPossibleEnemies() {
-        ArrayList<Enemy> possible = new ArrayList<Enemy>();
-        for(Enemy e : TextFighter.enemies) {
-            boolean valid = true;
-            if(e.getLevelRequirement() <= TextFighter.player.getLevel()) {
-                if(e.getRequirements() != null) {
-                    //Make sure the requirements are met for the player to be able to fight the enemy
-                    for(Requirement r : e.getRequirements()) {
-                        if(!r.invokeMethod()) {
-                            valid=false;
-                            break;
-                        }
-                    }
-                }
-                if(valid) {
-                    possible.add(e);
-                }
-            }
-        }
-        TextFighter.possibleEnemies = possible;
-    }
     /**
      * Returns an ArrayList of Strings containing the outputs of all enemies in TextFighter's possibleEnemies arraylist.
      * @return      An ArrayList of Strings containing the outputs of all enemies in TextFighter's possibleEnemies arraylist.
      */
     public static ArrayList<String> getPossibleEnemyOutputs() {
-        setPossibleEnemies();
+        TextFighter.setPossibleEnemies();
         ArrayList<String> outputs = new ArrayList<String>();
         for(Enemy e : TextFighter.possibleEnemies) {
             outputs.add(e.getOutput());
@@ -246,6 +202,7 @@ public class PackMethods {
      * @return          Whether or not the move was successful.
      */
     public static boolean movePlayer(String location) {
+        if(location == null) { return false; }
         if(TextFighter.player.getLocation() != null && location.equals(TextFighter.player.getLocation())) { return true; }
         for(Location l : TextFighter.locations) {
             if(l.getName().equals(location)) {

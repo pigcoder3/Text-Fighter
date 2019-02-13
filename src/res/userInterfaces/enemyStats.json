@@ -1,0 +1,22 @@
+{
+
+    "name" : "enemyStats",
+
+    "interface" : [
+
+        "----------------------",
+        "      ENEMY STATS     ",
+        "----------------------",
+        " hp: <enemyhp>",
+        " maxhp: <enemymaxhp>",
+        "",
+        " strength: <enemystr>",
+        "",
+        " Turns with Invincibility Left: <enemyTurnsWithInvincibilityLeft>",
+        "",
+        " level requirement: <enemylevelreq>",
+        " difficulty: <enemydifficulty>"
+
+    ]
+
+}

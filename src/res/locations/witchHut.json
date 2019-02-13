@@ -1,0 +1,71 @@
+{
+
+    "name" : "witchHut",
+
+    "interfaces" : [
+        "witchHut",
+        "choices"
+    ],
+
+    "choices" : [
+        {
+            "name" : "invincibilitypotion",
+            "description" : "Cost: 20 magic. Invincibility potions make you invincible for 2 turns",
+            "methods" : [
+                {
+                    "method" : "increaseInvincibilityPotions",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMagic",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["20"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You bought an invincibilityPotion"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMagic",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "20"
+                    ],
+                    "argumentTypes" : ["1", "0", "1"]
+                }
+            ],
+            "usage" : "invincibilitypotion"
+        },
+        {
+            "name" : "back",
+            "description" : "moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}

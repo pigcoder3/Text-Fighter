@@ -25,7 +25,7 @@ public class Display {
     /***The ansi code for reseting formatting.*/
     public static final String RESET = "\u001B[0m";
     /***The ansi code for bold text.*/
-    public static final String BOLD = "\u001B[1m]";
+    public static final String BOLD = "\u001B[1m";
 
     /***Stores the previous player command.*/
     public static String previousCommandString = "";
@@ -56,17 +56,6 @@ public class Display {
      * <p>Set to an empty ArrayList of UserInterfaces.</p>
      */
     public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
-
-    /**
-     * Returns the {@link #interfaceTags}.
-     * @return      {@link #interfaceTags}
-     */
-    public static ArrayList<UiTag> getInterfaceTags() { return interfaceTags; }
-    /**
-     * Returns the {@link #interfaces}.
-     * @return      {@link #interfaces}
-     */
-    public static ArrayList<UserInterface> getInterfaces() { return interfaces; }
 
     /**
      * Displays an error message.
@@ -191,7 +180,7 @@ public class Display {
      */
     public static void achievementEarned(String name) {
         if(ANSI) {
-            TextFighter.addToOutput(BOLD + "You have earned the achievement '" + name + "'!" + RESET);
+            TextFighter.addToOutput(output + BOLD + "You have earned the achievement '" + name + "'!" + RESET);
         } else {
             TextFighter.addToOutput("You have earned the achievement '" + name + "'!");
         }

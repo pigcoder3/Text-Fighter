@@ -179,13 +179,17 @@ public class Enemy implements Cloneable {
     public void setCustomVariableByName(String name, Object value) {
         if(name == null) { return; }
         for(CustomVariable cv : customVariables) {
-            if(cv.getName().equals(name)) { cv.setValue(value); return;}
+            if(cv.getName().equals(name)) {
+                cv.setValue(value);
+                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
+                return;
+            }
         }
     }
 
     /**
      * Returns the output of the basic values.
-     * <p>Returns {@link #name}, {@link description}, {@link difficulty},
+     * <p>Returns {@link #name}, {@link #description}, {@link #difficulty},
      * and if the enemy is a {@link #finalBoss}, then append "  !FINALBOSS!" to the end.</p>
      * @return      The output of basic values.
      */
@@ -199,7 +203,7 @@ public class Enemy implements Cloneable {
 
     /**
      * Returns the output of all values.
-     * <p>Returns {@link #name}, {@link description}, {@link difficulty}, {@link #hp}, {@link #maxhp}, {@link #strength}, {@link #turnsWithInvincibilityLeft} ny {@link #customVariables} with inOutput set to true,
+     * <p>Returns {@link #name}, {@link #description}, {@link #difficulty}, {@link #hp}, {@link #maxhp}, {@link #strength}, {@link #turnsWithInvincibilityLeft} ny {@link #customVariables} with inOutput set to true,
      * and if the enemy is a {@link #finalBoss}, then append "  !FINALBOSS!" to the end.</p>
      * @return      The output of all values
      */
@@ -231,6 +235,12 @@ public class Enemy implements Cloneable {
      */
     public void setName(String n) { if(n != null && n.trim() != null) { name=n; } }
 
+    /**
+     * Return the {@link #description}.
+     * @return      {@link #description}
+     */
+    public String getDescription() { return description; }
+
     //hp methods
     /**
      * Returns the {@link #maxhp}.
@@ -239,10 +249,14 @@ public class Enemy implements Cloneable {
     public int getMaxHp() { return maxhp; }
     /**
      * Sets the value of {@link #maxhp} to the value given.
-     * <p>If the value given is less than 1, Then set it to 1.</p>
+     * <p>If the value given is less than 1, Then set it to 1. If {@link #hp} is more than {@link #maxhp}, then set the health to maxhp.</p>
      * @param a     The new value.
      */
-    public void setMaxHp(int a) { if(a<1) {a=1;}maxhp=a; }
+    public void setMaxHp(int a) {
+        if(a < 1) { a = 1; }
+        maxhp=a;
+        if(hp > maxhp) { hp = maxhp; }
+    }
     /**
      * Returns the {@link #hp}.
      * @return      {@link #hp}
@@ -258,7 +272,8 @@ public class Enemy implements Cloneable {
         if(canBeHurtThisTurn && turnsWithInvincibilityLeft < 1) {
             //If the enemy cannot be hurt, then dont damage it
             hp-=a;
-            if (hp < 1) { hp = 0; }
+            if(hp < 1) { hp = 0; }
+            if(hp > maxhp) { hp = maxhp; }
             if(customString != null) { TextFighter.addToOutput(customString); }
             TextFighter.addToOutput("Your enemy has been hurt for " + a + " hp.");
         } else {
@@ -272,7 +287,8 @@ public class Enemy implements Cloneable {
      */
     public void heal(int a) {
         hp = hp + a;
-        if (hp > maxhp) { hp = 0; } //Make sure the health doesnt go above the maxhealth
+        if(hp > maxhp) { hp = maxhp; } //Make sure the health doesnt go above the maxhealth
+        if(hp < 0) { hp = 0; } 
         TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");
     }
 

@@ -1,0 +1,113 @@
+{
+
+    "name" : "inGameMenu",
+
+    "interfaces" : [
+
+        "playerStats",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "fight",
+            "description" : "shows a list of enemies to fight",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["enemyChoices"],
+                    "argumentTypes" : ["0"],
+                    "class" : "org.textfighter.PackMethods"
+                }
+            ],
+            "usage" : "fight"
+        },
+        {
+            "name" : "shop",
+            "description" : "Goes to the shop",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["shop"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "shop"
+        },
+        {
+            "name" : "mine",
+            "description" : "Goes to the mine",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["mine"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "mine",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["pickaxe", "tool"],
+                    "argumentTypes" : ["0", "0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "mine"
+        },
+        {
+            "name" : "witchHut",
+            "description" : "Goes to the witch hut",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["witchHut"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["witchmap", "specialitem"],
+                    "argumentTypes" : ["0", "0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "witchhut"
+        },
+        {
+            "name" : "home",
+            "description" : "Goes to your home",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["home"],
+                    "argumentTypes" : ["0"]
+                }
+            ]
+        },
+        {
+            "name" : "weaponsmith",
+            "description" : "Goes to the weapon smith",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["weaponSmith"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "weaponSmith"
+        }
+    ]
+}

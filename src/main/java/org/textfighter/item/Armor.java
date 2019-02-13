@@ -73,7 +73,11 @@ public class Armor extends Item {
     public void setCustomVariableByName(String name, Object value) {
         if(name == null) { return; }
         for(CustomVariable cv : customVariables) {
-            if(cv.getName().equals(name)) { cv.setValue(value); return;}
+            if(cv.getName().equals(name)) {
+                cv.setValue(value);
+                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
+                return;
+            }
         }
     }
 

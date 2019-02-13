@@ -1,0 +1,32 @@
+{
+
+    "name" : "playerStats",
+
+    "interface" : [
+
+        "----------------------",
+        "       YOUR STATS     ",
+        "----------------------",
+        "  hp:    <health>",
+        "  maxhp: <maxhealth>",
+        "",
+        "  Health potions: <healthPotions>",
+        "  Strength potions: <strengthPotions>",
+        "  Invincibility potions: <invincibilityPotions>",
+        "",
+        "  Strength turns left: <turnsWithStrengthLeft>",
+        "  Invincibility turns left: <turnsWithInvincibilityLeft>",
+        "",
+        "  weapon: <weapon>",
+        "  strength: <str>",
+        "",
+        "  level: <level>",
+        "  exp:   <experience>",
+        "",
+        "  coins: <coins>",
+        "  magic: <magic>",
+        "  metal scraps: <metal>"
+
+    ]
+
+}

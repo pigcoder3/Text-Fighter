@@ -175,6 +175,20 @@ public class Location {
         }
     }
 
+    public ArrayList<String> getChoiceOutputs() {
+        //Returns all of the current possible choice outputs
+        //The outputs give the name, description, and usage
+        ArrayList<String> outputs = new ArrayList<String>();
+        if(getPossibleChoices() != null) {
+            for(Choice c : getPossibleChoices()) {
+                if(c.getOutput() != null){
+                    outputs.add(c.getOutput());
+                }
+            }
+        }
+        return outputs;
+    }
+
     public Location(String name, ArrayList<UserInterface> interfaces, ArrayList<Choice> choices, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postmethods) {
         //Sets all variables
         this.name = name;

@@ -1091,6 +1091,7 @@ public class TextFighter {
                 }
             }
         }
+        if(directory.list() == null) { Display.changePackTabbing(false); return; }
         //Load them
         for(String s : directory.list()) {
             if(s.equals("player.json")) {
@@ -1274,7 +1275,7 @@ public class TextFighter {
             }
 
             Weapon currentWeapon = null;
-            String currentWeaponString = Player.defaultCurrentWeaponString;             if(stats.get("currentWeapon") != null)              {currentWeaponString = (String)stats.get("currentWeapon");}
+            String currentWeaponString = Player.defaultCurrentWeaponName;               if(stats.get("currentWeapon") != null)              {currentWeaponString = (String)stats.get("currentWeapon");}
             if(newInventory.contains(getWeaponByName(currentWeaponString))) {
                 for(Weapon w : weapons) {
                     if(w.getName().equals(currentWeaponString)) {
@@ -1284,7 +1285,7 @@ public class TextFighter {
             }
             if(currentWeapon == null) {
                 for(Weapon w : weapons) {
-                    if(w.getName().equals(player.defaultCurrentWeaponString)) {
+                    if(w.getName().equals(player.defaultCurrentWeaponName)) {
                         currentWeapon = w;
                     }
                 }
@@ -1396,14 +1397,14 @@ public class TextFighter {
         stats.put("invincibilityPotions", Integer.toString(Player.defaultInvincibilityPotions));
         stats.put("turnsWithStrengthLeft", Integer.toString(Player.defaultTurnsWithStrengthLeft));
         stats.put("turnsWithInvincibilityLeft", Integer.toString(Player.defaultTurnsWithInvincibilityLeft));
-        stats.put("currentWeapon", Player.defaultCurrentWeaponString);
+        stats.put("currentWeapon", Player.defaultCurrentWeaponName);
 
         JSONArray inventory = new JSONArray();
 
         Weapon currentWeapon = null;
         if(currentWeapon == null) {
             for(Weapon w : weapons) {
-                if(w.getName().equals(player.defaultCurrentWeaponString)) {
+                if(w.getName().equals(player.defaultCurrentWeaponName)) {
                     currentWeapon = w;
                     JSONObject weapon = new JSONObject();
                     weapon.put("name", w.getName());
@@ -1608,6 +1609,29 @@ public class TextFighter {
         }
         //Set the enemies to the new sorted array
         enemies = sorted;
+    }
+
+    /*** Sets the possible enemies arraylist in TextFighter with enemies that meet their requirements for the player to fight.*/
+    public static void setPossibleEnemies() {
+        ArrayList<Enemy> possible = new ArrayList<Enemy>();
+        for(Enemy e : enemies) {
+            boolean valid = true;
+            if(e.getLevelRequirement() <= player.getLevel()) {
+                if(e.getRequirements() != null) {
+                    //Make sure the requirements are met for the player to be able to fight the enemy
+                    for(Requirement r : e.getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid=false;
+                            break;
+                        }
+                    }
+                }
+                if(valid) {
+                    possible.add(e);
+                }
+            }
+        }
+        possibleEnemies = possible;
     }
 
     /**

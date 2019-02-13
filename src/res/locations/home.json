@@ -1,0 +1,42 @@
+{
+
+    "name" : "home",
+
+    "interfaces" : [
+
+        "playerStats",
+        "home",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "inventory",
+            "description" : "View your inventory.",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["inventory"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inventory"
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["inGameMenu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}
