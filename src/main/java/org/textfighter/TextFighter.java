@@ -1706,88 +1706,38 @@ public class TextFighter {
         } catch (IOException e) {
             Display.displayError("An error occured while reading input!");
             e.printStackTrace();
-            System.exit(1);
         }
         return false;
     }
 
     /**
-     * Makes the player fight an enemy.
+     * Sets up a fight.
      * @param en    The name of the enemy to be fought.
-     * @return      False if invalid enemy. True if enemy dies.
+     * @return      False if invalid enemy, else true.
      */
-    public static boolean fight(String en) {
+    public static boolean setUpFight(String en) {
+        if(en == null) { addToOutput("No enemy name given to fight."); }
         boolean validEnemy = false;
-        for(int i=0; i<enemies.size(); i++) {
-            if (enemies.get(i).getName().equals(en)) {
-                validEnemy = true;
-                try { currentEnemy = (Enemy)enemies.get(i).clone(); } catch (CloneNotSupportedException e) { addToOutput("Could not create an enemy of that type! ('" + e + "')"); e.printStackTrace(); return false; }
-                break;
+        //Gets the enemy given
+        for(Enemy enemy : possibleEnemies) {
+            if(enemy.getName().equals(en)) {
+                try {
+                    Enemy newEnemy = (Enemy)enemy.clone();
+                    currentEnemy = newEnemy;
+                    validEnemy = true;
+                } catch (CloneNotSupportedException e) { 
+                    addToOutput("Could not create an enemy of that type! ('" + e + "')"); 
+                    e.printStackTrace(); 
+                    return false;
+                }
             }
         }
         if(validEnemy) {
-            PackMethods.movePlayer("fight");
             player.setInFight(true);
-            currentEnemy.invokePremethods();
-            //Does a lot of basic things from playGame(), but if they werent here, then things would look quite strange (screen not being cleared, no output from previous command, etc.)
-            Display.clearScreen();
-            Display.displayPreviousCommand();
-            if(output != null) {
-                Display.displayOutputMessage(output);
-            }
-            if(needsSaving && currentSaveFile != null && (player.getAlive() || player.getGameBeaten())) { saveGame(); }
-            needsSaving = false;
-            output = "";
-            while(player.getInFight()) {
-                Display.displayInterfaces(player.getLocation());
-                //Invokes enemyInput and continues if invalid
-                if(!invokePlayerInput()) { continue; }
-                player.decreaseTurnsWithStrengthLeft(1);
-                player.decreaseTurnsWithInvincibilityLeft(1);
-                // Does enemy actions
-                Random random = new Random();
-                if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
-                    int number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()*2))+1;
-                    if(number > currentEnemy.getPossibleActions().size()) {
-                        currentEnemy.attack(currentEnemy.getStrength(), null);
-                    } else {
-                        currentEnemy.getPossibleActions().get(random.nextInt(currentEnemy.getPossibleActions().size())).invokeMethods();
-                    }
-                    player.setCanBeHurtThisTurn(true);
-                } else {
-                    currentEnemy.attack(currentEnemy.getStrength(), null);
-                }
-                currentEnemy.decreaseTurnsWithInvincibilityLeft(1);
-                Display.clearScreen();
-                Display.displayPreviousCommand();
-                if(output != null) {
-                    Display.displayOutputMessage(output);
-                }
-                output="";
-                if(needsSaving && currentSaveFile != null) { saveGame(); }
-                needsSaving = false;
-                //Find out if the player or the enemy is dead
-                if(player.getHp() < 1) {
-                    player.setAlive(false);
-                    player.setInFight(false);
-                } else if(currentEnemy.getHp() < 1) {
-                    player.setInFight(false);
-                    addToOutput("You defeated the '" + currentEnemy.getName() + "'!");
-                    currentEnemy.invokePostmethods();
-                    addToOutput("Rewards:");
-                    currentEnemy.invokeRewardMethods();
-                    if(currentEnemy.getIsFinalBoss()) { playerWins(); }
-                    currentEnemy=null;
-                    PackMethods.movePlayer("inGameMenu");
-                    return true;
-                }
-            }
+            PackMethods.movePlayer("fight");
         } else {
             addToOutput("Invalid enemy: '" + en + "'");
-            PackMethods.movePlayer("enemyChoices");
-            return false;
         }
-        return false;
     }
 
     /**
@@ -1811,12 +1761,57 @@ public class TextFighter {
     public static boolean gameLoaded() { return (currentSaveFile != null); }
 
     /**
+     * Deals with enemy actions.
+     */
+    public static void fight() {
+        player.decreaseTurnsWithStrengthLeft(1);
+        player.decreaseTurnsWithInvincibilityLeft(1);
+        if(currentEnemy.getHp() < 1) {
+            player.setInFight(false);
+            addToOutput("Your enemy has died!");
+            currentEnemy.invokePostmethods();
+            //Give the player their rewards
+            ArrayList<String> rewards = currentEnemy.invokeRewardMethods();
+            if(rewards != null && rewards.size() > 0) {
+                addToOutput("Rewards:\n");
+                for(String s : rewards) {
+                    addToOutput(s + "\n");
+                }
+            }
+            if(currentEnemy.getIsFinalBoss()) { playerWins(); }
+            currentEnemy = null;
+        } else {
+            // Does enemy actions
+            if(currentEnemy.getPossibleActions() != null && currentEnemy.getPossibleActions().size() > 0) {
+                Random random = new Random();
+                int number = 0;
+                if(currentEnemy.getStrength() < 1) { //If the enemy has no attack, then dont allow the attack action to happen
+                    number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()))+1;
+                } else {
+                    number = (Integer)(random.nextInt(currentEnemy.getPossibleActions().size()*2))+1;
+                }
+                //Perform the action based on number index
+                if(number > currentEnemy.getPossibleActions().size()) { //Attack the player
+                    currentEnemy.attack(currentEnemy.getStrength(), null);
+                } else { //Perform an action other than attack
+                    currentEnemy.getPossibleActions().get( random.nextInt( currentEnemy.getPossibleActions().size() ) ).invokeMethods();
+                }
+            }
+            player.setCanBeHurtThisTurn(true);
+            currentEnemy.decreaseTurnsWithInvincibilityLeft(1);
+        }
+    }
+
+    /**
      * Orchestrates player turns.
      */
     public static void playGame() {
         //Display the interface for the user
         Display.displayInterfaces(player.getLocation());
-        invokePlayerInput();
+        boolean validInput = invokePlayerInput();
+        //If the player inputted something valid and the player is in a fight, then do enemy action stuff
+        if(validInput && player.getInFight() && currentEnemy != null) { fight(); }
+        if(player.getHp() < 1) { player.setInFight(true); player.died(); }
         Display.clearScreen();
         Display.displayPreviousCommand();
         //Determine if any achievements should be recieved

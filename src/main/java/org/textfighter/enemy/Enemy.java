@@ -467,14 +467,16 @@ public class Enemy implements Cloneable {
      * Invokes all the {@link #possibleRewardMethods}.
      * <p>First calls {@link #filterRewardMethods}, then invokes them.</p>
      */
-    public void invokeRewardMethods() {
+    public ArrayList<String> invokeRewardMethods() {
         filterRewardMethods();
+        ArrayList<String> rewardStrings = new ArrayList<String>();
         if(possibleRewardMethods != null) {
             for(Reward r : possibleRewardMethods) {
                 String output = r.invokeMethod();
-                if(output != null) { TextFighter.addToOutput(output); }
+                if(output != null) { rewardStrings.add(output); }
             }
         }
+        return rewardStrings;
     }
     /**
      * Loops over all rewardMethods and adds all that meet their own requirements to {@link #allRewardMethods}.
