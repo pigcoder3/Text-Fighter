@@ -23,7 +23,7 @@
                 },
                 {
                     "method" : "movePlayer",
-                    "arguments" : ["inGameMenu"],
+                    "arguments" : ["menu"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.PackMethods",
                     "requirements" : [
@@ -48,7 +48,7 @@
                 },
                 {
                     "method" : "movePlayer",
-                    "arguments" : ["inGameMenu"],
+                    "arguments" : ["menu"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.PackMethods",
                     "requirements" : [
@@ -92,7 +92,7 @@
             "methods" : [
                 {
                     "method" : "movePlayer",
-                    "arguments" : ["inGameMenu"],
+                    "arguments" : ["menu"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.PackMethods"
                 }

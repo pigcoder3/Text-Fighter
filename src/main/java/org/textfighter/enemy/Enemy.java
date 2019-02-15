@@ -176,7 +176,6 @@ public class Enemy implements Cloneable {
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
                 cv.setValue(value);
-                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
                 return;
             }
         }
@@ -283,7 +282,7 @@ public class Enemy implements Cloneable {
     public void heal(int a) {
         hp = hp + a;
         if(hp > maxhp) { hp = maxhp; } //Make sure the health doesnt go above the maxhealth
-        if(hp < 0) { hp = 0; } 
+        if(hp < 0) { hp = 0; }
         TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");
     }
 
@@ -371,20 +370,24 @@ public class Enemy implements Cloneable {
      */
     public void performRandomAction(boolean includeAttack) {
         // Does enemy actions
-        if(possibleActions != null && possibleActions.size() > 0) {
-            Random random = new Random();
-            int number = 0;
-            if(includeAttack || getStrength() < 1) { //If the enemy has no attack, then dont allow the attack action to happen
-                number = (Integer)(random.nextInt(possibleActions.size()))+1;
-            } else {
-                number = (Integer)(random.nextInt(possibleActions.size()*2))+1;
-            }
-            //Perform the action based on number index
-            if(number > possibleActions.size()) { //Attack the player
-                attack(strength, null);
-            } else { //Perform an action other than attack
-                possibleActions.get( random.nextInt( possibleActions.size() ) ).invokeMethods();
-            }
+        if((possibleActions != null && possibleActions.size() > 0) || (includeAttack && strength > 0)) {
+			if(possibleActions != null && possibleActions.size() > 0) {
+				Random random = new Random();
+            	int number = 0;
+            	if(!includeAttack || strength < 1) { //If the enemy has no attack, then dont allow the attack action to happen
+					number = (Integer)(random.nextInt(possibleActions.size()))+1;
+            	} else {
+					number = (Integer)(random.nextInt(possibleActions.size()*2))+1;
+            	}
+            	//Perform the action based on number index
+            	if(number > possibleActions.size()) { //Attack the player
+                	attack(strength, null);
+            	} else { //Perform an action other than attack
+                	possibleActions.get(number).invokeMethods();
+            	}
+			} else {
+			 	attack(strength, null);
+			}
         }
         decreaseTurnsWithInvincibilityLeft(1);
     }
@@ -486,8 +489,8 @@ public class Enemy implements Cloneable {
         }
         //Print out all of the rewards the player recieved
         if(rewardStrings.size() > 0) {
-            TextFighter.addToOutput("Rewards:\n");
-            for(String s : rewardStrings) { TextFighter.addToOutput(rewardStrings + ",\n"); }
+            TextFighter.addToOutput("Rewards:");
+            for(String s : rewardStrings) { TextFighter.addToOutput(s + ","); }
         }
     }
     /**
@@ -532,10 +535,8 @@ public class Enemy implements Cloneable {
      * @param customString  The string to be displayed with the default output.
      */
     public void attack(int a, String customString) {
-        if(TextFighter.player.getTurnsWithInvincibilityLeft() < 1) { // Make sure the player canBeHurtThisTurn
-            if(a > 0) { //If the strength is less than 1, then dont attack
-                TextFighter.player.damaged(a, customString);
-            }
+        if(TextFighter.player.getTurnsWithInvincibilityLeft() < 1 && a > 0) { // Make sure the player is not invincible
+			TextFighter.player.damaged(a, customString);
         }
     }
 

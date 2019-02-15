@@ -206,8 +206,8 @@ public class PackMethods {
         if(TextFighter.player.getLocation() != null && location.equals(TextFighter.player.getLocation())) { return true; }
         for(Location l : TextFighter.locations) {
             if(l.getName().equals(location)) {
-                //Invokes the post methods of the previous location
-                TextFighter.player.getLocation().invokePostmethods();
+                //Invokes the post methods of the previous location assuming there was a previous one
+				if(TextFighter.player.getLocation() != null) { TextFighter.player.getLocation().invokePostmethods(); }
                 TextFighter.player.setLocation(location);
                 TextFighter.addToOutput("Moved to " + location);
                 //Invokes the pre methods of the previous location

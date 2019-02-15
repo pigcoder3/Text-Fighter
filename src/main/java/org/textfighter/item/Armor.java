@@ -75,7 +75,6 @@ public class Armor extends Item {
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
                 cv.setValue(value);
-                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
                 return;
             }
         }

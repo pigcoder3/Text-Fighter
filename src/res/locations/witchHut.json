@@ -61,7 +61,7 @@
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["inGameMenu"],
+                    "arguments" : ["menu"],
                     "argumentTypes" : ["0"]
                 }
             ],

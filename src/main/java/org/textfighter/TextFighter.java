@@ -151,8 +151,12 @@ public class TextFighter {
     /**All special item custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<CustomVariable>();
 
-    /**Stores whether or not the game needs to be saved. The game needs to be saved if a value that is saved is changed*/
-    public static boolean needsSaving = false;
+    /**
+     * Gets a location from the {@link #locations} arraylist
+     * @param name  the name of the location that is to be found
+     * @return      If a location is found, then return it. Else, return null.
+     */
+    public static Location getLocationByName(String name) { for(Location l : locations) { if(l.getName().equals(name)) { return l; } } addToOutput("No such location '" + name + "'"); return null; }
 
     /**
      * Gets a weapon from the {@link #weapons} arraylist.
@@ -1235,7 +1239,7 @@ public class TextFighter {
         if(!PackMethods.areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
 
         File f = new File(savesDir.getPath() + "/" + saveName + ".json");
-        if(!f.exists()) { addToOutput("Unable to find a save with that name."); return false; }
+        if(!f.exists()) { addToOutput("Unable to find a save with name '" + saveName + "'."); return false; }
 
         currentSaveFile = f;
 
@@ -1694,6 +1698,7 @@ public class TextFighter {
                             }
                         }
                     }
+					return true;
                 } else { //The choice doesnt exist
                     if(input.indexOf(" ") != -1) {
                         addToOutput("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
@@ -1725,9 +1730,9 @@ public class TextFighter {
                     Enemy newEnemy = (Enemy)enemy.clone();
                     currentEnemy = newEnemy;
                     validEnemy = true;
-                } catch (CloneNotSupportedException e) { 
-                    addToOutput("Could not create an enemy of that type! ('" + e + "')"); 
-                    e.printStackTrace(); 
+                } catch (CloneNotSupportedException e) {
+                    addToOutput("Could not create an enemy of that type! ('" + e + "')");
+                    e.printStackTrace();
                     return false;
                 }
             }
@@ -1769,8 +1774,7 @@ public class TextFighter {
         //Display the interface for the user
         Display.displayInterfaces(player.getLocation());
         boolean validInput = invokePlayerInput();
-        //If the player inputted something valid and the player is in a fight, then do enemy action stuff
-        if(player.getHp() < 1) { player.setInFight(true); player.died(); }
+		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
         if(validInput && player.getInFight()) {
             player.decreaseTurnsWithStrengthLeft(1);
             player.decreaseTurnsWithInvincibilityLeft(1);
@@ -1778,14 +1782,17 @@ public class TextFighter {
                 if(currentEnemy.getHp() < 1) {
                     player.setInFight(false);
                     addToOutput("Your enemy has died!");
+					currentEnemy.invokeRewardMethods();
                     currentEnemy.invokePostmethods();
-                    currentEnemy.invokeRewardMethods();
+					PackMethods.movePlayer("menu");
+					currentEnemy = null;
                 } else {
                     currentEnemy.performRandomAction(true);
                     currentEnemy.decreaseTurnsWithInvincibilityLeft(1);
                 }
             }
         }
+		if(player.getHp() < 1) { player.setInFight(true); player.died(); }
         Display.clearScreen();
         Display.displayPreviousCommand();
         //Determine if any achievements should be recieved
@@ -1809,8 +1816,6 @@ public class TextFighter {
             Display.displayOutputMessage(output);
         }
         output="";
-        if(needsSaving && currentSaveFile != null && (player.getAlive() || player.getGameBeaten())) { saveGame(); }
-        needsSaving = false;
     }
 
     /**

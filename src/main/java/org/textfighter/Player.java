@@ -281,7 +281,7 @@ public class Player {
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
                 cv.setValue(value);
-                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
+                if(cv.getIsSaved()) {  }
                 return;
             }
         }
@@ -295,13 +295,12 @@ public class Player {
     public void attack(String customString) {
         int newStrength = strength;
         if(currentWeapon == null) { TextFighter.addToOutput("You do not have a weapon, so you attack with your fists."); }
-        //Deals with critical hits and misses
-        Random random = new Random();
-        int number = random.nextInt(99)+1;
-        if(number > currentWeapon.getMissChance()) { TextFighter.addToOutput("Your attack missed your enemy."); return; }
-        random = new Random();
-        number = random.nextInt(99)+1;
-        if(number > currentWeapon.getCritChance()) { newStrength*=1.5; TextFighter.addToOutput("Your attack was a critical hit!"); }
+        //isses
+        int number = new Random().nextInt(99)+1;
+        if(number < currentWeapon.getMissChance()) { TextFighter.addToOutput("Your attack missed your enemy."); return; }
+        //Critical hits
+		number = new Random().nextInt(99)+1;
+        if(number < currentWeapon.getCritChance()) { newStrength*=1.5; TextFighter.addToOutput("Your attack was a critical hit!"); }
         //Attack
         TextFighter.currentEnemy.damaged(newStrength, customString);
     }
@@ -320,8 +319,8 @@ public class Player {
     /*** Tells the player that they have dies and removes the save.*/
     public void died() {
         TextFighter.addToOutput("You died!");
-        TextFighter.removeSave(TextFighter.currentSaveFile.getName());
-        TextFighter.needsSaving = false;
+        TextFighter.loadGame(TextFighter.gameName);
+		location = TextFighter.getLocationByName("inGameMenu");
     }
 
     //inFight methods
@@ -334,21 +333,22 @@ public class Player {
      * Sets {@link #inFight} to the value given.
      * @param b     The new value.
      */
-    public void setInFight(boolean b) { inFight=b; TextFighter.needsSaving=true;}
+    public void setInFight(boolean b) { inFight=b; }
 
     //totalProtection methods
     /**
      * Gets the {@link #totalProtection}.
      * @return      {@link #totalProtection}
      */
-    public double getTotalProtection() { return totalProtection; }
+    public double getTotalProtection() { return totalProtection+1; } //Increase by one here because that is what happens in the damaged method
     /*** Calculates the total protection and sets {@link #totalProtection} to the new amount (Can only go up to 75%).*/
     public void calculateTotalProtection() {
         totalProtection=defaultTotalProtection;
         for(Item i : inventory) {
             if(i instanceof Armor) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
-        if(totalProtection > 75) { totalProtection = 75; }
+		// I use 74 because I increase the total protection in the damaged method so that it doesn't divide by 0
+        if(totalProtection > 74) { totalProtection = 74; }
     }
 
     //currentWeapon methods
@@ -412,21 +412,21 @@ public class Player {
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to increase by.
      */
-    public void increaseHealthPotions(int a) { healthPotions+=a; if(healthPotions<0){healthPotions=0;}TextFighter.needsSaving=true;}
+    public void increaseHealthPotions(int a) { healthPotions+=a; if(healthPotions<0){healthPotions=0;}}
     /**
      * Decreases the {@link #healthPotions} by the value given.
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to decrease by.
      */
-    public void decreaseHealthPotions(int a) { healthPotions-=a; if(healthPotions<0){healthPotions=0;} TextFighter.needsSaving=true;}
+    public void decreaseHealthPotions(int a) { healthPotions-=a; if(healthPotions<0){healthPotions=0;} }
     /*** Heals the player and decreases the number of {@link #healthPotions} by one if the player has one.*/
-    public void useHealthPotion() { if(healthPotions<1){return;} decreaseHealthPotions(1); heal(defaultHpHealthPotionsGive); TextFighter.needsSaving=true;}
+    public void useHealthPotion() { if(healthPotions<1){return;} decreaseHealthPotions(1); heal(defaultHpHealthPotionsGive); }
     /**
      * Sets the {@link #healthPotions}.
      * <p>If the new value is less than 0, then it is set to 0.</p>
      * @param a     The new value;
      */
-    public void setHealthPotions(int a) { healthPotions = a; if(healthPotions<0){healthPotions=0;} TextFighter.needsSaving=true;}
+    public void setHealthPotions(int a) { healthPotions = a; if(healthPotions<0){healthPotions=0;} }
     /**
      * Gets the {@link #healthPotions}.
      * @return      {@link #healthPotions}
@@ -439,21 +439,21 @@ public class Player {
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to increase by.
      */
-    public void increaseStrengthPotions(int a) { strengthPotions+=a; if(strengthPotions<0){strengthPotions=0;} TextFighter.needsSaving=true;}
+    public void increaseStrengthPotions(int a) { strengthPotions+=a; if(strengthPotions<0){strengthPotions=0;} }
     /**
      * Decreases the {@link #strengthPotions} by the value given.
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to decrease by.
      */
-    public void decreaseStrengthPotions(int a) { strengthPotions-=a; if(strengthPotions<0){strengthPotions=0;} TextFighter.needsSaving=true;}
+    public void decreaseStrengthPotions(int a) { strengthPotions-=a; if(strengthPotions<0){strengthPotions=0;} }
     /*** Sets {@link #turnsWithStrengthLeft} to {@link #defaultTurnsStrengthPotionsGive} and decreases the number of {@link #strengthPotions} by one if the player has one.*/
-    public void useStrengthPotion() { if(strengthPotions < 1) {return;} decreaseStrengthPotions(1); turnsWithStrengthLeft = defaultTurnsStrengthPotionsGive; calculateStrength(); TextFighter.needsSaving=true;}
+    public void useStrengthPotion() { if(strengthPotions < 1) {return;} decreaseStrengthPotions(1); turnsWithStrengthLeft = defaultTurnsStrengthPotionsGive; calculateStrength(); }
     /**
      * Sets the {@link #strengthPotions}.
      * <p>If the new value is less than 0, then it is set to 0.</p>
      * @param a     The new value;
      */
-    public void setStrengthPotions(int a) { strengthPotions = a; if(strengthPotions<0){strengthPotions=0;} TextFighter.needsSaving=true;}
+    public void setStrengthPotions(int a) { strengthPotions = a; if(strengthPotions<0){strengthPotions=0;} }
     /**
      * Gets the {@link #strengthPotions}.
      * @return      {@link #strengthPotions}
@@ -466,21 +466,21 @@ public class Player {
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to increase by.
      */
-    public void increaseInvincibilityPotions(int a) { invincibilityPotions+=a; if(invincibilityPotions<0){invincibilityPotions=0;} TextFighter.needsSaving=true;}
+    public void increaseInvincibilityPotions(int a) { invincibilityPotions+=a; if(invincibilityPotions<0){invincibilityPotions=0;} }
     /**
      * Decreases the {@link #invincibilityPotions} by the value given.
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to decrease by.
      */
-    public void decreaseInvincibilityPotions(int a) { invincibilityPotions-=a; if(invincibilityPotions<0){invincibilityPotions=0;} TextFighter.needsSaving=true;}
+    public void decreaseInvincibilityPotions(int a) { invincibilityPotions-=a; if(invincibilityPotions<0){invincibilityPotions=0;} }
     /*** Sets {@link #turnsWithInvincibilityLeft} to {@link #defaultTurnsStrengthPotionsGive} and decreases the number of {@link #invincibilityPotions} by one if the player has one.*/
-    public void useInvincibilityPotion() { if(invincibilityPotions < 1) {return;} decreaseInvincibilityPotions(1); turnsWithInvincibilityLeft = defaultTurnsStrengthPotionsGive; TextFighter.needsSaving=true;}
+    public void useInvincibilityPotion() { if(invincibilityPotions < 1) {return;} decreaseInvincibilityPotions(1); turnsWithInvincibilityLeft = defaultTurnsStrengthPotionsGive; }
     /**
      * Sets the {@link #invincibilityPotions}.
      * <p>If the new value is less than 0, then it is set to 0.</p>
      * @param a     The new value;
      */
-    public void setInvincibilityPotions(int a) { invincibilityPotions=a; if(invincibilityPotions<0){invincibilityPotions=0;} TextFighter.needsSaving=true;}
+    public void setInvincibilityPotions(int a) { invincibilityPotions=a; if(invincibilityPotions<0){invincibilityPotions=0;} }
     /**
      * Gets the {@link #invincibilityPotions}.
      * @return      {@link #invincibilityPotions}
@@ -493,13 +493,13 @@ public class Player {
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to increase by.
      */
-    public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
+    public void increaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft+=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} }
     /**
      * Decreases the {@link #turnsWithStrengthLeft} by the value given.
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to decrease by.
      */
-    public void decreaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft-=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} TextFighter.needsSaving=true;}
+    public void decreaseTurnsWithStrengthLeft(int a) { turnsWithStrengthLeft-=a; if(turnsWithStrengthLeft<0){turnsWithStrengthLeft=0;} }
     /**
      * Gets the {@link #turnsWithStrengthLeft}.
      * @return      {@link #turnsWithStrengthLeft}
@@ -518,13 +518,13 @@ public class Player {
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to increase by.
      */
-    public void increaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft+=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
+    public void increaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft+=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} }
     /**
      * Decreases the {@link #turnsWithInvincibilityLeft} by the value given.
      * <p>If the new value is less than 0, then set it to 0.
      * @param a     The value to decrease by.
      */
-    public void decreaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft-=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
+    public void decreaseTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft-=a; if(turnsWithInvincibilityLeft<0){turnsWithInvincibilityLeft=0;} }
     /**
      * Gets the {@link #turnsWithInvincibilityLeft}.
      * @return      {@link #turnsWithInvincibilityLeft}
@@ -535,7 +535,7 @@ public class Player {
      * <p>If the new value is less than 0, then it is set to 0.</p>
      * @param a     The new value;
      */
-    public void setTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft=a; if(turnsWithInvincibilityLeft<0) {turnsWithInvincibilityLeft=0;} TextFighter.needsSaving=true;}
+    public void setTurnsWithInvincibilityLeft(int a) { turnsWithInvincibilityLeft=a; if(turnsWithInvincibilityLeft<0) {turnsWithInvincibilityLeft=0;} }
 
     //leveling methods
     /**
@@ -548,13 +548,13 @@ public class Player {
      * <p>If the new value is less than 1, set it to 1.</p>
      * @param a     The amount to increase by.
      */
-    public void increaseLevel(int a) { level+=a; if(level<1){level = 1;} TextFighter.needsSaving=true;}
+    public void increaseLevel(int a) { level+=a; if(level<1){level = 1;} }
     /**
      * Decreases the {@link #level}.
      * <p>If the new value is less than 1, set it to 1.</p>
      * @param a     The amount to decrease by.
      */
-    public void decreaseLevel(int a) { level-=a; if(level<1){level = 1;} TextFighter.needsSaving=true;}
+    public void decreaseLevel(int a) { level-=a; if(level<1){level = 1;} }
     /**
      * Returns the {@link #experience}.
      * @return      {@link #experience}
@@ -565,13 +565,13 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void increaseExperience(int a) { experience+=a; if(experience < 0) { experience = 0; } checkForLevelUp(); TextFighter.needsSaving=true;}
+    public void increaseExperience(int a) { experience+=a; if(experience < 0) { experience = 0; } checkForLevelUp(); }
     /**
      * Decreases the {@link #experience}.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void decreaseExperience(int a) { experience-=a; if(experience < 0) { experience = 0; } checkForLevelUp(); TextFighter.needsSaving=true;}
+    public void decreaseExperience(int a) { experience-=a; if(experience < 0) { experience = 0; } checkForLevelUp(); }
     /**
      * Checks to see if the player can level up, and increases the level if so and sets experience to 0.
      * <p>The player levels up if the experience is greater than level*10+100.</p>
@@ -599,13 +599,13 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void increaseScore(int a) { score+=a; if(score < 0) { score = 0; } TextFighter.needsSaving=true;}
+    public void increaseScore(int a) { score+=a; if(score < 0) { score = 0; } }
     /**
      * Decreases the {@link #score}.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void decreaseScore(int a) { score-=a; if(score < 0) { score = 0; } TextFighter.needsSaving=true;}
+    public void decreaseScore(int a) { score-=a; if(score < 0) { score = 0; } }
 
     //health methods
     /**
@@ -622,10 +622,11 @@ public class Player {
     public void damaged(int a, String customString) {
         if(turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
         calculateTotalProtection();
-        hp-=Math.round(a/totalProtection);
-        if(hp < 0) { hp = 0; }
-        if(hp > maxhp) { hp = maxhp; } 
-        TextFighter.needsSaving=true;
+        hp = hp - (int)Math.round(a/(totalProtection+1)); //total protection Increased by 1 here so that the game doesn't divide by 0
+        System.out.println(a + " / " + totalProtection + " = " + (int)Math.round(a/totalProtection+1) + " " + hp);
+		if(hp < 0) { hp = 0; }
+		if(hp > maxhp) { hp = maxhp; }
+
         if(customString != null) { TextFighter.addToOutput(customString);}
         TextFighter.addToOutput("You have been hurt for " + a + " hp.");
     }
@@ -634,7 +635,7 @@ public class Player {
      * <p>If the new value given is less than 0, Then set it to 0. If greater than {@link #maxhp}, then set it to the maxhp.</p>
      * @param a     The amount healed.
      */
-    public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } TextFighter.needsSaving=true;}
+    public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } }
     /**
      * Returns the {@link #maxhp}.
      * @return      {@link #maxhp}
@@ -649,7 +650,7 @@ public class Player {
         maxhp=a;
         if(maxhp < 1) { maxhp = 0; }
         if(hp > maxhp) { hp = maxhp; }
-        TextFighter.needsSaving=true;
+
     }
 
     //Coins methods
@@ -663,20 +664,20 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " coins because you do not have enough"); } TextFighter.needsSaving=true;}
+    public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " coins because you do not have enough"); } }
     /**
      * Decreases {@link #coins}.
      * <p>If the bew value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void decreaseCoins(int a) { coins-=a; if(coins < 0) { coins=0; } TextFighter.needsSaving = true; }
+    public void decreaseCoins(int a) { coins-=a; if(coins < 0) { coins=0; } }
 
     /**
      * Increases the {@link #coins}.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void gainCoins(int a) { if (coins+a >= 0) { coins+=a; } else { coins=0; } TextFighter.needsSaving=true; }
+    public void gainCoins(int a) { if (coins+a >= 0) { coins+=a; } else { coins=0; }  }
 
     //Magic methods
     /**
@@ -689,13 +690,13 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { magic=0; } TextFighter.needsSaving=true;}
+    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { magic=0; } }
     /**
      * Increases the {@link #magic}.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void gainMagic(int a) { magic+=a; TextFighter.needsSaving=true; }
+    public void gainMagic(int a) { magic+=a;  }
 
     //Metal scraps methods
     /**
@@ -708,13 +709,13 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; } TextFighter.needsSaving=true; }
+    public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; }  }
     /**
      * Increases the {@link #metalScraps}.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void gainMetalScraps (int a) { if(metalScraps+a >=0) { metalScraps+=a; } else { metalScraps=0; } TextFighter.needsSaving=true; }
+    public void gainMetalScraps (int a) { if(metalScraps+a >=0) { metalScraps+=a; } else { metalScraps=0; }  }
 
     //Location methods
     /**
@@ -730,7 +731,7 @@ public class Player {
         for(Location l : TextFighter.locations) {
             if(l.getName().equals(loc)) {
                 location = l;
-                TextFighter.needsSaving=true;
+
             }
         }
     }
@@ -745,7 +746,7 @@ public class Player {
      * Sets the value of {@link #gameBeaten} to the given value.
      * @param b     The new value.
      */
-    public void setGameBeaten(boolean b) { gameBeaten = b; TextFighter.needsSaving=true;}
+    public void setGameBeaten(boolean b) { gameBeaten = b; }
 
     //inventory methods
     /**
@@ -769,7 +770,7 @@ public class Player {
             if(item != null) {
                 try { inventory.add((Weapon)item.clone()); } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                TextFighter.needsSaving=true;
+
             }
         }
         else if(type.equals("armor")) {
@@ -779,7 +780,7 @@ public class Player {
                 try { inventory.add((Armor)item.clone());  } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 calculateTotalProtection(); //Recalculate the total protection because there is more armor
-                TextFighter.needsSaving=true;
+
             }
         }
         else if(type.equals("tool")) {
@@ -788,7 +789,7 @@ public class Player {
             if(item != null) {
                 try { inventory.add((Tool)item.clone()); } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                TextFighter.needsSaving=true;
+
             }
         }
         else if(type.equals("specialitem")) {
@@ -797,7 +798,7 @@ public class Player {
             if(item != null) {
                 try { inventory.add((SpecialItem)item.clone());  } catch(CloneNotSupportedException e) { e.printStackTrace(); }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
-                TextFighter.needsSaving=true;
+
             }
         }
     }
@@ -807,7 +808,7 @@ public class Player {
                 if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
 				inventory.remove(i);
 				TextFighter.addToOutput("'" + name + "' has been removed from your inventory");
-				TextFighter.needsSaving=true;
+
                 return;
             }
         }

@@ -95,9 +95,13 @@ public class ChoiceMethod {
             if(field.getClass().equals(FieldMethod.class)) {
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+                try {
+					fieldvalue = ((Field)field).get(null);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+					resetArguments();
+				}
             }
-            if(fieldvalue == null) { return false; }
         }
 
         if(field != null && fieldvalue == null) { return false; }

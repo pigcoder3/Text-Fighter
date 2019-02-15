@@ -1,6 +1,6 @@
 {
 
-    "name" : "inGameMenu",
+    "name" : "menu",
 
     "interfaces" : [
 
@@ -108,6 +108,17 @@
                 }
             ],
             "usage" : "weaponSmith"
+        },
+        {
+            "name" : "savegame",
+            "description" : "Saves the game",
+            "methods" : [
+                {
+                    "method" : "saveGame",
+                    "class" : "org.textfighter.TextFighter",
+                }
+            ],
+            "usage" : "savegame"
         }
     ]
 }

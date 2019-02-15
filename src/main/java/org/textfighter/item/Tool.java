@@ -75,7 +75,6 @@ public class Tool extends Item {
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
                 cv.setValue(value);
-                if(cv.getIsSaved()) { TextFighter.needsSaving=true; }
                 return;
             }
         }
@@ -117,19 +116,19 @@ public class Tool extends Item {
      * <p>If the new value is less than 1, then it breaks.</p>
      * @param a     The new value
      */
-    public void setDurability(int a) { durability=a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
+    public void setDurability(int a) { durability=a; if(durability < 1) { broken(); }  }
     /**
      * Sets the value of {@link #durability}.
      * <p>If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { durability=+a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
+    public void increaseDurability(int a) { durability=+a; if(durability < 1) { broken(); }  }
     /**
      * Increases the value of {@link #durability}.
      * <p>If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); } TextFighter.needsSaving=true; }
+    public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); }  }
 
     //Just get the output of the type and name
     /**
@@ -162,7 +161,6 @@ public class Tool extends Item {
     public void broken() {
         TextFighter.player.removeFromInventory(name, ITEMTYPE);
         TextFighter.addToOutput("Your " + name + " has broken!");
-        TextFighter.needsSaving=true;
     }
 
     public Tool (String name, String description, ArrayList<CustomVariable> customVariables, int durability) {
