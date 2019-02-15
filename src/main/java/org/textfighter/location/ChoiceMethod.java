@@ -100,6 +100,8 @@ public class ChoiceMethod {
             if(fieldvalue == null) { return false; }
         }
 
+        if(field != null && fieldvalue == null) { return false; }
+
         if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { resetArguments(); return false;}
         try {
             if(fieldvalue != null) {

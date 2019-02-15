@@ -234,12 +234,6 @@ public class Player {
     private boolean gameBeaten = false;
 
     /**
-     * Stores whether or not the player can be hurt this turn.
-     * <p>Set to true.</p>
-     */
-    private boolean canBeHurtThisTurn = true;
-
-    /**
      * Stores the player's inventory.
      * <p>Set to an empty ArrayList of Item.</p>
      */
@@ -626,7 +620,7 @@ public class Player {
      * @param customString  The custom string to be outted next to the default output.
      */
     public void damaged(int a, String customString) {
-        if(!canBeHurtThisTurn || turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
+        if(turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
         calculateTotalProtection();
         hp-=Math.round(a/totalProtection);
         if(hp < 0) { hp = 0; }
@@ -752,18 +746,6 @@ public class Player {
      * @param b     The new value.
      */
     public void setGameBeaten(boolean b) { gameBeaten = b; TextFighter.needsSaving=true;}
-
-    //canBeHurtThisTurn methods
-    /**
-     * Returns the {@link #canBeHurtThisTurn}.
-     * @return      {@link #canBeHurtThisTurn}
-     */
-    public boolean getCanBeHurtThisTurn() { return canBeHurtThisTurn; }
-    /**
-     * Sets the value of {@link #canBeHurtThisTurn} to the given value.
-     * @param b     The new value.
-     */
-    public void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn = b; }
 
     //inventory methods
     /**

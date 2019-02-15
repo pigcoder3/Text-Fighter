@@ -66,6 +66,8 @@ public class EnemyActionMethod {
             }
         }
 
+        if(field != null && fieldvalue == null) { return false; }
+
         try {
             if(field != null) {
                 if(arguments != null && arguments.size() > 0) {

@@ -5,6 +5,7 @@ import org.textfighter.*;
 import org.textfighter.method.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Enemy implements Cloneable {
 
@@ -140,12 +141,6 @@ public class Enemy implements Cloneable {
     private boolean finalBoss;
 
     /**
-     * Stores whether or not the enemy can be hurt this turn.
-     * <p>Set to true.</p>
-     */
-    private boolean canBeHurtThisTurn = true;
-
-    /**
      * Stores the custom variables for this enemy.
      * <p>Set to an empty ArrayList of CustomVariables.</p>
      */
@@ -269,7 +264,7 @@ public class Enemy implements Cloneable {
      * @param customString  The custom string to be printed out with the default output.
      */
     public void damaged(int a, String customString) {
-        if(canBeHurtThisTurn && turnsWithInvincibilityLeft < 1) {
+        if(turnsWithInvincibilityLeft < 1) {
             //If the enemy cannot be hurt, then dont damage it
             hp-=a;
             if(hp < 1) { hp = 0; }
@@ -371,22 +366,34 @@ public class Enemy implements Cloneable {
     }
 
     /**
+     * Performs a random enemy action.
+     * @param includeAttack     Whether or not the Random instance should consider the attack action (not given through packs).
+     */
+    public void performRandomAction(boolean includeAttack) {
+        // Does enemy actions
+        if(possibleActions != null && possibleActions.size() > 0) {
+            Random random = new Random();
+            int number = 0;
+            if(includeAttack || getStrength() < 1) { //If the enemy has no attack, then dont allow the attack action to happen
+                number = (Integer)(random.nextInt(possibleActions.size()))+1;
+            } else {
+                number = (Integer)(random.nextInt(possibleActions.size()*2))+1;
+            }
+            //Perform the action based on number index
+            if(number > possibleActions.size()) { //Attack the player
+                attack(strength, null);
+            } else { //Perform an action other than attack
+                possibleActions.get( random.nextInt( possibleActions.size() ) ).invokeMethods();
+            }
+        }
+        decreaseTurnsWithInvincibilityLeft(1);
+    }
+
+    /**
      * Returns the {@link #finalBoss}.
      * @return      {@link #finalBoss}
      */
     public boolean getIsFinalBoss() { return finalBoss; }
-
-    //canBeHurtThisTurn method
-    /**
-     * Returns the {@link #canBeHurtThisTurn}.
-     * @return      {@link #canBeHurtThisTurn}
-     */
-    public boolean getCanBeHurtThisTurn() { return canBeHurtThisTurn; }
-    /**
-     * Sets the {@link #canBeHurtThisTurn} to the value given.
-     * @param b     The new value.
-     */
-    public void setCanBeHurtThisTurn(boolean b) { canBeHurtThisTurn=b; }
 
     //posmethod methods
     /**
@@ -467,16 +474,21 @@ public class Enemy implements Cloneable {
      * Invokes all the {@link #possibleRewardMethods}.
      * <p>First calls {@link #filterRewardMethods}, then invokes them.</p>
      */
-    public ArrayList<String> invokeRewardMethods() {
+    public void invokeRewardMethods() {
         filterRewardMethods();
         ArrayList<String> rewardStrings = new ArrayList<String>();
+        //Give the player the rewards
         if(possibleRewardMethods != null) {
             for(Reward r : possibleRewardMethods) {
                 String output = r.invokeMethod();
                 if(output != null) { rewardStrings.add(output); }
             }
         }
-        return rewardStrings;
+        //Print out all of the rewards the player recieved
+        if(rewardStrings.size() > 0) {
+            TextFighter.addToOutput("Rewards:\n");
+            for(String s : rewardStrings) { TextFighter.addToOutput(rewardStrings + ",\n"); }
+        }
     }
     /**
      * Loops over all rewardMethods and adds all that meet their own requirements to {@link #allRewardMethods}.
@@ -520,7 +532,7 @@ public class Enemy implements Cloneable {
      * @param customString  The string to be displayed with the default output.
      */
     public void attack(int a, String customString) {
-        if(TextFighter.player.getCanBeHurtThisTurn() && TextFighter.player.getTurnsWithInvincibilityLeft() < 1) { // Make sure the player canBeHurtThisTurn
+        if(TextFighter.player.getTurnsWithInvincibilityLeft() < 1) { // Make sure the player canBeHurtThisTurn
             if(a > 0) { //If the strength is less than 1, then dont attack
                 TextFighter.player.damaged(a, customString);
             }

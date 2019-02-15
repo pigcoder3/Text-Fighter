@@ -89,6 +89,8 @@ public class TFMethod {
             }
         }
 
+        if(field != null && fieldvalue == null) { return null; }
+
         Object a;
 
         //Invokes this method's base method

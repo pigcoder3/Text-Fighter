@@ -85,6 +85,8 @@ public class FieldMethod {
 
         Object a;
 
+        if(field != null && fieldvalue == null) { return null; }
+
         //Invokes this method's base method
         try {
             if(fieldvalue != null) {

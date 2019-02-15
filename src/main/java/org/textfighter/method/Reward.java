@@ -93,6 +93,8 @@ public class Reward {
             }
         }
 
+        if(field != null && fieldvalue == null) { return ""; }
+
         try {
             //Does the random chance thing to detemine if the player gets the reward
             Random random = new Random();

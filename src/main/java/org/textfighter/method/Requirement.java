@@ -91,6 +91,8 @@ public class Requirement {
             if(fieldvalue == null) { return false; }
         }
 
+        if(field != null && fieldvalue == null) { return !neededBoolean; }
+
 		try {
             boolean output = !neededBoolean;
             if(field != null) {

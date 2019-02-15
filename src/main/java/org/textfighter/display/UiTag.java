@@ -89,6 +89,8 @@ public class UiTag {
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
         }
+        
+        if(field != null && fieldvalue == null) { return null; }
 
         try {
             Object output = null;

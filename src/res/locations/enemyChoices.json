@@ -16,7 +16,7 @@
             "description" : "fights the enemy specified",
             "methods" : [
                 {
-                    "method" : "fight",
+                    "method" : "setUpFight",
                     "arguments" : ["%ph%"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
