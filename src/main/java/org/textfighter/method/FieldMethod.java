@@ -108,63 +108,67 @@ public class FieldMethod {
     }
 
     /**
-     * The method replaces any placeholders ("%ph%") with inputArgs and replaces any placeholders in any arguments that are TFMethods.
+     * The method replaces any placeholders ("%ph%[indexOfInput]") with inputArgs and replaces any placeholders in any arguments that are TFMethods.
      *
      * <p>This is only called if it is a child of a ChoiceMethod or a distant child of one.</p>
-     * <p>If everything goes well, the method returns the inputArgsIndex. The method returns -1 if there were not enough inputArgs to
+     * <p>If everything goes well, the method returns the true. The method returns false if an argument is messed up
      * fill the {@link #arguments} array to the correct size (The size of the {@link #argumentTypes}).</p>
      * <p>If an argument (not the inputArgs) is null, the game just places null into the new methodArgs array.</p>
      * <p>If an argument is just a regular argument, the game just places the argument into the new methodArgs array.</p>
      * <p>If an argument is a TFMethod, thez the game invokes putInputInArguments() on it (Replaces placeholders with the inputArgs).
-     * If a -1 is returned from this, then return a -1, because that means there is a problem. If an argument is a placeholder ("%ph%"),
-     * then the game does inputArgs.get(inputArgsIndex), casts the output to the (argumentType), and increases inputArgsIndex by one.
+     * If false is returned from this, then return false, because that means there is a problem. If an argument is a placeholder ("%ph%"),
+     * then the game gets the number to the right of "%ph%" and calls inputArgs.get(index) and casts the output to the argumentType.
      * When done, {@link #arguments} is set to methodArgs.</p>
      * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here).
      * If that returns -1, then return -1, because that means there is a problem (Likely from not enough input arguments).</p>
      * @param inputArgs         The arraylist of the player's input arguments.
-     * @param inputArgsIndex    The current index of the inputArgs arraylist argument.
-     * @return                  The inputArgsIndex after input arguments have been put into the arguments.
+     * @return                  whether or not successful.
      */
-    public int putInputInArguments(ArrayList<String> inputArgs, int inputArgsIndex) {
-        //Return -1 if there are not enough inputarguments or an argument is incorrect and indicates there is a problem
+    public boolean putInputInArguments(ArrayList<String> inputArgs) {
+        //Returns -1 if there are not enough inputArgs and indicates there is a problem
         if(arguments != null && argumentTypes != null) {
             ArrayList<Object> methodArgs = new ArrayList<Object>();
             for(int i=0; i<argumentTypes.size(); i++) {
+                Object arg = arguments.get(i);
                 //If the argument is null, just add null to the array
                 //If it was to continue normally, a NullPointerException would be thrown
-                if(arguments.get(i) == null) { methodArgs.add(null); continue;}
-                //If the argument is a regular argument, then just put it in the methoArgs array
-                if(!arguments.get(i).equals("%ph%") && !arguments.get(i).getClass().equals(TFMethod.class)) { methodArgs.add(arguments.get(i)); continue; }
-                //If the argument is a method, then just put input in the arguments. If a -1 is returned, then there was a problem, and must return -1
-                if(arguments.get(i).getClass() == TFMethod.class) { methodArgs.add(arguments.get(i)); inputArgsIndex = ((TFMethod)arguments.get(i)).putInputInArguments(inputArgs, inputArgsIndex); if(inputArgsIndex == -1){ resetArguments(); return -1; } continue; }
-                //If it makes it this far, then the arguemnt is a placeholder ("%ph%")
-                if(inputArgsIndex <= inputArgs.size() - 1) {
-                    //Cast the inputArg to the correct type
-                    if(argumentTypes.get(i).equals(int.class)) {
-                        methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
-                    } else if(argumentTypes.get(i).equals(String.class)) {
-                        methodArgs.add(inputArgs.get(inputArgsIndex));
-                    } else if(argumentTypes.get(i).equals(boolean.class)) {
-                        methodArgs.add(Boolean.parseBoolean(inputArgs.get(inputArgsIndex)));
-                    } else if(argumentTypes.get(i).equals(double.class)) {
-                        methodArgs.add(Double.parseDouble(inputArgs.get(inputArgsIndex)));
-                    } else if(argumentTypes.get(i).equals(Class.class)) {
-                        try { methodArgs.add(Class.forName(inputArgs.get(inputArgsIndex))); } catch(ClassNotFoundException e) { resetArguments(); return -1;  }
-                    }
-                    inputArgsIndex++;
-                } else if(methodArgs.size() != argumentTypes.size()) {
-                    return -1;
+                if(arg == null) { methodArgs.add(null); continue; }
+                //If it is a placeholder then replace it
+                if(arg instanceof String && ((String)arg).contains("%ph%") && ((String)arg).length() > 4) {
+                    try {
+                        int index = Integer.parseInt(((String)arg).substring(4,((String)arg).length()));
+                        //Cast the placeholder to the correct type
+                        if(argumentTypes.get(i).equals(int.class)) {
+                            methodArgs.add(Integer.parseInt(inputArgs.get(index)));
+                        } else if(argumentTypes.get(i).equals(String.class)) {
+                            methodArgs.add(inputArgs.get(index));
+                        } else if(argumentTypes.get(i).equals(boolean.class)) {
+                            methodArgs.add(Boolean.parseBoolean(inputArgs.get(index)));
+                        } else if(argumentTypes.get(i).equals(double.class)) {
+                            methodArgs.add(Double.parseDouble(inputArgs.get(index)));
+                        } else if(argumentTypes.get(i).equals(Class.class)) {
+                            try { methodArgs.add(Class.forName(inputArgs.get(index))); } catch(ClassNotFoundException e) { return false;  }
+                        }
+                        continue;
+                    } catch (IndexOutOfBoundsException e) { return false; } //There are not enough arguments given
+                    catch(Exception e) {} //This is not supposed to be a placeholder, so just continue on
                 }
+                //If it is a method, then put arguments into the method.
+                if(arg.getClass() == TFMethod.class) {
+                    if(!((TFMethod)arg).putInputInArguments(inputArgs)) { return false; } //Something has gone wrong
+                }
+                //Put the arg in the new arraylist
+                methodArgs.add(arg);
+
             }
             arguments = methodArgs;
         }
-        //If the field is a method, then put intput in the arguments
-        //If a -1 is recieved, then there is a problem, and must return a -1
+        //If the field is a method, then put input argumetns in the method
+        //If false is recieved, then there was a problem, and must return false
         if(field != null && field.getClass().equals(FieldMethod.class)) {
-            inputArgsIndex = ((FieldMethod)field).putInputInArguments(inputArgs, inputArgsIndex);
-            if(inputArgsIndex == -1) { return -1 ;}
+            if(!((FieldMethod)field).putInputInArguments(inputArgs)) { return false; } // Something has gone wrong
         }
-        return inputArgsIndex;
+        return true;
     }
 
     /**

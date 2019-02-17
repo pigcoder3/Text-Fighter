@@ -12,6 +12,8 @@ public class Achievement {
 
     /*** Stores the name of the achivement.*/
     private String name;
+    /*** Stores the description of the achievement. Generally stores how to obtain it.*/
+    private String description;
     /*** Stores the requirements for the player to earn the achivement.*/
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
     /*** Stores the rewards earned from the achievement*/
@@ -22,6 +24,11 @@ public class Achievement {
      * @return      {@link #name}
      */
     public String getName() { return name; }
+    /**
+     * Gets the {@link #description} of the achievement.
+     * @return      {@link #description}
+     */
+     public String getDescription() { return description; }
     /**
      * Gets the {@link #requirements}.
      * @return      {@link #requirements}
@@ -49,8 +56,9 @@ public class Achievement {
         }
     }
 
-    public Achievement(String name, ArrayList<Requirement> requirements, ArrayList<Reward> rewards) {
+    public Achievement(String name, String description, ArrayList<Requirement> requirements, ArrayList<Reward> rewards) {
         this.name = name;
+        this.description = description;
         this.requirements = requirements;
         this.rewards = rewards;
     }
