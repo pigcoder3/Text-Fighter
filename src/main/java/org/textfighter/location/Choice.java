@@ -72,11 +72,9 @@ public class Choice {
      * @return              Returns whether or not successful.
      */
     public boolean invokeMethods(ArrayList<String> inputArgs) {
-        int inputArgsIndex = 0;
         for(ChoiceMethod cm : methods) {
             //Put the input in the arguments of all the ChoiceMethod
-            inputArgsIndex = cm.putInputInArguments(inputArgs, inputArgsIndex);
-            if(inputArgsIndex == -1) {
+            if(!cm.putInputInArguments(inputArgs)) {
                 for(ChoiceMethod m : methods) {
                     m.resetArguments();
                 }

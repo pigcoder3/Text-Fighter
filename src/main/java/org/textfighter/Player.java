@@ -252,6 +252,17 @@ public class Player {
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
 
     /**
+     * Stores the methods that are invoked when the player dies.
+     * <p>Set to an empty ArrayList of TFMethods.</p>
+     */
+     private ArrayList<DeathMethod> allDeathMethods = new ArrayList<DeathMethod>();
+     /**
+      * Stores the death methods that meet their own requirements.
+      * <p>Set to an empty ArrayList of TFMethods.</p>
+      */
+      private ArrayList<DeathMethod> possibleDeathMethods = new ArrayList<DeathMethod>();
+
+    /**
      * Returns the {@link #customVariables}.
      * @return      {@link #customVariables}
      */
@@ -288,6 +299,56 @@ public class Player {
     }
 
     /**
+     * Returns the {@link #allDeathMethods}.
+     * @return      {@link #allDeathMethods}.
+     */
+    public ArrayList<DeathMethod> getDeathMethods() { return allDeathMethods; }
+
+    /**
+     * Returns the {@link #possibleDeathMethods}.
+     * @return      {@link #possibleDeathMethods}.
+     */
+    public ArrayList<DeathMethod> getPossibleDeathMethods() { return possibleDeathMethods; }
+
+    /**
+     * Invokes all the {@link #possibleDeathMethods}.
+     * <p>First calls {@link #filterDeathMethods}, then invokes them.</p>
+     */
+    public void invokeDeathMethods() {
+        filterDeathMethods();
+        if(possibleDeathMethods != null) {
+            for(DeathMethod dm : possibleDeathMethods) {
+                dm.invokeMethod();
+            }
+        }
+    }
+
+    /**
+     * Loops over {@link #allDeathMethods} and adds all death methods that meet their own requirements to {@link #allDeathMethods}.
+     * <p>Adds valid premethods to a new ArrayList that the {@link #possibleDeathMethods} is set to after.</p>
+     */
+    public void filterDeathMethods() {
+        //Filter out any death methods that do not meet the requirements
+        possibleDeathMethods.clear();
+        if(allDeathMethods != null){
+            for(DeathMethod dm : allDeathMethods) {
+                boolean valid = true;
+                if(dm.getMethod().getRequirements() != null) {
+                    for(Requirement r : dm.getMethod().getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        possibleDeathMethods.add(dm);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Attacks the enemy with the {@link #currentWeapon}.
      * <p>Calls the damaged method of the Enemy instance. If you want to just damage the player, then just use the damaged method directly.</p>
      * @param customString  The string to be displayed with the default output.
@@ -319,8 +380,9 @@ public class Player {
     /*** Tells the player that they have dies and removes the save.*/
     public void died() {
         TextFighter.addToOutput("You died!");
-        TextFighter.loadGame(TextFighter.gameName);
-		location = TextFighter.getLocationByName("inGameMenu");
+        setHp(defaulthp); //Restore the player's health
+        PackMethods.movePlayer("menu"); //When the player dies, they respawn at the in game menu (not start menu)
+        invokeDeathMethods();
     }
 
     //inFight methods
@@ -614,6 +676,16 @@ public class Player {
      */
     public int getHp() { return hp; }
     /**
+     * Sets the value of {@link #hp} to the value given.
+     * <p>If the value given is less than 1, Then set it to 1. If the new health is more than {@link #maxhp}, then set the health to the new maxhp.</p>
+     * @param a     The new value.
+     */
+     public void setHp(int a) {
+         hp=a;
+         if(hp < 1) { hp = 0; }
+         if(hp > maxhp) { hp = maxhp; }
+     }
+    /**
      * Decreases the {@link #hp} if the player can be hurt this turn.
      * <p>If the new value is less than 0, set it to 0. If greater than {@link #maxhp}, then set it to the maxhp.</p>
      * @param a             The amount to of damage dealt.
@@ -623,7 +695,6 @@ public class Player {
         if(turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
         calculateTotalProtection();
         hp = hp - (int)Math.round(a/(totalProtection+1)); //total protection Increased by 1 here so that the game doesn't divide by 0
-        System.out.println(a + " / " + totalProtection + " = " + (int)Math.round(a/totalProtection+1) + " " + hp);
 		if(hp < 0) { hp = 0; }
 		if(hp > maxhp) { hp = maxhp; }
 
@@ -650,7 +721,6 @@ public class Player {
         maxhp=a;
         if(maxhp < 1) { maxhp = 0; }
         if(hp > maxhp) { hp = maxhp; }
-
     }
 
     //Coins methods
@@ -671,7 +741,6 @@ public class Player {
      * @param a     The amount to increase by.
      */
     public void decreaseCoins(int a) { coins-=a; if(coins < 0) { coins=0; } }
-
     /**
      * Increases the {@link #coins}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -863,7 +932,7 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables) {
+    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<DeathMethod> deathMethods) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -880,18 +949,21 @@ public class Player {
         this.inventory = inventory;
         this.achievements = achievements;
         this.customVariables = customVariables;
+        this.allDeathMethods = deathMethods;
         calculateTotalProtection();
         calculateStrength();
     }
 
-    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables) {
+    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<DeathMethod> deathMethods) {
         this.currentWeapon = currentWeapon;
         this.customVariables = customVariables;
+        this.allDeathMethods = deathMethods;
         calculateStrength();
     }
 
-    public Player(ArrayList<CustomVariable> customVariables) {
+    public Player(ArrayList<CustomVariable> customVariables, ArrayList<DeathMethod> deathMethods) {
         this.customVariables = customVariables;
+        this.allDeathMethods = deathMethods;
     }
 
     public Player() {}

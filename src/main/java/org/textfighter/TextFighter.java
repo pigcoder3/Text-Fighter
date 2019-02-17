@@ -105,6 +105,8 @@ public class TextFighter {
     public static File itemDir;
     /**Stores the directory where the default custom variables are located*/
     public static File customVariablesDir;
+    /**Stores the directory where the death methods are located*/
+    public static File deathmethodsFile;
 
     /**Stores the directory where all config files are located*/
     public static File configDir;
@@ -150,6 +152,9 @@ public class TextFighter {
     public static ArrayList<CustomVariable> weaponCustomVariables = new ArrayList<CustomVariable>();
     /**All special item custom variables are copied from here to the new instance*/
     public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<CustomVariable>();
+
+    /**All the death methods are copied from here to the new instance of player*/
+    public static ArrayList<DeathMethod> deathMethods = new ArrayList<DeathMethod>();
 
     /**
      * Gets a location from the {@link #locations} arraylist
@@ -236,6 +241,7 @@ public class TextFighter {
         packFile = new File(configDir.getPath() + "/pack");
         packDir = new File("../../../packs");
         customVariablesDir = new File(resourcesDir.getPath() + "/customVariables");
+        deathmethodsFile = new File(resourcesDir.getPath() + "/deathmethods/deathmethods.json");
         version = readVersionFromFile();
         //Load some things
         loadConfig();
@@ -243,7 +249,7 @@ public class TextFighter {
         loadCustomVariables();
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
-        if (!loadItems() || !loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
+        if (!loadDeathMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
         if (!savesDir.exists()) {
             Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
@@ -429,14 +435,20 @@ public class TextFighter {
         } else { return null; }
     }
 
+    /**
+     * Returns a directory with the given name in the directory (parent) given.
+     * @param directoryName     The name of the directory to find
+     * @param parent            The parent directory
+     * @return                  A directory with the given name in the directory (parent) given. If none found, return null.
+     */
     public static File getPackDirectory(String directoryName, File parent) {
         File directoryFound;
-        if(packUsed != null && parent.exists() && parent.isDirectory()) {
+        if(parent != null && parent.exists() && parent.isDirectory()) {
             for(String s : parent.list()) {
                 if(s.equals(directoryName)) {
                     File pack = new File(parent.getPath() + "/" + directoryName);
                     if(pack.isDirectory()) {
-                        Display.displayPackMessage("loading " + directoryName + " from pack '" + packUsed.getName() + "'");
+                        if(parsingPack && packUsed != null) {  Display.displayPackMessage("loading " + directoryName + " from pack '" + packUsed.getName() + "'"); }
                         parsingPack = true;
                         return pack;
                     }
@@ -446,14 +458,20 @@ public class TextFighter {
         return null;
     }
 
+    /**
+     * Returns a file with the given name in the directory (parent) given.
+     * @param fileName      The name of the file to find
+     * @param parent            The parent directory
+     * @return      A file with the given name in the directory (parent) given. If none found, return null.
+     */
     public static File getPackFile(String fileName, File parent) {
         File file;
-        if(packUsed != null && parent.exists() && parent.isDirectory()) {
+        if(parent != null && parent.exists() && parent.isDirectory()) {
             for(String s : parent.list()) {
                 if(s.equals(fileName)) {
                     File pack = new File(parent.getPath() + "/" + fileName);
                     if(pack.isFile()) {
-                        Display.displayPackMessage("loading " + fileName + " from pack '" + packUsed.getName() + "'");
+                        if(parsingPack && packUsed != null) { Display.displayPackMessage("loading " + fileName + " from pack '" + packUsed.getName() + "'"); }
                         parsingPack = true;
                         return pack;
                     }
@@ -463,17 +481,22 @@ public class TextFighter {
         return null;
     }
 
+    /**
+     * Returns all names listed in the omit.txt file of the pack directory given.
+     * @param directory     The name of the directory where the omit.txt fil should be located
+     * @return              all names listed in the omit.txt file of the pack directory given.
+     */
     public static ArrayList<String> getOmittedAssets(File directory) {
         ArrayList<String> omittedAssets = new ArrayList<String>();
         if(parsingPack) {
-            File omissionFile = new File(directory + "/" + "omit.txt");
+            File omissionFile = new File(directory + "/omit.txt");
             if(omissionFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(packFile));) {
                     String line;
                     while ((line = br.readLine()) != null) {
                         omittedAssets.add(line);
                     }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the interfacepack's omit file (The file does exist). Continuing normally..."); }
+                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the omit file (The file does exist). Continuing normally..."); }
             }
         }
         return omittedAssets;
@@ -652,7 +675,7 @@ public class TextFighter {
         File directory = enemyDir;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
-        File packDirectory = getPackDirectory("locations", packUsed);
+        File packDirectory = getPackDirectory("enemies", packUsed);
         if(packDirectory != null) { directory = packDirectory; }
 
         //Place where all names that are located in the omit file are stored
@@ -776,9 +799,10 @@ public class TextFighter {
                     if(achievementFile == null) { continue; }
                     String name = (String)achievementFile.get("name");
                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.displayPackError("An achievement does not have a name"); Display.changePackTabbing(false); continue; }
+                    String description = (String)achievementFile.get("description");
                     Display.displayPackMessage("Loading achievement '" + name + "'");
                     Display.changePackTabbing(true);
-                    achievements.add(new Achievement(name, loadMethods(Requirement.class, (JSONArray)achievementFile.get("requirements"), Achievement.class), loadMethods(Reward.class, (JSONArray)achievementFile.get("rewards"), Achievement.class)));
+                    achievements.add(new Achievement(name, description, loadMethods(Requirement.class, (JSONArray)achievementFile.get("requirements"), Achievement.class), loadMethods(Reward.class, (JSONArray)achievementFile.get("rewards"), Achievement.class)));
                     Display.changePackTabbing(false);
                     usedNames.add(name);
                 }
@@ -834,7 +858,7 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            if((itemDirectory = getPackDirectory("weapons", directory)) != null && itemDirectory != null) {
+            if((itemDirectory = getPackDirectory("armor", directory)) != null && itemDirectory != null) {
                 Display.displayPackMessage("Loading armor");
                 for(String f : itemDirectory.list()) {
                     Display.changePackTabbing(true);
@@ -1015,7 +1039,7 @@ public class TextFighter {
     }
 
     /**
-     * Loads the default calues.
+     * Loads the default values.
      * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
      */
     public static void loadDefaultValues() {
@@ -1139,6 +1163,59 @@ public class TextFighter {
         Display.changePackTabbing(false);
         Display.displayPackMessage("Default player/enemy/item values loaded.");
         return;
+    }
+
+    /**
+     * Loads the death methods (methods that are invoked when the player dies).
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      Whether or not successful
+     */
+
+    public static boolean loadDeathMethods() {
+        Display.displayPackMessage("Loading the death methods...");
+        Display.changePackTabbing(true);
+        if(!achievementDir.exists()) { Display.displayError("Could not find the default deathmethods directory."); Display.changePackTabbing(false); return false;}
+        ArrayList<String> usedIds = new ArrayList<String>();
+        File file = deathmethodsFile;
+
+        //Determine if there is a pack to be loaded and start loading from it if there is
+        File packDirectory = getPackDirectory("deathmethods", packUsed);
+        if(packDirectory != null && packDirectory.list() != null) {
+            for(String s : packDirectory.list()) {
+                if(s == "deathmethods.json") {
+                    file = new File(packDirectory.getPath() + "/deathmethods.json");
+                }
+            }
+        }
+
+        ArrayList<String> idsToBeOmitted = getOmittedAssets(packDirectory); //Place where all names that are located in the omit file are stored
+        //Loads them
+        for(int num=0; num<2; num++) {
+            if(!parsingPack) { num++; Display.displayPackMessage("Loading deathmethods from the default pack."); }
+            JSONArray deathmethodFile = null;
+            try { deathmethodFile = (JSONArray)(((JSONObject)parser.parse(new FileReader(file))).get("deathmethods")); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + file.getName() + "'"); e.printStackTrace(); continue; }
+            if(deathmethodFile == null) { System.out.println("e"); continue; }
+            for(int i=0; i<deathmethodFile.size(); i++) {
+                JSONObject obj = (JSONObject)deathmethodFile.get(i);
+                String id = (String)obj.get("id");
+                if(id == null) { Display.displayPackError("A deathmethod to does not have an id. Omitting..."); }
+                Display.displayPackMessage("Loading deathmethod '" + id + "'");
+                Display.changePackTabbing(true);
+                TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, DeathMethod.class);
+                if(method != null) {
+                    deathMethods.add(new DeathMethod( (TFMethod)loadMethod(TFMethod.class, obj, DeathMethod.class), id));
+                } else {
+                    Display.displayPackMessage("This death method does not have a valid method");
+                }
+                Display.changePackTabbing(false);
+                usedIds.add(id);
+            }
+            file=deathmethodsFile;
+            parsingPack=false;
+        }
+        Display.displayProgressMessage("Death methods loaded.");
+        Display.changePackTabbing(false);
+        return true;
     }
 
     /**
@@ -1279,7 +1356,7 @@ public class TextFighter {
             }
 
             //Create a new player instance with the loaded values
-            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables);
+            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -1346,7 +1423,7 @@ public class TextFighter {
         }
 
         //Initializes the game with a default player
-        player = new Player(currentWeapon, playerCustomVariables);
+        player = new Player(currentWeapon, playerCustomVariables, deathMethods);
         player.setLocation("saves");
 
         JSONArray customVariables = new JSONArray();
@@ -1749,7 +1826,7 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
-        player = new Player(playerCustomVariables);
+        player = new Player(playerCustomVariables, deathMethods);
         //If the game is in test mode, then the game should not run for the user (Only get modpack feedback)
         if(!testMode) {
             PackMethods.getSaveFiles();

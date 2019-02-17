@@ -1,6 +1,7 @@
 {
 
     "name" : "magician",
+	"description" : "Obtained by getting the Mana Pouch special item",
 
     "requirements" : [
         {

@@ -25,7 +25,7 @@
                             "field" : {
                                 "method" : "getFromInventory",
                                 "class" : "org.textfighter.Player",
-                                "arguments" : ["%ph%", "%ph%"],
+                                "arguments" : ["%ph%0", "%ph%1"],
                                 "argumentTypes" : ["0","0"],
                                 "field" : "player",
                                 "fieldclass" : "org.textfighter.TextFighter"

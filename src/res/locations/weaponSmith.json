@@ -25,7 +25,7 @@
                             "field" : {
                                 "method" : "getWeaponByName",
                                 "class" : "org.textfighter.TextFighter",
-                                "arguments" : ["%ph%"],
+                                "arguments" : ["%ph%0"],
                                 "argumentTypes" : ["0"]
                             }
                         }

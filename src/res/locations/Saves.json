@@ -17,7 +17,7 @@
             "methods" : [
                 {
                     "method" : "newGame",
-                    "arguments" : ["%ph%"],
+                    "arguments" : ["%ph%0"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 },
@@ -42,7 +42,7 @@
             "methods" : [
                 {
                     "method" : "loadGame",
-                    "arguments" : ["%ph%"],
+                    "arguments" : ["%ph%0"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 },
@@ -73,7 +73,7 @@
             "methods" : [
                 {
                     "method" : "removeSave",
-                    "arguments" : ["%ph%"],
+                    "arguments" : ["%ph%0"],
                     "argumentTypes" : ["0"],
                     "class" : "org.textfighter.TextFighter"
                 }

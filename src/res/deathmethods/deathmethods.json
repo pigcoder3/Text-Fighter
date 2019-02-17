@@ -1,0 +1,29 @@
+{
+    "deathmethods" : [
+        {
+            "id" : "divideCoinsByTwo",
+            "method" : "decreaseCoins",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        }
+                        "/",
+                        "2"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        }
+
+]}
