@@ -20,7 +20,7 @@
                             "class" : "org.textfighter.item.Weapon",
                             "field" : {
                                 "method" : "getOutputByNameAndType",
-                                "class" : "org.textfighter.TextFighter",
+                                "class" : "org.textfighter.PackMethods",
                                 "arguments" : ["%ph%0", "%ph%1"],
                                 "argumentTypes" : ["0", "0"]
                             }

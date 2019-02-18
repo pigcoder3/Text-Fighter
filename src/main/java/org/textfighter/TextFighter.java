@@ -1210,7 +1210,7 @@ public class TextFighter {
                 Display.changePackTabbing(false);
                 usedIds.add(id);
             }
-            Display.changePackTabbing(true);
+            Display.changePackTabbing(false);
             file=deathmethodsFile;
             parsingPack=false;
         }

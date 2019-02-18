@@ -74,7 +74,7 @@
                             "arguments" : [
                                 {
                                     "method" : "getTurnsWithInvincibilityLeft",
-                                    "class" : "org.textfight.Enemy",
+                                    "class" : "org.textfighter.Enemy",
                                     "field" : "currentEnemy",
                                     "fieldclass" : "org.textfighter.TextFighter"
                                 }
