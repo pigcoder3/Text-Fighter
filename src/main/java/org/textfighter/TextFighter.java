@@ -1351,7 +1351,6 @@ public class TextFighter {
                             if(cv.getName().equals(obj.get("name"))) {
                                 cv.setValue(value);
                                 newPlayerCustomVariables.add(cv);
-                                unusedCustomVariables.remove(p);
                                 break;
                             }
                         }

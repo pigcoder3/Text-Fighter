@@ -87,9 +87,10 @@ public class TFMethod {
                 //If the field is a regular field, then set the field value to the value it holds
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) {e.printStackTrace(); return null; }
             }
+            if(fieldvalue == null) { return null; }
         }
 
-        if(field != null && fieldvalue == null) { return null; }
+        if(fieldvalue != null) { System.out.println(fieldvalue); } 
 
         Object a;
 
@@ -99,13 +100,13 @@ public class TFMethod {
                 if(arguments != null && arguments.size() > 0) {
                     a=method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    a=method.invoke(fieldvalue, new Object[0]);
+                    a=method.invoke(fieldvalue);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
                     a=method.invoke(null, arguments.toArray());
                 } else {
-                    a=method.invoke(null, new Object[0]);
+                    a=method.invoke(null);
                 }
             }
             return a;

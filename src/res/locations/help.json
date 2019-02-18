@@ -8,6 +8,86 @@
 
     "choices" : [
         {
+            "name" : "inspectweapon",
+            "description" : "shows you details about any weapon in the game",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutputByNameAndType",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : ["%ph%0","weapon"],
+                            "argumentTypes" : ["0","0"]
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectitem <nameofweapon>"
+        },
+        {
+            "name" : "inspecttool",
+            "description" : "shows you details about any tool in the game",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutputByNameAndType",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : ["%ph%0","tool"],
+                            "argumentTypes" : ["0","0"]
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectitem <nameoftool>"
+        },
+        {
+            "name" : "inspectarmor",
+            "description" : "shows you details about any armor in the game",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutputByNameAndType",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : ["%ph%0","armor"],
+                            "argumentTypes" : ["0","0"]
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectitem <nameofarmor>"
+        },
+        {
+            "name" : "inspectspecialitem",
+            "description" : "shows you details about any special item in the game",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutputByNameAndType",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : ["%ph%0","specialitem"],
+                            "argumentTypes" : ["0","0"]
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectitem <nameofweapon>"
+        },
+        {
             "name" : "winning",
             "description" : "Tells you how to win the game.",
             "methods" : [

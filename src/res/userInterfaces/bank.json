@@ -5,9 +5,15 @@
 
         "----------------------",
         "         BANK         ",
-        " Coins: <coinsInBank> ",
-        " Magic: <magicInBank> ",
-        " Metal Scraps: <metalScrapsInBank> ",
+        "                      ",
+        " In the vault:        ",
+        "    Coins: <coinsInBank> ",
+        "    Magic: <magicInBank> ",
+        "    Metal Scraps: <metalScrapsInBank> ",
+        " In your inventory:   ",
+        "    Coins: <coins>    ",
+        "    Magic: <magic>    ",
+        "    metalScraps: <metal>",
         "----------------------"
 
     ]
