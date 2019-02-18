@@ -9,6 +9,7 @@ import org.textfighter.method.FieldMethod;
 import org.textfighter.display.Display;
 import org.textfighter.location.Choice;
 import org.textfighter.enemy.Enemy;
+import org.textfighter.TextFighter;
 
 @SuppressWarnings("unchecked")
 
@@ -30,6 +31,11 @@ public class Requirement {
      * <p>Set to an ampty arraylist of Objects.</p>
      */
     private ArrayList<Object> arguments = new ArrayList<Object>();
+    /**
+     * The types of the {@link #arguments}, corresponds by index.
+     * <p>Set to an empty arraylist of Classes.</p>
+     */
+     private ArrayList<Class> argumentTypes = new ArrayList<Class>();
     /***The method of the requirement.*/
     private Method method;
     /**
@@ -88,10 +94,10 @@ public class Requirement {
                 //If the field is a regular field, then set the field value to the value it holds
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
-            if(fieldvalue == null) { return false; }
+            if(fieldvalue == null) { resetArguments(); return !neededBoolean; }
         }
 
-        if(field != null && fieldvalue == null) { return !neededBoolean; }
+        if(field != null && fieldvalue == null) { resetArguments(); return !neededBoolean; }
 
 		try {
             boolean output = !neededBoolean;
@@ -116,17 +122,81 @@ public class Requirement {
     }
 
     /**
+     * The method replaces any placeholders ("%ph%[indexOfInput]") with inputArgs and replaces any placeholders in any arguments that are TFMethods.
+     *
+     * <p>This is only called if it is a child of a ChoiceMethod or a distant child of one.</p>
+     * <p>If everything goes well, the method returns the true. The method returns false if an argument is messed up
+     * fill the {@link #arguments} array to the correct size (The size of the {@link #argumentTypes}).</p>
+     * <p>If an argument (not the inputArgs) is null, the game just places null into the new methodArgs array.</p>
+     * <p>If an argument is just a regular argument, the game just places the argument into the new methodArgs array.</p>
+     * <p>If an argument is a TFMethod, thez the game invokes putInputInArguments() on it (Replaces placeholders with the inputArgs).
+     * If false is returned from this, then return false, because that means there is a problem. If an argument is a placeholder ("%ph%"),
+     * then the game gets the number to the right of "%ph%" and calls inputArgs.get(index) and casts the output to the argumentType.
+     * When done, {@link #arguments} is set to methodArgs.</p>
+     * <p>If the field is a FieldMethod, then invoke putInputInArguments on it (Which just does the exact same thing as explained here).
+     * If that returns -1, then return -1, because that means there is a problem (Likely from not enough input arguments).</p>
+     * @param inputArgs         The arraylist of the player's input arguments.
+     * @return                  whether or not successful.
+     */
+    public boolean putInputInArguments(ArrayList<String> inputArgs) {
+        //Returns -1 if there are not enough inputArgs and indicates there is a problem
+        if(arguments != null && argumentTypes != null) {
+            ArrayList<Object> methodArgs = new ArrayList<Object>();
+            for(int i=0; i<argumentTypes.size(); i++) {
+                Object arg = arguments.get(i);
+                //If the argument is null, just add null to the array
+                //If it was to continue normally, a NullPointerException would be thrown
+                if(arg == null) { methodArgs.add(null); continue; }
+                //If it is a placeholder then replace it
+                if(arg instanceof String && ((String)arg).contains("%ph%") && ((String)arg).length() > 4) {
+                    try {
+                        int index = Integer.parseInt(((String)arg).substring(4,((String)arg).length()));
+                        //Cast the placeholder to the correct type
+                        if(argumentTypes.get(i).equals(int.class)) {
+                            methodArgs.add(Integer.parseInt(inputArgs.get(index)));
+                        } else if(argumentTypes.get(i).equals(String.class)) {
+                            methodArgs.add(inputArgs.get(index));
+                        } else if(argumentTypes.get(i).equals(boolean.class)) {
+                            methodArgs.add(Boolean.parseBoolean(inputArgs.get(index)));
+                        } else if(argumentTypes.get(i).equals(double.class)) {
+                            methodArgs.add(Double.parseDouble(inputArgs.get(index)));
+                        } else if(argumentTypes.get(i).equals(Class.class)) {
+                            try { methodArgs.add(Class.forName(inputArgs.get(index))); } catch(ClassNotFoundException e) { ; return false;  }
+                        }
+                        continue;
+                    } catch (IndexOutOfBoundsException e) { ; return false; } //There are not enough arguments given
+                    catch(Exception e) {;} //This is not supposed to be a placeholder, so just continue on
+                }
+                //If it is a method, then put arguments into the method.
+                if(arg.getClass() == TFMethod.class) {
+                    if(!((TFMethod)arg).putInputInArguments(inputArgs)) { return false; } //Something has gone wrong
+                }
+                //Put the arg in the new arraylist
+                methodArgs.add(arg);
+
+            }
+            arguments = methodArgs;
+        }
+        //If the field is a method, then put input arguments in the method
+        //If false is recieved, then there was a problem, and must return false
+        if(field != null && field.getClass().equals(FieldMethod.class)) {
+            if(!((FieldMethod)field).putInputInArguments(inputArgs)) { return false; } // Something has gone wrong
+        }
+        return true;
+    }
+
+    /**
      * resetArguments sets the {@link #arguments} to the {@link #originalArguments}.
      * The method loops through each argument and invokes resetArguments() on each TFMethod.
      * It invokes resetArguments() on the field if it is a FieldMethod.
      */
     public void resetArguments() {
         //Reset the arguments to the original arguments because arguments that are methods may have changed them
-        if(arguments != null) {
-            for(Object o : arguments) {
+        if(originalArguments != null) {
+            for(Object o : originalArguments) {
                 if(o == null) { continue; }
                 //If the argument is a TFMethod, then reset its arguments
-                if(o.getClass().equals(TFMethod.class)) {
+                if(o instanceof TFMethod) {
                     ((TFMethod)o).resetArguments();
                 }
             }
@@ -135,12 +205,13 @@ public class Requirement {
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }
-        arguments = originalArguments;
+        arguments = new ArrayList<>(originalArguments);
     }
-    public Requirement(Method method, ArrayList<Object> arguments, Object field, boolean neededBoolean) {
+    public Requirement(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field, boolean neededBoolean) {
         this.method = method;
+        this.argumentTypes = argumentTypes;
         this.arguments = arguments;
-        if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
+        if(arguments != null) { this.originalArguments = new ArrayList<>(arguments);}
         this.field = field;
         this.neededBoolean = neededBoolean;
     }

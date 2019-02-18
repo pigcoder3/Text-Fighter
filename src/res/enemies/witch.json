@@ -62,7 +62,7 @@
             "methods" : [
                 {
                     "method" : "increaseTurnsWithInvincibilityLeft",
-                    "class" : "org.textfighter.Enemy",
+                    "class" : "org.textfighter.enemy.Enemy",
                     "arguments" : ["2"],
                     "argumentTypes" : ["1"],
                     "field" : "currentEnemy",

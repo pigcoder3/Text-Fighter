@@ -1,3 +1,22 @@
 {
-    "coins" : "100000"
+    "values" : [
+        {
+            "name" : "coinsInBank",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        },
+        {
+            "name" : "magicInBank",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        },
+        {
+            "name" : "metalScrapsInBank",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        }
+    ]
 }

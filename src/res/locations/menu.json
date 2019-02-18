@@ -123,6 +123,19 @@
             "usage" : "weaponSmith"
         },
         {
+            "name" : "bank",
+            "description" : "Goes to the bank where you can safely store currencies",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["bank"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "weaponSmith"
+        },
+        {
             "name" : "savegame",
             "description" : "Saves the game",
             "methods" : [

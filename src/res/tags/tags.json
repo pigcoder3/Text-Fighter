@@ -200,6 +200,33 @@
             "arguments" : ["specialitem"],
             "argumentTypes" : ["0"]
         },
+        {
+            "tag" : "<coinsInBank>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["coinsInBank"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<magicInBank>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["magicInBank"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<metalScrapsInBank>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["metalScrapsInBank"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
 
 
 

@@ -167,6 +167,7 @@ public class Location {
                         valid = false;
                         break;
                     }
+                    r.resetArguments();
                 }
             }
             if(valid) {

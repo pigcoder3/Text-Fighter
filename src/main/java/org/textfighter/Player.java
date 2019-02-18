@@ -277,7 +277,9 @@ public class Player {
     public Object getCustomVariableFromName(String name) {
         if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
-            if(cv.getName().equals(name)) { return cv.getValue(); }
+            if(cv.getName().equals(name)) {
+                return cv.getValue();
+            }
         }
         return null;
     }

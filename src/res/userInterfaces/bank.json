@@ -1,0 +1,14 @@
+{
+    "name" : "bank",
+
+    "interface" : [
+
+        "----------------------",
+        "         BANK         ",
+        " Coins: <coinsInBank> ",
+        " Magic: <magicInBank> ",
+        " Metal Scraps: <metalScrapsInBank> ",
+        "----------------------"
+
+    ]
+}

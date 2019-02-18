@@ -95,11 +95,11 @@ public class EnemyActionMethod {
      * It invokes resetArguments() on the field if it is a FieldMethod.
      */
     public void resetArguments() {
-        if(arguments != null) {
-            for(Object o : arguments) {
+        if(originalArguments != null) {
+            for(Object o : originalArguments) {
                 if(o == null) { continue; }
-                //If the argument is a method, then reset the arguments
-                if(o.getClass().equals(TFMethod.class)) {
+                //If the argument is a TFMethod, then reset its arguments
+                if(o instanceof TFMethod) {
                     ((TFMethod)o).resetArguments();
                 }
             }
@@ -108,7 +108,7 @@ public class EnemyActionMethod {
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }
-        arguments = originalArguments;
+        arguments = new ArrayList<>(originalArguments);;
     }
 
     public EnemyActionMethod(Method method, ArrayList<Object> arguments, Object field) {

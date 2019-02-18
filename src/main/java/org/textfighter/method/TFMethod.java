@@ -184,11 +184,11 @@ public class TFMethod {
      */
     public void resetArguments() {
         //Reset the arguments to the original arguments because arguments that are methods may have changed them
-        if(arguments != null) {
-            for(Object o : arguments) {
+        if(originalArguments != null) {
+            for(Object o : originalArguments) {
                 if(o == null) { continue; }
                 //If the argument is a TFMethod, then reset its arguments
-                if(o.getClass().equals(TFMethod.class)) {
+                if(o instanceof TFMethod) {
                     ((TFMethod)o).resetArguments();
                 }
             }
@@ -197,7 +197,7 @@ public class TFMethod {
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }
-        arguments = originalArguments;
+        arguments = new ArrayList<>(originalArguments);;
     }
 
     public TFMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field, ArrayList<Requirement> requirements) {

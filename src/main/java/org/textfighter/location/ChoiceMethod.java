@@ -112,13 +112,13 @@ public class ChoiceMethod {
                 if(arguments != null && arguments.size() > 0) {
                     method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    method.invoke(fieldvalue, new Object[0]);
+                    method.invoke(fieldvalue);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
                     method.invoke(null, arguments.toArray());
                 } else {
-                    method.invoke(null, new Object[0]);
+                    method.invoke(null);
                 }
             }
             resetArguments();
@@ -157,7 +157,6 @@ public class ChoiceMethod {
                 //If it is a placeholder then replace it
                 if(arg instanceof String && ((String)arg).contains("%ph%") && ((String)arg).length() > 4) {
                     try {
-                        System.out.println("E1");
                         int index = Integer.parseInt(((String)arg).substring(4,((String)arg).length()));
                         //Cast the placeholder to the correct type
                         if(argumentTypes.get(i).equals(int.class)) {
@@ -171,7 +170,6 @@ public class ChoiceMethod {
                         } else if(argumentTypes.get(i).equals(Class.class)) {
                             try { methodArgs.add(Class.forName(inputArgs.get(index))); } catch(ClassNotFoundException e) { ; return false;  }
                         }
-                        System.out.println("E2");
                         continue;
                     } catch (IndexOutOfBoundsException e) { ; return false; } //There are not enough arguments given
                     catch(Exception e) {;} //This is not supposed to be a placeholder, so just continue on
@@ -186,10 +184,17 @@ public class ChoiceMethod {
             }
             arguments = methodArgs;
         }
-        //If the field is a method, then put input argumetns in the method
+        //If the field is a method, then put input arguments in the method
         //If false is recieved, then there was a problem, and must return false
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             if(!((FieldMethod)field).putInputInArguments(inputArgs)) { return false; } // Something has gone wrong
+        }
+        //Put arguments in the ChoiceMethod requirements
+        //If false is recieved, then there was a problem, and must return false
+        if(requirements != null) {
+            for(Requirement r : requirements) {
+                if(!r.putInputInArguments(inputArgs)) { return false; }
+            }
         }
         return true;
     }
@@ -200,17 +205,22 @@ public class ChoiceMethod {
      * It invokes resetArguments() on the field if it is a FieldMethod.
      */
     public void resetArguments() {
-        if(arguments != null) {
-            for(Object o : arguments) {
+        if(originalArguments != null) {
+            for(Object o : originalArguments) {
                 if(o == null) { continue; }
-                //If the argument is a method, then reset arguments
-                if(o.getClass().equals(TFMethod.class)) {
+                //If the argument is a TFMethod, then reset its arguments
+                if(o instanceof TFMethod) {
                     ((TFMethod)o).resetArguments();
                 }
             }
         }
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
+        }
+        if(requirements != null) {
+            for(Requirement r : requirements) {
+                r.resetArguments();
+            }
         }
         arguments = originalArguments;
     }

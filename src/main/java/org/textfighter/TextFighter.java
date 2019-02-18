@@ -292,27 +292,28 @@ public class TextFighter {
                 String argType = argumentTypesString.get(g);
                 if(argType == null) { Display.displayPackError("This methods has a null value for an argument. Omitting..."); }
                 // Check to see if the method recieving these arguments wants an Object
-                if(argType.length() > 1 && argType.substring(0,1) == "!") {
-                    System.out.println("Object");
-                    parameterArgumentTypes.set(g, Object.class);
+                boolean isObject = false;
+                if(argType.length() > 1 && argType.substring(0,1).equals("*")) {
+                    parameterArgumentTypes.add(Object.class);
+                    isObject = true;
                     argumentTypesString.set(g, argType.substring(1, argType.length()));
                 }
                 int num = Integer.parseInt(argumentTypesString.get(g));
                 if(num == 0) {
                     argumentTypes.add(String.class);
-                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(String.class); }
+                    if(!isObject) { parameterArgumentTypes.add(String.class); }
                 } else if(num == 1) {
                     argumentTypes.add(int.class);
-                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(int.class); }
+                    if(!isObject) { parameterArgumentTypes.add(int.class); }
                 } else if(num == 2) {
                     argumentTypes.add(double.class);
-                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(double.class); }
+                    if(!isObject) { parameterArgumentTypes.add(double.class); }
                 } else if(num == 3) {
                     argumentTypes.add(boolean.class);
-                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(boolean.class); }
+                    if(!isObject) { parameterArgumentTypes.add(boolean.class); }
                 } else if(num == 4) {
                     argumentTypes.add(Class.class);
-                    if(parameterArgumentTypes.size() >= g) { parameterArgumentTypes.add(Class.class); }
+                    if(!isObject) { parameterArgumentTypes.add(Class.class); }
                 } else {
                     Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                     Display.changePackTabbing(false);
@@ -362,6 +363,7 @@ public class TextFighter {
                 } else {
                     //The syntax for using a null value is "%null%"
                     if(((String)argumentsRaw.get(p)).equals("%null%")) { arguments.add(null); }
+                    if(((String)argumentsRaw.get(p)).contains("%ph%")) { arguments.add(argumentsRaw.get(p)); }
                     else if(argumentTypes.get(p).equals(int.class)) {
                         arguments.add(Integer.parseInt((String)argumentsRaw.get(p)));
                     } else if (argumentTypes.get(p).equals(String.class)) {
@@ -389,7 +391,7 @@ public class TextFighter {
             o=new ChoiceMethod(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), ChoiceMethod.class));
         } else if(type.equals(Requirement.class)) {
             boolean neededBoolean = Requirement.defaultNeededBoolean; if(obj.get("neededBoolean") != null) {neededBoolean=Boolean.parseBoolean((String)obj.get("neededBoolean"));}
-            o=new Requirement(method, arguments, field, neededBoolean);
+            o=new Requirement(method, arguments, argumentTypes, field, neededBoolean);
         } else if(type.equals(EnemyActionMethod.class)) {
             o=new EnemyActionMethod(method, arguments, field);
         } else if(type.equals(TFMethod.class)) {
@@ -954,7 +956,6 @@ public class TextFighter {
                                 Display.displayPackMessage("Loading custom variable '" + name + "'.");
                             } else { Display.displayPackError("This custom variable does not have a name. Omitting..."); continue; }
                             if(usedNames.contains(name)) { Display.displayPackError("Found duplicate custom varaible '" + name + "'"); continue; };
-                            Display.displayPackMessage("Loading custom variable '" + name + "'");
                             Object value = null;
                             if(obj.get("value") != null) {
                                 value = obj.get("value");
@@ -971,16 +972,21 @@ public class TextFighter {
                             //Cast the values to the correct type
                             if(value.equals("%null%")) { value = null; }
                             else if(typeRaw == 0) {
-                                value = Integer.parseInt((String)value);
-                            } else if(typeRaw == 1) {
                                 if(value.equals("%null%")) { value = null; }
                                 else { value = (String)value; }
+                                type = String.class;
+                            } else if(typeRaw == 1) {
+                                value = Integer.parseInt((String)value);
+                                type = int.class;
                             } else if(typeRaw == 2) {
                                 value = Double.parseDouble((String)value);
+                                type = double.class;
                             } else if(typeRaw == 3) {
                                 value = Boolean.parseBoolean((String)value);
+                                type = boolean.class;
                             } else if(typeRaw == 4) {
                                 try { value = Class.forName((String)value); } catch(ClassNotFoundException e) { Display.displayPackError("The custom variable tried to get a class that does not exist. Omitting... "); Display.changePackTabbing(false); continue; }
+                                type = Class.class;
                             } else {
                                 Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                                 continue;
@@ -1324,21 +1330,20 @@ public class TextFighter {
                 for(int i=0; i<customVariables.size(); i++) {
                     JSONObject obj = (JSONObject)customVariables.get(i);
                     if(obj.get("name") != null && obj.get("type") != null && obj.get("value") != null) {
-                        String name = "";
                         int type = Integer.parseInt((String)obj.get("type"));
-                        Object value = null;
+                        Object value = obj.get("value");
                         //Null values are specified by "%null%"
-                        if(((String)value).equals("%null%")) { value = null; }
+                        if(value.equals("%null%")) { value = null; }
                         else if(type == 0) {
                             value = (String)obj.get("value");
                         } else if(type == 1) {
-                            value = Integer.parseInt((String)obj.get("value"));
+                            value = Integer.parseInt((String)value);
                         } else if(type == 2) {
-                            value = Double.parseDouble((String)obj.get("value"));
+                            value = Double.parseDouble((String)value);
                         } else if(type == 3) {
-                            value = Boolean.parseBoolean((String)obj.get("value"));
+                            value = Boolean.parseBoolean((String)value);
                         } else if(type == 4) {
-                            try { value = Class.forName((String)obj.get("value")); } catch(ClassNotFoundException e) { continue; }
+                            try { value = Class.forName((String)value); } catch(ClassNotFoundException e) { continue; }
                         }
 
                         for(int p=0; p<unusedCustomVariables.size(); i++) {
@@ -1522,7 +1527,7 @@ public class TextFighter {
                     obj.put("name",cv.getName());
                     //Saves the type with the correct number
                     if(cv.getValue() == null) { obj.put("value", "%null%"); }
-                    else { obj.put("value", cv.toString()); }
+                    else { obj.put("value", cv.getValue().toString()); }
                     if(cv.getValueType().equals(String.class)) {
                         obj.put("type", "0");
                     } else if(cv.getValueType().equals(int.class)) {
@@ -1550,6 +1555,7 @@ public class TextFighter {
         //Writes it
         try (FileWriter w = new FileWriter(currentSaveFile);) {
             w.write(base.toJSONString());
+            addToOutput("Game saved!");
         } catch (IOException e) { e.printStackTrace(); return false; }
 
         return true;

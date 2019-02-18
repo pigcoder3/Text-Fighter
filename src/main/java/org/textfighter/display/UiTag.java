@@ -27,7 +27,7 @@ public class UiTag {
      * <p>Arguments can store ints, doubles, Strings, classes, and other TFMethods</p>
      */
     private ArrayList<Object> arguments = new ArrayList<Object>();
-    /**
+    /** 
      * Stores the original arguments of this TFMethod.
      * <p>These are useful because arguments that are methods are replaced with their output in the arguments.</p>
      * <p>This will allow the methods to be used again.</p>
@@ -88,13 +88,12 @@ public class UiTag {
                 //If the field is a regular field, set the field value to the value of the field
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
+            if(fieldvalue == null) { return null; }
         }
-        
-        if(field != null && fieldvalue == null) { return null; }
 
         try {
             Object output = null;
-            if(field != null) {
+            if(fieldvalue != null) {
                 if(arguments != null && arguments.size() > 0) {
                     output = method.invoke(fieldvalue, arguments.toArray());
                 } else {
@@ -121,11 +120,11 @@ public class UiTag {
      */
     public void resetArguments() {
         //Reset the arguments to the original arguments because arguments that are methods may have changed them
-        if(arguments != null) {
-            for(Object o : arguments) {
+        if(originalArguments != null) {
+            for(Object o : originalArguments) {
                 if(o == null) { continue; }
                 //If the argument is a TFMethod, then reset its arguments
-                if(o.getClass().equals(TFMethod.class)) {
+                if(o instanceof TFMethod) {
                     ((TFMethod)o).resetArguments();
                 }
             }
@@ -134,7 +133,7 @@ public class UiTag {
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }
-        arguments = originalArguments;
+        arguments = new ArrayList<>(originalArguments);;
      }
 
     public UiTag(String tag, Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements) {

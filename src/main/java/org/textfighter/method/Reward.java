@@ -128,11 +128,11 @@ public class Reward {
      * It invokes resetArguments() on the field if it is a FieldMethod.
      */
     public void resetArguments() {
-        if(arguments != null) {
-            for(Object o : arguments) {
+        if(originalArguments != null) {
+            for(Object o : originalArguments) {
                 if(o == null) { continue; }
                 //If the argument is a TFMethod, then reset its arguments
-                if(o.getClass().equals(TFMethod.class)) {
+                if(o instanceof TFMethod) {
                     ((TFMethod)o).resetArguments();
                 }
             }
@@ -141,7 +141,7 @@ public class Reward {
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }
-        arguments = originalArguments;
+        arguments = new ArrayList<>(originalArguments);;
     }
 
     public Reward(Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements, int chance, String rewardItem) {
