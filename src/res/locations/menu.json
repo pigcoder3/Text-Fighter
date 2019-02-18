@@ -110,6 +110,19 @@
             "usage" : "weaponSmith"
         },
         {
+            "name" : "help",
+            "description" : "Goes to the help menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["help"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "weaponSmith"
+        },
+        {
             "name" : "savegame",
             "description" : "Saves the game",
             "methods" : [

@@ -98,6 +98,7 @@ public class Choice {
                     return false;
                 }
             }
+            m.resetArguments();
         }
         return true;
     }

@@ -8,38 +8,13 @@
 
     "choices" : [
         {
-            "name" : "inspectitem",
-            "description" : "shows you details about an item",
-            "methods" : [
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "getOutput",
-                            "class" : "org.textfighter.item.Weapon",
-                            "field" : {
-                                "method" : "getOutputByNameAndType",
-                                "class" : "org.textfighter.PackMethods",
-                                "arguments" : ["%ph%0", "%ph%1"],
-                                "argumentTypes" : ["0", "0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
-                }
-            ],
-            "usage" : "inspectweapon <nameofitem> <itemtype>"
-        },
-        {
             "name" : "winning",
             "description" : "Tells you how to win the game.",
             "methods" : [
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["To win, you must defeat an enemy labeled 'FINALBOSS'.\n
-                                    Winning does not give any special perks yet."],
+                    "arguments" : ["To win, you must defeat an enemy labeled 'FINALBOSS'.\nWinning does not give any special perks yet."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -52,9 +27,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["Chose one of the choices given and pass it the correct arguments.\n
-                                    The arguments are shown in 'usage' label.\n
-                                    If you do not use the choice correctly, you are told so, and nothing happens."],
+                    "arguments" : ["Chose one of the choices given and pass it the correct arguments.\nThe arguments are shown in 'usage' label.\nIf you do not use the choice correctly, you are told so, and nothing happens."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -67,8 +40,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["When you die, you lose half your coins, magic points, and metal scraps\n
-                                    and you are put back to the menu location."],
+                    "arguments" : ["When you die, you lose half your coins, magic points, and metal scraps\nand you are put back to the menu location."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -81,9 +53,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["To save your current game state, navigate to the in game menu,\n
-                                    and chose the 'savegame' choice. The save file is located in\n
-                                    the 'saves' directory at the root of the repository."],
+                    "arguments" : ["To save your current game state, navigate to the in game menu,\nand chose the 'savegame' choice. The save file is located in\nthe 'saves' directory at the root of the repository."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -109,8 +79,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["The last command is given to you at the beginning of the turn.\n
-                                    It tells you what you last inputted exactly."],
+                    "arguments" : ["The last command is given to you at the beginning of the turn.\nIt tells you what you last inputted exactly."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -123,9 +92,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["For a better explanation and how to use them, visit\n
-                                    https://github.com/pigcoder3/Text-Fighter/wiki/Configuration.\n
-                                    The display colors file changes the display colors of the output."],
+                    "arguments" : ["For a better explanation and how to use them, visit\nhttps://github.com/pigcoder3/Text-Fighter/wiki/Configuration.\nThe display colors file changes the display colors of the output."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -138,14 +105,24 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["Mods should be placed in the 'packs' directory in the root of the repository.\n
-                                    The name of the mod you would like to use should be specified in the 'pack' file\n
-                                    on its own line in the config directory which is located in the root of the directory."],
+                    "arguments" : ["Mods should be placed in the 'packs' directory in the root of the repository.\nThe name of the mod you would like to use should be specified in the 'pack' file\non its own line in the config directory which is located in the root of the directory."],
                     "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "saving"
         },
-
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
     ]
 }

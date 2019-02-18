@@ -231,7 +231,6 @@ public class Weapon extends Item {
         for(CustomVariable cv : customVariables) {
             if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }
         }
-        System.out.println("Giving the output to the player.");
         return output;
     }
 
