@@ -4,7 +4,7 @@
 
     "interfaces" : [
 
-        "enemy_choices",
+        "enemyChoices",
         "choices"
 
     ],

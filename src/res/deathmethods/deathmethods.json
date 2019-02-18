@@ -2,7 +2,7 @@
     "deathmethods" : [
         {
             "id" : "divideCoinsByTwo",
-            "method" : "decreaseCoins",
+            "method" : "setCoins",
             "class" : "org.textfighter.Player",
             "arguments" : [
                 {
@@ -24,6 +24,56 @@
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "id" : "divideMagicByTwo",
+            "method" : "setMagic",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMagic",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        }
+                        "/",
+                        "2"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "id" : "divideMetalScrapsByTwo",
+            "method" : "setMetalScraps",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        }
+                        "/",
+                        "2"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
         }
-
-]}
+    ]
+}

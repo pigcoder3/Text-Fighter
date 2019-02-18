@@ -188,7 +188,7 @@ public class TextFighter {
      */
     public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { addToOutput("No such specialitem '" + name + "'"); return sp; } } return null; }
     /**
-     * Gets a enemy from the {@link #enemies} arraylist
+     * Gets an enemy from the {@link #enemies} arraylist
      * @param name  the name of the enemy that is to be found
      * @return      If a enemy is found, then return it. Else, return null.
      */
@@ -465,7 +465,6 @@ public class TextFighter {
      * @return      A file with the given name in the directory (parent) given. If none found, return null.
      */
     public static File getPackFile(String fileName, File parent) {
-        File file;
         if(parent != null && parent.exists() && parent.isDirectory()) {
             for(String s : parent.list()) {
                 if(s.equals(fileName)) {
@@ -1170,11 +1169,10 @@ public class TextFighter {
      * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
      * @return      Whether or not successful
      */
-
     public static boolean loadDeathMethods() {
         Display.displayPackMessage("Loading the death methods...");
         Display.changePackTabbing(true);
-        if(!achievementDir.exists()) { Display.displayError("Could not find the default deathmethods directory."); Display.changePackTabbing(false); return false;}
+        if(!deathmethodsFile.exists()) { Display.displayError("Could not find the default deathmethods directory."); Display.changePackTabbing(false); return false;}
         ArrayList<String> usedIds = new ArrayList<String>();
         File file = deathmethodsFile;
 
@@ -1184,17 +1182,19 @@ public class TextFighter {
             for(String s : packDirectory.list()) {
                 if(s == "deathmethods.json") {
                     file = new File(packDirectory.getPath() + "/deathmethods.json");
+                    parsingPack = true;
                 }
             }
         }
 
-        ArrayList<String> idsToBeOmitted = getOmittedAssets(packDirectory); //Place where all names that are located in the omit file are stored
+        ArrayList<String> idsToBeOmitted = getOmittedAssets(packDirectory); //Place where all ids that are located in the omit file are stored
         //Loads them
         for(int num=0; num<2; num++) {
             if(!parsingPack) { num++; Display.displayPackMessage("Loading deathmethods from the default pack."); }
+            Display.changePackTabbing(true);
             JSONArray deathmethodFile = null;
             try { deathmethodFile = (JSONArray)(((JSONObject)parser.parse(new FileReader(file))).get("deathmethods")); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + file.getName() + "'"); e.printStackTrace(); continue; }
-            if(deathmethodFile == null) { System.out.println("e"); continue; }
+            if(deathmethodFile == null) { continue; }
             for(int i=0; i<deathmethodFile.size(); i++) {
                 JSONObject obj = (JSONObject)deathmethodFile.get(i);
                 String id = (String)obj.get("id");
@@ -1203,13 +1203,14 @@ public class TextFighter {
                 Display.changePackTabbing(true);
                 TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, DeathMethod.class);
                 if(method != null) {
-                    deathMethods.add(new DeathMethod( (TFMethod)loadMethod(TFMethod.class, obj, DeathMethod.class), id));
+                    deathMethods.add(new DeathMethod(method, id));
                 } else {
                     Display.displayPackMessage("This death method does not have a valid method");
                 }
                 Display.changePackTabbing(false);
                 usedIds.add(id);
             }
+            Display.changePackTabbing(true);
             file=deathmethodsFile;
             parsingPack=false;
         }

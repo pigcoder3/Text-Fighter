@@ -33,7 +33,7 @@
         },
         {
             "name" : "continue",
-            "description" : "Moves you to the menu, and allows you to continue with this save! Deaths no longer delete your save.",
+            "description" : "Moves you to the menu.",
             "methods" : [
                 {
                     "method" : "movePlayer",

@@ -32,7 +32,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You bought a health potion."],
+                    "arguments" : ["You bought a health potion for 20 coins."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -78,7 +78,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You bought a strength potion."],
+                    "arguments" : ["You bought a strength potion for 50 coins."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -95,7 +95,7 @@
                             "fieldclass" : "org.textfighter.TextFighter"
                         },
                         ">=",
-                        "40"
+                        "50"
                     ],
                     "argumentTypes" : ["1", "0", "1"]
                 }
@@ -124,7 +124,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You bought an invincibility potion."],
+                    "arguments" : ["You bought an invincibility potion for 200 coins."],
                     "argumentTypes" : ["0"]
                 }
             ],

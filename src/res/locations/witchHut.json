@@ -31,7 +31,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You bought an invincibilityPotion"],
+                    "arguments" : ["You bought an invincibility potion for 20 magic."],
                     "argumentTypes" : ["0"],
                 }
             ],

@@ -730,17 +730,17 @@ public class Player {
      */
     public int getCoins() { return coins; }
     /**
+     * Set the {@link #coins} to the value given.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setCoins(int a) { coins = a; if(coins < 0) { coins = 0; } }
+    /**
      * Spends {@link #coins}. Do not use this for just decreasing coins.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
     public void spendCoins(int a) { if (coins-a >= 0) { coins-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " coins because you do not have enough"); } }
-    /**
-     * Decreases {@link #coins}.
-     * <p>If the bew value is less than 0, set it to 0.</p>
-     * @param a     The amount to increase by.
-     */
-    public void decreaseCoins(int a) { coins-=a; if(coins < 0) { coins=0; } }
     /**
      * Increases the {@link #coins}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -754,6 +754,12 @@ public class Player {
      * @return      {@link #magic}
      */
     public int getMagic() { return magic; }
+    /**
+     * Set the {@link #magic} to the value given.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setMagic(int a) { magic = a; if(magic < 0) { magic = 0; } }
     /**
      * Decreases the {@link #magic}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -773,6 +779,12 @@ public class Player {
      * @return      {@link #metalScraps}
      */
     public int getMetalScraps() { return magic; }
+    /**
+     * Set the {@link #metalScraps} to the value given.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setMetalScraps(int a) { metalScraps = a; if(metalScraps < 0) { metalScraps = 0; } }
     /**
      * Decreases the {@link #metalScraps}.
      * <p>If the new value is less than 0, set it to 0.</p>

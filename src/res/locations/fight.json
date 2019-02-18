@@ -224,7 +224,7 @@
         },
         {
             "name" : "nothing",
-            "description" : "do nothing",
+            "description" : "do nothing. Literally nothing.",
             "methods" : [
                 {
                     "method" : "doNothing",

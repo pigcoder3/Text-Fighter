@@ -28,7 +28,63 @@
                 }
             ]
         }
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["20"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gainCoins",
+            "class" : "org.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["30"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "10 coins"
+        },
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["30"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "10 exp"
+        }
+    ],
+    "actions" : [
+        {
+            "methods" : [
+                {
+                    "method" : "increaseTurnsWithInvincibilityLeft",
+                    "class" : "org.textfighter.Enemy",
+                    "arguments" : ["2"],
+                    "argumentTypes" : ["1"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "requirements" : [
+                        {
+                            "method" : "variableComparison",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getTurnsWithInvincibilityLeft",
+                                    "class" : "org.textfight.Enemy",
+                                    "field" : "currentEnemy",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                }
+                                "<",
+                                "1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     ]
-
-
 }
