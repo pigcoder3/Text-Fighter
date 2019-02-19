@@ -57,10 +57,10 @@ public class EnemyActionMethod {
         Object fieldvalue = null;
 
         if(field != null) {
-            if(field.getClass().equals(FieldMethod.class)) {
+            if(field instanceof FieldMethod) {
                 //If the field is a method, then set the output of the method to the fieldvalue
                 fieldvalue = ((FieldMethod)field).invokeMethod();
-            } else if(field.getClass().equals(Field.class)){
+            } else if(field instanceof Field){
                 //If the field is a regular field, then set the value of the field to the fieldvalue
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
@@ -84,7 +84,7 @@ public class EnemyActionMethod {
             }
             resetArguments();
             return true;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); }
         resetArguments();
         return false;
     }

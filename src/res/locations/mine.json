@@ -21,7 +21,17 @@
                     "fieldclass" : "org.textfighter.TextFighter"
                 }
             ],
-            "usage" : "mine"
+            "usage" : "mine",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["pickaxe", "tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
         },
         {
             "name" : "back",

@@ -85,25 +85,23 @@ public class FieldMethod {
 
         Object a;
 
-        if(field != null && fieldvalue == null) { return null; }
-
         //Invokes this method's base method
         try {
             if(fieldvalue != null) {
                 if(arguments != null && arguments.size() > 0) {
                     a=method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    a=method.invoke(fieldvalue, new Object[0]);
+                    a=method.invoke(fieldvalue);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
                     a=method.invoke(null, arguments.toArray());
                 } else {
-                    a=method.invoke(null, new Object[0]);
+                    a=method.invoke(null);
                 }
             }
             return a;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); resetArguments(); }
         return null;
     }
 
@@ -154,7 +152,7 @@ public class FieldMethod {
                     catch(Exception e) {} //This is not supposed to be a placeholder, so just continue on
                 }
                 //If it is a method, then put arguments into the method.
-                if(arg.getClass() == TFMethod.class) {
+                if(arg instanceof TFMethod) {
                     if(!((TFMethod)arg).putInputInArguments(inputArgs)) { return false; } //Something has gone wrong
                 }
                 //Put the arg in the new arraylist

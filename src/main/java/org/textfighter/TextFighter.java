@@ -107,6 +107,8 @@ public class TextFighter {
     public static File customVariablesDir;
     /**Stores the directory where the death methods are located*/
     public static File deathmethodsFile;
+    /**Stores the directory where the level up methods are located*/
+    public static File levelupmethodsFile;
 
     /**Stores the directory where all config files are located*/
     public static File configDir;
@@ -154,7 +156,9 @@ public class TextFighter {
     public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<CustomVariable>();
 
     /**All the death methods are copied from here to the new instance of player*/
-    public static ArrayList<DeathMethod> deathMethods = new ArrayList<DeathMethod>();
+    public static ArrayList<IDMethod> deathMethods = new ArrayList<IDMethod>();
+    /**All the level up methods are copied from here to the new instance of player*/
+    public static ArrayList<IDMethod> levelupMethods = new ArrayList<IDMethod>();
 
     /**
      * Gets a location from the {@link #locations} arraylist
@@ -242,6 +246,7 @@ public class TextFighter {
         packDir = new File("../../../packs");
         customVariablesDir = new File(resourcesDir.getPath() + "/customVariables");
         deathmethodsFile = new File(resourcesDir.getPath() + "/deathmethods/deathmethods.json");
+        levelupmethodsFile = new File(resourcesDir.getPath() + "/levelupmethods/levelupmethods.json");
         version = readVersionFromFile();
         //Load some things
         loadConfig();
@@ -1211,9 +1216,9 @@ public class TextFighter {
                 if(id == null) { Display.displayPackError("A deathmethod to does not have an id. Omitting..."); }
                 Display.displayPackMessage("Loading deathmethod '" + id + "'");
                 Display.changePackTabbing(true);
-                TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, DeathMethod.class);
+                TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, IDMethod.class);
                 if(method != null) {
-                    deathMethods.add(new DeathMethod(method, id));
+                    deathMethods.add(new IDMethod(method, id));
                 } else {
                     Display.displayPackMessage("This death method does not have a valid method");
                 }
@@ -1222,6 +1227,57 @@ public class TextFighter {
             }
             Display.changePackTabbing(false);
             file=deathmethodsFile;
+            parsingPack=false;
+        }
+        Display.displayProgressMessage("Death methods loaded.");
+        Display.changePackTabbing(false);
+        return true;
+    }
+
+    /**
+     * Loads the death methods (methods that are invoked when the player dies).
+     * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      Whether or not successful
+     */
+    public static boolean loadLevelUpMethods() {
+        Display.displayPackMessage("Loading the level up methods...");
+        Display.changePackTabbing(true);
+        if(!levelupmethodsFile.exists()) { Display.displayError("Could not find the default levelupmethods directory."); Display.changePackTabbing(false); return false;}
+        ArrayList<String> usedIds = new ArrayList<String>();
+        File file = levelupmethodsFile;
+
+        //Determine if there is a pack to be loaded and start loading from it if there is
+        File packDirectory = getPackDirectory("levelupmethods", packUsed);
+        if(packDirectory != null && packDirectory.list() != null) {
+            File newFile = getPackFile("levelupmethods", packDirectory);
+            if(newFile != null) { file = newFile; }
+        }
+
+        ArrayList<String> idsToBeOmitted = getOmittedAssets(packDirectory); //Place where all ids that are located in the omit file are stored
+        //Loads them
+        for(int num=0; num<2; num++) {
+            if(!parsingPack) { num++; Display.displayPackMessage("Loading levelupmethods from the default pack."); }
+            Display.changePackTabbing(true);
+            JSONArray levelupmethodFile = null;
+            try { levelupmethodFile = (JSONArray)(((JSONObject)parser.parse(new FileReader(file))).get("levelupmethods")); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + file.getName() + "'"); e.printStackTrace(); continue; }
+            if(levelupmethodFile == null) { continue; }
+            for(int i=0; i<levelupmethodFile.size(); i++) {
+                JSONObject obj = (JSONObject)levelupmethodFile.get(i);
+                String id = (String)obj.get("id");
+                if(id == null) { Display.displayPackError("A levelupmethod to does not have an id. Omitting..."); }
+                Display.displayPackMessage("Loading levelupmethod '" + id + "'");
+                Display.changePackTabbing(true);
+                TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, IDMethod.class);
+                if(method != null) {
+                    deathMethods.add(new IDMethod(method, id));
+                } else {
+                    Display.displayPackMessage("This death method does not have a valid method");
+                }
+                Display.changePackTabbing(false);
+                usedIds.add(id);
+            }
+            Display.changePackTabbing(false);
+            file=levelupmethodsFile;
             parsingPack=false;
         }
         Display.displayProgressMessage("Death methods loaded.");
@@ -1365,7 +1421,7 @@ public class TextFighter {
             }
 
             //Create a new player instance with the loaded values
-            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods);
+            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -1432,7 +1488,7 @@ public class TextFighter {
         }
 
         //Initializes the game with a default player
-        player = new Player(currentWeapon, playerCustomVariables, deathMethods);
+        player = new Player(currentWeapon, playerCustomVariables, deathMethods, levelupMethods);
         player.setLocation("saves");
 
         JSONArray customVariables = new JSONArray();
@@ -1839,7 +1895,7 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
-        player = new Player(playerCustomVariables, deathMethods);
+        player = new Player(playerCustomVariables, deathMethods, levelupMethods);
         //If the game is in test mode, then the game should not run for the user (Only get modpack feedback)
         if(!testMode) {
             PackMethods.getSaveFiles();

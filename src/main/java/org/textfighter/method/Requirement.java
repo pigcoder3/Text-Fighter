@@ -92,7 +92,7 @@ public class Requirement {
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
                 //If the field is a regular field, then set the field value to the value it holds
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); resetArguments();}
             }
             if(fieldvalue == null) { resetArguments(); return !neededBoolean; }
         }
@@ -116,7 +116,7 @@ public class Requirement {
             }
             resetArguments();
             return output;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { e.printStackTrace(); }
         resetArguments();
         return false;
     }

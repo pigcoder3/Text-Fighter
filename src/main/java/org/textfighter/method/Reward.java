@@ -116,7 +116,7 @@ public class Reward {
             }
             resetArguments();
             return rewardItem;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace();}
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace();}
         resetArguments();
         return "";
     }

@@ -1,0 +1,65 @@
+{
+    "levelupmethods" : [
+        {
+            "method" : "setMaxHp",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMaxHp",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        "+",
+                        "10"
+                    ]
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "setHp",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "getMaxHp",
+                    "class" : "org.textfighter.Player",
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gainCoins",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getLevel",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        "*",
+                        "10"
+                    ]
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+    ]
+}

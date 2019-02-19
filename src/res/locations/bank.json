@@ -83,25 +83,6 @@
                             "argumentTypes" : ["1","0","1"]
                         }
                     ]
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "concat",
-                            "class" : "java.lang.String",
-                            "arguments" : [" coin(s) have been taken from the bank."],
-                            "argumentTypes" : ["0"],
-                            "field" : {
-                                "method" : "parseInt",
-                                "class" : "java.lang.Integer",
-                                "arguments" : ["%ph%0"],
-                                "argumentTypes" : ["0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [
@@ -201,25 +182,6 @@
                             "argumentTypes" : ["1","0","1"]
                         }
                     ]
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "concat",
-                            "class" : "java.lang.String",
-                            "arguments" : [" magic point(s) have been taken from the bank."],
-                            "argumentTypes" : ["0"],
-                            "field" : {
-                                "method" : "parseInt",
-                                "class" : "java.lang.Integer",
-                                "arguments" : ["%ph%0"],
-                                "argumentTypes" : ["0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [
@@ -320,25 +282,6 @@
                         }
                     ]
                 },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "concat",
-                            "class" : "java.lang.String",
-                            "arguments" : [" metal scrap(s) have been taken from the bank."],
-                            "argumentTypes" : ["0"],
-                            "field" : {
-                                "method" : "parseInt",
-                                "class" : "java.lang.Integer",
-                                "arguments" : ["%ph%0"],
-                                "argumentTypes" : ["0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
-                }
             ],
             "requirements" : [
                 {
@@ -449,25 +392,6 @@
                             "argumentTypes" : ["1","0","1"]
                         }
                     ]
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "concat",
-                            "class" : "java.lang.String",
-                            "arguments" : [" coin(s) have been depositted to the bank."],
-                            "argumentTypes" : ["0"],
-                            "field" : {
-                                "method" : "parseInt",
-                                "class" : "java.lang.Integer",
-                                "arguments" : ["%ph%0"],
-                                "argumentTypes" : ["0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [
@@ -577,25 +501,6 @@
                             "argumentTypes" : ["1","0","1"]
                         }
                     ]
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "concat",
-                            "class" : "java.lang.String",
-                            "arguments" : [" magic point(s) have been depositted to the bank."],
-                            "argumentTypes" : ["0"],
-                            "field" : {
-                                "method" : "parseInt",
-                                "class" : "java.lang.Integer",
-                                "arguments" : ["%ph%0"],
-                                "argumentTypes" : ["0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [
@@ -705,25 +610,6 @@
                             "argumentTypes" : ["1","0","1"]
                         }
                     ]
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : [
-                        {
-                            "method" : "concat",
-                            "class" : "java.lang.String",
-                            "arguments" : [" metal scrap(s) have been depositted to the bank."],
-                            "argumentTypes" : ["0"],
-                            "field" : {
-                                "method" : "parseInt",
-                                "class" : "java.lang.Integer",
-                                "arguments" : ["%ph%0"],
-                                "argumentTypes" : ["0"]
-                            }
-                        }
-                    ],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [

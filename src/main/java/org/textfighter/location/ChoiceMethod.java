@@ -123,7 +123,7 @@ public class ChoiceMethod {
             }
             resetArguments();
             return true;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); resetArguments();}
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); resetArguments();}
         resetArguments();
         return false;
     }

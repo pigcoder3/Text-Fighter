@@ -6,7 +6,9 @@ import java.lang.reflect.*;
 
 @SuppressWarnings("unchecked")
 
-public class DeathMethod {
+//This is just a method with an ID
+
+public class IDMethod {
 
     /**
      * Stores the indentifier for omitting.
@@ -30,7 +32,7 @@ public class DeathMethod {
     /*** Calls invokeMethod() on the {@link #method}*/
     public void invokeMethod() { method.invokeMethod(); }
 
-    public DeathMethod(TFMethod method, String id) {
+    public IDMethod(TFMethod method, String id) {
         this.method = method;
         this.id = id;
     }

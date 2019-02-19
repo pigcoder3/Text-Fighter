@@ -255,12 +255,23 @@ public class Player {
      * Stores the methods that are invoked when the player dies.
      * <p>Set to an empty ArrayList of TFMethods.</p>
      */
-     private ArrayList<DeathMethod> allDeathMethods = new ArrayList<DeathMethod>();
+    private ArrayList<IDMethod> allDeathMethods = new ArrayList<IDMethod>();
      /**
       * Stores the death methods that meet their own requirements.
       * <p>Set to an empty ArrayList of TFMethods.</p>
       */
-      private ArrayList<DeathMethod> possibleDeathMethods = new ArrayList<DeathMethod>();
+    private ArrayList<IDMethod> possibleDeathMethods = new ArrayList<IDMethod>();
+
+    /**
+     * Stores the methods that are invoked when the player levels up.
+     * <p>Set to an empty ArrayList of TFMethods.</p>
+     */
+    private ArrayList<IDMethod> allLevelupMethods = new ArrayList<IDMethod>();
+     /**
+      * Stores the level up methods that meet their own requirements.
+      * <p>Set to an empty ArrayList of TFMethods.</p>
+      */
+    private ArrayList<IDMethod> possibleLevelupMethods = new ArrayList<IDMethod>();
 
     /**
      * Returns the {@link #customVariables}.
@@ -304,13 +315,13 @@ public class Player {
      * Returns the {@link #allDeathMethods}.
      * @return      {@link #allDeathMethods}.
      */
-    public ArrayList<DeathMethod> getDeathMethods() { return allDeathMethods; }
+    public ArrayList<IDMethod> getDeathMethods() { return allDeathMethods; }
 
     /**
      * Returns the {@link #possibleDeathMethods}.
      * @return      {@link #possibleDeathMethods}.
      */
-    public ArrayList<DeathMethod> getPossibleDeathMethods() { return possibleDeathMethods; }
+    public ArrayList<IDMethod> getPossibleDeathMethods() { return possibleDeathMethods; }
 
     /**
      * Invokes all the {@link #possibleDeathMethods}.
@@ -319,7 +330,7 @@ public class Player {
     public void invokeDeathMethods() {
         filterDeathMethods();
         if(possibleDeathMethods != null) {
-            for(DeathMethod dm : possibleDeathMethods) {
+            for(IDMethod dm : possibleDeathMethods) {
                 dm.invokeMethod();
             }
         }
@@ -333,17 +344,67 @@ public class Player {
         //Filter out any death methods that do not meet the requirements
         possibleDeathMethods.clear();
         if(allDeathMethods != null){
-            for(DeathMethod dm : allDeathMethods) {
+            for(IDMethod m : allDeathMethods) {
                 boolean valid = true;
-                if(dm.getMethod().getRequirements() != null) {
-                    for(Requirement r : dm.getMethod().getRequirements()) {
+                if(m.getMethod().getRequirements() != null) {
+                    for(Requirement r : m.getMethod().getRequirements()) {
                         if(!r.invokeMethod()) {
                             valid = false;
                             break;
                         }
                     }
                     if(valid) {
-                        possibleDeathMethods.add(dm);
+                        possibleDeathMethods.add(m);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the {@link #allLevelupMethods}.
+     * @return      {@link #allLevelupMethods}.
+     */
+    public ArrayList<IDMethod> getLevelupMethods() { return allLevelupMethods; }
+
+    /**
+     * Returns the {@link #possibleLevelupMethods}.
+     * @return      {@link #possibleLevelupMethods}.
+     */
+    public ArrayList<IDMethod> getPossibleLevelupMethods() { return possibleLevelupMethods; }
+
+    /**
+     * Invokes all the {@link #possibleLevelupMethods}.
+     * <p>First calls {@link #filterLevelupMethods}, then invokes them.</p>
+     */
+    public void invokelevelupMethods() {
+        filterLevelupMethods();
+        if(possibleLevelupMethods != null) {
+            for(IDMethod m : possibleLevelupMethods) {
+                m.invokeMethod();
+            }
+        }
+    }
+
+    /**
+     * Loops over {@link #allLevelupMethods} and adds all death methods that meet their own requirements to {@link #allLevelupMethods}.
+     * <p>Adds valid premethods to a new ArrayList that the {@link #possibleLevelupMethods} is set to after.</p>
+     */
+    public void filterLevelupMethods() {
+        //Filter out any death methods that do not meet the requirements
+        possibleLevelupMethods.clear();
+        if(allLevelupMethods != null){
+            for(IDMethod m : allLevelupMethods) {
+                boolean valid = true;
+                if(m.getMethod().getRequirements() != null) {
+                    for(Requirement r : m.getMethod().getRequirements()) {
+                        if(!r.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        possibleLevelupMethods.add(m);
                     }
                 }
             }
@@ -642,10 +703,11 @@ public class Player {
      * @return      Whether or not the player has leveled up.
      */
     public boolean checkForLevelUp() {
-        if(experience > level*10+100) {
+        if(experience >= level*10+100) {
             experience = experience - level*10+100;
             increaseLevel(1);
             TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
+            invokelevelupMethods();
             return true;
         } else {
             return false;
@@ -945,7 +1007,7 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<DeathMethod> deathMethods) {
+    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -963,20 +1025,23 @@ public class Player {
         this.achievements = achievements;
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
+        this.allLevelupMethods = levelupmethods;
         calculateTotalProtection();
         calculateStrength();
     }
 
-    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<DeathMethod> deathMethods) {
+    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
         this.currentWeapon = currentWeapon;
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
+        this.allLevelupMethods = levelupmethods;
         calculateStrength();
     }
 
-    public Player(ArrayList<CustomVariable> customVariables, ArrayList<DeathMethod> deathMethods) {
+    public Player(ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
+        this.allLevelupMethods = levelupmethods;
     }
 
     public Player() {}
