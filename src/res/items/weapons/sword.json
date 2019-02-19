@@ -1,9 +1,10 @@
 {
 
     "name" : "sword",
-    "description" : "A standard weapon for many rpg games",
+    "description" : "A standard weapon for many adventurers",
     "damage" : "10",
     "critchance" : "25",
-    "misschance" : "25"
-
+    "misschance" : "25",
+    "durability" : "100",
+    "unbreakable" : "false"
 }

@@ -1731,6 +1731,7 @@ public class TextFighter {
                 try {
                     Enemy newEnemy = (Enemy)enemy.clone();
                     currentEnemy = newEnemy;
+                    newEnemy.invokePremethods();
                     validEnemy = true;
                 } catch (CloneNotSupportedException e) {
                     addToOutput("Could not create an enemy of that type! ('" + e + "')");

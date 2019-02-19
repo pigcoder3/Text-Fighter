@@ -1,5 +1,6 @@
 {
     "name" : "man",
+    "description" : "A weak man who wishes to take your coins.",
     "health" : "50",
     "maxhealth" : "20",
     "strength" : "3",
@@ -26,7 +27,7 @@
             "arguments" : ["10"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "10 exp"
+            "rewarditem" : "10 experience"
         }
     ],
     "actions" : []

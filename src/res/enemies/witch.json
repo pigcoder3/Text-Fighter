@@ -1,6 +1,7 @@
 {
 
     "name" : "witch",
+    "description" : "A magical being that has just graduated from apprenticeship.",
     "health" : "50",
     "maxhealth" : "50",
     "strength" : "15",
@@ -8,26 +9,47 @@
     "finalBoss" : "false",
     "rewards" : [
         {
-            "method" : "addToSpecialItems",
+            "method" : "addToInventory",
             "class" : "org.textfighter.Player",
-            "arguments" : ["ManaPouch"],
-            "argumentTypes" : ["0"],
+            "arguments" : ["manapouch","specialitem"],
+            "argumentTypes" : ["0","0"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter",
-            "chance" : "50",
-            "rewardItem" : "A ManaPouch",
+            "chance" : "25",
+            "rewardItem" : "A mana pouch. It is used to hold magic points.",
             "requirements" : [
                 {
-                    "method" : "isCarryingSpecialItem",
+                    "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["ManaPouch"],
-                    "argumentTypes" : ["0"],
+                    "arguments" : ["manapouch","specialitem"],
+                    "argumentTypes" : ["0","0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter",
                     "neededBoolean" : "false"
                 }
             ]
-        }
+        },
+        {
+            "method" : "addToInventory",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["witchmap","specialitem"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "75",
+            "rewardItem" : "A map to a witch's hut",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["witchMap","specialItems"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ]
+        },
         {
             "method" : "increaseExperience",
             "class" : "org.textfighter.Player",

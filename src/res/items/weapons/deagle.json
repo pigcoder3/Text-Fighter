@@ -4,6 +4,7 @@
     "description" : "A powerful gun.",
     "damage" : "20",
     "critchance" : "10",
-    "misschance" : "30"
-
+    "misschance" : "30",
+    "durability" : "200",
+    "unbreakable" : "false"
 }
