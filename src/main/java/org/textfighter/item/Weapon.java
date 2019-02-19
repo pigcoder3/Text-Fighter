@@ -38,6 +38,11 @@ public class Weapon extends Item {
      * <p>Set to 100 (100 uses).</p>
      */
     public static int defaultDurability = 100;
+    /**
+     * Stores the default unbreakable value.
+     * <p>Set to false.</p>
+     */
+    public static boolean defaultUnbreakable = false;
 
     /**
      * Stores the item type for weapons. Cannot be changed.
@@ -74,7 +79,11 @@ public class Weapon extends Item {
      * <p>Set to {@link #defaultDurability}.</p>
      */
     private int durability = defaultDurability;
-
+    /**
+     * Stores whether or not the weapon can break.
+     * <p>Set to {@link #defaultUnbreakable}.</p>
+     */
+    private boolean unbreakable = false;
     /**
      * Stores the custom variables for this weapon.
      * <p>Set to an empty ArrayList of CustomVariables.</p>
@@ -188,19 +197,24 @@ public class Weapon extends Item {
      * <p>If the new value is less than 1, then the weapon breaks.</p>
      * @param a     The new value.
      */
-    public void setDurability(int a) { durability=a; if(durability < 1) { broken(); }  }
+    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { broken(); }  }
     /**
      * Increases the value of {@link #durability}.
-     * <p>If the new value is less than 1, then it breaks.</p>
+     * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { durability=+a; if(durability < 1) { broken(); }  }
+    public void increaseDurability(int a) { if(unbreakable) { return; } durability=+a; if(durability < 1) { broken(); }  }
     /**
      * Decrease the value of {@link #durability}.
-     * <p>If the new value is less than 1, then it breaks.</p>
+     * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); }  }
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability=-a; if(durability < 1) { broken(); }  }
+    /**
+     * Returns {@link #unbreakable}.
+     * @return      {@link #unbreakable}
+     */
+    public boolean getUnbreakable() { return unbreakable; }
 
     //Get the output of just the type and durability
     /**
@@ -208,10 +222,12 @@ public class Weapon extends Item {
      * @return      {@link #name}, {@link #ITEMTYPE}, and {@link #durability}
      */
     public String getSimpleOutput(){
-        return name + " -\n" +
+        String output = name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
-               "  durability: " + durability + "\n";
-
+               "  durbility:  ";
+        if(unbreakable) { output += "unbreakable \n"; }
+        else { output += durability + "\n"; }
+        return output;
     }
 
     //Get the output of all the variables
@@ -226,7 +242,9 @@ public class Weapon extends Item {
                         "  damage:  " + damage + "\n" +
                         "  crit chance:  " + critchance + "%\n" +
                         "  miss chance:  " + misschance + "%\n" +
-                        "  durability:  " + durability + "\n";
+                        "  durability:  ";
+        if(unbreakable) { output += "unbreakable \n"; }
+        else { output += durability + "\n"; }
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {
             if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }
@@ -253,7 +271,7 @@ public class Weapon extends Item {
         this.critchance = critchance;
         this.misschance = misschance;
         this.customVariables = customVariables;
-        if(durability < 1) { broken(); }
+        if(durability < 1 && !unbreakable) { broken(); }
         this.durability = durability;
     }
 

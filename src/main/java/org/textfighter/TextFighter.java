@@ -853,6 +853,7 @@ public class TextFighter {
                     int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
                     String description = Weapon.defaultDescription;             if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Weapon.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
+                    boolean unbreakable = Weapon.defaultUnbreakable;            if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     //Add it
                     weapons.add(new Weapon(name, description, damage, critChance, missChance, weaponCustomVariables, durability));
                     usedNames.add(name);
@@ -888,7 +889,8 @@ public class TextFighter {
                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
                     String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                    int durability = Tool.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
+                    int durability = Tool.defaultDurability;                    if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
+                    boolean unbreakable = Tool.defaultUnbreakable;              if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     //Add it
                     tools.add(new Tool(name, description, toolCustomVariables, durability));
                     usedNames.add(name);
@@ -1124,6 +1126,7 @@ public class TextFighter {
                     if(valuesFile.get("critChance") != null) {                  Weapon.defaultCritChance = Integer.parseInt((String)valuesFile.get("critChance")); }
                     if(valuesFile.get("missChance") != null) {                  Weapon.defaultMissChance = Integer.parseInt((String)valuesFile.get("missChance")); }
                     if(valuesFile.get("durability") != null) {                  Weapon.defaultDurability = Integer.parseInt((String)valuesFile.get("durability")); }
+                    if(valuesFile.get("unbreakable") != null) {                 Weapon.defaultUnbreakable = Boolean.parseBoolean((String)valuesFile.get("unbreakable")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); continue; }
             }
@@ -1148,6 +1151,7 @@ public class TextFighter {
                     if(valuesFile.get("name") != null) {                        Tool.defaultName = (String)valuesFile.get("name"); }
                     if(valuesFile.get("description") != null) {                 Tool.defaultDescription = (String)valuesFile.get("description"); }
                     if(valuesFile.get("durability") != null) {                  Tool.defaultDurability = Integer.parseInt((String)valuesFile.get("durability")); }
+                    if(valuesFile.get("unbreakable") != null) {                 Tool.defaultUnbreakable = Boolean.parseBoolean((String)valuesFile.get("unbreakable")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             }
@@ -1502,10 +1506,12 @@ public class TextFighter {
         //For items in inventory
         if(player.getInventory() != null) {
             for(Item i : player.getInventory()) {
-                JSONObject jsonarray = new JSONObject();
-                jsonarray.put("name", i.getName());
-                jsonarray.put("itemtype", i.getItemType());
-                inventory.add(jsonarray);
+                JSONObject jsonobj = new JSONObject();
+                jsonobj.put("name", i.getName());
+                jsonobj.put("itemtype", i.getItemType());
+                if(i instanceof Weapon) { jsonobj.put("durability",((Weapon)i).getDurability()); }
+                if(i instanceof Tool) { jsonobj.put("durability",((Tool)i).getDurability()); }
+                inventory.add(jsonobj);
             }
         }
 
@@ -1554,7 +1560,7 @@ public class TextFighter {
         //Writes it
         try (FileWriter w = new FileWriter(currentSaveFile);) {
             w.write(base.toJSONString());
-            addToOutput("Game saved!");
+            addToOutput("Game saved in file '" + currentSaveFile.getName() + "'!");
         } catch (IOException e) { e.printStackTrace(); return false; }
 
         return true;

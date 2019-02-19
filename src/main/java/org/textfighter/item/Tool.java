@@ -23,6 +23,11 @@ public class Tool extends Item {
      * <p>Set to 100 (100 uses).</p>
      */
     public static int defaultDurability = 100;
+    /**
+     * Stores the default boolean for unbreakable for tools
+     * <p>Set to false.</p>
+     */
+    public static boolean defaultUnbreakable = false;
 
     /**
      * Stores the item type for tools. Cannot be changed.
@@ -44,6 +49,11 @@ public class Tool extends Item {
      * <p>Set to {@link #defaultDurability}.</p>
      */
     private int durability = defaultDurability;
+    /**
+     * Stores whether or not this tool is unbreakable
+     * <p>Set to {@link #defaultUnbreakable}.</p>
+     */
+    public boolean unbreakable = defaultUnbreakable;
 
     /**
      * Stores the custom variables for this tool.
@@ -116,19 +126,24 @@ public class Tool extends Item {
      * <p>If the new value is less than 1, then it breaks.</p>
      * @param a     The new value
      */
-    public void setDurability(int a) { durability=a; if(durability < 1) { broken(); }  }
+    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { broken(); }  }
     /**
      * Sets the value of {@link #durability}.
-     * <p>If the new value is less than 1, then it breaks.</p>
+     * <p>If the tool is {@link #unbreakable} then nothing changes. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { durability=+a; if(durability < 1) { broken(); }  }
+    public void increaseDurability(int a) { if(unbreakable) { return; }  durability=+a; if(durability < 1) { broken(); }  }
     /**
      * Increases the value of {@link #durability}.
-     * <p>If the new value is less than 1, then it breaks.</p>
+     * <p>If the tool is {@link #unbreakable} then nothing changes. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { durability=-a; if(durability < 1) { broken(); }  }
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability=-a; if(durability < 1) { broken(); }  }
+    /**
+     * Returns {@link #unbreakable}.
+     * @return      {@link #unbreakable}
+     */
+    public boolean getUnbreakable() { return unbreakable; }
 
     //Just get the output of the type and name
     /**
@@ -136,10 +151,12 @@ public class Tool extends Item {
      * @return      {@link #name}, {@link #ITEMTYPE}, and {@link #durability}
      */
     public String getSimpleOutput(){
-        return name + " -\n" +
+        String output = name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
-               "  durability:  " + durability + "\n";
-
+               "  durability:  ";
+        if(unbreakable) { output += "unbreakable \n"; }
+        else { output += durability + "\n"; }
+        return output;
     }
     /**
      * Returns the {@link #name}, {@link #description}, {@link #ITEMTYPE}, {@link #durability} and any {@link #customVariables} with inOutput to true.
@@ -149,7 +166,9 @@ public class Tool extends Item {
         String output = name + " -\n" +
                         "  desc:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
-                        "  durability:  " + durability + "\n";
+                        "  durability  ";
+        if(unbreakable) { output += "unbreakable \n"; }
+        else { output += durability + "\n"; }
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {
             if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }
