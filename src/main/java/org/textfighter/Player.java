@@ -922,7 +922,6 @@ public class Player {
     public Item getFromInventory(String name, String type) {
         if(name == null || type == null) { TextFighter.addToOutput("The method was given invalid input."); return null;}
         for(Item i : inventory) {
-            System.out.println(i.getName() + " " + i.getItemType());
             if(i.getName().equals(name) && i.getItemType().equals(type)) {
                 return i;
             }

@@ -1,6 +1,8 @@
 {
 
     "name" : "pickaxe",
-    "description" : "A tool that allows you to mine"
+    "description" : "A tool that allows you to mine",
+    "durability" : "30",
+    "unbreakable" : "false"
 
 }

@@ -90,8 +90,6 @@ public class TFMethod {
             if(fieldvalue == null) { return null; }
         }
 
-        if(fieldvalue != null) { System.out.println(fieldvalue); } 
-
         Object a;
 
         //Invokes this method's base method

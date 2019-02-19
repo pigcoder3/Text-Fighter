@@ -31,7 +31,6 @@ public class UserInterface {
     public void parseInterface() {
         String uiInProgress = "";
         String currentTag = "";
-        int beginningIndex = 0;
         boolean inTag = false;
         for(int i=0; i<unparsedui.length(); i++) {
             //If there is a beginning of a tag (Starts recording to see if it is one)
@@ -58,10 +57,16 @@ public class UserInterface {
                             if(!valid) { tagUsed = true; continue;}
                         }
                         Object output = t.invokeMethod();
-                        if(output instanceof Integer) { //If it returns an integer
-                            uiInProgress+=output.toString();
-                        } else if (output instanceof String) { //If it returns a string
+                        if (output instanceof String) { //If it returns a string
                             uiInProgress+=output;
+                        } else if(output instanceof Integer) { //If it returns an integer
+                            uiInProgress+=output.toString();
+                        } else if(output instanceof Double) { //If it returns a double
+                            uiInProgress+=output.toString();
+                        } else if(output instanceof Boolean) { //If it returns an boolean
+                            uiInProgress+=output.toString();
+                        } else if (output instanceof Class) { //If it returns a class
+                            uiInProgress+=output.toString();
                         } else if (output instanceof ArrayList) { //If it returns an ArrayList of Strings
                             if(((ArrayList)output).size() > 0 && ((ArrayList)output).get(0) instanceof String) {
                                 for(int p=0; p<((ArrayList)output).size(); p++) {
@@ -80,6 +85,8 @@ public class UserInterface {
             } else if (inTag){
                 //Continue recording the tag
                 currentTag+=unparsedui.charAt(i);
+                //If still recording a tag and the unparseui has ended, just add the tag in progress to the parsed ui because there is no actual tag there.
+                if(i == unparsedui.length()-1) { uiInProgress+=currentTag; }
             } else {
                 //Just put the character to the parsed array
                 uiInProgress+=unparsedui.charAt(i);

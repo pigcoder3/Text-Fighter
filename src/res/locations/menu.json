@@ -94,7 +94,8 @@
                     "arguments" : ["home"],
                     "argumentTypes" : ["0"]
                 }
-            ]
+            ],
+            "usage" : "home"
         },
         {
             "name" : "weaponsmith",
@@ -110,6 +111,19 @@
             "usage" : "weaponSmith"
         },
         {
+            "name" : "forge",
+            "description" : "Goes to the forge where you can craft armor",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["forge"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "forge"
+        },
+        {
             "name" : "help",
             "description" : "Goes to the help menu",
             "methods" : [
@@ -120,7 +134,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "weaponSmith"
+            "usage" : "help"
         },
         {
             "name" : "bank",
@@ -133,7 +147,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "weaponSmith"
+            "usage" : "bank"
         },
         {
             "name" : "savegame",

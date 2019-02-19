@@ -91,16 +91,14 @@
                         {
                             "method" : "concat",
                             "class" : "java.lang.String",
-                            "arguments" : [
-                                {
-                                    "method" : "parseInt",
-                                    "class" : "java.lang.Integer",
-                                    "arguments" : ["%ph%0"],
-                                    "argumentTypes" : ["0"]
-                                }
-                                " coin(s) have been taken from the bank."
-                            ],
-                            "argumentTypes" : ["0","0"]
+                            "arguments" : [" coin(s) have been taken from the bank."],
+                            "argumentTypes" : ["0"],
+                            "field" : {
+                                "method" : "parseInt",
+                                "class" : "java.lang.Integer",
+                                "arguments" : ["%ph%0"],
+                                "argumentTypes" : ["0"]
+                            }
                         }
                     ],
                     "argumentTypes" : ["0"]
@@ -211,16 +209,14 @@
                         {
                             "method" : "concat",
                             "class" : "java.lang.String",
-                            "arguments" : [
-                                {
-                                    "method" : "parseInt",
-                                    "class" : "java.lang.Integer",
-                                    "arguments" : ["%ph%0"],
-                                    "argumentTypes" : ["0"]
-                                }
-                                " magic point(s) have been taken from the bank."
-                            ],
-                            "argumentTypes" : ["0","0"]
+                            "arguments" : [" magic point(s) have been taken from the bank."],
+                            "argumentTypes" : ["0"],
+                            "field" : {
+                                "method" : "parseInt",
+                                "class" : "java.lang.Integer",
+                                "arguments" : ["%ph%0"],
+                                "argumentTypes" : ["0"]
+                            }
                         }
                     ],
                     "argumentTypes" : ["0"]
@@ -331,16 +327,14 @@
                         {
                             "method" : "concat",
                             "class" : "java.lang.String",
-                            "arguments" : [
-                                {
-                                    "method" : "parseInt",
-                                    "class" : "java.lang.Integer",
-                                    "arguments" : ["%ph%0"],
-                                    "argumentTypes" : ["0"]
-                                }
-                                " metal scrap(s) have been taken from the bank."
-                            ],
-                            "argumentTypes" : ["0","0"]
+                            "arguments" : [" metal scrap(s) have been taken from the bank."],
+                            "argumentTypes" : ["0"],
+                            "field" : {
+                                "method" : "parseInt",
+                                "class" : "java.lang.Integer",
+                                "arguments" : ["%ph%0"],
+                                "argumentTypes" : ["0"]
+                            }
                         }
                     ],
                     "argumentTypes" : ["0"]
@@ -463,16 +457,14 @@
                         {
                             "method" : "concat",
                             "class" : "java.lang.String",
-                            "arguments" : [
-                                {
-                                    "method" : "parseInt",
-                                    "class" : "java.lang.Integer",
-                                    "arguments" : ["%ph%0"],
-                                    "argumentTypes" : ["0"]
-                                }
-                                " coins(s) have been depositted to the bank."
-                            ],
-                            "argumentTypes" : ["0","0"]
+                            "arguments" : [" coin(s) have been depositted to the bank."],
+                            "argumentTypes" : ["0"],
+                            "field" : {
+                                "method" : "parseInt",
+                                "class" : "java.lang.Integer",
+                                "arguments" : ["%ph%0"],
+                                "argumentTypes" : ["0"]
+                            }
                         }
                     ],
                     "argumentTypes" : ["0"]
@@ -593,16 +585,14 @@
                         {
                             "method" : "concat",
                             "class" : "java.lang.String",
-                            "arguments" : [
-                                {
-                                    "method" : "parseInt",
-                                    "class" : "java.lang.Integer",
-                                    "arguments" : ["%ph%0"],
-                                    "argumentTypes" : ["0"]
-                                }
-                                " magic point(s) have been depositted to the bank."
-                            ],
-                            "argumentTypes" : ["0","0"]
+                            "arguments" : [" magic point(s) have been depositted to the bank."],
+                            "argumentTypes" : ["0"],
+                            "field" : {
+                                "method" : "parseInt",
+                                "class" : "java.lang.Integer",
+                                "arguments" : ["%ph%0"],
+                                "argumentTypes" : ["0"]
+                            }
                         }
                     ],
                     "argumentTypes" : ["0"]
@@ -723,16 +713,14 @@
                         {
                             "method" : "concat",
                             "class" : "java.lang.String",
-                            "arguments" : [
-                                {
-                                    "method" : "parseInt",
-                                    "class" : "java.lang.Integer",
-                                    "arguments" : ["%ph%0"],
-                                    "argumentTypes" : ["0"]
-                                }
-                                " metal scrap(s) have been depositted to the bank."
-                            ],
-                            "argumentTypes" : ["0","0"]
+                            "arguments" : [" metal scrap(s) have been depositted to the bank."],
+                            "argumentTypes" : ["0"],
+                            "field" : {
+                                "method" : "parseInt",
+                                "class" : "java.lang.Integer",
+                                "arguments" : ["%ph%0"],
+                                "argumentTypes" : ["0"]
+                            }
                         }
                     ],
                     "argumentTypes" : ["0"]
