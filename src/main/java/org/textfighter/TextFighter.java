@@ -1471,6 +1471,8 @@ public class TextFighter {
                 for(CustomVariable cv : unusedCustomVariables) { newPlayerCustomVariables.add(cv); }
             }
 
+            if(deathMethods != null && deathMethods.size() > 1) { System.out.println("Sdnalksfjlk;sdf"); }
+
             //Create a new player instance with the loaded values
             player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
             addToOutput("Loaded save '" + saveName + "'");

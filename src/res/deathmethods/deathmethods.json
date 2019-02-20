@@ -61,7 +61,7 @@
             "id" : "TellPlayerTheyLostMagic",
             "method" : "addToOutput",
             "class" : "org.textfighter.TextFighter",
-            "arguments" : ["You lost half of your magic points."],
+            "arguments" : ["You lost half your magic points."],
             "argumentTypes" : ["0"]
         },
         {

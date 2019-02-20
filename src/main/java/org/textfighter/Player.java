@@ -358,9 +358,9 @@ public class Player {
                             break;
                         }
                     }
-                    if(valid) {
-                        possibleDeathMethods.add(m);
-                    }
+                }
+                if(valid) {
+                    possibleDeathMethods.add(m);
                 }
             }
         }
@@ -408,9 +408,9 @@ public class Player {
                             break;
                         }
                     }
-                    if(valid) {
-                        possibleLevelupMethods.add(m);
-                    }
+                }
+                if(valid) {
+                    possibleLevelupMethods.add(m);
                 }
             }
         }
