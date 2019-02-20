@@ -60,7 +60,7 @@ public class Choice {
      */
     public String getOutput() {
         return name + "\n" +
-            "\tdesc  - " + description + "\n" +
+            "\tdescription  - " + description + "\n" +
             "\tusage - " + usage;
     }
 

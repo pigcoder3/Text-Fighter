@@ -203,13 +203,13 @@ public class Weapon extends Item {
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { if(unbreakable) { return; } durability=+a; if(durability < 1) { broken(); }  }
+    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { broken(); }  }
     /**
      * Decrease the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { if(unbreakable) { return; } durability=-a; if(durability < 1) { broken(); }  }
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { broken(); }  }
     /**
      * Returns {@link #unbreakable}.
      * @return      {@link #unbreakable}
@@ -237,7 +237,7 @@ public class Weapon extends Item {
      */
     public String getOutput() {
         String output = name + " -\n" +
-                        "  desc:  " + description + "\n" +
+                        "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
                         "  damage:  " + damage + "\n" +
                         "  crit chance:  " + critchance + "%\n" +

@@ -140,7 +140,7 @@ public class Armor extends Item {
      */
     public String getOutput() {
         String output = name + " -\n" +
-                        "  desc:  " + description + "\n" +
+                        "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
                         "  protection amount:  " + protectionAmount + "%\n";
         //Adds the custom variables to the output

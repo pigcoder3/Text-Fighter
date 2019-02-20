@@ -164,7 +164,7 @@ public class Tool extends Item {
      */
     public String getOutput() {
         String output = name + " -\n" +
-                        "  desc:  " + description + "\n" +
+                        "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
                         "  durability  ";
         if(unbreakable) { output += "unbreakable \n"; }

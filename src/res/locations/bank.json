@@ -306,7 +306,7 @@
         },
         {
             "name" : "depositcoins",
-            "description" : "deposit coins to the bank so that they are safe when you die.",
+            "description" : "deposit coins. If you do not have enough, then none will be depositted.",
             "methods" : [
                 {
                     "method" : "setCustomVariableByName",
@@ -415,7 +415,7 @@
         },
         {
             "name" : "depositmagic",
-            "description" : "Deposit magic points to the bank so that they are safe when you die.",
+            "description" : "Deposit magic points. If you do not have enough, then none will be depositted.",
             "methods" : [
                 {
                     "method" : "setCustomVariableByName",
@@ -524,7 +524,7 @@
         },
         {
             "name" : "depositmetalscraps",
-            "description" : "deposit metals craps to the bank so that they are safe when you die.",
+            "description" : "deposit metal scraps. If you do not have enough, then none will be depositted.",
             "methods" : [
                 {
                     "method" : "setCustomVariableByName",

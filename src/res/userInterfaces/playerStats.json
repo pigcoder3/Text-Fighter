@@ -19,6 +19,8 @@
         "  Invincibility turns left: <turnsWithInvincibilityLeft>",
         "",
         "  weapon: <weapon>",
+        "  durability: <durability>",
+        "  unbreakable: <currentWeaponUnbreakable>",
         "  strength: <str>",
         "",
         "  level: <level>",

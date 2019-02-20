@@ -179,6 +179,28 @@
             "field" : "player"
         },
         {
+            "tag" : "<durability>",
+            "class" : "org.textfighter.item.Weapon",
+            "method" : "getDurability",
+            "field" : {
+                "method" : "getCurrentWeapon",
+                "class" : "org.textfighter.Player",
+                "field" : "player",
+                "fieldclass" : "org.textfighter.TextFighter"
+            }
+        },
+        {
+            "tag" : "<currentWeaponUnbreakable>",
+            "method" : "getUnbreakable",
+            "class" : "org.textfighter.item.Weapon",
+            "field" : {
+                "method" : "getCurrentWeapon",
+                "class" : "org.textfighter.Player",
+                "field" : "player",
+                "fieldclass" : "org.textfighter.TextFighter"
+            }
+        },
+        {
             "tag" : "<allItemSimpleOutputsFromInventory>",
             "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputsFromInventory",

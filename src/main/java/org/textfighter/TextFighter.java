@@ -254,7 +254,7 @@ public class TextFighter {
         loadCustomVariables();
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
-        if (!loadDeathMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
+        if (!loadDeathMethods() || !loadLevelUpMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
         if (!savesDir.exists()) {
             Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
@@ -1320,9 +1320,9 @@ public class TextFighter {
                 Display.changePackTabbing(true);
                 TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, IDMethod.class);
                 if(method != null) {
-                    deathMethods.add(new IDMethod(method, id));
+                    levelupMethods.add(new IDMethod(method, id));
                 } else {
-                    Display.displayPackMessage("This death method does not have a valid method");
+                    Display.displayPackMessage("This levelupmethod does not have a valid method");
                 }
                 Display.changePackTabbing(false);
                 usedIds.add(id);
@@ -1331,7 +1331,7 @@ public class TextFighter {
             file=levelupmethodsFile;
             parsingPack=false;
         }
-        Display.displayProgressMessage("Death methods loaded.");
+        Display.displayProgressMessage("Level up methods loaded.");
         Display.changePackTabbing(false);
         return true;
     }
@@ -1377,7 +1377,7 @@ public class TextFighter {
 
             //Inventory items
             if(inventory != null && inventory.size()>0) {
-                for (int i=0; i<newInventory.size(); i++) {
+                for (int i=0; i<inventory.size(); i++) {
                     JSONObject jsonobj = (JSONObject)inventory.get(i);
                     if(jsonobj.get("name") == null) { continue; }
                     if(jsonobj.get("itemtype") != null) {
@@ -1386,12 +1386,16 @@ public class TextFighter {
                             if(item != null) { newInventory.add(item); }
                         } else if(jsonobj.get("itemtype").equals("weapon")) {
                             Weapon item = getWeaponByName((String)jsonobj.get("name"));
-                            if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
-                            if(item != null) { newInventory.add(item); }
+                            if(item != null) {
+                                if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
+                                newInventory.add(item);
+                            }
                         } else if(jsonobj.get("itemtype").equals("tool")) {
                             Tool item = getToolByName((String)jsonobj.get("name"));
-                            if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
-                            if(item != null) { newInventory.add(item); }
+                            if(item != null) {
+                                if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
+                                newInventory.add(item);
+                            }
                         } else if(jsonobj.get("itemtype").equals("specialitem")) {
                             SpecialItem item = getSpecialItemByName((String)jsonobj.get("name"));
                             if(item != null) { newInventory.add(item); }
@@ -1402,11 +1406,9 @@ public class TextFighter {
 
             Weapon currentWeapon = null;
             String currentWeaponString = Player.defaultCurrentWeaponName;               if(stats.get("currentWeapon") != null)              {currentWeaponString = (String)stats.get("currentWeapon");}
-            if(newInventory.contains(getWeaponByName(currentWeaponString))) {
-                for(Weapon w : weapons) {
-                    if(w.getName().equals(currentWeaponString)) {
-                        currentWeapon = w;
-                    }
+            for(Item i : newInventory) {
+                if(i.getName().equals(currentWeaponString)) {
+                    currentWeapon = (Weapon)i;
                 }
             }
             if(currentWeapon == null) {
@@ -1470,8 +1472,6 @@ public class TextFighter {
                 //Add any remaining custom variables
                 for(CustomVariable cv : unusedCustomVariables) { newPlayerCustomVariables.add(cv); }
             }
-
-            if(deathMethods != null && deathMethods.size() > 1) { System.out.println("Sdnalksfjlk;sdf"); }
 
             //Create a new player instance with the loaded values
             player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
@@ -1619,8 +1619,8 @@ public class TextFighter {
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("name", i.getName());
                 jsonobj.put("itemtype", i.getItemType());
-                if(i instanceof Weapon) { jsonobj.put("durability",((Weapon)i).getDurability()); }
-                if(i instanceof Tool) { jsonobj.put("durability",((Tool)i).getDurability()); }
+                if(i instanceof Weapon) { jsonobj.put("durability",Integer.toString(((Weapon)i).getDurability())); }
+                if(i instanceof Tool) { jsonobj.put("durability",Integer.toString(((Tool)i).getDurability())); }
                 inventory.add(jsonobj);
             }
         }

@@ -1,6 +1,7 @@
 {
     "levelupmethods" : [
         {
+            "id" : "increaseMaxHealth",
             "method" : "setMaxHp",
             "class" : "org.textfighter.Player",
             "arguments" : [
@@ -16,7 +17,8 @@
                         },
                         "+",
                         "10"
-                    ]
+                    ],
+                    "argumentTypes" : ["1","0","1"]
                 }
             ],
             "argumentTypes" : ["1"],
@@ -24,6 +26,7 @@
             "fieldclass" : "org.textfighter.TextFighter"
         },
         {
+            "id" : "restoreHealth",
             "method" : "setHp",
             "class" : "org.textfighter.Player",
             "arguments" : [
@@ -39,6 +42,7 @@
             "fieldclass" : "org.textfighter.TextFighter"
         },
         {
+            "id" : "coinReward",
             "method" : "gainCoins",
             "class" : "org.textfighter.Player",
             "arguments" : [
@@ -54,7 +58,8 @@
                         },
                         "*",
                         "10"
-                    ]
+                    ],
+                    "argumentTypes" : ["1","0","1"]
                 }
             ],
             "argumentTypes" : ["1"],

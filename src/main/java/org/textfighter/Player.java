@@ -162,7 +162,7 @@ public class Player {
      * Stores the experience needed to level up.
      * <p>Set to {@link #level} * 10 + 100
      */
-    private int experieceNeeded = level * 10 + 100;
+    private int experienceNeeded = level * 10 + 100;
     /**
      * Stores the player's score.
      * <p>Set to {@link #defaultScore}.</p>
@@ -385,10 +385,11 @@ public class Player {
      * Invokes all the {@link #possibleLevelupMethods}.
      * <p>First calls {@link #filterLevelupMethods}, then invokes them.</p>
      */
-    public void invokelevelupMethods() {
+    public void invokeLevelupMethods() {
         filterLevelupMethods();
         if(possibleLevelupMethods != null) {
             for(IDMethod m : possibleLevelupMethods) {
+                System.out.println("invoking the possible level up methods");
                 m.invokeMethod();
             }
         }
@@ -401,7 +402,8 @@ public class Player {
     public void filterLevelupMethods() {
         //Filter out any death methods that do not meet the requirements
         possibleLevelupMethods.clear();
-        if(allLevelupMethods != null){
+        if(allLevelupMethods != null && allLevelupMethods.size() > 0){
+            System.out.println("There are some level up methods");
             for(IDMethod m : allLevelupMethods) {
                 boolean valid = true;
                 if(m.getMethod().getRequirements() != null) {
@@ -413,6 +415,7 @@ public class Player {
                     }
                 }
                 if(valid) {
+                    System.out.println("valid level up method");
                     possibleLevelupMethods.add(m);
                 }
             }
@@ -509,6 +512,7 @@ public class Player {
         if(name == null) { name = defaultCurrentWeaponName; }
         if(name == "fists") {
             currentWeapon = TextFighter.getWeaponByName("fists");
+            TextFighter.addToOutput("Equiped weapon 'fists'");
             calculateStrength();
             return;
         }
@@ -726,23 +730,23 @@ public class Player {
      */
     public void decreaseExperience(int a) { experience-=a; if(experience < 0) { experience = 0; } checkForLevelUp(); }
     /**
-     * Returns {@link #experieceNeeded}.
-     * @return      {@link #experieceNeeded}.
+     * Returns {@link #experienceNeeded}.
+     * @return      {@link #experienceNeeded}.
      */
-    public int getExperienceNeeded() { return experieceNeeded; }
+    public int getExperienceNeeded() { return experienceNeeded; }
     /**
      * Checks to see if the player can level up, and increases the level if so and sets experience to 0.
      * <p>The player levels up if the experience is greater than level*10+100.</p>
      * @return      Whether or not the player has leveled up.
      */
     public boolean checkForLevelUp() {
-        experieceNeeded = level * 10 + 100;
-        if(experience >= experieceNeeded) {
-            experience = experience - level*10+100;
+        experienceNeeded = level * 10 + 100;
+        if(experience >= experienceNeeded) {
+            decreaseExperience(level*10+100);
             increaseLevel(1);
             TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
-            experieceNeeded = level * 10 + 100;
-            invokelevelupMethods();
+            experienceNeeded = level * 10 + 100;
+            invokeLevelupMethods();
             return true;
         } else {
             return false;
@@ -943,7 +947,7 @@ public class Player {
      * @param type      The type of the item.
      */
     public void addToInventory(String name, String type) {
-        if(name == null || type == null) { return;}
+        if(name == null || name == "fists" || type == null) { return;}
         if(type.equals("weapon")) {
             if(isCarrying(name, "weapon")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Weapon item = TextFighter.getWeaponByName(name);
@@ -988,7 +992,7 @@ public class Player {
                 if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
 				inventory.remove(i);
 				TextFighter.addToOutput("'" + name + "' has been removed from your inventory");
-
+                setCurrentWeapon("fists");
                 return;
             }
         }

@@ -115,7 +115,7 @@ public class SpecialItem extends Item {
      */
     public String getOutput() {
         String output = name + " -\n" +
-                        "  desc:  " + description + "\n" +
+                        "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n";
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {
