@@ -17,13 +17,17 @@
             "description" : "attacks the enemy",
             "methods" : [
                 {
-                    "method" : "attack",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : ["You attacked your enemy."],
-                    "argumentTypes" : ["0"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter"
-                }
+                    "method" : "use",
+                    "class" : "org.textfighter.item.Weapon",
+                    "arguments" : ["You attacked your enemy.","1"],
+                    "argumentTypes" : ["0","1"],
+                    "field" : {
+                        "method" : "getCurrentWeapon",
+                        "class" : "org.textfighter.Player",
+                        "field" : "player",
+                        "fieldclass" : "org.textfighter.TextFighter"
+                    },
+                },
             ],
             "requirements" : [
                 {

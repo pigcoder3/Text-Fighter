@@ -1,7 +1,7 @@
 {
 
     "name" : "pickaxe",
-    "description" : "A tool that allows you to mine",
+    "description" : "A tool that allows you to mine metal scraps.",
     "durability" : "30",
     "unbreakable" : "false"
 

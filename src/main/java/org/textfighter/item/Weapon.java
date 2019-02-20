@@ -224,7 +224,7 @@ public class Weapon extends Item {
     public String getSimpleOutput(){
         String output = name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
-               "  durbility:  ";
+               "  durability:  ";
         if(unbreakable) { output += "unbreakable \n"; }
         else { output += durability + "\n"; }
         return output;
@@ -255,6 +255,16 @@ public class Weapon extends Item {
     //Equip the weapon (Set it to the currentWeapon)
     /*** Sets the player's current weapon to this.*/
     public void equip() { TextFighter.player.setCurrentWeapon(name); }
+
+    /**
+     * Uses the weapon and decreases the durability accordingly
+     * @param customString      The customString that is passed to the attack method
+     * @param durability        The amount of durability used
+     */
+    public void use(String customString, int durability) {
+        TextFighter.player.attack(customString);
+        decreaseDurability(durability);
+    }
 
     //When the weapon breaks, remove it from the player's inventory
     /***Removes this from the player's inventory*/

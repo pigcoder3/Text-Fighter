@@ -21,7 +21,6 @@
                 "fieldclass" : "org.textfighter.TextFighter"
             },
             "fieldclass" : "org.textfighter.Player"
-
         },
         {
             "tag" : "<version>",
@@ -120,6 +119,13 @@
             "tag" : "<experience>",
             "class" : "org.textfighter.Player",
             "method" : "getExperience",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<experienceNeeded>",
+            "class" : "org.textfighter.Player",
+            "method" : "getExperienceNeeded",
             "fieldclass" : "org.textfighter.TextFighter",
             "field" : "player"
         },

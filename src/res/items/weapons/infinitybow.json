@@ -4,8 +4,8 @@
     "description" : "A bow of infinite arrows.",
     "damage" : "25",
     "critchance" : "20",
-    "misschance" : "40",
-    "durability" : "400",
+    "misschance" : "30",
+    "durability" : "200",
     "unbreakable" : "false"
 
 }

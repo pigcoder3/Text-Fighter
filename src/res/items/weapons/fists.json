@@ -4,7 +4,7 @@
     "description" : "Your fists, you don't need a description about what that is.",
     "damage" : "5",
     "critChance" : "10",
-    "misschance" : "25",
+    "misschance" : "5",
     "durability" : "100",
     "unbreakable" : "true"
 }
