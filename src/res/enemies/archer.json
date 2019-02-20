@@ -36,7 +36,8 @@
                         },
                         "infinitybow"
                     ],
-                    "argumentTypes" : ["0","0"]
+                    "argumentTypes" : ["0","0"],
+                    "neededBoolean" : "false"
                 }
             ]
         }
@@ -57,6 +58,27 @@
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "addToInventory",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["infinitybow","weapon"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["infinitybow","weapon"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ],
+            "chance" : "50",
+            "rewardItem" : "An infinity bow. A bow of inifinte arrows."
         },
     ]
 }
