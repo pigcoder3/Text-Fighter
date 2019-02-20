@@ -269,11 +269,12 @@ public class Weapon extends Item {
     //When the weapon breaks, remove it from the player's inventory
     /***Removes this from the player's inventory*/
     public void broken() {
+        if(unbreakable || name.equals("fists")) { return; }
         TextFighter.player.removeFromInventory(name, ITEMTYPE);
         TextFighter.addToOutput("Your " + name + " has broken!");
     }
 
-    public Weapon(String name, String description, int damage, int critchance, int misschance, ArrayList<CustomVariable> customVariables, int durability) {
+    public Weapon(String name, String description, int damage, int critchance, int misschance, ArrayList<CustomVariable> customVariables, int durability, boolean unbreakable) {
         super(name, description);
         this.name = name;
         this.description = description;
@@ -283,6 +284,7 @@ public class Weapon extends Item {
         this.customVariables = customVariables;
         if(durability < 1 && !unbreakable) { broken(); }
         this.durability = durability;
+        this.unbreakable = unbreakable;
     }
 
 }

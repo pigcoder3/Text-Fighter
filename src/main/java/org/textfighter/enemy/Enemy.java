@@ -70,11 +70,6 @@ public class Enemy implements Cloneable {
      * <p>Set to {@link #defaultStrength}.</p>
      */
     private int strength = defaultStrength;
-    /**
-     * Stores the difficulty of this enemy.
-     * <p>Difficulty is determined with: Math.round({@link #hp} * {@link #strength} * {@link #levelRequirement} / 100)</p>
-     */
-    private int difficulty;
 
     /**
      * Stores the turns left with invincibility of this enemy.
@@ -87,6 +82,12 @@ public class Enemy implements Cloneable {
      * <p>Set to {@link #defaultLevelRequirement}.</p>
      */
     private int levelRequirement = defaultLevelRequirement;
+    /**
+     * Stores the difficulty of this enemy.
+     * <p>Difficulty is determined with: Math.round({@link #hp} * {@link #strength} * {@link #levelRequirement} / 100)</p>
+     */
+    private int difficulty = Math.round(hp * strength * levelRequirement / 100);
+    
     /**
      * Stores the requirements to fight this enemy.
      * <p>Set to an empty ArrayList of Requirements.</p>
@@ -490,7 +491,13 @@ public class Enemy implements Cloneable {
         //Print out all of the rewards the player recieved
         if(rewardStrings.size() > 0) {
             TextFighter.addToOutput("Rewards:");
-            for(String s : rewardStrings) { TextFighter.addToOutput(s + ","); }
+            for(int i=0; i<rewardStrings.size(); i++) {
+                String s = rewardStrings.get(i);
+                if(i != rewardStrings.size()-1) {
+                    s+=","; //If this is the last reward do not put a comma
+                }
+                TextFighter.addToOutput(s);
+            }
         }
     }
     /**

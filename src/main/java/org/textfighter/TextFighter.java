@@ -870,8 +870,18 @@ public class TextFighter {
                     String description = Weapon.defaultDescription;             if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Weapon.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
                     boolean unbreakable = Weapon.defaultUnbreakable;            if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
+                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
+                    for(int i=0; i<weaponCustomVariables.size(); i++) {
+                        CustomVariable cv = weaponCustomVariables.get(i);
+                        if(itemFile.get(cv.getName()) != null) {
+                            try {
+                                cv.setValue(cv.getValueType().cast(itemFile.get(cv.getName())));
+                                customVars.add(cv);
+                            } catch (Exception e) { customVars.add(cv); }
+                        } else { customVars.add(cv); }
+                    }
                     //Add it
-                    weapons.add(new Weapon(name, description, damage, critChance, missChance, weaponCustomVariables, durability));
+                    weapons.add(new Weapon(name, description, damage, critChance, missChance, customVars, durability, unbreakable));
                     usedNames.add(name);
                     Display.changePackTabbing(false);
                 }
@@ -888,8 +898,18 @@ public class TextFighter {
                     Display.displayPackMessage("Loading item '" + name + "' of type 'armor'");
                     double protectionamount = Armor.defaultProtectionAmount;    if(itemFile.get("protectionamount") != null) { protectionamount = Double.parseDouble((String)itemFile.get("protectionamount")); }
                     String description = Armor.defaultDescription;              if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
+                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
+                    for(int i=0; i<armorCustomVariables.size(); i++) {
+                        CustomVariable cv = weaponCustomVariables.get(i);
+                        if(itemFile.get(cv.getName()) != null) {
+                            try {
+                                cv.setValue(cv.getValueType().cast(itemFile.get(cv.getName())));
+                                customVars.add(cv);
+                            } catch (Exception e) { customVars.add(cv); }
+                        } else { customVars.add(cv); }
+                    }
                     //Add it
-                    armors.add(new Armor(name, description, protectionamount, armorCustomVariables));
+                    armors.add(new Armor(name, description, protectionamount, customVars));
                     usedNames.add(name);
                     Display.changePackTabbing(false);
                 }
@@ -907,8 +927,18 @@ public class TextFighter {
                     String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Tool.defaultDurability;                    if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
                     boolean unbreakable = Tool.defaultUnbreakable;              if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
+                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
+                    for(int i=0; i<toolCustomVariables.size(); i++) {
+                        CustomVariable cv = toolCustomVariables.get(i);
+                        if(itemFile.get(cv.getName()) != null) {
+                            try {
+                                cv.setValue(cv.getValueType().cast(itemFile.get(cv.getName())));
+                                customVars.add(cv);
+                            } catch (Exception e) { customVars.add(cv); }
+                        } else { customVars.add(cv); }
+                    }
                     //Add it
-                    tools.add(new Tool(name, description, toolCustomVariables, durability));
+                    tools.add(new Tool(name, description, customVars, durability, unbreakable));
                     usedNames.add(name);
                     Display.changePackTabbing(false);
                 }
@@ -924,8 +954,18 @@ public class TextFighter {
                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading item '" + name + "' of type 'specialitem'");
                     String description = SpecialItem.defaultDescription;        if(itemFile.get("description") != null) { name = (String)itemFile.get("description"); }
-                    specialItems.add(new SpecialItem(name, description, specialitemCustomVariables));
+                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
+                    for(int i=0; i<specialitemCustomVariables.size(); i++) {
+                        CustomVariable cv = weaponCustomVariables.get(i);
+                        if(itemFile.get(cv.getName()) != null) {
+                            try {
+                                cv.setValue(cv.getValueType().cast(itemFile.get(cv.getName())));
+                                customVars.add(cv);
+                            } catch (Exception e) { customVars.add(cv); }
+                        } else { customVars.add(cv); }
+                    }
                     //Add it
+                    specialItems.add(new SpecialItem(name, description, customVars));
                     usedNames.add(name);
                     Display.changePackTabbing(false);
                 }

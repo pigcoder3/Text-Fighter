@@ -190,13 +190,14 @@ public class Tool extends Item {
         TextFighter.addToOutput("Your " + name + " has broken!");
     }
 
-    public Tool (String name, String description, ArrayList<CustomVariable> customVariables, int durability) {
+    public Tool (String name, String description, ArrayList<CustomVariable> customVariables, int durability, boolean unbreakable) {
         super(name, description);
         this.name = name;
         this.description = description;
         this.customVariables = customVariables;
-        if(durability < 1) { broken(); }
+        if(durability < 1 && !unbreakable) { broken(); }
         this.durability = durability;
+        this.unbreakable = unbreakable;
     }
 
 }
