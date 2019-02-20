@@ -21,7 +21,7 @@
         "  strength: <str>",
         "",
         "  level: <level>",
-        "  exp:   <experience>",
+        "  exp:   <experience> / <experienceNeeded>",
         "",
         "  coins: <coins>",
         "  magic: <magic>",

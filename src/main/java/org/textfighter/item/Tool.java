@@ -176,6 +176,14 @@ public class Tool extends Item {
         return output;
     }
 
+    /**
+     * Uses the tool and decreases the durability accordingly.
+     * @param durability        The amount of durability used
+     */
+    public void use(int durability) {
+        decreaseDurability(durability);
+    }
+
     /***Removes this from the player's inventory*/
     public void broken() {
         TextFighter.player.removeFromInventory(name, ITEMTYPE);

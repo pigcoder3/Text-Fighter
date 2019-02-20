@@ -13,7 +13,7 @@
     "choices" : [
         {
             "name" : "inspectweapon",
-            "description" : "shows you details about a weapono",
+            "description" : "shows you details about a weapon.",
             "methods" : [
                 {
                     "method" : "addToOutput",

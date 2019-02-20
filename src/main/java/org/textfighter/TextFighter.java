@@ -1436,6 +1436,7 @@ public class TextFighter {
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
+        catch (Exception e) { addToOutput("The save is corrupted!"); e.printStackTrace(); return false; }
 
         return true;
 
@@ -1862,7 +1863,11 @@ public class TextFighter {
                 }
             }
         }
-		if(player.getHp() < 1) { player.setInFight(true); player.died(); }
+		if(player.getHp() < 1) {
+            player.setInFight(false);
+            player.died();
+            currentEnemy = null;
+        }
         Display.clearScreen();
         Display.displayPreviousCommand();
         //Determine if any achievements should be recieved

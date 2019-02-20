@@ -156,6 +156,11 @@ public class Player {
      */
     private int experience = defaultExperience;
     /**
+     * Stores the experience needed to level up.
+     * <p>Set to {@link #level} * 10 + 100
+     */
+    private int experieceNeeded = level * 10 + 100;
+    /**
      * Stores the player's score.
      * <p>Set to {@link #defaultScore}.</p>
      */
@@ -712,15 +717,22 @@ public class Player {
      */
     public void decreaseExperience(int a) { experience-=a; if(experience < 0) { experience = 0; } checkForLevelUp(); }
     /**
+     * Returns {@link #experieceNeeded}.
+     * @return      {@link #experieceNeeded}.
+     */
+    public int getExperienceNeeded() { return experieceNeeded; }
+    /**
      * Checks to see if the player can level up, and increases the level if so and sets experience to 0.
      * <p>The player levels up if the experience is greater than level*10+100.</p>
      * @return      Whether or not the player has leveled up.
      */
     public boolean checkForLevelUp() {
-        if(experience >= level*10+100) {
+        experieceNeeded = level * 10 + 100;
+        if(experience >= experieceNeeded) {
             experience = experience - level*10+100;
             increaseLevel(1);
             TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
+            experieceNeeded = level * 10 + 100;
             invokelevelupMethods();
             return true;
         } else {
@@ -1002,7 +1014,7 @@ public class Player {
                 return i;
             }
         }
-        TextFighter.addToOutput("You are not carrying a(n) '" + name + "' of type + '" + type + "'");
+        TextFighter.addToOutput("You are not carrying a(n) '" + name + "' of type '" + type + "'");
         return null;
     }
 

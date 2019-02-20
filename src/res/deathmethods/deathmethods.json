@@ -26,6 +26,13 @@
             "fieldclass" : "org.textfighter.TextFighter"
         },
         {
+            "id" : "TellPlayerTheyLostCoins",
+            "method" : "addToOutput",
+            "class" : "org.textfighter.TextFighter",
+            "arguments" : ["You lost half your coins."],
+            "argumentTypes" : ["0"]
+        }
+        {
             "id" : "divideMagicByTwo",
             "method" : "setMagic",
             "class" : "org.textfighter.Player",
@@ -51,6 +58,13 @@
             "fieldclass" : "org.textfighter.TextFighter"
         },
         {
+            "id" : "TellPlayerTheyLostMagic",
+            "method" : "addToOutput",
+            "class" : "org.textfighter.TextFighter",
+            "arguments" : ["You lost half of your magic points."],
+            "argumentTypes" : ["0"]
+        },
+        {
             "id" : "divideMetalScrapsByTwo",
             "method" : "setMetalScraps",
             "class" : "org.textfighter.Player",
@@ -74,6 +88,13 @@
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "id" : "TellPlayerTheyLostMetalScraps",
+            "method" : "addToOutput",
+            "class" : "org.textfighter.TextFighter",
+            "arguments" : ["You lost half your metal scraps."],
+            "argumentTypes" : ["0"]
         }
     ]
 }
