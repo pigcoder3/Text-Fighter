@@ -1518,7 +1518,7 @@ public class TextFighter {
         stats.put("score", Integer.toString(Player.defaultScore));
         stats.put("maxhealth", Integer.toString(Player.defaulthp));
         stats.put("health", Integer.toString(Player.defaulthp));
-        stats.put("deaths", 0)
+        stats.put("deaths", 0);
         stats.put("coins", Integer.toString(Player.defaultCoins));
         stats.put("magic", Integer.toString(Player.defaultMagic));
         stats.put("hppotions", Integer.toString(Player.defaultHealthPotions));

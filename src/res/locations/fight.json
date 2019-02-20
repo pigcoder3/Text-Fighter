@@ -49,7 +49,7 @@
             "usage" : "attack"
         },
         {
-            "name" : "healthPotion",
+            "name" : "healthpotion",
             "description" : "uses a health potion, which heals you for 30",
             "methods" : [
                 {
@@ -94,7 +94,7 @@
             ]
         },
         {
-            "name" : "strengthPotion",
+            "name" : "strengthpotion",
             "description" : "uses a strength potion, which gives you double strength for 2 turns",
             "methods" : [
                 {
@@ -139,7 +139,7 @@
             ]
         },
         {
-            "name" : "invincibilityPotion",
+            "name" : "invincibilitypotion",
             "description" : "uses a healthPotion",
             "methods" : [
                 {
@@ -185,7 +185,7 @@
         },
         {
             "name" : "bribe",
-            "description" : "Cost: 300 coins, bribe the enemy to let you go",
+            "description" : "Cost: 100 coins, bribe the enemy to let you go",
             "methods" : [
                 {
                     "method" : "movePlayer",
@@ -196,7 +196,7 @@
                 {
                     "method" : "spendCoins",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["300"],
+                    "arguments" : ["100"],
                     "argumentTypes" : ["1"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter"
@@ -220,7 +220,7 @@
                             "fieldclass" : "org.textfighter.TextFighter"
                         },
                         ">=",
-                        "300"
+                        "100"
                     ],
                     "argumentTypes" : ["1","0","1"]
                 }

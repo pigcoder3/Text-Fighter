@@ -159,6 +159,19 @@
                 }
             ],
             "usage" : "savegame"
+        },
+        {
+            "name" : "savesmenu",
+            "description" : "Moves you to the saves menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["saves"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "savesmenu"
         }
     ]
 }
