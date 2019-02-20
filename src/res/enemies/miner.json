@@ -46,6 +46,6 @@
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter"
-        },
+        }
     ]
 }
