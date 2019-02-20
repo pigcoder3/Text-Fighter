@@ -507,6 +507,20 @@ public class Player {
             return;
         }
     }
+    /**
+     * Returns whether or not the equipped weapon has the same name as the name given.
+     * @param name      The name of the weapon.
+     * @return          Whether or not the weapon is equipped.
+     */
+    public boolean equippedWeapon(String name) {
+        if(currentWeapon == null && name.equals("fists")) { return true;}
+        if(currentWeapon != null) {
+            if(currentWeapon.getName() != null) {
+                return currentWeapon.getName() == name;
+            }
+        }
+        return false;
+    }
 
     //Strength methods
     /*** Calculates the strength of the player. Takes the player's weapon damage (If one is equipped). If a strength potion is in effect, multiply by {@link #defaultStrengthPotionMultiplier}.*/

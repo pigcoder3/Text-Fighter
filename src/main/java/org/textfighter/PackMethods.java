@@ -343,6 +343,17 @@ public class PackMethods {
     }
 
     /**
-     *
+     * Compares two booleans to see if they are both true.
+     * @param b1        The first boolean.
+     * @param b2        The second boolean.
+     * @return          If they are both true.
      */
+    public static boolean BoolAndBool(boolean b1, boolean b2) { return b1 && b2; }
+    /**
+     * Compares two booleans to see if one of them is true.
+     * @param b1        The first boolean.
+     * @param b2        The second boolean.
+     * @return          If one of them is true.
+     */
+    public static boolean BoolOrBool(boolean b1, boolean b2) { return b1 || b2; }
 }

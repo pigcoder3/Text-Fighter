@@ -602,11 +602,22 @@ public class TextFighter {
                     if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); Display.changePackTabbing(false); continue; }
                     ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
                     boolean hasChoiceInterface = false;
-                    //Determines if the location has a choices array
+                    for(int i=0; i<interfaceJArray.size(); i++) {
+                        String interfaceName = (String)interfaceJArray.get(i);
+                        boolean validInterface = false;
+                        for(UserInterface ui : Display.interfaces) {
+                            if(ui.getName().equals(interfaceName)) {
+                                validInterface = true;
+                                break;
+                            }
+                        }
+                        if(!validInterface) { Display.displayPackError("Unknown interface '" + interfaceName + "'"); }
+                    }
+                    //Determines if the location has a choices interface
                     for(int i=0; i<interfaceJArray.size(); i++) {
                         for(UserInterface ui : Display.interfaces) {
                             if(ui.getName().equals(interfaceJArray.get(i))) {
-                                if(((String)interfaceJArray.get(i)).contains("choices")) {
+                                if(ui.getName().equals("choices")) {
                                     hasChoiceInterface = true;
                                 }
                                 interfaces.add(ui);

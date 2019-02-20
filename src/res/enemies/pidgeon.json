@@ -1,0 +1,62 @@
+{
+    "name" : "pidgeon",
+    "description" : "This white and gray bird is a surprisingly powerful foe considering its size.",
+    "health" : "20",
+    "maxhealth" : "20",
+    "strength" : "5",
+    "levelRequirement" : "2",
+    "rewards" : [
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["20"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gaincoins",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["10"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+    ],
+    "actions" : [
+        {
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["The pidgeon uses its super beak thrust attack which deals 15 damage."],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "attack",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "arguments" : ["15",""],
+                    "argumentTypes" : ["1","0"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
+        }
+    ],
+    "requirements" : [
+        {
+            "method" : "variableComparison",
+            "class" : "org.textfighter.PackMethods",
+            "arguments" : [
+                {
+                    "method" : "getCurrentWeaponName",
+                    "class" : "org.textfighter.Player",
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                "infinitybow"
+            ],
+            "argumentTypes" : ["0","0"]
+        }
+    ]
+}
