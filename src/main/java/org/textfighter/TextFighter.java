@@ -1361,6 +1361,7 @@ public class TextFighter {
             int score = 0;                                                              if(stats.get("score") != null)                      {score = Integer.parseInt((String)stats.get("score"));}
             int maxhp = player.defaulthp;                                               if(stats.get("maxhealth") != null)                  {maxhp = Integer.parseInt((String)stats.get("maxhealth"));}
             int hp = player.defaulthp;                                                  if(stats.get("health") != null)                     {hp = Integer.parseInt((String)stats.get("health"));}
+            int deaths = 0;                                                             if(stats.get("deaths") != null)                     {deaths = Integer.parseInt((String)stats.get("deaths"));}
             int coins = player.defaultCoins;                                            if(stats.get("coins") != null)                      {coins = Integer.parseInt((String)stats.get("coins"));}
             int magic = player.defaultMagic;                                            if(stats.get("magic") != null)                      {magic = Integer.parseInt((String)stats.get("magic"));}
             int metalscraps = player.defaultMetalscraps;                                if(stats.get("metalscraps") != null)                {metalscraps = Integer.parseInt((String)stats.get("metalscraps"));}
@@ -1517,6 +1518,7 @@ public class TextFighter {
         stats.put("score", Integer.toString(Player.defaultScore));
         stats.put("maxhealth", Integer.toString(Player.defaulthp));
         stats.put("health", Integer.toString(Player.defaulthp));
+        stats.put("deaths", 0)
         stats.put("coins", Integer.toString(Player.defaultCoins));
         stats.put("magic", Integer.toString(Player.defaultMagic));
         stats.put("hppotions", Integer.toString(Player.defaultHealthPotions));
@@ -1524,6 +1526,7 @@ public class TextFighter {
         stats.put("invincibilityPotions", Integer.toString(Player.defaultInvincibilityPotions));
         stats.put("turnsWithStrengthLeft", Integer.toString(Player.defaultTurnsWithStrengthLeft));
         stats.put("turnsWithInvincibilityLeft", Integer.toString(Player.defaultTurnsWithInvincibilityLeft));
+        stats.put("gameBeaten", false);
         stats.put("currentWeapon", Player.defaultCurrentWeaponName);
 
         JSONArray inventory = new JSONArray();
@@ -1533,10 +1536,13 @@ public class TextFighter {
             for(Weapon w : weapons) {
                 if(w.getName().equals(player.defaultCurrentWeaponName)) {
                     currentWeapon = w;
-                    JSONObject weapon = new JSONObject();
-                    weapon.put("name", w.getName());
-                    weapon.put("itemtype", "weapon");
-                    inventory.add(weapon);
+                    if(!w.getName().equals("fists")) {
+                        JSONObject weapon = new JSONObject();
+                        weapon.put("name", w.getName());
+                        weapon.put("itemtype", "weapon");
+                        weapon.put("durability", Integer.toString(w.getDurability()));
+                        inventory.add(weapon);
+                    }
                 }
             }
         }
@@ -1602,6 +1608,7 @@ public class TextFighter {
         stats.put("score", Integer.toString(player.getScore()));
         stats.put("health", Integer.toString(player.getHp()));
         stats.put("maxhealth", Integer.toString(player.getMaxHp()));
+        stats.put("deaths", Integer.toString(player.getDeaths()));
         stats.put("coins", Integer.toString(player.getCoins()));
         stats.put("magic", Integer.toString(player.getMagic()));
         stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
@@ -1610,6 +1617,7 @@ public class TextFighter {
         stats.put("invincibilityPotions", Integer.toString(player.getInvincibilityPotions()));
         stats.put("turnsWithStrengthLeft", Integer.toString(player.getTurnsWithStrengthLeft()));
         stats.put("turnsWithInvincibilityLeft", Integer.toString(player.getTurnsWithInvincibilityLeft()));
+        stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
         if(player.getCurrentWeapon() != null) {stats.put("currentWeapon", player.getCurrentWeapon().getName());} else { stats.put("currentWeapon", "fists"); }
 
         JSONArray inventory = new JSONArray();
