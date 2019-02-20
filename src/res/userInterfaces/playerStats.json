@@ -9,6 +9,7 @@
         "----------------------",
         "  hp:    <health>",
         "  maxhp: <maxhealth>",
+        "  deaths: <deaths>",
         "",
         "  Health potions: <healthPotions>",
         "  Strength potions: <strengthPotions>",

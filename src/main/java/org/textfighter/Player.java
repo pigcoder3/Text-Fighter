@@ -127,6 +127,9 @@ public class Player {
      * <p>Set to true.</p>
      */
     private boolean alive = true;
+    /***Stores the number of deaths.*/
+    private int deaths = 0;
+
     /**
      * Stores whether or not the player is in a fight.
      * <p>Set to false.</p>
@@ -448,10 +451,16 @@ public class Player {
     /*** Tells the player that they have dies and removes the save.*/
     public void died() {
         TextFighter.addToOutput("You died!");
+        deaths++;
         setHp(defaulthp); //Restore the player's health
         PackMethods.movePlayer("menu"); //When the player dies, they respawn at the in game menu (not start menu)
         invokeDeathMethods();
     }
+    /**
+     * Returns {@link #deaths}.
+     * @return      {@link #deaths}
+     */
+    public int getDeaths() { return deaths; }
 
     //inFight methods
     /**
