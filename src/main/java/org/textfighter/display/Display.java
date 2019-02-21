@@ -5,10 +5,19 @@ import org.textfighter.TextFighter;
 import org.textfighter.display.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import java.io.*;
 
 public class Display {
+
+    /***The directory where all error logs are stored*/
+    public static final File logDir = new File("../../../logs");
+
+    
+
+    /***The file where the log is stored*/
+    public static File logFile;
 
     /***The tabbing the is displayed before pack messages, warnings and errors*/
     public static String packTabbing = "";
@@ -58,6 +67,25 @@ public class Display {
     public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
 
     /**
+     * Writes an error message to the log file
+     *
+     */
+    public static void writeToLogFile(String msg) {
+        
+        try {
+            if(logFile == null || !logFile.exists()) {
+                if(!logDir.exists()) {
+                    logDir.mkdir();
+                }
+                logFile = new File(logDir.getPath() + "/" + new Date().toString());
+                logFile.createNewFile();
+            }
+        } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "' becuase unable to create one"); }
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
+            out.println(msg); 
+        } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "'"); }
+    }
+    /**
      * Displays an error message.
      * @param e     The message
      */
@@ -68,6 +96,7 @@ public class Display {
         } else {
             System.err.println("[Error] " + e);
         }
+        writeToLogFile("[Error] " + e);
     }
 
     /**
@@ -82,6 +111,7 @@ public class Display {
             } else {
                 System.err.println(packTabbing + "[PackError] " + e);
             }
+            writeToLogFile(packTabbing + "[PackError] " + e);
         }
     }
 
@@ -97,6 +127,7 @@ public class Display {
             } else {
                 System.err.println(packTabbing + "[PackMessage] " + e);
             }
+            writeToLogFile(packTabbing + "[PackMessage] " + e);
         }
     }
 
@@ -125,6 +156,7 @@ public class Display {
         } else {
             System.err.println("[Warning] " + e);
         }
+        writeToLogFile("[Warning] " + e);
     }
 
     /**
@@ -138,6 +170,7 @@ public class Display {
         } else {
             System.err.println(e);
         }
+        writeToLogFile("[Output] " + e);
 
     }
 
@@ -152,6 +185,7 @@ public class Display {
         } else {
             System.out.println("[Progress] " + e);
         }
+        writeToLogFile("[Progress] " + e);
     }
 
     /*** Displays the previous command.*/
@@ -162,6 +196,7 @@ public class Display {
         } else {
             System.out.println("Previous choice: " + previousCommandString + "\n");
         }
+        writeToLogFile("[PreviousCommand] " + previousCommand);
     }
 
     /***Displays the {@link #prompt}.*/
@@ -172,6 +207,7 @@ public class Display {
         } else {
             System.out.print(promptString);
         }
+        writeToLogFile("[Prompted User] " + promptString);
     }
 
     /**
@@ -184,6 +220,7 @@ public class Display {
         } else {
             TextFighter.addToOutput("You have earned the achievement '" + name + "'!");
         }
+        writeToLogFile("[Achievement] You have earned the achievement '" + name + "'!");
     }
 
     /***Resets text styling.*/
@@ -192,6 +229,7 @@ public class Display {
         if(ANSI) {
             System.out.println(RESET);
             System.err.println(RESET);
+            writeToLogFile("[Colors Reset]");
         }
     }
 
@@ -200,6 +238,7 @@ public class Display {
         //Puts the character back to the home and clears the screen
         if(ANSI) {
             System.out.println("\u001b[H \u001b[2J");
+            writeToLogFile("[Screen Cleared]");
         }
     }
 
@@ -213,6 +252,7 @@ public class Display {
             ui.parseInterface();
             System.out.println(ui.getParsedUI());
         }
+        writeToLogFile("[Interfaces Displayed]");
     }
 
     /**
