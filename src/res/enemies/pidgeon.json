@@ -1,5 +1,5 @@
 {
-    "name" : "pidgeon",
+    "name" : "pigeon",
     "description" : "This white and gray bird is a surprisingly powerful foe considering its size.",
     "health" : "20",
     "maxhealth" : "20",
@@ -21,7 +21,7 @@
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter"
-        },
+        }
     ],
     "actions" : [
         {
