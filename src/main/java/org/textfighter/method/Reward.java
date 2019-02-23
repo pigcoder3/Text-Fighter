@@ -35,6 +35,11 @@ public class Reward {
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
     /***The arguments of the {@link #method}*/
     private ArrayList<Object> arguments;
+    /**
+     * Stores the classes of the {@link #arguments} and corresponds by index.
+     * <p>Set to an empty ArrayList of Classes.
+     */
+    private ArrayList<Class> argumentTypes = new ArrayList<Class>();
     /***The arguments originally given to the reward. Does not change*/
     private ArrayList<Object> originalArguments;
     /**
@@ -91,9 +96,29 @@ public class Reward {
                 //If the field is a regular field, then set the field value to the value it holds
                 try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
             }
+            if(field != null && fieldvalue == null) { return ""; }
         }
 
-        if(field != null && fieldvalue == null) { return ""; }
+        Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");
+        Display.writeToLogFile("[Invoking method] Type: Reward");
+        Display.writeToLogFile("Method: " + method);
+        if(arguments != null) {
+            Display.writeToLogFile("Arguments: " + arguments);
+            Display.writeToLogFile("argumentTypes: " + argumentTypes);
+        } else {
+            Display.writeToLogFile("Arguments: None");
+        }
+        if(fieldvalue != null && field != null) {
+            Display.writeToLogFile("Field value: " + fieldvalue);
+            if(field instanceof FieldMethod) {
+                Display.writeToLogFile("Field (FieldMethod): " + ((FieldMethod)field).getMethod());
+            }
+            if(field instanceof Field) {
+                Display.writeToLogFile("Field: " + ((Field)field).getName());
+            }
+        } else {
+            Display.writeToLogFile("Field value: None");
+        }
 
         try {
             //Does the random chance thing to detemine if the player gets the reward
@@ -101,7 +126,7 @@ public class Reward {
             //"random" number between 1 and 99
             int number = random.nextInt(98)+1;
             if(number > chance) { resetArguments(); return null; }
-            if(field != null ) {
+            if(fieldvalue != null ) {
                 if(arguments != null && arguments.size() > 0) {
                     method.invoke(fieldvalue, arguments.toArray());
                 } else {
@@ -115,9 +140,19 @@ public class Reward {
                 }
             }
             resetArguments();
+            if(rewardItem != null) { Display.writeToLogFile("[RewardItem] " + rewardItem.toString()); }
+            Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
             return rewardItem;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace();}
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        catch (NullPointerException e) {
+            Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
+            Display.displayError("method: " + method);
+            e.printStackTrace();
+            resetArguments();
+        }
+        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
         resetArguments();
+        Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
         return "";
     }
 
@@ -144,10 +179,11 @@ public class Reward {
         arguments = new ArrayList<>(originalArguments);;
     }
 
-    public Reward(Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements, int chance, String rewardItem) {
+    public Reward(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field, ArrayList<Requirement> requirements, int chance, String rewardItem) {
         this.method = method;
         this.arguments = arguments;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
+        this.argumentTypes = argumentTypes;
         this.field = field;
         this.requirements = requirements;
         this.chance = chance;

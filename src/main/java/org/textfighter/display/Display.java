@@ -14,8 +14,6 @@ public class Display {
     /***The directory where all error logs are stored*/
     public static final File logDir = new File("../../../logs");
 
-    
-
     /***The file where the log is stored*/
     public static File logFile;
 
@@ -67,11 +65,21 @@ public class Display {
     public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
 
     /**
-     * Writes an error message to the log file
-     *
+     * Turns an exception stack trace to a string.
+     * @param e     The exception
+     * @return      The exception stack trace converted to a String.
+     */
+    public static String exceptionToString(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+
+    /**
+     * Writes an error message to the log file.
+     * @param msg       The message to log.
      */
     public static void writeToLogFile(String msg) {
-        
         try {
             if(logFile == null || !logFile.exists()) {
                 if(!logDir.exists()) {
@@ -80,9 +88,9 @@ public class Display {
                 logFile = new File(logDir.getPath() + "/" + new Date().toString());
                 logFile.createNewFile();
             }
-        } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "' becuase unable to create one"); }
+        } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "' because unable to create one"); }
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
-            out.println(msg); 
+            out.println(msg);
         } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "'"); }
     }
     /**

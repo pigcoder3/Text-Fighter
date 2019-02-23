@@ -16,12 +16,6 @@ import org.textfighter.TextFighter;
 public class Requirement {
 
     /**
-     * The default boolean the {@link #method} needs to return for the requirement to be met.
-     * <p>Set to true by default.</p>
-     */
-    public static boolean defaultNeededBoolean = true;
-
-    /**
      * The arguments originally given to the requirement. Not changed.
      * <p>Set to an empty arraylist of Objects.</p>
      */
@@ -46,9 +40,9 @@ public class Requirement {
 
     /**
      * Stores the boolean the {#link #method} needs to return for the requirement to be met.
-     * <p>Set to {@link #defaultNeededBoolean}.</p>
+     * <p>Set to true.</p>
      */
-    private boolean neededBoolean = defaultNeededBoolean;
+    private boolean neededBoolean = true;
 
     /**
      * Returns the {@link #arguments}.
@@ -92,32 +86,70 @@ public class Requirement {
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
                 //If the field is a regular field, then set the field value to the value it holds
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); resetArguments();}
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException | NullPointerException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments();}
             }
             if(fieldvalue == null) { resetArguments(); return !neededBoolean; }
         }
 
-        if(field != null && fieldvalue == null) { resetArguments(); return !neededBoolean; }
+        Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");
+        Display.writeToLogFile("[Invoking method] Type: Requirement");
+        Display.writeToLogFile("Method: " + method);
+        if(arguments != null) {
+            Display.writeToLogFile("Arguments: " + arguments);
+            Display.writeToLogFile("argumentTypes: " + argumentTypes);
+        } else {
+            Display.writeToLogFile("Arguments: None");
+        }
+        if(fieldvalue != null && field != null) {
+            Display.writeToLogFile("Field value: " + fieldvalue);
+            if(field instanceof FieldMethod) {
+                Display.writeToLogFile("Field (FieldMethod): " + ((FieldMethod)field).getMethod());
+            }
+            if(field instanceof Field) {
+                Display.writeToLogFile("Field: " + ((Field)field).getName());
+            }
+        } else {
+            Display.writeToLogFile("Field value: None");
+        }
+
 
 		try {
-            boolean output = !neededBoolean;
-            if(field != null) {
+            Object output = null;
+            if(fieldvalue != null) {
                 if(arguments != null && arguments.size() > 0) {
-                    output = (boolean)method.invoke(fieldvalue, arguments.toArray()) == neededBoolean;
+                    output = method.invoke(fieldvalue, arguments.toArray());
                 } else {
-                    output = (boolean)method.invoke(fieldvalue) == neededBoolean;
+                    output = method.invoke(fieldvalue);
                 }
             } else {
                 if(arguments != null && arguments.size() > 0) {
-                    output = (boolean)method.invoke(null, arguments.toArray()) == neededBoolean;
+                    output = method.invoke(null, arguments.toArray());
                 } else {
-                    output = (boolean)method.invoke(null) == neededBoolean;
+                    output = method.invoke(null);
                 }
             }
             resetArguments();
-            return output;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { e.printStackTrace(); }
+            if(output != null) {
+                Display.writeToLogFile("[MethodOutput] " + output.toString());
+            } else {
+                Display.writeToLogFile("[MethodOutput] null (returned " + !neededBoolean + ")");
+            }
+            Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
+            if(output != null) {
+                return ((boolean)output) == neededBoolean;
+            } else {
+                return !neededBoolean;
+            }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        catch (NullPointerException e) {
+            Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
+            Display.displayError("method: " + method);
+            e.printStackTrace();
+            resetArguments();
+        }
+        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
         resetArguments();
+        Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
         return false;
     }
 

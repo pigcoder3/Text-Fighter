@@ -6,5 +6,8 @@
     "critchance" : "10",
     "misschance" : "30",
     "durability" : "200",
+    "maxDurability" : "200",
+    "metalScrapsToRepairAtStation" : "30",
+    "canBeRepairedAtStation" : "true",
     "unbreakable" : "false"
 }

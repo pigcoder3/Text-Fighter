@@ -27,7 +27,12 @@ public class UiTag {
      * <p>Arguments can store ints, doubles, Strings, classes, and other TFMethods</p>
      */
     private ArrayList<Object> arguments = new ArrayList<Object>();
-    /** 
+    /**
+     * Stores the classes of the {@link #arguments} and corresponds by index.
+     * <p>Set to an empty ArrayList of Classes.
+     */
+    private ArrayList<Class> argumentTypes = new ArrayList<Class>();
+    /**
      * Stores the original arguments of this TFMethod.
      * <p>These are useful because arguments that are methods are replaced with their output in the arguments.</p>
      * <p>This will allow the methods to be used again.</p>
@@ -91,6 +96,27 @@ public class UiTag {
             if(fieldvalue == null) { return null; }
         }
 
+        Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");
+        Display.writeToLogFile("[Invoking method] Type: UiTag");
+        Display.writeToLogFile("Method: " + method);
+        if(arguments != null) {
+            Display.writeToLogFile("Arguments: " + arguments);
+            Display.writeToLogFile("argumentTypes: " + argumentTypes);
+        } else {
+            Display.writeToLogFile("Arguments: None");
+        }
+        if(fieldvalue != null && field != null) {
+            Display.writeToLogFile("Field value: " + fieldvalue);
+            if(field instanceof FieldMethod) {
+                Display.writeToLogFile("Field (FieldMethod): " + ((FieldMethod)field).getMethod());
+            }
+            if(field instanceof Field) {
+                Display.writeToLogFile("Field: " + ((Field)field).getName());
+            }
+        } else {
+            Display.writeToLogFile("Field value: None");
+        }
+
         try {
             Object output = null;
             if(fieldvalue != null) {
@@ -107,9 +133,23 @@ public class UiTag {
                 }
             }
             resetArguments();
+            if(output != null) {
+                Display.writeToLogFile("[MethodOutput] " + output.toString());
+            } else {
+                Display.writeToLogFile("[MethodOutput] null");
+            }
+            Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
             return output;
-        } catch (IllegalAccessException | InvocationTargetException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        catch (NullPointerException e) {
+            Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
+            Display.displayError("method: " + method);
+            e.printStackTrace();
+            resetArguments();
+        }
+        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
         resetArguments();
+        Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
         return null;
     }
 
@@ -136,11 +176,12 @@ public class UiTag {
         arguments = new ArrayList<>(originalArguments);;
      }
 
-    public UiTag(String tag, Method method, ArrayList<Object> arguments, Object field, ArrayList<Requirement> requirements) {
+    public UiTag(String tag, Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field, ArrayList<Requirement> requirements) {
         this.tag = tag;
         this.method = method;
         this.arguments = arguments;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments);}
+        this.argumentTypes = argumentTypes;
         this.field = field;
         this.requirements = requirements;
     }

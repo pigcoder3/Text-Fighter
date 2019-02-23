@@ -98,13 +98,35 @@ public class ChoiceMethod {
                 try {
 					fieldvalue = ((Field)field).get(null);
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-					resetArguments();
+                    Display.displayError("method: " + method);
+                    Display.displayError(Display.exceptionToString(e));
+                    resetArguments();
 				}
             }
+            if(fieldvalue == null) { return false; }
         }
 
-        if(field != null && fieldvalue == null) { return false; }
+        Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");
+        Display.writeToLogFile("[Invoking method] Type: ChoiceMethod");
+        Display.writeToLogFile("Method: " + method);
+        if(arguments != null) {
+            Display.writeToLogFile("Arguments: " + arguments);
+            Display.writeToLogFile("argumentTypes: " + argumentTypes);
+        } else {
+            Display.writeToLogFile("Arguments: None");
+        }
+        if(fieldvalue != null && field != null) {
+            Display.writeToLogFile("Field value: " + fieldvalue);
+            if(field instanceof FieldMethod) {
+                Display.writeToLogFile("Field (FieldMethod): " + ((FieldMethod)field).getMethod());
+            }
+            if(field instanceof Field) {
+                Display.writeToLogFile("Field: " + ((Field)field).getName());
+            }
+        } else {
+            Display.writeToLogFile("Field value: None");
+        }
+
 
         if(!((arguments != null && argumentTypes != null) && (arguments.size() == argumentTypes.size()) || (argumentTypes == null && arguments == null))) { resetArguments(); return false;}
         try {
@@ -122,9 +144,18 @@ public class ChoiceMethod {
                 }
             }
             resetArguments();
+            Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
             return true;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); resetArguments();}
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        catch (NullPointerException e) {
+            Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
+            Display.displayError("method: " + method);
+            e.printStackTrace();
+            resetArguments();
+        }
+        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
         resetArguments();
+        Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
         return false;
     }
 

@@ -28,6 +28,11 @@ public class Tool extends Item {
      * <p>Set to false.</p>
      */
     public static boolean defaultUnbreakable = false;
+    /**
+     * Stores the default maximum durability for tool.
+     * <p>Set to 100.</p>
+     */
+    public static int defaultMaxDurability = 100;
 
     /**
      * Stores the item type for tools. Cannot be changed.
@@ -54,6 +59,11 @@ public class Tool extends Item {
      * <p>Set to {@link #defaultUnbreakable}.</p>
      */
     public boolean unbreakable = defaultUnbreakable;
+    /**
+     * Stores the maximum durability for this tool
+     * <p>Set to {@link #defaultMaxDurability}.</p>
+     */
+    private int maxDurability = defaultMaxDurability;
 
     /**
      * Stores the custom variables for this tool.
@@ -144,6 +154,11 @@ public class Tool extends Item {
      * @return      {@link #unbreakable}
      */
     public boolean getUnbreakable() { return unbreakable; }
+    /**
+     * Returns {@link #maxDurability}.
+     * @return      {@link #maxDurability}
+     */
+    public int getMaxDurability() { return maxDurability; }
 
     //Just get the output of the type and name
     /**

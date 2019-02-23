@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import org.textfighter.method.TFMethod;
 import org.textfighter.method.FieldMethod;
+import org.textfighter.display.Display;
 
 import org.textfighter.display.Display;
 
@@ -17,6 +18,11 @@ public class EnemyActionMethod {
     private Object field;
     /***Stores the arguments of the method.*/
     private ArrayList<Object> arguments = new ArrayList<Object>();
+    /**
+     * Stores the classes of the {@link #arguments} and corresponds by index.
+     * <p>Set to an empty ArrayList of Classes.
+     */
+    private ArrayList<Class> argumentTypes = new ArrayList<Class>();
     /***Stores the original arguments that are given when the FieldMethod is created*/
     private ArrayList<Object> originalArguments = new ArrayList<Object>();
 
@@ -42,7 +48,7 @@ public class EnemyActionMethod {
      * Next, the game determines if the field is a Field or a FieldMethod. If it is a FieldMethod, then it invokes the
      * method and sets the fieldvalue to the output of the field method (the fieldvalue is a local variable, that is used in invoking
      * the method). If it is a regular Field, then set fieldvalue to the value that the {@link #field} stores.</p>
-     * @return      The output of the method.
+     * @return      Whether or not successful.
      */
     public boolean invokeMethod() {
         //Invokes all the arguments that are methods and set the argument to its output
@@ -62,14 +68,35 @@ public class EnemyActionMethod {
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field instanceof Field){
                 //If the field is a regular field, then set the value of the field to the fieldvalue
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments();}
             }
+            if(fieldvalue == null) { return false; }
         }
 
-        if(field != null && fieldvalue == null) { return false; }
+        Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");
+        Display.writeToLogFile("[Invoking method] Type: EnemyActionMethod");
+        Display.writeToLogFile("Method: " + method);
+        if(arguments != null) {
+            Display.writeToLogFile("Arguments: " + arguments);
+            Display.writeToLogFile("argumentTypes: " + argumentTypes);
+        } else {
+            Display.writeToLogFile("Arguments: None");
+        }
+        if(fieldvalue != null && field != null) {
+            Display.writeToLogFile("Field value: " + fieldvalue);
+            if(field instanceof FieldMethod) {
+                Display.writeToLogFile("Field (FieldMethod): " + ((FieldMethod)field).getMethod());
+            }
+            if(field instanceof Field) {
+                Display.writeToLogFile("Field: " + ((Field)field).getName());
+            }
+        } else {
+            Display.writeToLogFile("Field value: None");
+        }
+
 
         try {
-            if(field != null) {
+            if(fieldvalue != null) {
                 if(arguments != null && arguments.size() > 0) {
                     method.invoke(fieldvalue, arguments.toArray());
                 } else {
@@ -83,9 +110,18 @@ public class EnemyActionMethod {
                 }
             }
             resetArguments();
+            Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
             return true;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        catch (NullPointerException e) {
+            Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
+            Display.displayError("method: " + method);
+            e.printStackTrace();
+            resetArguments();
+        }
+        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
         resetArguments();
+        Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
         return false;
     }
 
@@ -111,10 +147,11 @@ public class EnemyActionMethod {
         arguments = new ArrayList<>(originalArguments);;
     }
 
-    public EnemyActionMethod(Method method, ArrayList<Object> arguments, Object field) {
+    public EnemyActionMethod(Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field) {
         this.method = method;
         this.arguments = arguments;
         if(arguments != null) { this.originalArguments = new ArrayList<Object>(arguments); }
+        this.argumentTypes = argumentTypes;
         this.field = field;
     }
 }

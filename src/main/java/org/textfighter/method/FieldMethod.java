@@ -1,6 +1,7 @@
 package org.textfighter.method;
 
 import org.textfighter.method.*;
+import org.textfighter.display.Display;
 
 import java.util.ArrayList;
 import java.lang.reflect.*;
@@ -85,6 +86,27 @@ public class FieldMethod {
 
         Object a;
 
+        Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");
+        Display.writeToLogFile("[Invoking method] Type: FieldMethod");
+        Display.writeToLogFile("Method: " + method);
+        if(arguments != null) {
+            Display.writeToLogFile("Arguments: " + arguments);
+            Display.writeToLogFile("argumentTypes: " + argumentTypes);
+        } else {
+            Display.writeToLogFile("Arguments: None");
+        }
+        if(fieldvalue != null && field != null) {
+            Display.writeToLogFile("Field value: " + fieldvalue);
+            if(field instanceof FieldMethod) {
+                Display.writeToLogFile("Field (FieldMethod): " + ((FieldMethod)field).getMethod());
+            }
+            if(field instanceof Field) {
+                Display.writeToLogFile("Field: " + ((Field)field).getName());
+            }
+        } else {
+            Display.writeToLogFile("Field value: None");
+        }
+
         //Invokes this method's base method
         try {
             if(fieldvalue != null) {
@@ -100,8 +122,22 @@ public class FieldMethod {
                     a=method.invoke(null);
                 }
             }
+            if(a != null) {
+                Display.writeToLogFile("[MethodOutput] " + a.toString());
+            } else {
+                Display.writeToLogFile("[MethodOutput] null");
+            }
+            Display.writeToLogFile("[<--End Of Method Log-->]");
             return a;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) { if(fieldvalue != null) { System.out.println(fieldvalue); } System.out.println(method); e.printStackTrace(); resetArguments(); }
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        catch (NullPointerException e) {
+            Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
+            Display.displayError("method: " + method);
+            e.printStackTrace();
+            resetArguments();
+        }
+        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
         return null;
     }
 

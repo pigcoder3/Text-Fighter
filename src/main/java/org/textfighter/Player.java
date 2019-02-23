@@ -389,7 +389,6 @@ public class Player {
         filterLevelupMethods();
         if(possibleLevelupMethods != null) {
             for(IDMethod m : possibleLevelupMethods) {
-                System.out.println("invoking the possible level up methods");
                 m.invokeMethod();
             }
         }
@@ -403,7 +402,6 @@ public class Player {
         //Filter out any death methods that do not meet the requirements
         possibleLevelupMethods.clear();
         if(allLevelupMethods != null && allLevelupMethods.size() > 0){
-            System.out.println("There are some level up methods");
             for(IDMethod m : allLevelupMethods) {
                 boolean valid = true;
                 if(m.getMethod().getRequirements() != null) {
@@ -415,7 +413,6 @@ public class Player {
                     }
                 }
                 if(valid) {
-                    System.out.println("valid level up method");
                     possibleLevelupMethods.add(m);
                 }
             }
@@ -874,20 +871,20 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to increase by.
      */
-    public void gainMagic(int a) { magic+=a;  }
+    public void gainMagic(int a) { if(magic+a >=0) { magic+=a; } else { magic=0; }  }
 
     //Metal scraps methods
     /**
      * Returns the {@link #metalScraps}.
      * @return      {@link #metalScraps}
      */
-    public int getMetalScraps() { return magic; }
+    public int getMetalScraps() { return metalScraps; }
     /**
      * Set the {@link #metalScraps} to the value given.
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The new value.
      */
-    public void setMetalScraps(int a) { metalScraps = a; if(metalScraps < 0) { metalScraps = 0; } }
+    public void setMetalScraps(int a) {metalScraps = a; if(metalScraps < 0) { metalScraps = 0; } }
     /**
      * Decreases the {@link #metalScraps}.
      * <p>If the new value is less than 0, set it to 0.</p>

@@ -28,6 +28,11 @@
             "method" : "getVersion"
         },
         {
+            "tag" : "<modName>",
+            "class" : "org.textfighter.TextFighter",
+            "method" : "getModName"
+        },
+        {
             "tag" : "<allItemSimpleOutputs>",
             "class" : "org.textfighter.PackMethods",
             "method" : "getAllItemSimpleOutputs",

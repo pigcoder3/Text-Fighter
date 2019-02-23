@@ -4,7 +4,8 @@
 
     "interface" : [
 
-        "Version: <version>",
+        "Version: <version>    ",
+        "mod used: <modName>   ",
         "----------------------",
         "     TEXT-FIGHTER     ",
         "   'start' to begin   ",

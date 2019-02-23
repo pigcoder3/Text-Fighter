@@ -124,6 +124,19 @@
             "usage" : "forge"
         },
         {
+            "name" : "repairstation",
+            "description" : "Goes to the repair station",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["repairstation"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "repairstation"
+        }
+        {
             "name" : "help",
             "description" : "Goes to the help menu",
             "methods" : [
@@ -161,7 +174,7 @@
             "usage" : "savegame"
         },
         {
-            "name" : "savesmenu",
+            "name" : "savemenu",
             "description" : "Moves you to the saves menu",
             "methods" : [
                 {
@@ -172,6 +185,19 @@
                 }
             ],
             "usage" : "savesmenu"
+        },
+        {
+            "name" : "respawn",
+            "description" : "Respawn. WARNING: All things that normally happen when you die will happen.",
+            "methods" : [
+                {
+                    "method" : "died",
+                    "class" : "org.textfighter.Player",
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "respawn"
         }
     ]
 }

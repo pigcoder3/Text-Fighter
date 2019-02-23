@@ -5,6 +5,6 @@
     "damage" : "5",
     "critChance" : "10",
     "misschance" : "5",
-    "durability" : "100",
+    "canBeRepairedAtStation" : "false",
     "unbreakable" : "true"
 }

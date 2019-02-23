@@ -6,6 +6,8 @@
     "critchance" : "20",
     "misschance" : "30",
     "durability" : "200",
+    "maxDurability" : "200",
+    "canBeRepairedAtStation" : "false",
     "unbreakable" : "false"
 
 }

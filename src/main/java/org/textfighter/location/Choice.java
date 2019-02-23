@@ -16,6 +16,8 @@ public class Choice {
     private String description;
     /***Stores the usage of this choice.*/
     private String usage;
+    /***Stores the message that is outputted when the {@link #methods} do not meet their own requirements.*/
+    private String failMessage;
 
     /**
      * Stores the methods of this choice.
@@ -43,6 +45,11 @@ public class Choice {
      * @return      {@link #usage}
      */
     public String getUsage() { return usage; }
+    /**
+     * Returns the {@link #failMessage}.
+     * @return      {@link #failMessage}
+     */
+    public String getFailtMessage() { return failMessage; }
     /**
      * Returns the {@link #methods}.
      * @return      {@link #methods}
@@ -97,17 +104,23 @@ public class Choice {
                     TextFighter.addToOutput("Problem with invoking method with given arguments.\nUsage: " + usage);
                     return false;
                 }
+            } else {
+                if(failMessage != null) {
+                    TextFighter.addToOutput(failMessage);
+                    return true;
+                }
             }
             m.resetArguments();
         }
         return true;
     }
 
-    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<Requirement> requirements) {
+    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<Requirement> requirements, String failMessage) {
         this.name = name;
         this.description = description;
         this.usage = usage;
         this.methods = methods;
         this.requirements = requirements;
+        this.failMessage = failMessage;
     }
 }

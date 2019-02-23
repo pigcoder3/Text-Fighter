@@ -39,6 +39,11 @@ public class Weapon extends Item {
      */
     public static int defaultDurability = 100;
     /**
+     * Stores the default maximum durability for weapons.
+     * <p>Set to 100.</p>
+     */
+    public static int defaultMaxDurability = 100;
+    /**
      * Stores the default unbreakable value.
      * <p>Set to false.</p>
      */
@@ -80,6 +85,11 @@ public class Weapon extends Item {
      */
     private int durability = defaultDurability;
     /**
+     * Stores the maximum durability for this weapon
+     * <p>Set to {@link #defaultMaxDurability}.</p>
+     */
+    private int maxDurability = defaultMaxDurability;
+    /**
      * Stores whether or not the weapon can break.
      * <p>Set to {@link #defaultUnbreakable}.</p>
      */
@@ -99,7 +109,10 @@ public class Weapon extends Item {
     public Object getCustomVariableFromName(String name) {
         if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
-            if(cv.getName().equals(name)) { return cv.getValue(); }
+            if(cv.getName().equals(name)) {
+                System.out.println(cv.getName() + ": " + cv.getValue().toString());
+                return cv.getValue();
+            }
         }
         return null;
     }
@@ -215,6 +228,11 @@ public class Weapon extends Item {
      * @return      {@link #unbreakable}
      */
     public boolean getUnbreakable() { return unbreakable; }
+    /**
+     * Returns {@link #maxDurability}.
+     * @return      {@link #maxDurability}
+     */
+    public int getMaxDurability() { return maxDurability; }
 
     //Get the output of just the type and durability
     /**
