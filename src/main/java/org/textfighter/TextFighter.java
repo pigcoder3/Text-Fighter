@@ -192,7 +192,7 @@ public class TextFighter {
      * @param name  the name of the special item that is to be found.
      * @return      If a special item is found, then return it. Else, return null.
      */
-    public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { addToOutput("No such specialitem '" + name + "'"); return sp; } } return null; }
+    public static SpecialItem getSpecialItemByName(String name) { for(SpecialItem sp : specialItems) { if(sp.getName().equals(name)) { return sp; } } addToOutput("No such specialitem '" + name + "'"); return null; }
     /**
      * Gets an enemy from the {@link #enemies} arraylist
      * @param name  the name of the enemy that is to be found
@@ -1009,7 +1009,7 @@ public class TextFighter {
                     String name = SpecialItem.defaultName;                      if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
                     if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading item '" + name + "' of type 'specialitem'");
-                    String description = SpecialItem.defaultDescription;        if(itemFile.get("description") != null) { name = (String)itemFile.get("description"); }
+                    String description = SpecialItem.defaultDescription;        if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
                     for(int i=0; i<specialitemCustomVariables.size(); i++) {
                         CustomVariable c = specialitemCustomVariables.get(i);

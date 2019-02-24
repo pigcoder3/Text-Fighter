@@ -1,51 +1,53 @@
 {
-    "name" : "miner",
-    "description" : "A strong enemy who carries a pickaxe.",
-    "health" : "40",
-    "maxhealth" : "40",
-    "strength" : "15",
-    "levelRequirement" : "3",
-    "requirements" : [],
+
+    "name" : "executioner",
+    "description" : "He has executed more people than you have seen in your lifetime.",
+    "health" : "75",
+    "maxhealth" : "75",
+    "strength" : "30",
+    "levelRequirement" : "5",
     "finalBoss" : "false",
-    "postMethods" : [],
-    "preMethods" : [],
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "addToInventory",
             "class" : "org.textfighter.Player",
-            "arguments" : ["pickaxe","tool"],
+            "arguments" : ["battleaxe","weapon"],
             "argumentTypes" : ["0","0"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "25",
+            "rewarditem" : "A battleaxe.",
             "requirements" : [
                 {
                     "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["pickaxe","tool"],
+                    "arguments" : ["battleaxe","weapon"],
                     "argumentTypes" : ["0","0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter",
                     "neededBoolean" : "false"
                 }
-            ],
-            "chance" : "50",
-            "rewarditem" : "A pickaxe. It can be used to mine metal scraps."
+            ]
         },
         {
             "method" : "increaseExperience",
             "class" : "org.textfighter.Player",
-            "arguments" : ["25"],
+            "arguments" : ["100"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter"
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "100",
+            "rewarditem" : "100 experience"
         },
         {
             "method" : "gainCoins",
             "class" : "org.textfighter.Player",
-            "arguments" : ["25"],
-            "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter"
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["100"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "100 coins"
         }
-    ]
+    ],
 }

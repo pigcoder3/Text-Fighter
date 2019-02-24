@@ -1,0 +1,16 @@
+Basic info:
+    Name: battleaxe
+    Description: A brutal weapon
+    Damage: 25
+    Critical Hit Chance: 25
+    Miss Chance: 10
+    Durability: 300
+    Maximum Durability: 300
+    Unbreakable: false
+    longRanged: false
+
+Obtaining:
+    Can be dropped by the executioner for a 25% chance
+
+More Info:
+    Can be used to cut down trees at the forest

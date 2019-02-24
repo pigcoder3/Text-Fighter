@@ -1,0 +1,27 @@
+Basic Info:
+    Name: executioner
+    Description: He has executed more people than you have seen in your lifetime.
+    Strength: 30
+    Health: 75
+    Maximum Health: 75
+    Level Required To Be Fought: 5
+
+Requirements:
+    None
+
+Special Actions:
+    None
+
+Rewards:
+    100 experience - 100% chance
+    100 coins - 100% chance
+    A battleaxe - 25% chance (Assuming you don not have one)
+
+Entering fight:
+    None
+
+Enemy Dies:
+    None
+
+Extra Info:
+    None

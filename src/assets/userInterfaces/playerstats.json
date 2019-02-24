@@ -1,6 +1,6 @@
 {
 
-    "name" : "playerStats",
+    "name" : "playerstats",
 
     "interface" : [
 
@@ -29,6 +29,10 @@
         "  coins: <coins>",
         "  magic: <magic>",
         "  metal scraps: <metal>"
+        "",
+        "  wood: <wood>",
+        "  leaves: <leaves>"
+        "  bottles: <bottles>"
 
     ]
 

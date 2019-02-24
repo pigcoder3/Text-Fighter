@@ -29,6 +29,9 @@ Interface:
       magic: <magic>
       metal scraps: <metal>
 
+      Wood: <wood>         
+      Leaves: <leaves>
+
     ----------------------
           ENEMY STATS
     ----------------------
@@ -81,7 +84,7 @@ Choices:
     Requirements: None
 
 Entering:
-    None
+    If you have a leafdisguise you get 1 turn of invincibility.
 
 Leaving:
     None

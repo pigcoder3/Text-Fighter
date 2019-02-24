@@ -347,7 +347,7 @@ public class Display {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Display.displayError(Display.exceptionToString(e));;
             displayError("Unable to read the colors in the display file. (The file does exist).");
         }
     }

@@ -75,7 +75,7 @@
                 }
             ],
             "chance" : "50",
-            "rewardItem" : "An infinity bow. A bow of inifinte arrows."
+            "rewarditem" : "An infinity bow. A bow of inifinte arrows."
         },
     ]
 }

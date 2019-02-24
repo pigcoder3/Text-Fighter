@@ -1,0 +1,44 @@
+Name: forest
+
+Description: A place to get wood and leaves.
+
+Interface:
+    ----------------------
+            FOREST
+     Wood: <wood>           
+     Leaves: <leaves>
+
+Choices:
+
+    Name: woodaxe
+    Description: Gather 2 wood pieces with your axe. Uses 1 durability of your axe.
+    Function: Gives you 2 wood pieces and uses 1 durability for your axe.
+    Usage: woodaxe
+    Requirements: You must have an axe.
+
+    Name: battlewoodaxe
+    Description: Gather 3 wood pieces with your battleaxe. Uses 1 durability of your battleaxe.
+    Function: Gives you 3 wood pieces and uses 1 durability for your battleaxe.
+    Usage: battlewoodaxe
+    Requirements: You must have a battleaxe.
+
+    Name: leaf
+    Description: Gather 5 leaves.
+    Function: Gathers 5 leaves.
+    Usage: leaf
+    Requirements: None
+
+    Name: back
+    Description: Moves you back to the menu.
+    Function: Moves you to the menu location.
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

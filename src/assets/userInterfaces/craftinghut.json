@@ -1,11 +1,9 @@
 {
-
-    "name" : "witchhut",
+    "name" : "craftinghut",
 
     "interface" : [
-
         "----------------------",
-        "       WITCH HUT      "
+        "     CRAFTING HUT     ",
     ]
 
 }

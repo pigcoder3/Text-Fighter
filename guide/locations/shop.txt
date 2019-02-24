@@ -29,6 +29,10 @@ Interface:
       magic: <magic>
       metal scraps: <metal>
 
+      Wood: <wood>
+      Leaves: <leaves>
+      bottles: <bottles>
+
     ----------------------
              SHOP
 

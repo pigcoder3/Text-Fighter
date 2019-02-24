@@ -1,51 +1,53 @@
 {
-    "name" : "miner",
-    "description" : "A strong enemy who carries a pickaxe.",
-    "health" : "40",
-    "maxhealth" : "40",
+
+    "name" : "lumberjack",
+    "description" : "He makes his living from cutting down trees with his trusty axe.",
+    "health" : "50",
+    "maxhealth" : "50",
     "strength" : "15",
-    "levelRequirement" : "3",
-    "requirements" : [],
+    "levelRequirement" : "1",
     "finalBoss" : "false",
-    "postMethods" : [],
-    "preMethods" : [],
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "addToInventory",
             "class" : "org.textfighter.Player",
-            "arguments" : ["pickaxe","tool"],
+            "arguments" : ["axe","tool"],
             "argumentTypes" : ["0","0"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "40",
+            "rewarditem" : "An axe.",
             "requirements" : [
                 {
                     "method" : "isCarrying",
                     "class" : "org.textfighter.Player",
-                    "arguments" : ["pickaxe","tool"],
+                    "arguments" : ["axe","tool"],
                     "argumentTypes" : ["0","0"],
                     "field" : "player",
                     "fieldclass" : "org.textfighter.TextFighter",
                     "neededBoolean" : "false"
                 }
-            ],
-            "chance" : "50",
-            "rewarditem" : "A pickaxe. It can be used to mine metal scraps."
+            ]
         },
         {
             "method" : "increaseExperience",
             "class" : "org.textfighter.Player",
-            "arguments" : ["25"],
+            "arguments" : ["20"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter"
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "100",
+            "rewarditem" : "20 experience"
         },
         {
             "method" : "gainCoins",
             "class" : "org.textfighter.Player",
-            "arguments" : ["25"],
-            "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter"
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["15"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "15 coins"
         }
     ]
 }

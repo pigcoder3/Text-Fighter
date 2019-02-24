@@ -1,0 +1,12 @@
+Basic info:
+    Name: leafdisguise
+    Description: A tactical item that gives you invincibility for 1 turn at the start of a fight.
+
+Obtaining:
+    Crafted at the crafting hut for 200 leaves and 20 wood
+
+Use:
+    Gives you invincibility for 1 turn at the beginning of a fight because the enemy cannot see you
+
+More Info:
+    None

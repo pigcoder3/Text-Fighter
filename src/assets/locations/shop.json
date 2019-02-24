@@ -3,7 +3,7 @@
     "name" : "shop",
 
     "interfaces" : [
-        "playerStats",
+        "playerstats",
         "shop",
         "choices"
     ],
