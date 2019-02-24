@@ -1,0 +1,35 @@
+{
+
+    "name" : "playerStats",
+
+    "interface" : [
+
+        "----------------------",
+        "       YOUR STATS     ",
+        "----------------------",
+        "  hp:    <health>",
+        "  maxhp: <maxhealth>",
+        "  deaths: <deaths>",
+        "",
+        "  Health potions: <healthPotions>",
+        "  Strength potions: <strengthPotions>",
+        "  Invincibility potions: <invincibilityPotions>",
+        "",
+        "  Strength turns left: <turnsWithStrengthLeft>",
+        "  Invincibility turns left: <turnsWithInvincibilityLeft>",
+        "",
+        "  weapon: <weapon>",
+        "  durability: <durability>",
+        "  unbreakable: <currentWeaponUnbreakable>",
+        "  strength: <str>",
+        "",
+        "  level: <level>",
+        "  exp:   <experience> / <experienceNeeded>",
+        "",
+        "  coins: <coins>",
+        "  magic: <magic>",
+        "  metal scraps: <metal>"
+
+    ]
+
+}

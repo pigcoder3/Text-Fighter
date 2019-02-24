@@ -1,0 +1,18 @@
+{
+    "values" : [
+        {
+            "name" : "metalScrapsToRepairAtStation",
+            "value" : "0",
+            "type" : "1",
+            "inOutput" : "false",
+            "isSaved" : "false"
+        },
+        {
+            "name" : "canBeRepairedAtStation",
+            "value" : "true",
+            "type" : "3",
+            "inOutput" : "false",
+            "isSaved" : "false"
+        }
+    ]
+}

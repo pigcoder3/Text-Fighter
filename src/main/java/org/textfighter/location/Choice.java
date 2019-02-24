@@ -1,6 +1,6 @@
 package org.textfighter.location;
 
-import org.textfighter.Requirement;
+import org.textfighter.method.*;
 
 import org.textfighter.TextFighter;
 
@@ -10,66 +10,117 @@ import java.util.*;
 
 public class Choice {
 
+    /***Stores the name of this choice.*/
     private String name;
+    /***Stores the description of this choice.*/
     private String description;
+    /***Stores the usage of this choice.*/
     private String usage;
-    private String output;
+    /***Stores the message that is outputted when the {@link #methods} do not meet their own requirements.*/
+    private String failMessage;
 
-    private boolean valid = true;
-
+    /**
+     * Stores the methods of this choice.
+     * <p>Set to an empty ArrayList of ChoiceMethods.</p>
+     */
     private ArrayList<ChoiceMethod> methods = new ArrayList<ChoiceMethod>();
+    /**
+     * Stores the requirements of this choice.
+     * <p>Set to an empty ArrayList of Requirements.</p>
+     */
     private ArrayList<Requirement> requirements = new ArrayList<Requirement>();
 
+    /**
+     * Returns the {@link #name}.
+     * @return      {@link #name}
+     */
     public String getName() { return name; }
+    /**
+     * Returns the {@link #usage}.
+     * @return      {@link #usage}
+     */
     public String getDescription() { return description; }
+    /**
+     * Returns the {@link #usage}.
+     * @return      {@link #usage}
+     */
     public String getUsage() { return usage; }
-    public String getOutput() { return output; }
-    public void setOutput(String o) { output = o;}
-    public boolean getValid() { return valid; }
+    /**
+     * Returns the {@link #failMessage}.
+     * @return      {@link #failMessage}
+     */
+    public String getFailtMessage() { return failMessage; }
+    /**
+     * Returns the {@link #methods}.
+     * @return      {@link #methods}
+     */
     public ArrayList<ChoiceMethod> getMethods() { return methods; }
+    /**
+     * Returns the {@link #requirements}.
+     * @return      {@link #requirements}
+     */
     public ArrayList<Requirement> getRequirements() { return requirements; }
 
+    /**
+     * Returns the name, description, and usage of the choice.
+     * @return      name, description, and usage
+     */
+    public String getOutput() {
+        return name + "\n" +
+            "\tdescription  - " + description + "\n" +
+            "\tusage - " + usage;
+    }
+
+    /**
+     * Puts the arguments in the {@link #methods} and invokes them.
+     * <p>First loops through the {@link #methods} and puts arguments in placeholders and then invokes them.
+     * If there is a problem with invoking the methods, then say so and print out the usage.</p>
+     * @param inputArgs     The player's input arguments.
+     * @return              Returns whether or not successful.
+     */
     public boolean invokeMethods(ArrayList<String> inputArgs) {
-        int inputArgsIndex = 0;
-        for(ChoiceMethod m : methods) {
-            ArrayList<Object> methodArgs = new ArrayList<Object>();
-            int startingIndex = 0;
-            if(m.getArguments() != null) {
-                methodArgs = m.getArguments();
-                startingIndex=m.getArguments().size();
+        for(ChoiceMethod cm : methods) {
+            //Put the input in the arguments of all the ChoiceMethod
+            if(!cm.putInputInArguments(inputArgs)) {
+                for(ChoiceMethod m : methods) {
+                    m.resetArguments();
+                }
+                TextFighter.addToOutput("Problem with parsing input.\nUsage: " + usage);
+                return false;
             }
-            for(int i=startingIndex; i<m.getArgumentTypes().size(); i++) {
-                if(inputArgsIndex <= inputArgs.size() - 1) {
-                    if(m.getArgumentTypes().get(i).equals(int.class)) {
-                        methodArgs.add(Integer.parseInt(inputArgs.get(inputArgsIndex)));
-                    } else if(m.getArgumentTypes().get(i).equals(String.class)) {
-                        methodArgs.add(inputArgs.get(inputArgsIndex));
-                    } else if(m.getArgumentTypes().get(i).equals(Boolean.class)) {
-                        methodArgs.add(Boolean.parseBoolean(inputArgs.get(inputArgsIndex)));
-                    }
-                    inputArgsIndex++;
-                } else {
-                    if(m.getArgumentTypes().size() != m.getMethod().getParameterTypes().length) {
-                        TextFighter.addToOutput("Usage: " + usage);
-                        return false;
+        }
+        for(ChoiceMethod m : methods) {
+            boolean valid = true;
+            if(m.getRequirements() != null) {
+                for(Requirement r : m.getRequirements()) {
+                    if(!r.invokeMethod()) {
+                        valid = false;
+                        break;
                     }
                 }
             }
-            m.setArguments(methodArgs);
-        }
-        for(ChoiceMethod m : methods) {
-            if(!m.invokeMethod()) {
-                TextFighter.addToOutput("Usage: " + usage);
-                return false;
+            if(valid) {
+                if(!m.invokeMethod()) {
+                    TextFighter.addToOutput("Problem with invoking method with given arguments.\nUsage: " + usage);
+                    return false;
+                }
+            } else {
+                if(failMessage != null) {
+                    TextFighter.addToOutput(failMessage);
+                    return true;
+                }
             }
+            m.resetArguments();
         }
         return true;
     }
 
-    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<Requirement> requirements) {
+    public Choice(String name, String description, String usage, ArrayList<ChoiceMethod> methods, ArrayList<Requirement> requirements, String failMessage) {
         this.name = name;
         this.description = description;
         this.usage = usage;
-        if(methods == null) { valid = false; }
+        this.methods = methods;
+        this.requirements = requirements;
+        this.failMessage = failMessage;
     }
 }

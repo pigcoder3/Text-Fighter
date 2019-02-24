@@ -1,0 +1,81 @@
+{
+    "name" : "archer",
+    "description" : "A powerful enemy who wields a bow",
+    "health" : "55",
+    "maxhealth" : "55",
+    "strength" : "15",
+    "levelRequirement" : "2",
+    "actions" : [
+        {
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["The archer has moved away from you and cannot be hurt next turn."],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "increaseTurnsWithInvincibilityLeft",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "getCustomVariableFromName",
+                    "class" : "org.textfighter.item.Weapon",
+                    "arguments" : ["longRanged"],
+                    "argumentTypes" : ["0"],
+                    "field" : {
+                        "method" : "getCurrentWeapon",
+                        "class" : "org.textfighter.Player",
+                        "field" : "player",
+                        "fieldclass" : "org.textfighter.TextFighter"
+                    }
+                }
+            ]
+        }
+    ],
+    "rewards" : [
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["20"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gaincoins",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["15"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "addToInventory",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["infinitybow","weapon"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["infinitybow","weapon"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ],
+            "chance" : "50",
+            "rewardItem" : "An infinity bow. A bow of inifinte arrows."
+        },
+    ]
+}

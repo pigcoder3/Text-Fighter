@@ -2,53 +2,74 @@ package org.textfighter.item;
 
 import java.lang.reflect.*;
 
-public class Item {
+public class Item implements Cloneable {
 
-    protected int level;
-    protected int experience;
-    protected int experienceRequirement;
-    protected int baseExperienceRequirement = 50;
-    protected int type;
+    /**
+     * Stores the default name for items.
+     * <p>Set to "itemName".</p>
+     */
+    public static String defaultName = "itemName";
+    /**
+     * Stores the default description for items.
+     * <p>Set to "An item".</p>
+     */
+    public static String defaultDescription = "An item";
 
-    protected String[] typeStrings;
+    /**
+     * Stores the item type for tools. Cannot be changed.
+     * <p>Set to "tool".</p>
+     */
+    private final String ITEMTYPE = "item";
+    /**
+     * Stores the name of this special item.
+     * <p>Set to {@link #defaultName}.</p>
+     */
+    protected String name = defaultName;
+    /**
+     * Stores the description of this special item.
+     * <p>Set to {@link #defaultDescription}.</p>
+     */
+    protected String description = defaultDescription;
 
-    protected String[] methodsForCalculations = {"calculateExperienceRequirement"};
+    //Basic info methods
+    /**
+     * Returns the {@link #ITEMTYPE}.
+     * @return       {@link #ITEMTYPE}
+     */
+    public String getItemType() { return ITEMTYPE; }
+    /**
+     * Returns the {@link #ITEMTYPE}.
+     * @return       {@link #ITEMTYPE}
+     */
+    public String getName() { return name; }
+    /**
+     * Returns the {@link #description}.
+     * <p>If the name given is null, then dont do anything.</p>
+     * @param s     The new value.
+     */
+    public void setName(String s) { name = s; }
+    /**
+     * Returns the {@link #description}.
+     * @return       {@link #description}
+     */
+    public String getDescription() { return description; }
+    /**
+     * Sets the value of {@link #description}.
+     * <p>If the value is null, then set the description to the {@link #defaultDescription}.</p>
+     * @param s     The new value.
+     */
+    public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
-    public int getLevel(){ return level; }
-    public void setLevel(int a){ level=a; calculateVariables(); }
-    public boolean checkForLevelUp() { if(experience > experienceRequirement) { return true; } else { return false; } }
+    //Needed so that the game can clone a new item for the player's inventory
+    /**
+     * Returns a clone of the item.
+     * @return      A clone of the item.
+     */
+    public Object clone() throws CloneNotSupportedException { return super.clone(); }
 
-    public int getExperience(){ return experience; }
-    public void setExperience(int a) {
-        experience=+a;
-        if (!checkForLevelUp()) {
-            setLevel(level+1);
-            experience = experience - experienceRequirement;
-        }
-    }
-
-    public int getExperienceRequirement(){ return experienceRequirement; }
-    public void setExperienceRequirement(int a){ experienceRequirement=a; }
-    public void calculateExperienceRequirement(){ experienceRequirement=(baseExperienceRequirement*level)*(baseExperienceRequirement*level); }
-
-    public String getTypeString(int index) { return typeStrings[index]; }
-
-    public int getType(){ return type; }
-    public void setType(int t){ type=t; }
-
-    public void calculateVariables() {
-        if(methodsForCalculations.length > 1) {
-            for(String m : methodsForCalculations) {
-                try{ this.getClass().getMethod(m).invoke(new Object[0]); } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) { e.printStackTrace(); }
-            }
-        }
-    }
-
-    public Item (int level, int experience, int type) {
-        this.level = level;
-        this.experience = experience;
-        this.type = type;
-        calculateVariables();
+    public Item (String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
 }

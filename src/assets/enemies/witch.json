@@ -1,0 +1,112 @@
+{
+
+    "name" : "witch",
+    "description" : "A magical being that has just graduated from apprenticeship.",
+    "health" : "50",
+    "maxhealth" : "50",
+    "strength" : "15",
+    "levelRequirement" : "2",
+    "finalBoss" : "false",
+    "rewards" : [
+        {
+            "method" : "addToInventory",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["manapouch","specialitem"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "25",
+            "rewardItem" : "A mana pouch. It is used to hold magic points.",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["manapouch","specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ]
+        },
+        {
+            "method" : "addToInventory",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["witchmap","specialitem"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "75",
+            "rewardItem" : "A map to a witch's hut",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["witchMap","specialItems"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ]
+        },
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["20"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gainCoins",
+            "class" : "org.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["30"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "10 coins"
+        },
+        {
+            "method" : "increaseMagic",
+            "class" : "org.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "arguments" : ["30"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "10 exp"
+        }
+    ],
+    "actions" : [
+        {
+            "methods" : [
+                {
+                    "method" : "increaseTurnsWithInvincibilityLeft",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "arguments" : ["2"],
+                    "argumentTypes" : ["1"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "requirements" : [
+                        {
+                            "method" : "variableComparison",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getTurnsWithInvincibilityLeft",
+                                    "class" : "org.textfighter.Enemy",
+                                    "field" : "currentEnemy",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                }
+                                "<",
+                                "1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,294 @@
+{
+    "name" : "forge",
+
+    "interfaces" : [
+        "forge",
+        "choices"
+    ],
+
+    "choices" : [
+        {
+            "name" : "helmet",
+            "description" : "Cost: 50 metal scraps, crafts a helmet.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["helmet", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMetalScraps",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["50"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a helmet from 50 metal scraps"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["helmet", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "50"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "chestplate",
+            "description" : "Cost: 150 metal scraps, crafts a chestplate.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["chestplate", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMetalScraps",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["150"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a chestplate from 150 metal scraps"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["chestplate", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "150"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "leggings",
+            "description" : "Cost: 125 metal scraps, crafts leggings.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["leggings", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMetalScraps",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["125"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted leggings from 125 metal scraps"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["leggings", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "125"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "boots",
+            "description" : "Cost: 40 metal scraps, crafts a pair of boots.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["boots", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMetalScraps",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["40"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a pair of boots from 40 metal scraps"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["boots", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "40"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "gloves",
+            "description" : "Cost: 20 metal scraps, crafts a pair of gloves.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["gloves", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMetalScraps",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["20"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a pair of gloves from 20 metal scraps"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["gloves", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "20"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}
