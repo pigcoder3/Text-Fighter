@@ -1,0 +1,27 @@
+Basic Info:
+    Name: miner
+    Description: A strong enemy who carries a pickaxe.
+    Strength: 15
+    Health: 40
+    Maximum Health: 40
+    Level Required To Be Fought: 3
+
+Requirements:
+    None
+
+Special Actions:
+    None
+
+Rewards:
+    25 experience - 100% chance
+    25 coins - 100% chance
+    A pickaxe - 50% chance
+
+Entering Fight:
+    None
+
+Enemy Dies:
+    None
+
+Extra Info:
+    None

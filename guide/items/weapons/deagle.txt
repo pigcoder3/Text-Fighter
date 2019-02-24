@@ -1,0 +1,18 @@
+Basic Info:
+    Name: deagle
+    Description: A powerful gun
+    Damage: 20
+    Critical Hit Chance: 10
+    Miss Chance: 30
+    Durability: 200
+    Maximum Durability: 200
+    Unbreakable: False
+    Can Be Repaired At Station: True
+    Metal Scraps To Repair At Station: 30
+    Long Range: true
+
+Obtaining:
+    Bought at the weapon smith for 300 coins
+
+More Info:
+    None

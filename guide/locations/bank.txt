@@ -1,0 +1,69 @@
+Name: bank
+
+Description: A place where you can store currencies
+
+Interface:
+    ----------------------
+             BANK
+
+     In the vault:
+         Coins: <coinsInBank>
+         Magic: <magicInBank>
+         Metal Scraps: <metalScrapsInBank>
+     In your inventory:
+         Coins: <coins>
+         Magic: <magic>
+         metalScraps: <metal>
+
+Choices:
+
+    Name: withdrawcoins
+    Description: withdraw coins from the bank. If you do not have enough, then none will be withdrawn.
+    Function: Takes the amount of coins specified out of the bank (Assuming there is enough in your vault).
+    Usage: withdrawcoins <amount>
+    Requirements: You have at least 1 coin in the bank. If you have less coins in the bank than the amount specified, none will be withdrawn.
+
+    Name: withdrawmagic
+    Description: withdraw magic points from the bank. If you do not have enough, then none will be withdrawn.
+    Function: Takes the amount of magic specified out of the bank (Assuming there is enough in your vault).
+    Usage: withdrawmagic <amount>
+    Requirements: You have at least 1 magic point in the bank. If you have less magic in the bank than the amount specified, none will be withdrawn.
+
+    Name: withdrawmetalscraps
+    Description: withdraw metal scraps from the bank. If you do not have enough, then none will be withdrawn.
+    Function: Takes the amount of metal scraps specified out of the bank (Assuming there is enough in your vault).
+    Usage: withdrawmetalscraps <amount>
+    Requirements: You have at least 1 metal scrap in the bank. If you have less metal scraps in the bank than the amount specified, none will be withdrawn.
+
+    Name: depositcoins
+    Description: deposit coins. If you do not have enough, then none will be deposited.
+    Function: Puts the amount of coins specified into the bank (Assuming there is enough in your inventory).
+    Usage: depositcoins <amount>
+    Requirements: You have at least 1 coin in your inventory. If you have less coins in your inventory than the amount specified, none will be withdrawn.
+
+    Name: depositmagic
+    Description: deposit magic points. If you do not have enough, then none will be deposited.
+    Function: Puts the amount of magic points specified into the bank (Assuming there is enough in your inventory).
+    Usage: depositmagics <amount>
+    Requirements: You have at least 1 magic in your inventory. If you have less magic in your inventory than the amount specified, none will be withdrawn.
+
+    Name: depositmetalscraps
+    Description: deposit metal scraps. If you do not have enough, then none will be deposited.
+    Function: Puts the amount of metal scraps specified into the bank (Assuming there is enough in your inventory).
+    Usage: depositmetalscraps <amount>
+    Requirements: You have at least 1 metal scrap in your inventory. If you have less metal scraps in your inventory than the amount specified, none will be withdrawn.
+
+    Name: back
+    Description: Moves you back to the menu
+    Function: Moves you back to the menu
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

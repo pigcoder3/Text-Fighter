@@ -1,0 +1,2 @@
+This guide is created for the default pack.
+If you wish to learn about another mod, see that pack's guide: packs/[packname]/guide.

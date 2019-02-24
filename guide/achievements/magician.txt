@@ -1,0 +1,12 @@
+Basic Info:
+    Name: magician
+    Description: Obtained by getting the Mana Pouch special item
+
+Obtaining:
+    Get the mana pouch special item.
+
+Rewards:
+    100 experience
+
+Extra Info:
+    The first achievement added to the game.

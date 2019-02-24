@@ -1,0 +1,30 @@
+Name: witchhut
+
+Description: A witch's house.
+
+Interface:
+    ----------------------
+           WITCH HUT
+
+Choices:
+
+    Name: invincibilitypotion
+    Description: Cost: 30 magic. Invincibility potions make you invincible for 2 turns
+    Function: Buys an invincibility potion and takes 30 magic.
+    Usage: invincibilitypotion
+    Requirements: You must have at least 30 magic.
+
+    Name: back
+    Description: Moves you back to the menu.
+    Function: Moves you back to the menu.
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

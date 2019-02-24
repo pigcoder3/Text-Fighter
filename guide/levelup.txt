@@ -1,0 +1,4 @@
+When the player levels up:
+    Increases maximum health by 10
+    Health is restored to the maximum health
+    Gain level * 10 coins

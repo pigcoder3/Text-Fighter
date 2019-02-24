@@ -1,0 +1,16 @@
+Basic Info:
+    Name: fists
+    Description: Your fists, you don't need a description about what that is.
+    Damage: 5
+    Critical Hit Chance: 10
+    Miss Chance: 5
+    Unbreakable: True
+    Can Be Repaired At Station: False
+    Long Range: fists
+
+Obtaining:
+    You always have your fists but not in your inventory.
+    They can be equipped like any other weapon, but are also automatically equipped when no weapon is equipped.
+
+More Info:
+    None

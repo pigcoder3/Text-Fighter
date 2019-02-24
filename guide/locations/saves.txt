@@ -1,0 +1,44 @@
+Name: saves
+
+Description: A location where saves are loaded.
+
+Interface:
+    ----------------------
+             SAVES
+    ----------------------
+    <saves>
+
+Choices:
+
+    Name: newgame
+    Description: creates a new game
+    Function: Starts a new game and saves it immediately
+    Usage: newgame <newsavename>
+    Requirements: None
+
+    Name: loadgame
+    Description: loads and existing save
+    Function: loads an existing save.
+    Usage: loadgame <newsavename>
+    Requirements: None
+
+    Name: removesave
+    Description: deletes a save file.
+    Function: Deletes a save file.
+    Usage: removesave <savefilename>
+    Requirements: None
+
+    Name: menu
+    Description: Moves you to the game menu.
+    Function: Moves you to the game menu.
+    Usage: menu
+    Requirements: A save must be loaded
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

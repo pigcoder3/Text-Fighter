@@ -1,0 +1,44 @@
+Name: inventory
+
+Description: A place where you can view your items.
+
+Interface:
+    ----------------------
+           INVENTORY
+    <allItemSimpleOutputsFromInventory>
+
+Choices:
+
+    Name: inspectitem
+    Description: View details about a specific item in your inventory.
+    Function: View details about a specific item in your inventory.
+    Usage: inspectitem <itemname> <itemtype>
+    Requirements: None
+
+    Name: throwaway
+    Description: throws away an item in your inventory. NOTE: You cannot get the item back.
+    Function: Throws away an item in your inventory.
+    Usage: throwaway <itemname> <itemtype>
+    Requirements: None
+
+    Name: equipweapon
+    Description: Equips a weapon.
+    Function: Equips a weapon if your are carrying it.
+    Usage: equipweapon <weaponname>
+    Requirements: None
+
+    Name: back
+    Description: Takes you out of your inventory view.
+    Function: Takes you out of your inventory view.
+    Usage: back
+    Requirements: None
+
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

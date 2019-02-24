@@ -1,0 +1,33 @@
+Name: enemychoices
+
+Description: A place where you chose an enemy to fight.
+
+Interface:
+    ----------------------
+            ENEMIES
+    ----------------------
+    <enemies>"
+
+Choices:
+
+    Name: fight
+    Description: fights the enemy specified
+    Function: Sets up a fight and moves you to the fight location.
+    Usage: fight <enemyname>
+    Requirements: None
+
+
+    Name: back
+    Description: Moves you back to the menu
+    Function: Moves you to the menu location
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

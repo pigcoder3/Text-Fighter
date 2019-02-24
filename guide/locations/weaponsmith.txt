@@ -1,0 +1,53 @@
+Name: value
+
+Description: A description of the location.
+
+Interface:
+    ----------------------
+         WEAPON SMITH
+
+    <allWeaponSimpleOutputs>
+
+    Weapons you can buy are shown in the choices interface.
+    Note that not all weapons shown can be bought here.
+
+Choices:
+
+    Name: inspectweapon
+    Description: shows you details about a weapon.
+    Function: shows you details about a weapon.
+    Usage: inspectweapon <weaponname>
+    Requirements: None
+
+    Name: sword
+    Description: Cost: 100 coins. A standard weapon.
+    Function: Buys a sword
+    Usage: sword
+    Requirements: You must have at least 100 coins.
+
+    Name: deagle
+    Description: Cost: 300 coins. A powerful pistol.
+    Function: Buys a deagle
+    Usage: deagle
+    Requirements: You must have at least 300 coins.
+
+    Name: back
+    Description: Moves you back to the menu.
+    Function: Moves you back to the menu.
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None
+
+Name:
+Description:
+Function:
+Usage:
+Requirements:

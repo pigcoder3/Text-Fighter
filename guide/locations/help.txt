@@ -1,0 +1,96 @@
+Name: help
+
+Description: A place where you can get help about how to play.
+
+Interface:
+    ----------------------
+             HELP
+
+Choices:
+
+    Name: inspectweapon
+    Description: shows you details about any weapon in the game
+    Function: Gives you details about a weapon
+    Usage: inspectweapon <weaponname>
+    Requirements: None
+
+    Name: inspecttool
+    Description: shows you details about any tool in the game
+    Function: Gives you details about a tool
+    Usage: inspecttool <toolname>
+    Requirements: None
+
+    Name: inspectarmor
+    Description: shows you details about any armor piece in the game
+    Function: Gives you details about an armor piece
+    Usage: inspectarmor <armorname>
+    Requirements: None
+
+    Name: inspectspecialitem
+    Description: shows you details about any special item in the game
+    Function: Gives you details about a special item
+    Usage: inspectspecialitem <specialitemname>
+    Requirements: None
+
+    Name: winning
+    Description: Tells you how to win the game.
+    Function: Tells you about winning
+    Usage: winning
+    Requirements: None
+
+    Name: interacting
+    Description: Tells you how to interact with the game.
+    Function: Tells you about interacting
+    Usage: interacting
+    Requirements: None
+
+    Name: death
+    Description: Tells you what happens when you die.
+    Function: Tells you about what happens when you die.
+    Usage: death
+    Requirements: None
+
+    Name: saving
+    Description: Tells you how to save.
+    Function: Tells you how to save.
+    Usage: saving
+    Requirements: None
+
+    Name: output
+    Description: Tells you about choice outputs.
+    Function: Tells you about choice outputs.
+    Usage: output
+    Requirements: None
+
+    Name: lastcommand
+    Description: Tells you about the last command.
+    Function: Tells you about the last command feature.
+    Usage: lastcommand
+    Requirements: None
+
+    Name: displaycolors
+    Description: Tells you how to use display colors.
+    Function: Tells you how to configure the display colors.
+    Usage: displaycolors
+    Requirements: None
+
+    Name: mods
+    Description: Tells you how to use mods.
+    Function: Tells you how to use mods.
+    Usage: mods
+    Requirements: None
+
+    Name: back
+    Description: Moves you back to the menu.
+    Function: Moves you back to the menu.
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

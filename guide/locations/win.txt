@@ -1,0 +1,33 @@
+Name: win
+
+Description: The win location.
+
+Interface:
+    -------------------------------------------
+                     YOU WIN!
+                 Congratulations!
+               You won TextFighter!
+    -------------------------------------------
+
+Choices:
+
+    Name: playagain
+    Description: Takes you back to the saves menu to load or create a new game.
+    Function: Takes you back to the saves menu to load or create a new game.
+    Usage: playagain
+    Requirements: None
+
+    Name: continue
+    Description: moves you back to the menu.
+    Function: moves you back to the menu.
+    Usage: continue
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

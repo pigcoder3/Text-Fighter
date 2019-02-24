@@ -1,0 +1,42 @@
+Name: repairstation
+
+Description: A place to repair your weapons and tools.
+
+Interface:
+    ----------------------
+        REPAIR STATION
+
+     Metal Scraps: <metal>
+
+     Costs:
+       Sword: 30
+       Deagle: 35
+
+Choices:
+
+    Name: repairweapon
+    Description: Repair a weapon to its max durability.
+    Function: Repairs a weapon to its max durability assuming you have enough metal scraps.
+    Usage: repairweapon <weaponname>
+    Requirements: None
+
+    Name: repairtool
+    Description: Repair a tool to its max durability.
+    Function: Repairs a tool to its max durability assuming you have enough metal scraps.
+    Usage: repairtool <toolname>
+    Requirements: None
+
+    Name: back
+    Description: Moves you back to the menu.
+    Function: Moves you back to the menu.
+    Usage: back
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

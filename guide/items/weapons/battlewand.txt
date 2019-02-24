@@ -1,0 +1,15 @@
+Basic Info:
+    Name: battlewand
+    Description: A semi-powerful wand that was specially crafted for combat
+    Damage: 15
+    Critical Hit Chance: 30
+    Miss Chance: 5
+    Can Be Repaired At Station: False
+    Long Range: true
+    Unbreakable: True
+
+Obtaining:
+    Dropped from the sorcerer at a 10% chance
+
+More Info:
+    None

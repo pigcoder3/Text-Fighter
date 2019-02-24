@@ -1,0 +1,10 @@
+Basic Info:
+    Name: manapouch
+    Description: A pouch that holds magic
+
+Function:
+    Allows you to gain magic points.
+
+Obtaining:
+    Dropped from the witch at a 25% chance.
+    Dropped from the sorcerer at a 75% chance

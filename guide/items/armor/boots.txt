@@ -1,0 +1,7 @@
+Basic Info:
+    Name: boots
+    Description: A piece of armor that covers your feet
+    Protection Amount: 10%
+
+Obtaining:
+    Crafted at the forge for 40 metal scraps

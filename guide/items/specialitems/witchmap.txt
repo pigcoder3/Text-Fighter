@@ -1,0 +1,9 @@
+Basic Info:
+    Name: witchmap
+    Description: A map to a witch
+
+Function:
+    Allows you to access the witch hut location from the menu.
+
+Obtaining:
+    Dropped from the witch at a 75% chance.

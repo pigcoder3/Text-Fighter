@@ -1,0 +1,29 @@
+Basic Info:
+    Name: witch
+    Description: A magical being that has just graduated from apprenticeship.
+    Strength: 15
+    Health: 50
+    Maximum Health: 50
+    Level Required To Be Fought: 2
+
+Requirements:
+    None
+
+Special Actions:
+    Gives itself invincibility for 2 turns
+
+Rewards:
+    20 experience - 100% chance
+    30 coins - 100% chance
+    30 magic - 100% chance (Assuming you are carrying the mana pouch)
+    Witch Map - 75% chance (Assuming you do not have one)
+    Mana Pouch - 25% chance (Assuming you do not have one)
+
+Entering Fight:
+    None
+
+Enemy Dies:
+    None
+
+Extra Info:
+    None
