@@ -1,0 +1,101 @@
+{
+
+    "name" : "dragon",
+    "description" : "The entity at the heart of all adventurer's fears.",
+    "health" : "500",
+    "maxhealth" : "1000",
+    "strength" : "50",
+    "levelRequirement" : "10",
+    "finalBoss" : "true",
+    "preMethods" : [
+        {
+            "method" : "addToOutput",
+            "class" : "org.textfighter.TextFighter",
+            "arguments" : ["Oh look, a puny little rat has come to fight me."],
+            "argumentTypes" : ["0"]
+        }
+    ],
+    "rewards" : [
+
+        {
+            "method" : "increaseExperience",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["10000"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gainCoins",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["10000"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "method" : "gainMagic",
+            "class" : "org.textfighter.Player",
+            "arguments" : ["5000"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "org.textfight.TextFighter",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["manapouch","specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
+        }
+
+    ],
+    "actions" : [
+
+        {
+            "methods" : [
+                {
+                    "method" : "heal",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "arguments" : ["15"],
+                    "argumentTypes" : ["1"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
+        },
+        {
+            "methods" : [
+
+                {
+                    "method" : "increaseTurnsWithInvincibilityLeft",
+                    "class" : "org.textfighter.enemy.Enemy",
+                    "arguments" : ["2"],
+                    "argumentTypes" : ["1"],
+                    "field" : "currentEnemy",
+                    "fieldclass" : "org.textfighter.TextFighter",
+                    "requirements" : [
+                        {
+                            "method" : "variableComparison",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getTurnsWithInvincibilityLeft",
+                                    "class" : "org.textfight.Enemy",
+                                    "field" : "currentEnemy",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                }
+                                "<",
+                                "1"
+                            ]
+                        }
+                    ]
+                }
+
+            ]
+        }
+    ]
+}

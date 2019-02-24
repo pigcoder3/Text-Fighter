@@ -55,7 +55,7 @@ public class TextFighter {
     // Pack testing variables
     /** True if testing packs.*/
     public static boolean testMode = false;
-    /**True if loading resources from a pack.*/
+    /**True if loading assets from a pack.*/
     public static boolean parsingPack = false;
 
     //Version
@@ -87,8 +87,8 @@ public class TextFighter {
      * If there is no pack, this will remain null.
      */
     public static File packUsed;
-    /**Stores the directory where all of the default resources are located*/
-    public static File resourcesDir;
+    /**Stores the directory where all of the default assets are located*/
+    public static File assetsDir;
     /**Stores the file where the default tags are located*/
     public static File tagFile;
     /**Stores the directory where the default pack default values are located*/
@@ -120,7 +120,7 @@ public class TextFighter {
     /**Stores the directory where all packs are to be put*/
     public static File packDir;
 
-    /**The parser for all resources and saves*/
+    /**The parser for all assets and saves*/
     public static JSONParser parser = new JSONParser();
 
     //All things in the game
@@ -240,27 +240,27 @@ public class TextFighter {
     public static String getVersion() { return version; }
 
     /**
-     * Defines all resource directories then loads all the resources needed for the game.
+     * Defines all resource directories then loads all the assets needed for the game.
      * @return      True if successful. False is unsuccessful.
      */
-    public static boolean loadResources() {
-        Display.displayProgressMessage("Loading the resources...");
+    public static boolean loadassets() {
+        Display.displayProgressMessage("Loading the assets...");
         //Loads all the directories
-        resourcesDir = new File("../res");
-        tagFile = new File(resourcesDir.getPath() + "/tags/tags.json");
-        defaultValuesDirectory = new File(resourcesDir.getPath() + "/defaultvalues");
-        interfaceDir = new File(resourcesDir.getPath() + "/userInterfaces/");
-        locationDir = new File(resourcesDir.getPath() + "/locations");
+        assetsDir = new File("../assets");
+        tagFile = new File(assetsDir.getPath() + "/tags/tags.json");
+        defaultValuesDirectory = new File(assetsDir.getPath() + "/defaultvalues");
+        interfaceDir = new File(assetsDir.getPath() + "/userInterfaces/");
+        locationDir = new File(assetsDir.getPath() + "/locations");
         savesDir = new File("../../../saves");
-        enemyDir = new File(resourcesDir.getPath() + "/enemies");
-        achievementDir = new File(resourcesDir.getPath() + "/achievements");
-        itemDir = new File(resourcesDir.getPath() + "/items");
+        enemyDir = new File(assetsDir.getPath() + "/enemies");
+        achievementDir = new File(assetsDir.getPath() + "/achievements");
+        itemDir = new File(assetsDir.getPath() + "/items");
         configDir = new File("../../../config");
         packFile = new File(configDir.getPath() + "/pack");
         packDir = new File("../../../packs");
-        customVariablesDir = new File(resourcesDir.getPath() + "/customVariables");
-        deathmethodsFile = new File(resourcesDir.getPath() + "/deathmethods/deathmethods.json");
-        levelupmethodsFile = new File(resourcesDir.getPath() + "/levelupmethods/levelupmethods.json");
+        customVariablesDir = new File(assetsDir.getPath() + "/customVariables");
+        deathmethodsFile = new File(assetsDir.getPath() + "/deathmethods/deathmethods.json");
+        levelupmethodsFile = new File(assetsDir.getPath() + "/levelupmethods/levelupmethods.json");
         version = readVersionFromFile();
         //Load some things
         loadConfig();
@@ -1816,7 +1816,7 @@ public class TextFighter {
         if(enemies.size() < 2) { return; } //There is no need to sort if there are no enemies or just one
         //Iterate through the enemies and find out which has the lowest difficulty in the array
         //Then add that enemy to the sorted array and remove it from the remaining array
-        //The loop continues iterating only on the unsorted (remaining array) enemies to save resources
+        //The loop continues iterating only on the unsorted (remaining array) enemies to save assets
         ArrayList<Enemy> sorted = new ArrayList<Enemy>();
         ArrayList<Enemy> remaining = new ArrayList<Enemy>(enemies);
         while(remaining.size() != 0) {
@@ -2036,21 +2036,21 @@ public class TextFighter {
     }
 
     /**
-     * Detemine if the game is in test mode, load resources, and main game loop
+     * Detemine if the game is in test mode, load assets, and main game loop
      * @param args  Command line input.
      */
     public static void main(String[] args) {
         //Determine if the game is run in pack test mode
-        //When in pack test mode, the game just loads the resources and tells the user if there is anything wrong
+        //When in pack test mode, the game just loads the assets and tells the user if there is anything wrong
         for(String a : args) {
             if(a.equals("test")) {
                 testMode = true;
             }
         }
         if(!testMode) { Display.clearScreen(); }
-        //Load all the resources and make sure they are loaded correctley
-        if (!loadResources()) {
-            Display.displayError("An error occured while trying to load the resources!\nMake sure they are in the correct directory.");
+        //Load all the assets and make sure they are loaded correctley
+        if (!loadassets()) {
+            Display.displayError("An error occured while trying to load the assets!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
         player = new Player(playerCustomVariables, deathMethods, levelupMethods);

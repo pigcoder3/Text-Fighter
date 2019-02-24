@@ -12,8 +12,8 @@ JSON-SIMPLE = lib/json-simple-1.1.1.jar
 #Directories for source and output
 SRCDIR = src
 OUTPUTSRCDIR = bin/main/java
-RESDIR = $(SRCDIR)/res
-RESOUTPUTDIR = bin/main/
+ASSETDIR = $(SRCDIR)/assets
+ASSETOUTPUTDIR = bin/main/
 
 #The main class
 MAIN = org.textfighter.TextFighter
@@ -34,7 +34,7 @@ COMPILE = $(JC) $(JCFLAGS) -d $(OUTPUTSRCDIR) -cp $(JSON-SIMPLE) $(OBJECTS)
 RUN = cd bin/main/java; $(J) -cp .:../../../$(JSON-SIMPLE) org.textfighter.TextFighter
 
 #Compile the game
-compile: setup $(OBJECTS) cpres
+compile: setup $(OBJECTS) cpassets
 	$(JC) $(JFLAGS) -d $(OUTPUTSRCDIR) -cp $(JSON-SIMPLE) $(OBJECTS)
 	$(RUN)
 
@@ -43,8 +43,8 @@ run:
 	$(RUN)
 
 #Copy the resources over to the output directory
-cpres: $(RESDIR)
-	$(CP) $(RESDIR) $(RESOUTPUTDIR) 
+cpassets: $(ASSETDIR)
+	$(CP) $(ASSETDIR) $(ASSETOUTPUTDIR) 
 
 #Test new packs
 test: $(OBJECTS)
