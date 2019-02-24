@@ -1,0 +1,26 @@
+Basic Info:
+    Name: man
+    Description: A weak man who wishes to take your coins.
+    Strength: 3
+    Health: 50
+    Maximum Health: 50
+    Level Required To Be Fought: 1
+
+Requirements:
+    None
+
+Special Actions:
+    None
+
+Rewards:
+    10 experience - 100% chance
+    10 coins - 100% chance
+
+Entering Fight:
+    None
+
+Enemy Dies:
+    None
+
+Extra Info:
+    None

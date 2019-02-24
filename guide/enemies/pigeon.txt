@@ -1,0 +1,26 @@
+Basic Info:
+    Name: miner
+    Description: This white and gray bird is a surprisingly powerful foe considering its size.
+    Strength: 10
+    Health: 20
+    Maximum Health: 20
+    Level Required To Be Fought: 2
+
+Requirements:
+    You must have a log ranged weapon equipped to fight the pigeon.
+
+Special Actions:
+    Super Thrust Attack - Deals 20 damage instead of 10.
+
+Rewards:
+    20 experience - 100% chance
+    10 coins - 100% chance
+
+Entering Fight:
+    None
+
+Enemy Dies:
+    None
+
+Extra Info:
+    None

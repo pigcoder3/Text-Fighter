@@ -1,0 +1,4 @@
+When the player dies:
+    Coin amount is cut in half
+    Metal scrap amount is cut in half
+    Magic point amount is cut in half

@@ -1,0 +1,69 @@
+Name: value
+
+Description: A description of the location.
+
+Interface:
+    ----------------------
+           YOUR STATS
+    ----------------------
+      hp:    <health>
+      maxhp: <maxhealth>
+      deaths: <deaths>
+
+      Health potions: <healthPotions>
+      Strength potions: <strengthPotions>
+      Invincibility potions: <invincibilityPotions>
+
+      Strength turns left: <turnsWithStrengthLeft>
+      Invincibility turns left: <turnsWithInvincibilityLeft>
+
+      weapon: <weapon>
+      durability: <durability>
+      unbreakable: <currentWeaponUnbreakable>
+      strength: <str>
+
+      level: <level>
+      exp:   <experience> / <experienceNeeded>
+
+      coins: <coins>
+      magic: <magic>
+      metal scraps: <metal>
+
+    ----------------------
+             SHOP
+
+Choices:
+
+    Name: healthpotion
+    Description: Cost: 20 coins, heals you for 30 health
+    Function: Buys a health potion and takes 20 coins.
+    Usage: healthpotion
+    Requirements: You must have at least 20 coins
+
+    Name: strengthpotion
+    Description: Cost: 50 coins, doubles your strength for 2 turns.
+    Function: Buys a strength potion and takes 50 coins.
+    Usage: strengthpotion
+    Requirements: You must have at least 50 coins
+
+    Name: invincibilitypotion
+    Description: Cost: 200 coins, makes you invincible for 2 turns.
+    Function: Buys a invincibility potion and takes 200 coins.
+    Usage: invincibilitypotion
+    Requirements: You must have at least 200 coins
+
+    Name: back
+    Description: Moves you back to the menu
+    Function: Moves you back to the menu
+    Usage: back
+    Requirements: None
+
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

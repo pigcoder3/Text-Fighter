@@ -1,0 +1,57 @@
+Name: forge
+
+Description: A place where you can buy armor.
+
+Interface:
+    ----------------------
+             FORGE
+       Craft armor here
+
+     Metal scraps: <metal>
+
+     Helmet:     50 metal
+     chestplate: 150 metal
+     leggings:   125 metal
+     boots:      40 metal
+     gloves:     20 metal
+
+Choices:
+
+    Name: helmet
+    Description: Cost: 50 metal scraps, crafts a helmet.
+    Function: Gives you a new helmet.
+    Usage: helmet
+    Requirements: You must have at least 50 metal scraps and you must not already have one.
+
+    Name: chestplate
+    Description: Cost: 150 metal scraps, crafts a chestplate.
+    Function: Gives you a new chestplate.
+    Usage: chestplate
+    Requirements: You must have at least 150 metal scraps and you must not already have one.
+
+    Name: leggings
+    Description: Cost: 125 metal scraps, crafts leggings.
+    Function: Gives you new leggings.
+    Usage: leggings
+    Requirements: You must have at least 125 metal scraps and you must not already have a pair.
+
+    Name: boots
+    Description: Cost: 40 metal scraps, crafts a pair of boots.
+    Function: Gives you a new pair of boots.
+    Usage: boots
+    Requirements: You must have at least 40 metal scraps and you must not already have a pair.
+
+    Name: gloves
+    Description: Cost: 20 metal scraps, crafts a pair of gloves.
+    Function: Gives you a new pair of gloves.
+    Usage: gloves
+    Requirements: You must have at least 20 metal scraps and you must not already have a pair.
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

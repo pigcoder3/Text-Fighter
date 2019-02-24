@@ -1,0 +1,35 @@
+Values in all player instances in mods (Whether or not they are used is up to the mod maker):
+    alive
+    deaths
+    inFight
+    totalProtection
+    currentWeapon
+    level
+    experience
+    experienceNeeded
+    score
+    hp
+    maxhp
+    strength
+    healthPotions
+    strengthPotions
+    invincibilityPotions
+    turnsWithStrengthLeft
+    turnsWithInvincibilityLeft
+    coins
+    magic
+    metalScraps
+    location
+    gameBeaten
+    inventory
+    achievements
+    customVariables
+    allDeathMethods
+    possibleDeathMethods
+    allLevelupMethods
+    possibleLevelupMethods
+
+Custom values in this mod:
+    coinsInBank
+    magicInBank
+    metalScrapsInBank

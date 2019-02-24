@@ -1,0 +1,18 @@
+Basic Info:
+    Name: sword
+    Description: A standard weapon for many adventurers.
+    Damage: 10
+    Critical Hit Chance: 25
+    Miss Chance: 25
+    Durability: 100
+    Maximum Durability: 100
+    Unbreakable: False
+    Can Be Repaired At Station: True
+    Metal Scraps To Repair At Station: 30
+    Long Range: false
+
+Obtaining:
+    Bought at the weapon smith for 100 coins
+
+More Info:
+    None

@@ -1,0 +1,12 @@
+Basic Info:
+    Name: pickaxe
+    Description: A tool that allows you to mine metal scraps.
+    Durability: 30
+    Maximum Durability: 30
+    Unbreakable: false
+
+Obtaining:
+    Dropped from the miner at a 50% chance
+
+More Info:
+    Allows you to mine metal scraps at the mine location.

@@ -1,0 +1,17 @@
+Basic Info:
+    Name: infinitybow
+    Description: A bow of infinite arrows.
+    Damage: 25
+    Critical Hit Chance: 20
+    Miss Chance: 30
+    Durability: 200
+    Maximum Durability: 200
+    Unbreakable: False
+    Can Be Repaired At Station: False
+    Long Range: true
+
+Obtaining:
+    Dropped by the archer at a 50% chance
+
+More Info:
+    None

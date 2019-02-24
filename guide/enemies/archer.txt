@@ -1,0 +1,18 @@
+Basic Info:
+    Name: archer
+    Description: A powerful enemy who wields a bow
+    Strength: 15
+    Health: 55
+    Maximum Health: 55
+    Level Required To Be Fought: 3
+
+Requirements:
+    None
+
+Special Actions:
+    Can move away from the player for 1 turn if the equipped weapon is not long ranged, making it invincible for a turn.
+
+Rewards:
+    20 experience - 100% chance
+    15 coins - 100% chance
+    infinitybow - 50% chance

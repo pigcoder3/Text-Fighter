@@ -1,0 +1,90 @@
+Name: fight
+
+Description: The fighting location.
+
+Interface:
+    ----------------------
+           YOUR STATS
+    ----------------------
+      hp:    <health>
+      maxhp: <maxhealth>
+      deaths: <deaths>
+
+      Health potions: <healthPotions>
+      Strength potions: <strengthPotions>
+      Invincibility potions: <invincibilityPotions>
+
+      Strength turns left: <turnsWithStrengthLeft>
+      Invincibility turns left: <turnsWithInvincibilityLeft>
+
+      weapon: <weapon>
+      durability: <durability>
+      unbreakable: <currentWeaponUnbreakable>
+      strength: <str>
+
+      level: <level>
+      exp:   <experience> / <experienceNeeded>
+
+      coins: <coins>
+      magic: <magic>
+      metal scraps: <metal>
+
+    ----------------------
+          ENEMY STATS
+    ----------------------
+     hp: <enemyhp>
+     maxhp: <enemymaxhp>
+
+     strength: <enemystr>
+
+     Turns with Invincibility Left: <enemyTurnsWithInvincibilityLeft>
+
+     level requirement: <enemylevelreq>
+     difficulty: <enemydifficulty>
+
+Choices:
+
+    Name: attack
+    Description: Attacks the enemy.
+    Function: Uses your equipped weapon to attack the enemy.
+    Usage: attack
+    Requirements: None
+
+    Name: healthpotion
+    Description: Uses a health potion which heals you for 30
+    Function: Use a health potion.
+    Usage: healthpotion
+    Requirements: You must have at least 1 health potion.
+
+    Name: strengthpotion
+    Description: Uses a strength potion, which gives you double strength for 2 turns
+    Function: Uses a strength potion.
+    Usage: strengthpotion
+    Requirements: You must have at least 1 strength potion.
+
+    Name: invincibilitypotion
+    Description: Uses an invincibility potion, which makes you invincible for 2 turns
+    Function: Uses an invincibility potion.
+    Usage: invincibilitypotion
+    Requirements: You must have at least 1 invincibility potion.
+
+    Name: bribe
+    Description: Cost: 300 coins, bribe the enemy to let you go
+    Function: Make you leave back to the menu
+    Usage: bribe
+    Requirements: You must have at least 300 coins
+
+    Name: nothing
+    Description: do nothing. Literally nothing.
+    Function: Do nothing.
+    Usage: nothing
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

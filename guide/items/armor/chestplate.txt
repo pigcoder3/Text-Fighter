@@ -1,0 +1,7 @@
+Basic Info:
+    Name: chestplate
+    Description: A piece of armor that covers your torso
+    Protection Amount: 25%
+
+Obtaining:
+    Crafted at the forge for 150 metal scraps

@@ -1,0 +1,34 @@
+Name: mine
+
+Description: A place where you can mine metal scraps.
+
+Interface:
+    ----------------------
+           THE MINE
+       get metal scraps
+
+     Metal scraps: <metal>
+
+Choices:
+
+    Name: mine
+    Description: Mines 1 metal scrap.
+    Function: Give you 1 metal scrap and decreases your pickaxe's durability by 1.
+    Usage: Mine
+    Requirements: You must have a pickaxe.
+
+    Name: back
+    Description: Moves you back to the menu.
+    Function: Moves you back to the menu.
+    Usage: back
+    Requirements: None
+
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

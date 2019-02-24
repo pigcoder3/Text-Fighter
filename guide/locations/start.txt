@@ -1,0 +1,27 @@
+Name: start
+
+Description: The start menu
+
+Interface:
+    Version: <version>
+    mod used: <modName>
+    ----------------------
+         TEXT-FIGHTER
+       'start' to begin
+    ----------------------
+
+Choices:
+    Name: start
+    Description: Starts the game
+    Function: Moves you to the saves menu
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    The mod used will be shown next to "mod used:".
+    If the desired pack is not there double check the pack definition in the `config/pack` file
