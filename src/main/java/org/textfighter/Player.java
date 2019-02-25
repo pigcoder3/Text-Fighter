@@ -798,6 +798,12 @@ public class Player {
 		if(hp < 0) { hp = 0; }
 		if(hp > maxhp) { hp = maxhp; }
 
+        for(Item i : inventory) {
+            if(i instanceof Armor) {
+                ((Armor)i).use(1); //Decrease its durability by 1
+            }
+        }
+
         if(customString != null) { TextFighter.addToOutput(customString);}
         TextFighter.addToOutput("You have been hurt for " + a + " hp.");
     }
