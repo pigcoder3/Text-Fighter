@@ -116,7 +116,7 @@ public class EnemyActionMethod {
         catch (NullPointerException e) {
             Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
             Display.displayError("method: " + method);
-            e.printStackTrace();
+            Display.displayError(Display.exceptionToString(e));;
             resetArguments();
         }
         catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }

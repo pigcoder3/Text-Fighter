@@ -15,9 +15,8 @@ Special Actions:
 Rewards:
     20 experience - 100% chance
     30 coins - 100% chance
-    30 magic - 100% chance (Assuming you are carrying the mana pouch)
+    30 magic - 100% chance
     Witch Map - 75% chance (Assuming you do not have one)
-    Mana Pouch - 25% chance (Assuming you do not have one)
 
 Entering Fight:
     None

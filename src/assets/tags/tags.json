@@ -28,7 +28,7 @@
             "method" : "getVersion"
         },
         {
-            "tag" : "<modName>",
+            "tag" : "<modname>",
             "class" : "org.textfighter.TextFighter",
             "method" : "getModName"
         },
@@ -267,6 +267,33 @@
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter"
         },
+        {
+            "tag" : "<wood>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["wood"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<leaves>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["leaves"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<bottles>",
+            "class" : "org.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["bottles"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter"
+        }
 
 
 

@@ -29,6 +29,10 @@ Interface:
       magic: <magic>
       metal scraps: <metal>
 
+      Wood: <wood>
+      Leaves: <leaves>
+      bottles: <bottles>
+
 Choices:
 
     Name: fight
@@ -61,10 +65,22 @@ Choices:
     Usage: home
     Requirements: None
 
+    Name: forest
+    Description: Goes to the forest.
+    Function: Moves you to the forest location.
+    Usage: forest
+    Requirements: None
+
     Name: weaponsmith
     Description: Goes to the forge where you can craft armor
     Function: Moves you to the weapon smith location.
     Usage: weaponsmith
+    Requirements: None
+
+    Name: craft
+    Description: Goes to the crafting hut
+    Function: Moves you to the crafting hut.
+    Usage: craft
     Requirements: None
 
     Name: repairstation

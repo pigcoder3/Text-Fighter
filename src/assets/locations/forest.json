@@ -1,0 +1,192 @@
+{
+    "name" : "forest",
+
+    "interfaces" : [
+        "forest",
+        "choices"
+    ],
+
+    "choices" : [
+        {
+            "name" : "woodaxe",
+            "description" : "Gather 2 wood pieces with your axe. Uses 1 durability of your axe.",
+            "methods" : [
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "wood",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["wood"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "+",
+                                "2"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "decreaseDurability",
+                    "class" : "org.textfighter.item.Weapon",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : {
+                        "method" : "getFromInventory",
+                        "class" : "org.textfighter.Player",
+                        "arguments" : ["axe","tool"],
+                        "argumentTypes" : ["0","0"],
+                        "field" : "player",
+                        "fieldclass" : "org.textfighter.TextFighter"
+                    }
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You collected 2 wood."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "axewood",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["axe","tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
+        },
+        {
+            "name" : "woodbattleaxe",
+            "description" : "Gather 3 wood pieces with your battleaxe. Uses 1 durability of your battleaxe.",
+            "methods" : [
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "wood",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["wood"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "+",
+                                "3"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "decreaseDurability",
+                    "class" : "org.textfighter.item.Weapon",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : {
+                        "method" : "getFromInventory",
+                        "class" : "org.textfighter.Player",
+                        "arguments" : ["battleaxe","tool"],
+                        "argumentTypes" : ["0","0"],
+                        "field" : "player",
+                        "fieldclass" : "org.textfighter.TextFighter"
+                    }
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You collected 3 wood."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "battleaxewood",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["battleaxe","tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                }
+            ]
+        },
+        {
+            "name" : "leaf",
+            "description" : "Gather 5 leaves.",
+            "methods" : [
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "leaves",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["leaves"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "+",
+                                "5"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You collected 5 leaves."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "leaf"
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}

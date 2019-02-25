@@ -15,9 +15,8 @@ Special Actions:
 Rewards:
     50 experience - 100% chance
     30 coins - 100% chance
-    10 magic - 100% chance (Assuming you are carrying the mana pouch)
+    10 magic - 100% chance
     Battle wand - 10% chance (Assuming you do not have one)
-    Mana Pouch - 75% chance (Assuming you do not have one)
 
 Entering Fight:
     None

@@ -68,7 +68,7 @@
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["witchHut"],
+                    "arguments" : ["witchhut"],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -98,17 +98,43 @@
             "usage" : "home"
         },
         {
+            "name" : "forest",
+            "description" : "Goes to the forest",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["forest"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "weaponsmith"
+        },
+        {
             "name" : "weaponsmith",
             "description" : "Goes to the weapon smith",
             "methods" : [
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["weaponSmith"],
+                    "arguments" : ["weaponsmith"],
                     "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "weaponsmith"
+        },
+        {
+            "name" : "craft",
+            "description" : "Goes to the crafting hut",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["craftinghut"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "craft"
         },
         {
             "name" : "forge",

@@ -1,0 +1,16 @@
+Basic info:
+    Name: staff
+    Description: A smooth stick made for battle
+    Damage: 15
+    Critical Hit Chance: 15
+    Miss Chance: 20
+    Durability: 250
+    Maximum Durability: 250
+    Unbreakable: false
+    longRanged: false
+
+Obtaining:
+    Can be crafted at the crafting hut for 30 wood
+
+More Info:
+    None

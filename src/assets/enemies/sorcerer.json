@@ -29,28 +29,7 @@
                 }
             ],
             "chance" : "10",
-            "rewardItem" : "A battle wand"
-        },
-        {
-            "method" : "addToInventory",
-            "class" : "org.textfighter.Player",
-            "arguments" : ["manapouch","specialitem"],
-            "argumentTypes" : ["0","0"],
-            "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter",
-            "requirements" : [
-                {
-                    "method" : "isCarrying",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : ["manapouch","specialitem"],
-                    "argumentTypes" : ["0","0"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter",
-                    "neededBoolean" : "false"
-                }
-            ],
-            "chance" : "75",
-            "rewardItem" : "A mana pouch. It is used to hold magic points."
+            "rewarditem" : "A battle wand"
         },
         {
             "method" : "gainCoins",

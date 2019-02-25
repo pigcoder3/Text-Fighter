@@ -1,0 +1,10 @@
+{
+    "name" : "forest",
+
+    "interface" : [
+        "----------------------",
+        "        FOREST        ",
+        " Wood: <wood>         ",
+        " Leaves: <leaves>     "
+    ]
+}

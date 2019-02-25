@@ -28,6 +28,10 @@ Interface:
       coins: <coins>
       magic: <magic>
       metal scraps: <metal>
+
+      Wood: <wood>
+      Leaves: <leaves>
+      Bottles: <bottles>
     ----------------------
              HOME
 

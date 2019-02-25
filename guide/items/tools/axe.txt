@@ -1,0 +1,14 @@
+Basic info:
+    Name: axe
+    Description: A tool that allows you to cut down trees.
+    Durability: 50
+    Maximum Durability: 50
+    Unbreakable: false
+    canBeRepairedAtStation: true
+    metalScrapsToRepairAtStation: 40
+
+Obtaining:
+    Dropped by the lumberjack at a 40% chance
+
+More Info:
+    None

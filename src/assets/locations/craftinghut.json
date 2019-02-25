@@ -1,0 +1,290 @@
+{
+    "name" : "craftinghut",
+
+    "interfaces" : [
+        "playerstats",
+        "craftinghut",
+        "choices"
+    ],
+
+    "choices" : [
+        {
+            "name" : "staff",
+            "description" : "Cost: 30 metal scraps, crafts a staff.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["staff", "weapon"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "wood",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["wood"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "-",
+                                "30"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a staff."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "org.textfighter.Player",
+                            "arguments" : ["wood"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "30"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "leafdisguise",
+            "description" : "Cost: 200 leaves and 20 wood, crafts a leaf disguise.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["leafdisguise", "specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "wood",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["wood"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "-",
+                                "20"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "leaves",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["leaves"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "-",
+                                "200"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a leafdisguise."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "org.textfighter.Player",
+                            "arguments" : ["wood"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "20"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "org.textfighter.Player",
+                            "arguments" : ["leaves"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "200"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "healthpotion",
+            "description" : "Cost: 1 bottle and 5 magic, crafts a health potion.",
+            "methods" : [
+                {
+                    "method" : "increaseHealthPotions",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : [
+                        "bottles",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "org.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "org.textfighter.Player",
+                                    "arguments" : ["bottles"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "org.textfighter.TextFighter"
+                                },
+                                "-",
+                                "1"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMagic",
+                    "class" : "org.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "org.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "org.textfighter.TextFighter",
+                    "arguments" : ["You crafted a health potion."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "org.textfighter.Player",
+                            "arguments" : ["bottles"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "1"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMagic",
+                            "class" : "org.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "5"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}

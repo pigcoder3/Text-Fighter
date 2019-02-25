@@ -17,7 +17,7 @@ Special Actions:
 Rewards:
     10000 experience - 100% chance
     10000 coins - 100% chance
-    5000 magic - 100% chance (Assuming you have the mana pouch)
+    5000 magic - 100% chance
 
 Entering Fight:
     The dragon says: "Oh look, a puny little rat has come to fight me." (Adds it the output message)

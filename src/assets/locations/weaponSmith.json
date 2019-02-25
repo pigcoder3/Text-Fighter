@@ -1,11 +1,11 @@
 {
 
-    "name" : "weaponSmith",
+    "name" : "weaponsmith",
 
     "interfaces" : [
 
-        "playerStats",
-        "weaponSmith",
+        "playerstats",
+        "weaponsmith",
         "choices"
 
     ],

@@ -94,7 +94,7 @@ public class Reward {
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
                 //If the field is a regular field, then set the field value to the value it holds
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { e.printStackTrace(); resetArguments();}
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) { Display.displayError(Display.exceptionToString(e));; resetArguments();}
             }
             if(field != null && fieldvalue == null) { return ""; }
         }
@@ -147,7 +147,7 @@ public class Reward {
         catch (NullPointerException e) {
             Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
             Display.displayError("method: " + method);
-            e.printStackTrace();
+            Display.displayError(Display.exceptionToString(e));;
             resetArguments();
         }
         catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }

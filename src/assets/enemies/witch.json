@@ -11,33 +11,12 @@
         {
             "method" : "addToInventory",
             "class" : "org.textfighter.Player",
-            "arguments" : ["manapouch","specialitem"],
-            "argumentTypes" : ["0","0"],
-            "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter",
-            "chance" : "25",
-            "rewardItem" : "A mana pouch. It is used to hold magic points.",
-            "requirements" : [
-                {
-                    "method" : "isCarrying",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : ["manapouch","specialitem"],
-                    "argumentTypes" : ["0","0"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter",
-                    "neededBoolean" : "false"
-                }
-            ]
-        },
-        {
-            "method" : "addToInventory",
-            "class" : "org.textfighter.Player",
             "arguments" : ["witchmap","specialitem"],
             "argumentTypes" : ["0","0"],
             "field" : "player",
             "fieldclass" : "org.textfighter.TextFighter",
             "chance" : "75",
-            "rewardItem" : "A map to a witch's hut",
+            "rewarditem" : "A map to a witch's hut",
             "requirements" : [
                 {
                     "method" : "isCarrying",
@@ -51,12 +30,43 @@
             ]
         },
         {
+            "method" : "setCustomVariableByName",
+            "class" : "org.textfighter.Player",
+            "arguments" : [
+                "bottle",
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "org.textfighter.Player",
+                            "arguments" : ["wood"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "org.textfighter.TextFighter"
+                        },
+                        "+",
+                        "1"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["0","*1"],
+            "field" : "player",
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "75",
+            "rewarditem" : "A glass bottle."
+        },
+        {
             "method" : "increaseExperience",
             "class" : "org.textfighter.Player",
             "arguments" : ["20"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter"
+            "fieldclass" : "org.textfighter.TextFighter",
+            "chance" : "100",
+            "rewarditem" : "20 experience"
         },
         {
             "method" : "gainCoins",
@@ -76,7 +86,7 @@
             "arguments" : ["30"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "10 exp"
+            "rewarditem" : "30 magic"
         }
     ],
     "actions" : [
