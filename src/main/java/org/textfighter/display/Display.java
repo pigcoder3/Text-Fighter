@@ -198,6 +198,7 @@ public class Display {
 
     /*** Displays the previous command.*/
     public static void displayPreviousCommand() {
+        if(previousCommandString == null) { return; }
         //Displays the command the user previously inputted
         if(ANSI) {
             System.out.println(previousCommand + "Previous choice: '" + previousCommandString + "'" + RESET + "\n");

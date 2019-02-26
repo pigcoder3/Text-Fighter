@@ -82,6 +82,9 @@ public class TextFighter {
     /***Stores the name of the mod being used.*/
     public static String modName;
 
+    /***Stores whether or not the player has acted since the fight has started*/
+    public static boolean actedSinceStartOfFight = false;
+
     /**
      * Stores the directory of the used pack.
      * If there is no pack, this will remain null.
@@ -2032,11 +2035,36 @@ public class TextFighter {
      * Orchestrates player turns.
      */
     public static void playGame() {
-        //Display the interface for the user
+        Display.writeToLogFile("[<----------------------------------START OF TURN---------------------------------->]");
+        Display.clearScreen();
+        Display.displayOutputMessage("<----------START OF TURN---------->");
+        Display.displayPreviousCommand();
+        //Determine if any achievements should be recieved
+        for(Achievement a : achievements) {
+            if(!player.getAchievements().contains(a)) {
+                boolean earned = true;
+                //Make sure the requirements have been met
+                for(Requirement r : a.getRequirements()) {
+                    if(!r.invokeMethod() == r.getNeededBoolean()) {
+                        earned = false;
+                        break;
+                    }
+                } //Give the player the achievement if all requirements are met
+                if(earned) {
+                    player.achievementEarned(a);
+                }
+            }
+        }
+        //Print the output of the previous player choice
+        if(output != null) {
+            Display.displayOutputMessage(output);
+        }
+        output="";
+        //Display the interface and get input
         Display.displayInterfaces(player.getLocation());
         boolean validInput = invokePlayerInput();
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
-        if(validInput && player.getInFight()) {
+        if(actedSinceStartOfFight && validInput && player.getInFight()) {
             player.decreaseTurnsWithStrengthLeft(1);
             player.decreaseTurnsWithInvincibilityLeft(1);
             if(currentEnemy != null) {
@@ -2058,33 +2086,9 @@ public class TextFighter {
             player.died();
             currentEnemy = null;
         }
+        if(player.getInFight() && validInput) { actedSinceStartOfFight = true; }
         Display.displayOutputMessage("<----------END OF TURN---------->");
         Display.writeToLogFile("[<-----------------------------------END OF TURN----------------------------------->]");
-        Display.writeToLogFile("[<----------------------------------START OF TURN---------------------------------->]");
-        Display.clearScreen();
-        Display.displayOutputMessage("<----------START OF TURN---------->");
-        Display.displayPreviousCommand();
-        //Determine if any achievements should be recieved
-        for(Achievement a : achievements) {
-            if(!player.getAchievements().contains(a)) {
-                boolean earned = true;
-                //Make sure the requirements have been met
-                for(Requirement r : a.getRequirements()) {
-                    if(!r.invokeMethod() == r.getNeededBoolean()) {
-                        earned = false;
-                        break;
-                    }
-                } //Give the player the achievement if all requirements are mey
-                if(earned) {
-                    player.achievementEarned(a);
-                }
-            }
-        }
-        //Print the output of the previous player choice
-        if(output != null) {
-            Display.displayOutputMessage(output);
-        }
-        output="";
     }
 
     /**

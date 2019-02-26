@@ -2,6 +2,9 @@
 
     "name" : "leggings",
     "description" : "A piece of armor that covers your legs",
-    "protectionamount" : "20"
+    "protectionamount" : "20",
+    "durability" : "150",
+    "maxDurability" : "150",
+    "unbreakable" : "false"
 
 }

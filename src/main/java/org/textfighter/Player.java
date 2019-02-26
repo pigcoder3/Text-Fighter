@@ -472,7 +472,7 @@ public class Player {
      * Sets {@link #inFight} to the value given.
      * @param b     The new value.
      */
-    public void setInFight(boolean b) { inFight=b; }
+    public void setInFight(boolean b) { inFight=b; if(!b){ TextFighter.actedSinceStartOfFight = false; } }
 
     //totalProtection methods
     /**
