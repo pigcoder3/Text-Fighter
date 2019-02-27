@@ -10,7 +10,7 @@
     "choices" : [
         {
             "name" : "staff",
-            "description" : "Cost: 30 metal scraps, crafts a staff.",
+            "description" : "Cost: 30 wood, crafts a staff.",
             "methods" : [
                 {
                     "method" : "addToInventory",

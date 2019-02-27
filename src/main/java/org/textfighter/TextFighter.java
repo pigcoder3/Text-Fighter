@@ -349,7 +349,7 @@ public class TextFighter {
         try {
             clazz = Class.forName(rawClass);
             if(rawField instanceof FieldMethod) {
-                if(!((FieldMethod)rawField).getMethod().getReturnType().equals(clazz) && !((FieldMethod)rawField).getMethod().getReturnType().isAssignableFrom(clazz) || clazz.isAssignableFrom(((FieldMethod)rawField).getMethod().getReturnType())) {
+                if(!((FieldMethod)rawField).getMethod().getReturnType().equals(clazz) && !((FieldMethod)rawField).getMethod().getReturnType().isAssignableFrom(clazz) && clazz.isAssignableFrom(((FieldMethod)rawField).getMethod().getReturnType())) {
                     Display.displayPackError("This field method given does not have a return type of the class in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null;
                 }
             }
@@ -359,8 +359,8 @@ public class TextFighter {
         Object field = null;
 
         //If the field is not a method, and no fieldclass is given, then omit the method
-        if(rawField != null && rawField instanceof String && rawFieldClass == null) { 
-            Display.displayPackError("This method has a non-method field, but no fieldclass. Omitting..."); Display.changePackTabbing(false); return null; 
+        if(rawField != null && rawField instanceof String && rawFieldClass == null) {
+            Display.displayPackError("This method has a non-method field, but no fieldclass. Omitting..."); Display.changePackTabbing(false); return null;
         }
 
         if(rawField != null && rawField instanceof String) {
@@ -1355,7 +1355,7 @@ public class TextFighter {
                     if(valuesFile.get("protectionAmount") != null) {            Armor.defaultName = (String)valuesFile.get("protectionAmount"); }
                     if(valuesFile.get("durability") != null) {                  Weapon.defaultDurability = Integer.parseInt((String)valuesFile.get("durability")); }
                     if(valuesFile.get("unbreakable") != null) {                 Weapon.defaultUnbreakable = Boolean.parseBoolean((String)valuesFile.get("unbreakable")); }
-                    if(valuesFile.get("maxDurability") != null) {               Weapon.defaultMaxDurability = Integer.parseInt((String)valuesFile.get("maxDurability")); } 
+                    if(valuesFile.get("maxDurability") != null) {               Weapon.defaultMaxDurability = Integer.parseInt((String)valuesFile.get("maxDurability")); }
                     Display.changePackTabbing(false);
                 } catch (IOException | ParseException e) { Display.changePackTabbing(false); continue; }
             }
