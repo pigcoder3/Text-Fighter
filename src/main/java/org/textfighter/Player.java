@@ -1045,7 +1045,8 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+        this.location = location;
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -1068,7 +1069,8 @@ public class Player {
         calculateStrength();
     }
 
-    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(Location location, Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+        this.location = location;
         this.currentWeapon = currentWeapon;
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
@@ -1076,7 +1078,8 @@ public class Player {
         calculateStrength();
     }
 
-    public Player(ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(Location location, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+        this.location = location;
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
         this.allLevelupMethods = levelupmethods;
