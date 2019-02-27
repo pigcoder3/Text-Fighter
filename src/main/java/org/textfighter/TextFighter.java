@@ -298,12 +298,12 @@ public class TextFighter {
         Display.changePackTabbing(true);
         String rawClass = (String)obj.get("class");
         Object rawField = obj.get("field");
+        String rawFieldClass = (String)obj.get("fieldclass");
         if(rawField != null) {
             if(rawField.getClass().equals(JSONObject.class)) {
                 rawField = loadMethod(FieldMethod.class, (JSONObject)rawField, type);
             }
         }
-        String rawFieldClass = (String)obj.get("fieldclass");
         if(methodString == null || rawClass == null) { Display.displayPackError("This method has no class or method. Omitting..."); Display.changePackTabbing(false); return null; }
         if(!((argumentsRaw != null && argumentTypesString != null) && (argumentsRaw.size() == argumentTypesString.size()) || (argumentTypesString == null && argumentsRaw == null))) { Display.displayPackError("This method does not have the same amount of arguments as argumentTypes. Omitting..."); Display.changePackTabbing(false); return null; }
         //Fields and fieldclasses can be null (Which just means the method does not act upon a field
@@ -346,19 +346,31 @@ public class TextFighter {
 
         //Gets the class
         Class clazz = null;
-        try { clazz = Class.forName(rawClass); } catch (NoClassDefFoundError | ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); Display.changePackTabbing(false); return null; }
+        try {
+            clazz = Class.forName(rawClass);
+            if(rawField instanceof FieldMethod) {
+                if(!((FieldMethod)rawField).getMethod().getReturnType().equals(clazz) && !((FieldMethod)rawField).getMethod().getReturnType().isAssignableFrom(clazz) || clazz.isAssignableFrom(((FieldMethod)rawField).getMethod().getReturnType())) {
+                    Display.displayPackError("This field method given does not have a return type of the class in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null;
+                }
+            }
+        } catch (NoClassDefFoundError | ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); Display.changePackTabbing(false); return null; }
 
         Class fieldclass = null;
         Object field = null;
 
-        if(rawField != null && !rawField.getClass().equals(FieldMethod.class)) {
+        //If the field is not a method, and no fieldclass is given, then omit the method
+        if(rawField != null && rawField instanceof String && rawFieldClass == null) { 
+            Display.displayPackError("This method has a non-method field, but no fieldclass. Omitting..."); Display.changePackTabbing(false); return null; 
+        }
+
+        if(rawField != null && rawField instanceof String) {
             //Gets the fieldclass
             if(rawFieldClass != null && rawField != null) { try { fieldclass = Class.forName((String)rawFieldClass); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); Display.changePackTabbing(false); return null; } }
-
             //Gets the field from the class
             try {
                 if(rawField != null && rawFieldClass != null) {
                     field = fieldclass.getField((String)rawField);
+                    if(!((Field)field).getType().equals(clazz)) { Display.displayPackError("This method's field is not an instance of the class given in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null; }
                 }
             } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); Display.changePackTabbing(false); return null; }
         } else if (rawField != null){
@@ -700,6 +712,14 @@ public class TextFighter {
             directory = locationDir;
             parsingPack = false;
         }
+        boolean startGiven = false;
+        boolean menuGiven = false;
+        for(Location l : locations) {
+            if(l.getName().equals("start")) { startGiven = true; }
+            if(l.getName().equals("menu")) { menuGiven = true; }
+        }
+        if(!startGiven) { Display.displayError("No start location was given. Cannot run the game."); return false; }
+        if(!menuGiven) { Display.displayError("No menu location was given. Cannot run the game."); return false; }
         Display.displayProgressMessage("Locations loaded.");
         Display.changePackTabbing(false);
         return true;
@@ -1617,7 +1637,7 @@ public class TextFighter {
             }
 
             //Create a new player instance with the loaded values
-            player = new Player(hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
+            player = new Player(player.getLocation(), hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -1690,8 +1710,7 @@ public class TextFighter {
         }
 
         //Initializes the game with a default player
-        player = new Player(currentWeapon, playerCustomVariables, deathMethods, levelupMethods);
-        player.setLocation("saves");
+        player = new Player(player.getLocation(), currentWeapon, playerCustomVariables, deathMethods, levelupMethods);
 
         JSONArray customVariables = new JSONArray();
         //for all customvariables that are to be saved
@@ -2109,7 +2128,7 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the assets!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
-        player = new Player(playerCustomVariables, deathMethods, levelupMethods);
+        player = new Player(getLocationByName("start"), playerCustomVariables, deathMethods, levelupMethods);
         //If the game is in test mode, then the game should not run for the user (Only get modpack feedback)
         if(!testMode) {
             PackMethods.getSaveFiles();
