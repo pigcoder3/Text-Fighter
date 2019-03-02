@@ -110,7 +110,6 @@ public class Weapon extends Item {
         if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
-                System.out.println(cv.getName() + ": " + cv.getValue().toString());
                 return cv.getValue();
             }
         }

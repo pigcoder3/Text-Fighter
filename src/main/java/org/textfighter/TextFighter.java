@@ -34,12 +34,11 @@ make an enemy perform an action,
 And a lot more.
 
     ChoiceMethods have arguments that are inputted by the user.
-These areguments are specified by "%ph%", and are replaced
-jsutu before they are invoked. If an argument is a method,
+These areguments are specified by "%ph%[inputIndex]", and are replaced
+just before they are invoked. If an argument is a method,
 then placeholder arguments are replaced by input.
-    If there are not enough arguments, then it tells the
-user so by outputing the usage of the choice the user
-chose.
+    If something went wrong with putting input into the arguments,
+the user is notified and the usage of the choies is outputted.
 
 */
 
@@ -580,7 +579,7 @@ public class TextFighter {
                         if(interfaceFile == null) { continue; }
                         JSONArray interfaceArray = (JSONArray)interfaceFile.get("interface");
                         String name = (String)interfaceFile.get("name");
-                        if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
+                        if((usedNames.contains(name) || namesToBeOmitted.contains(name)) && !name.equals("choices")) { continue; }
                         Display.displayPackMessage("Loading interface '" + name + "'");
                         Display.changePackTabbing(true);
                         if(name == null) { Display.displayPackError("This does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
@@ -596,6 +595,14 @@ public class TextFighter {
                 directory = interfaceDir;
                 parsingPack = false;
             }
+            boolean choicesInterfaceExists = false;
+            for(UserInterface ui : Display.interfaces) {
+                if(ui.getName().equals("choices")) {
+                    choicesInterfaceExists = true;
+                    break;
+                }
+            }
+            if(!choicesInterfaceExists) { Display.displayError("There is no interface with the name 'choices'. The game cannot run without one, because the player needs to know what his/her choices are."); Display.changePackTabbing(false); return false;}
             Display.displayProgressMessage("Interfaces loaded.");
             Display.changePackTabbing(false);
             return true;
@@ -626,7 +633,7 @@ public class TextFighter {
         for(int num=0; num<2; num++) {
             if(!parsingPack) { num++; Display.displayPackMessage("Loading locations from the default pack."); }
             if(directory.list() != null) {
-                for (String f : directory.list()) {
+                for(String f : directory.list()) {
                     if(f.lastIndexOf('.') != -1) {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
@@ -638,7 +645,7 @@ public class TextFighter {
                     if(locationFile == null) { continue; }
                     JSONArray interfaceJArray = (JSONArray)locationFile.get("interfaces");
                     String name = (String)locationFile.get("name");
-                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { Display.changePackTabbing(false); continue; }
+                    if(usedNames.contains(name) || namesToBeOmitted.contains(name)) { continue; }
                     Display.displayPackMessage("Loading Location '" + name + "'");
                     Display.changePackTabbing(true);
                     if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
@@ -667,15 +674,18 @@ public class TextFighter {
                             }
                         }
                     }
-                    //If there is no choice interface, then the location should be omitted.
-                    //Otherwise, the player would not know what choices they have
+                    //Automatically add the choices interface if it is not there
                     if(!hasChoiceInterface) {
-                        Display.displayPackError("This does not have a choices interface. Omitting...");
-                        Display.changePackTabbing(false);
-                        continue;
+                        for(UserInterface ui : Display.interfaces) {
+                            if(ui.getName().equals("choices")) {
+                                interfaces.add(ui);
+                                break;
+                            }
+                        }
                     }
                     JSONArray choiceArray = (JSONArray)locationFile.get("choices");
                     ArrayList<Choice> choices = new ArrayList<Choice>();
+                    ArrayList<String> usedChoiceNames = new ArrayList<String>();
                     //Loads the choices from the file
                     if(choiceArray != null && choiceArray.size() > 0) {
                         for (int i=0; i<choiceArray.size(); i++) {
@@ -689,20 +699,29 @@ public class TextFighter {
                             if(choicename == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
                             Choice c = new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class), (String)obj.get("failMessage"));
                             if(c.getMethods() != null && c.getMethods().size() > 0) { choices.add(c) ; }
+                            usedChoiceNames.add(choicename);
                             Display.changePackTabbing(false);
                         }
                     }
 
                     //Add any choices in the choicesOfAllLocations arraylist
-                    for(ChoiceOfAllLocations c : choicesOfAllLocations) {
-                        if(!usedNames.contains(c.getChoice().getName()) && !c.getExcludedLocations().contains(name)) {
-                            usedNames.add(c.getChoice().getName());
-                            choices.add(c.getChoice());
+                    for(ChoiceOfAllLocations coal : choicesOfAllLocations) {
+                        if(coal.getExcludedLocations().contains(name)) { continue; }
+                        boolean choicesNameUsed = false;
+                        for(Choice c : choices) {
+                            if(c.getName().equals("choices")) {
+                                choicesNameUsed = true;
+                                break;
+                            }
+                        }
+                        if(!choicesNameUsed) {
+                            usedChoiceNames.add(coal.getChoice().getName());
+                            choices.add(coal.getChoice());
                         }
                     }
 
                     //Adds the quit choice if it does not exist yet
-                    if(!usedNames.contains("quit")) {
+                    if(!usedChoiceNames.contains("quit")) {
                         Display.displayPackMessage("Adding the quit choice");
                         Display.changePackTabbing(true);
 
@@ -727,12 +746,15 @@ public class TextFighter {
         }
         boolean startGiven = false;
         boolean menuGiven = false;
+        boolean fightGiven = false;
         for(Location l : locations) {
             if(l.getName().equals("start")) { startGiven = true; }
             if(l.getName().equals("menu")) { menuGiven = true; }
+            if(l.getName().equals("fight")) { fightGiven = true; }
         }
         if(!startGiven) { Display.displayError("No start location was given. Cannot run the game."); return false; }
         if(!menuGiven) { Display.displayError("No menu location was given. Cannot run the game."); return false; }
+        if(!fightGiven) { Display.displayError("No fight location was given. Cannot run the game."); return false; }
         Display.displayProgressMessage("Locations loaded.");
         Display.changePackTabbing(false);
         return true;
@@ -1133,6 +1155,7 @@ public class TextFighter {
             }
             directory=enemyDir;
             parsingPack=false;
+            Display.changePackTabbing(false);
         }
         Display.changePackTabbing(false);
         Display.displayProgressMessage("Items loaded.");
@@ -1411,6 +1434,7 @@ public class TextFighter {
             }
             parsingPack = false;
             directory = defaultValuesDirectory;
+            Display.changePackTabbing(false);
         }
         Display.changePackTabbing(false);
         Display.displayPackMessage("Default player/enemy/item values loaded.");
@@ -2160,7 +2184,7 @@ public class TextFighter {
         Display.displayInterfaces(player.getLocation());
         boolean validInput = invokePlayerInput();
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
-        if(actedSinceStartOfFight && validInput && player.getInFight()) {
+        if(actedSinceStartOfFight && validInput && player.getInFight() && player.getLocation().getName().equals("fight")) {
             player.decreaseTurnsWithStrengthLeft(1);
             player.decreaseTurnsWithInvincibilityLeft(1);
             if(currentEnemy != null) {

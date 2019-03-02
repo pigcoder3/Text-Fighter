@@ -29,10 +29,9 @@ Choices:
 
     Name: back
     Description: Takes you out of your inventory view.
-    Function: Takes you out of your inventory view.
+    Function: Takes you out of your inventory view. (Puts you in your last location)
     Usage: back
     Requirements: None
-
 
 Entering:
     None
@@ -41,4 +40,4 @@ Leaving:
     None
 
 Extra Info:
-    None
+    Can be accessed from all locations except start and saves

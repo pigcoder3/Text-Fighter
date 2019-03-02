@@ -85,19 +85,6 @@
             "usage" : "witchhut"
         },
         {
-            "name" : "home",
-            "description" : "Goes to your home",
-            "methods" : [
-                {
-                    "method" : "movePlayer",
-                    "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["home"],
-                    "argumentTypes" : ["0"]
-                }
-            ],
-            "usage" : "home"
-        },
-        {
             "name" : "forest",
             "description" : "Goes to the forest",
             "methods" : [

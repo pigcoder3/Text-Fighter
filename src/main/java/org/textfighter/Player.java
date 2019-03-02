@@ -941,7 +941,6 @@ public class Player {
         for(Location l : TextFighter.locations) {
             if(l.getName().equals(loc)) {
                 lastLocation = l;
-
             }
         }
     }

@@ -1,3 +1,22 @@
 {
-    
+    "choices" : [
+        {
+            "name" : "inventory",
+            "description" : "View your inventory.",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["inventory"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inventory",
+            "excludes" : [
+                "saves",
+                "start",
+                "inventory"
+            ]
+        },
+    ]
 }
