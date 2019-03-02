@@ -114,6 +114,8 @@ public class TextFighter {
     public static File deathmethodsFile;
     /**Stores the directory where the level up methods are located*/
     public static File levelupmethodsFile;
+    /**Stores the directory where the choices of all locations are located*/
+    public static File choicesOfAllLocationsFile;
 
     /**Stores the directory where all config files are located*/
     public static File configDir;
@@ -164,6 +166,8 @@ public class TextFighter {
     public static ArrayList<IDMethod> deathMethods = new ArrayList<IDMethod>();
     /**All the level up methods are copied from here to the new instance of player*/
     public static ArrayList<IDMethod> levelupMethods = new ArrayList<IDMethod>();
+    /**All the choices of all locations are copied from here to the loaded location*/
+    public static ArrayList<ChoiceOfAllLocations> choicesOfAllLocations = new ArrayList<ChoiceOfAllLocations>();
 
     /**
      * Gets a location from the {@link #locations} arraylist
@@ -264,6 +268,7 @@ public class TextFighter {
         customVariablesDir = new File(assetsDir.getPath() + "/customVariables");
         deathmethodsFile = new File(assetsDir.getPath() + "/deathmethods/deathmethods.json");
         levelupmethodsFile = new File(assetsDir.getPath() + "/levelupmethods/levelupmethods.json");
+        choicesOfAllLocationsFile = new File(assetsDir.getPath() + "/choicesOfAllLocations/choicesOfAllLocations.json");
         version = readVersionFromFile();
         //Load some things
         loadConfig();
@@ -271,7 +276,7 @@ public class TextFighter {
         loadCustomVariables();
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
-        if (!loadDeathMethods() || !loadLevelUpMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
+        if (!loadDeathMethods() || !loadLevelUpMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadChoicesOfAllLocations() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
         if (!savesDir.exists()) {
             Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
             if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
@@ -566,6 +571,8 @@ public class TextFighter {
                             if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                                 continue;
                             }
+                        } else {
+                            continue;
                         }
                         //Load the values from the file. If any value is null (That is required), then omit the interface
                         JSONObject interfaceFile = null;
@@ -624,8 +631,6 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
-                    } else {
-                        continue;
                     }
                     //Load the values, if any are null (other than values that are not required), then omit the location
                     JSONObject locationFile = null;
@@ -688,7 +693,15 @@ public class TextFighter {
                         }
                     }
 
-                    //Adds the quit choice
+                    //Add any choices in the choicesOfAllLocations arraylist
+                    for(ChoiceOfAllLocations c : choicesOfAllLocations) {
+                        if(!usedNames.contains(c.getChoice().getName()) && !c.getExcludedLocations().contains(name)) {
+                            usedNames.add(c.getChoice().getName());
+                            choices.add(c.getChoice());
+                        }
+                    }
+
+                    //Adds the quit choice if it does not exist yet
                     if(!usedNames.contains("quit")) {
                         Display.displayPackMessage("Adding the quit choice");
                         Display.changePackTabbing(true);
@@ -752,6 +765,8 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                     JSONObject enemyFile = null;
                     try { enemyFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f))); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + f + "'"); e.printStackTrace(); Display.changePackTabbing(false);}
@@ -866,6 +881,8 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                     JSONObject achievementFile = null;
                     try { achievementFile = (JSONObject) parser.parse(new FileReader(new File(directory.getAbsolutePath() + "/" + f))); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + f + "'"); e.printStackTrace(); continue; }
@@ -917,6 +934,8 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                     Display.changePackTabbing(true);
                     JSONObject itemFile = null;
@@ -969,6 +988,8 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                     Display.changePackTabbing(true);
                     JSONObject itemFile = null;
@@ -1019,6 +1040,8 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                     Display.changePackTabbing(true);
                     JSONObject itemFile = null;
@@ -1068,6 +1091,8 @@ public class TextFighter {
                         if(!f.substring(f.lastIndexOf('.')).equals(".json")) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                     Display.changePackTabbing(true);
                     JSONObject itemFile = null;
@@ -1455,7 +1480,7 @@ public class TextFighter {
     public static boolean loadLevelUpMethods() {
         Display.displayPackMessage("Loading the level up methods...");
         Display.changePackTabbing(true);
-        if(!levelupmethodsFile.exists()) { Display.displayError("Could not find the default levelupmethods directory."); Display.changePackTabbing(false); return false;}
+        if(!levelupmethodsFile.exists()) { Display.displayError("Could not find the default levelupmethods file."); Display.changePackTabbing(false); return false;}
         ArrayList<String> usedIds = new ArrayList<String>();
         File file = levelupmethodsFile;
 
@@ -1494,6 +1519,58 @@ public class TextFighter {
             parsingPack=false;
         }
         Display.displayProgressMessage("Level up methods loaded.");
+        Display.changePackTabbing(false);
+        return true;
+    }
+
+    public static boolean loadChoicesOfAllLocations() {
+        Display.displayPackMessage("Loading the choices of all locations");
+        Display.changePackTabbing(true);
+        if(!choicesOfAllLocationsFile.exists()) { Display.displayError("Could not find the default choices of all locations file."); Display.changePackTabbing(false); return false; }
+        ArrayList<String> usedNames = new ArrayList<String>();
+        File file = choicesOfAllLocationsFile;
+
+        //Get the choices of all locations from the modpack
+        File packDirectory = getPackDirectory("choicesOfAllLocations", packUsed);
+        if(packDirectory != null && packDirectory.list() != null) {
+            File newFile = getPackFile("choicesOfAllLocations", packDirectory);
+            if(newFile != null) { file = newFile; }
+        }
+
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(packDirectory);
+
+        for(int num=0; num<2; num++) {
+            if(!parsingPack) { num++; Display.displayPackMessage("Loading choices of all locations from the default pack."); }
+            Display.changePackTabbing(true);
+            JSONArray choicesFile = null;
+            try { choicesFile = (JSONArray)(((JSONObject)parser.parse(new FileReader(file))).get("choices")); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + file.getName() + "'"); e.printStackTrace(); continue; }
+            if(choicesFile == null) { continue; }
+            for (int i=0; i<choicesFile.size(); i++) {
+                JSONObject obj = (JSONObject)choicesFile.get(i);
+                String name = (String)obj.get("name");
+                Display.displayPackMessage("Loading choice '" + name + "'");
+                Display.changePackTabbing(true);
+                String desc = (String)obj.get("description");
+                String usage = (String)obj.get("usage");
+                if(obj.get("methods") == null) { Display.displayPackError("This choice has no methods. Omitting..."); Display.changePackTabbing(false); continue; }
+                if(name == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
+                Choice c = new Choice(name, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class), (String)obj.get("failMessage"));
+                if(!(c.getMethods() != null && c.getMethods().size() > 0)) { Display.changePackTabbing(false); continue; }
+                JSONArray excludes = (JSONArray)obj.get("excludes");
+                Display.changePackTabbing(false);
+                if(c != null) {
+                    choicesOfAllLocations.add(new ChoiceOfAllLocations(excludes, c));
+                    usedNames.add(name);
+                } else {
+                    Display.displayPackMessage("This choice is not valid");
+                }
+                Display.changePackTabbing(false);
+            }
+            Display.changePackTabbing(false);
+            file=choicesOfAllLocationsFile;
+            parsingPack=false;
+        }
+        Display.displayProgressMessage("Choices of all locations loaded.");
         Display.changePackTabbing(false);
         return true;
     }

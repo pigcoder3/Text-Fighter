@@ -182,7 +182,7 @@ public class Display {
 
     }
 
-     /**
+    /**
      * Displays a loading progress message.
      * @param e     The message
      */
@@ -198,7 +198,7 @@ public class Display {
 
     /*** Displays the previous command.*/
     public static void displayPreviousCommand() {
-        if(previousCommandString == null) { return; }
+        if(previousCommandString == null || previousCommandString.length() < 1) { return; }
         //Displays the command the user previously inputted
         if(ANSI) {
             System.out.println(previousCommand + "Previous choice: '" + previousCommandString + "'" + RESET + "\n");

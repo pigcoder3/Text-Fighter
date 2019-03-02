@@ -236,6 +236,12 @@ public class Player {
     private Location location;
 
     /**
+     * Stores the player's last location.
+     * <p>Set to null.</p>
+     */
+    private Location lastLocation;
+
+    /**
      * Stores whether or not the game has been beaten.
      * <p>Set to false.</p>
      */
@@ -871,7 +877,7 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { magic=0; } }
+    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " magic because you do not have enough"); } }
     /**
      * Increases the {@link #magic}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -896,7 +902,7 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; }  }
+    public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " metal scraps because you do not have enough"); } }
     /**
      * Increases the {@link #metalScraps}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -918,6 +924,23 @@ public class Player {
         for(Location l : TextFighter.locations) {
             if(l.getName().equals(loc)) {
                 location = l;
+
+            }
+        }
+    }
+    /**
+     * Returns the {@link #lastLocation}.
+     * @return      {@link #lastLocation}
+     */
+    public Location getLastLocation() { return lastLocation; }
+    /**
+     * Sets the value of {@link #lastLocation} to the location with the name given.
+     * @param loc     The name of the last location.
+     */
+    public void setLastLocation(String loc) {
+        for(Location l : TextFighter.locations) {
+            if(l.getName().equals(loc)) {
+                lastLocation = l;
 
             }
         }
