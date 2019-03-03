@@ -129,6 +129,8 @@ public class Player {
     private boolean alive = true;
     /***Stores the number of deaths.*/
     private int deaths = 0;
+    /***Stores the number of kills.*/
+    private int kills = 0;
 
     /**
      * Stores whether or not the player is in a fight.
@@ -468,6 +470,36 @@ public class Player {
      */
     public int getDeaths() { return deaths; }
 
+    /**
+     * Returns {@link #kills}.
+     * @return      {@link #kills}
+     */
+    public int getKills() { return kills; }
+
+    /**
+     * Increases the {@link #kills}.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The amount to increase by.
+     */
+    public void increaseKills(int a) { kills+=a; if(kills < 0) { kills = 0; } }
+
+    /**
+     * Decreases the {@link #kills}.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The amount to decrease by.
+     */
+    public void decreaseKills(int a) { kills-=a; if(kills < 0) { kills = 0; } }
+
+    /**
+     * Sets {@link #kills} to the value given.
+     * <p>If {@link #kills} is less than 0, then set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setKills(int a) {
+        kills = a;
+        if(kills < 0) { kills = 0; }
+    }
+
     //inFight methods
     /**
      * Returns {@link #inFight}.
@@ -774,6 +806,15 @@ public class Player {
      * @param a     The amount to decrease by.
      */
     public void decreaseScore(int a) { score-=a; if(score < 0) { score = 0; } }
+    /**
+     * Sets {@link #score} to the value given.
+     * <p>If {@link #score} is less than 0, then set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setScore(int a) {
+        score = a;
+        if(score < 0) { score = 0; }
+    }
 
     //health methods
     /**
@@ -1067,8 +1108,10 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(int deaths, int kills, Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
         this.location = location;
+        this.deaths = deaths;
+        this.kills = kills;
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;

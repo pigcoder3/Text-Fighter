@@ -1625,6 +1625,7 @@ public class TextFighter {
             int maxhp = player.defaulthp;                                               if(stats.get("maxhealth") != null)                  {maxhp = Integer.parseInt((String)stats.get("maxhealth"));}
             int hp = player.defaulthp;                                                  if(stats.get("health") != null)                     {hp = Integer.parseInt((String)stats.get("health"));}
             int deaths = 0;                                                             if(stats.get("deaths") != null)                     {deaths = Integer.parseInt((String)stats.get("deaths"));}
+            int kills = 0;                                                              if(stats.get("kills") != null)                      {kills = Integer.parseInt((String)stats.get("kills"));}
             int coins = player.defaultCoins;                                            if(stats.get("coins") != null)                      {coins = Integer.parseInt((String)stats.get("coins"));}
             int magic = player.defaultMagic;                                            if(stats.get("magic") != null)                      {magic = Integer.parseInt((String)stats.get("magic"));}
             int metalscraps = player.defaultMetalscraps;                                if(stats.get("metalscraps") != null)                {metalscraps = Integer.parseInt((String)stats.get("metalscraps"));}
@@ -1738,7 +1739,7 @@ public class TextFighter {
             }
 
             //Create a new player instance with the loaded values
-            player = new Player(player.getLocation(), hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
+            player = new Player(deaths, kills, player.getLocation(), hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -1782,6 +1783,7 @@ public class TextFighter {
         stats.put("maxhealth", Integer.toString(Player.defaulthp));
         stats.put("health", Integer.toString(Player.defaulthp));
         stats.put("deaths", 0);
+        stats.put("kills", 0);
         stats.put("coins", Integer.toString(Player.defaultCoins));
         stats.put("magic", Integer.toString(Player.defaultMagic));
         stats.put("hppotions", Integer.toString(Player.defaultHealthPotions));
@@ -1871,6 +1873,7 @@ public class TextFighter {
         stats.put("health", Integer.toString(player.getHp()));
         stats.put("maxhealth", Integer.toString(player.getMaxHp()));
         stats.put("deaths", Integer.toString(player.getDeaths()));
+        stats.put("kills", Integer.toString(player.getKills()));
         stats.put("coins", Integer.toString(player.getCoins()));
         stats.put("magic", Integer.toString(player.getMagic()));
         stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
@@ -2160,18 +2163,20 @@ public class TextFighter {
         Display.displayOutputMessage("<----------START OF TURN---------->");
         Display.displayPreviousCommand();
         //Determine if any achievements should be recieved
-        for(Achievement a : achievements) {
-            if(!player.getAchievements().contains(a)) {
-                boolean earned = true;
-                //Make sure the requirements have been met
-                for(Requirement r : a.getRequirements()) {
-                    if(!r.invokeMethod() == r.getNeededBoolean()) {
-                        earned = false;
-                        break;
+        if(gameLoaded) {
+            for(Achievement a : achievements) {
+                if(!player.getAchievements().contains(a)) {
+                    boolean earned = true;
+                    //Make sure the requirements have been met
+                    for(Requirement r : a.getRequirements()) {
+                        if(!r.invokeMethod() == r.getNeededBoolean()) {
+                            earned = false;
+                            break;
+                        }
+                    } //Give the player the achievement if all requirements are met
+                    if(earned) {
+                        player.achievementEarned(a);
                     }
-                } //Give the player the achievement if all requirements are met
-                if(earned) {
-                    player.achievementEarned(a);
                 }
             }
         }

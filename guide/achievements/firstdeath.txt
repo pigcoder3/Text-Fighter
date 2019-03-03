@@ -1,0 +1,12 @@
+Basic Info:
+    Name: firstdeath
+    Description: It was going to happen, and will happen many more times.
+
+Obtaining:
+    Die one time. Using the respawn choice in the menu counts.
+
+Rewards:
+    10 experience - 100% chance
+
+Extra Info:
+    None
