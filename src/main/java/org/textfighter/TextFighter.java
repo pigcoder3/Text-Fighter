@@ -357,7 +357,7 @@ public class TextFighter {
                     Display.displayPackError("This field method given does not have a return type of the class in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null;
                 }
             }
-        } catch (NoClassDefFoundError | ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Omitting..."); Display.changePackTabbing(false); return null; }
+        } catch (NoClassDefFoundError | ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Make sure the class is not private. Omitting..."); Display.changePackTabbing(false); return null; }
 
         Class fieldclass = null;
         Object field = null;
@@ -376,7 +376,7 @@ public class TextFighter {
                     field = fieldclass.getField((String)rawField);
                     if(!((Field)field).getType().equals(clazz)) { Display.displayPackError("This method's field is not an instance of the class given in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null; }
                 }
-            } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Omitting..."); Display.changePackTabbing(false); return null; }
+            } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Make sure the field is not private. Omitting..."); Display.changePackTabbing(false); return null; }
         } else if (rawField != null){
             field = rawField;
         }
@@ -389,7 +389,7 @@ public class TextFighter {
             } else {
                 method = clazz.getMethod(methodString);
             }
-        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + rawClass + "' with given arguments could not be found. Omitting..."); Display.changePackTabbing(false); return null; }
+        } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + rawClass + "' with given arguments could not be found. Make sure the method is not private. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Makes the arguments the correct type (String, int, or boolean)
         ArrayList<Object> arguments = new ArrayList<Object>();

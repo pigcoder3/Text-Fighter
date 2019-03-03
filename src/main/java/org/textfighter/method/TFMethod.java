@@ -85,9 +85,16 @@ public class TFMethod {
                 fieldvalue = ((FieldMethod)field).invokeMethod();
             } else if(field.getClass().equals(Field.class)){
                 //If the field is a regular field, then set the field value to the value it holds
-                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) {  Display.displayError(Display.exceptionToString(e));; return null; }
+                try { fieldvalue = ((Field)field).get(null); } catch (IllegalAccessException e) {
+                    Display.displayError("The pack tried to access a field that is private.");
+                    Display.displayError(Display.exceptionToString(e));
+                    return null;
+                }
             }
-            if(fieldvalue == null) { return null; }
+            if(fieldvalue == null) {
+                Display.writeToLogFile("The pack got a null value from the field.");
+                return null;
+            }
         }
 
         Object a;
@@ -135,14 +142,33 @@ public class TFMethod {
             }
             Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
             return a;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
+        } catch (IllegalAccessException e) {
+            Display.displayError("The pack attempted to access a method that is private (And therefore cannot be used for packs).");
+            Display.displayError("method: " + method);
+            Display.displayError(Display.exceptionToString(e));
+            resetArguments();
+        } catch (InvocationTargetException e) {
+            Display.displayError("An error was thrown inside of the method being invoked.");
+            Display.displayError("method: " + method);
+            Display.displayError(Display.exceptionToString(e));
+            resetArguments();
+        } catch (IllegalArgumentException e) {
+            Display.displayError("The pack used an argument of the wrong type for the parameters of the method. This shouldn't happen if there is nothing wrong with the base code, tell .");
+            Display.displayError("method: " + method);
+            Display.displayError(Display.exceptionToString(e));
+            resetArguments();
+        } //This is impossible to have happen I think (Assuming the base code is not messed up), but I'm not sure
         catch (NullPointerException e) {
             Display.displayError("There is a missing field or fieldclass. Check to make sure one is specified in the pack.");
             Display.displayError("method: " + method);
-              Display.displayError(Display.exceptionToString(e));;
+            Display.displayError(Display.exceptionToString(e));;
+            resetArguments();
+        } catch (Exception e) {
+            Display.displayError("Something happened /shrug.");
+            Display.displayError("method: " + method);
+            Display.displayError(Display.exceptionToString(e));
             resetArguments();
         }
-        catch (Exception e) { Display.displayError("method: " + method); Display.displayError(Display.exceptionToString(e)); resetArguments(); }
         Display.writeToLogFile("[<-----------------------End Of Method Log----------------------->]");
         return null;
     }
