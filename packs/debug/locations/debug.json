@@ -2,7 +2,7 @@
     "name" : "debug",
 
     "interfaces" : [
-        "playerstats"
+        "playerstats",
         "debug",
         "choices"
     ],
