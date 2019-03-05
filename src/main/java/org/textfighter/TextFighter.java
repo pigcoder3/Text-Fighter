@@ -489,7 +489,6 @@ public class TextFighter {
                     File pack = new File(parent.getPath() + "/" + directoryName);
                     if(pack.isDirectory()) {
                         if(parsingPack && packUsed != null) {  Display.displayPackMessage("loading " + directoryName + " from pack '" + packUsed.getName() + "'"); }
-                        parsingPack = true;
                         return pack;
                     }
                 }
@@ -511,7 +510,6 @@ public class TextFighter {
                     File pack = new File(parent.getPath() + "/" + fileName);
                     if(pack.isFile()) {
                         if(parsingPack && packUsed != null) { Display.displayPackMessage("loading " + fileName + " from pack '" + packUsed.getName() + "'"); }
-                        parsingPack = true;
                         return pack;
                     }
                 }
@@ -527,16 +525,14 @@ public class TextFighter {
      */
     public static ArrayList<String> getOmittedAssets(File directory) {
         ArrayList<String> omittedAssets = new ArrayList<String>();
-        if(parsingPack) {
-            File omissionFile = new File(directory + "/omit.txt");
-            if(omissionFile.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(omissionFile));) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        omittedAssets.add(line);
-                    }
-                } catch (IOException e) { Display.displayWarning("IOException when attempting to read the omit file (The file does exist). Continuing normally..."); }
-            }
+        File omissionFile = new File(directory + "/omit.txt");
+        if(omissionFile.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(omissionFile));) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    omittedAssets.add(line);
+                }
+            } catch (IOException e) { Display.displayWarning("IOException when attempting to read the omit file (The file does exist). Continuing normally..."); }
         }
         return omittedAssets;
     }
@@ -547,6 +543,7 @@ public class TextFighter {
      * @return      True if successful, False if unsuccessful
      */
     public static boolean loadInterfaces() {
+        parsingPack = false;
         try {
             Display.displayProgressMessage("Loading the interfaces...");
             Display.changePackTabbing(true);
@@ -556,13 +553,14 @@ public class TextFighter {
 
             //Determine if there is a pack to be loaded and start loading from it if there is
             File packDirectory = getPackDirectory("interfaces", packUsed);
-            if(packDirectory != null) { directory = packDirectory; }
+            if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
              //Place where all names that are located in the omit file are stored
             ArrayList<String> namesToBeOmitted = getOmittedAssets(directory);
 
             //Now parses the interfaces, gets from the modpack first then the default pack
             for(int num=0; num<2; num++) {
+                if(!parsingPack && namesToBeOmitted.contains("%all%")) { continue; }
                 if(!parsingPack) { num++; Display.displayPackMessage("Loading interfaces from the default pack."); }
                 if(directory.list() != null) {
                     for (String f : directory.list()) {
@@ -617,6 +615,7 @@ public class TextFighter {
      * @return      True if successful, false if unsuccessful.
      */
     public static boolean loadLocations() {
+        parsingPack = false;
         Display.displayProgressMessage("Loading the locations...");
         Display.changePackTabbing(true);
         if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); Display.changePackTabbing(false); return false;}
@@ -625,7 +624,7 @@ public class TextFighter {
 
         //Determine if there is a pack to be loaded and start loading from it if there is
         File packDirectory = getPackDirectory("locations", packUsed);
-        if(packDirectory != null) { directory = packDirectory; }
+        if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
         //Place where all names that are located in the omit file are stored
         ArrayList<String> namesToBeOmitted = getOmittedAssets(directory);
@@ -744,7 +743,7 @@ public class TextFighter {
             }
             directory = locationDir;
             parsingPack = false;
-            if(namesToBeOmitted.contains("%all%")) { System.out.println("re"); break; }
+            if(namesToBeOmitted.contains("%all%")) { break; }
         }
         boolean startGiven = false;
         boolean menuGiven = false;
@@ -768,6 +767,7 @@ public class TextFighter {
      * @return      True if successful, false if unsuccessful.
      */
     public static boolean loadEnemies() {
+        parsingPack = false;
         Display.displayProgressMessage("Loading the enemies...");
         Display.changePackTabbing(true);
         if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); Display.changePackTabbing(false); return false;}
@@ -776,7 +776,7 @@ public class TextFighter {
 
         //Determine if there is a pack to be loaded and start loading from it if there is
         File packDirectory = getPackDirectory("enemies", packUsed);
-        if(packDirectory != null) { directory = packDirectory; }
+        if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
         //Place where all names that are located in the omit file are stored
         ArrayList<String> namesToBeOmitted = getOmittedAssets(directory);
@@ -843,6 +843,7 @@ public class TextFighter {
      * @return      True if successful, false if unsuccessful.
      */
     public static boolean loadParsingTags() {
+        parsingPack = false;
         //Custom parsing tags are located in interface packs
         Display.displayProgressMessage("Loading the parsing tags...");
         Display.changePackTabbing(true);
@@ -872,8 +873,8 @@ public class TextFighter {
             for(Object obj1 : tagsArray) {
                 JSONObject obj = (JSONObject)obj1;
                 if(obj.get("tag") != null) {
-                    if(namesToBeOmitted.contains(obj.get("tag"))) {
-                        UiTag tag = (UiTag)loadMethod(UiTag.class, obj, null); 
+                    if(!namesToBeOmitted.contains(obj.get("tag")) && !usedNames.contains(obj.get("tag"))) {
+                        UiTag tag = (UiTag)loadMethod(UiTag.class, obj, null);
                         if(tag != null) { Display.interfaceTags.add(tag); }
                     }
                 }
@@ -892,6 +893,7 @@ public class TextFighter {
      * @return      True if successful, false if unsuccessful.
      */
     public static boolean loadAchievements() {
+        parsingPack = false;
         Display.displayProgressMessage("Loading the achievements...");
         Display.changePackTabbing(true);
         if(!achievementDir.exists()) { Display.displayError("Could not find the default achievements directory."); Display.changePackTabbing(false); return false;}
@@ -900,7 +902,7 @@ public class TextFighter {
 
         //Determine if there is a pack to be loaded and start loading from it if there is
         File packDirectory = getPackDirectory("achievements", packUsed);
-        if(packDirectory != null) { directory = packDirectory; }
+        if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
         ArrayList<String> namesToBeOmitted = getOmittedAssets(directory); //Place where all names that are located in the omit file are stored
         //Loads them
@@ -943,6 +945,7 @@ public class TextFighter {
      * @return      True if successful, false if unsuccessful.
      */
     public static boolean loadItems() {
+        parsingPack = false;
         Display.displayProgressMessage("Loading the items...");
         Display.changePackTabbing(true);
         if(!enemyDir.exists()) { Display.displayError("Could not find the default items directory."); Display.changePackTabbing(false); return false;}
@@ -950,7 +953,7 @@ public class TextFighter {
 
         //Determine if there is a pack to be loaded and start loading from it if there is
         File packDirectory = getPackDirectory("items", packUsed);
-        if(packDirectory != null) { directory = packDirectory; }
+        if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
         ArrayList<String> namesToBeOmitted = getOmittedAssets(directory); //Place where all names that are located in the omit file are stored
         for(int num=0; num<2; num++) {
@@ -1178,6 +1181,7 @@ public class TextFighter {
      * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
      */
     public static void loadCustomVariables() {
+        parsingPack = false;
         Display.displayProgressMessage("Loading the custom variables...");
         Display.changePackTabbing(true);
         if(!enemyDir.exists()) { Display.displayError("Could not find the custom variables directory."); Display.changePackTabbing(false); return;}
@@ -1189,20 +1193,24 @@ public class TextFighter {
         ArrayList<String> enemiesUsedNames = new ArrayList<String>();
         File directory = customVariablesDir;
 
-        if(packUsed != null) {
-            //Determine if there is a pack to be loaded and start loading from it if there is
-            File packDirectory = getPackDirectory("customVariables", packUsed);
-            if(packDirectory != null) { directory = packDirectory; }
-        }
+        //Determine if there is a pack to be loaded and start loading from it if there is
+        File packDirectory = getPackDirectory("customVariables", packUsed);
+        if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
+
+        ArrayList<String> filesToBeOmitted = getOmittedAssets(packDirectory);
+
         //Load them
         if(!parsingPack) { Display.displayPackMessage("Loading custom variables from the default pack."); }
         Display.changePackTabbing(true);
         if(directory.list() != null) {
             for(String s : directory.list()) {
+                if(filesToBeOmitted.contains(s)) { continue; }
                 if(s.lastIndexOf(".") != -1) {
                     if(!s.substring(s.lastIndexOf('.')).equals(".json")) {
                         continue;
                     }
+                } else {
+                    continue;
                 }
                 ArrayList<CustomVariable> variables = new ArrayList<CustomVariable>();
                 Display.displayPackMessage("Loading custom variables from file '" + s + "'");
@@ -1280,11 +1288,13 @@ public class TextFighter {
                 else if(s.equals("tool.json")) { toolCustomVariables = variables; }
                 Display.changePackTabbing(false);
             }
+            parsingPack = false;
             Display.changePackTabbing(false);
         }
         parsingPack = false;
         Display.changePackTabbing(false);
         Display.changePackTabbing(false);
+        Display.displayPackMessage("Custom variables loaded");
     }
 
     /**
@@ -1320,22 +1330,22 @@ public class TextFighter {
      * <p>NOTE: This one is different from the rest (Except custom variables): Loads from the default pack or the custom pack NOT BOTH.</p>
      */
     public static void loadDefaultValues() {
+        parsingPack = false;
         //Custom parsing tags are located in interface packs
         Display.displayProgressMessage("Loading the default player/enemy/item values...");
         Display.changePackTabbing(true);
         File directory = defaultValuesDirectory;
-        
-        if(packUsed != null) {
-            //Determine if there is a pack to be loaded and start loading from it if there is
-            File packDirectory = getPackDirectory("defaultValues", packUsed);
-            if(packDirectory != null) { directory = packDirectory; }
-        }
+
+        //Determine if there is a pack to be loaded and start loading from it if there is
+        File packDirectory = getPackDirectory("defaultValues", packUsed);
+        if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
+
+        ArrayList<String> filesToBeOmitted = getOmittedAssets(packDirectory);
 
         //Load them
-        if(!parsingPack) { Display.displayPackMessage("Loading default values from the default pack."); }
         Display.changePackTabbing(true);
         File file;
-        if((file = getPackFile("player.json", directory)) != null) {
+        if((!parsingPack && filesToBeOmitted.contains("player")) && (file = getPackFile("player.json", directory)) != null) {
             Display.displayPackMessage("Loading player values");
             Display.changePackTabbing(true);
             try {
@@ -1354,13 +1364,13 @@ public class TextFighter {
                 if(valuesFile.get("turnsStrengthPotionsGive") != null) {        Player.defaultTurnsStrengthPotionsGive = Integer.parseInt((String)valuesFile.get("turnsStrengthPotionsGive")); }
                 if(valuesFile.get("turnsInvincibilityPotionsGive") != null) {   Player.defaultTurnsInvincibilityPotionsGive = Integer.parseInt((String)valuesFile.get("turnsInvincibilityPotionsGive")); }
                 if(valuesFile.get("turnsWithStrengthLeft") != null) {           Player.defaultTurnsWithStrengthLeft = Integer.parseInt((String)valuesFile.get("turnsWithStrengthLeft")); }
-                if(valuesFile.get("turnsWithInvincibilityLeft") != null) {      Player.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvincibilityLeft")); }                    
+                if(valuesFile.get("turnsWithInvincibilityLeft") != null) {      Player.defaultTurnsWithInvincibilityLeft = Integer.parseInt((String)valuesFile.get("turnsWithInvincibilityLeft")); }
                 if(valuesFile.get("strengthPotionMultiplier") != null) {        Player.defaultStrengthPotionMultiplier = Integer.parseInt((String)valuesFile.get("strengthPotionMultiplier")); }
                 Display.changePackTabbing(false);
 
             } catch (IOException | ParseException e) { Display.changePackTabbing(false); }
         }
-        if((file = getPackFile("enemy.json", directory)) != null) {
+        if((!parsingPack && filesToBeOmitted.contains("enemy")) && (file = getPackFile("enemy.json", directory)) != null) {
             Display.displayPackMessage("Loading enemy values");
             Display.changePackTabbing(true);
             try {
@@ -1375,7 +1385,7 @@ public class TextFighter {
                 Display.changePackTabbing(false);
             } catch (IOException | ParseException e) {Display.changePackTabbing(false); }
         }
-        if((file = getPackFile("item.json", directory)) != null) {
+        if((!parsingPack && filesToBeOmitted.contains("item")) && (file = getPackFile("item.json", directory)) != null) {
             Display.displayPackMessage("Loading item values");
             Display.changePackTabbing(true);
             try {
@@ -1386,7 +1396,7 @@ public class TextFighter {
                 Display.changePackTabbing(false);
             } catch (IOException | ParseException e) { Display.changePackTabbing(false); }
         }
-        if((file = getPackFile("weapon.json", directory)) != null) {
+        if((!parsingPack && filesToBeOmitted.contains("weapon")) && (file = getPackFile("weapon.json", directory)) != null) {
             Display.displayPackMessage("Loading weapon values");
             Display.changePackTabbing(true);
             try {
@@ -1403,8 +1413,8 @@ public class TextFighter {
                 Display.changePackTabbing(false);
             } catch (IOException | ParseException e) { e.printStackTrace(); Display.changePackTabbing(false); }
         }
-        if((file = getPackFile("armor.json", directory)) != null) {
-            Display.displayPackMessage("Loading armor values");                
+        if((!parsingPack && filesToBeOmitted.contains("armor")) && (file = getPackFile("armor.json", directory)) != null) {
+            Display.displayPackMessage("Loading armor values");
             Display.changePackTabbing(true);
             try {
                 JSONObject valuesFile = (JSONObject)parser.parse(new FileReader(file));
@@ -1418,7 +1428,7 @@ public class TextFighter {
                 Display.changePackTabbing(false);
             } catch (IOException | ParseException e) { Display.changePackTabbing(false); }
         }
-        if((file = getPackFile("tool.json", directory)) != null) {
+        if((!parsingPack && filesToBeOmitted.contains("tool")) && (file = getPackFile("tool.json", directory)) != null) {
             Display.displayPackMessage("Loading tool values");
             Display.changePackTabbing(true);
             try {
@@ -1432,7 +1442,7 @@ public class TextFighter {
                 Display.changePackTabbing(false);
             } catch (IOException | ParseException e) { Display.changePackTabbing(false); }
         }
-        if((file = getPackFile("specialitem.json", directory)) != null) {
+        if((!parsingPack && filesToBeOmitted.contains("specialitem")) && (file = getPackFile("specialitem.json", directory)) != null) {
             Display.displayPackMessage("Loading specialitem values");
             Display.changePackTabbing(true);
             try {
@@ -1445,6 +1455,7 @@ public class TextFighter {
         }
         parsingPack = false;
         Display.changePackTabbing(false);
+        Display.changePackTabbing(false);
         Display.displayPackMessage("Player/enemy/item values loaded.");
         return;
     }
@@ -1455,6 +1466,7 @@ public class TextFighter {
      * @return      Whether or not successful
      */
     public static boolean loadDeathMethods() {
+        parsingPack = false;
         Display.displayPackMessage("Loading the death methods...");
         Display.changePackTabbing(true);
         if(!deathmethodsFile.exists()) { Display.displayError("Could not find the default deathmethods directory."); Display.changePackTabbing(false); return false;}
@@ -1464,18 +1476,15 @@ public class TextFighter {
         //Determine if there is a pack to be loaded and start loading from it if there is
         File packDirectory = getPackDirectory("deathmethods", packUsed);
         if(packDirectory != null && packDirectory.list() != null) {
-            for(String s : packDirectory.list()) {
-                if(s == "deathmethods.json") {
-                    file = new File(packDirectory.getPath() + "/deathmethods.json");
-                    parsingPack = true;
-                }
-            }
+            File newFile = new File(packDirectory.getPath() + "/deathmethods.json");
+            if(newFile.exists()) { file = newFile; parsingPack = true; }
         }
 
         ArrayList<String> idsToBeOmitted = getOmittedAssets(packDirectory); //Place where all ids that are located in the omit file are stored
         //Loads them
         for(int num=0; num<2; num++) {
-            if(!parsingPack) { num++; Display.displayPackMessage("Loading deathmethods from the default pack."); }
+            if(!parsingPack && idsToBeOmitted.contains("%all%")) { continue; }
+            if(!parsingPack) { Display.displayPackMessage("Loading deathmethods from the default pack."); }
             Display.changePackTabbing(true);
             JSONArray deathmethodFile = null;
             try { deathmethodFile = (JSONArray)(((JSONObject)parser.parse(new FileReader(file))).get("deathmethods")); } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from file '" + file.getName() + "'"); e.printStackTrace(); continue; }
@@ -1484,6 +1493,7 @@ public class TextFighter {
                 JSONObject obj = (JSONObject)deathmethodFile.get(i);
                 String id = (String)obj.get("id");
                 if(id == null) { Display.displayPackError("A deathmethod to does not have an id. Omitting..."); }
+                if(idsToBeOmitted.contains(id) || usedIds.contains(id)) { continue; }
                 Display.displayPackMessage("Loading deathmethod '" + id + "'");
                 Display.changePackTabbing(true);
                 TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, IDMethod.class);
@@ -1500,6 +1510,7 @@ public class TextFighter {
             parsingPack=false;
             if(idsToBeOmitted.contains("%all%")) { break; }
         }
+        parsingPack = false;
         Display.displayProgressMessage("Death methods loaded.");
         Display.changePackTabbing(false);
         return true;
@@ -1511,6 +1522,7 @@ public class TextFighter {
      * @return      Whether or not successful
      */
     public static boolean loadLevelUpMethods() {
+        parsingPack = false;
         Display.displayPackMessage("Loading the level up methods...");
         Display.changePackTabbing(true);
         if(!levelupmethodsFile.exists()) { Display.displayError("Could not find the default levelupmethods file."); Display.changePackTabbing(false); return false;}
@@ -1521,12 +1533,13 @@ public class TextFighter {
         File packDirectory = getPackDirectory("levelupmethods", packUsed);
         if(packDirectory != null && packDirectory.list() != null) {
             File newFile = getPackFile("levelupmethods", packDirectory);
-            if(newFile != null) { file = newFile; }
+            if(newFile != null) { file = newFile; parsingPack = true; }
         }
 
         ArrayList<String> idsToBeOmitted = getOmittedAssets(packDirectory); //Place where all ids that are located in the omit file are stored
         //Loads them
         for(int num=0; num<2; num++) {
+            if(!parsingPack && idsToBeOmitted.contains("%all%")) { continue; }
             if(!parsingPack) { num++; Display.displayPackMessage("Loading levelupmethods from the default pack."); }
             Display.changePackTabbing(true);
             JSONArray levelupmethodFile = null;
@@ -1550,14 +1563,15 @@ public class TextFighter {
             Display.changePackTabbing(false);
             file=levelupmethodsFile;
             parsingPack=false;
-            if(idsToBeOmitted.contains("%all%")) { break; }
         }
+        parsingPack = false;
         Display.displayProgressMessage("Level up methods loaded.");
         Display.changePackTabbing(false);
         return true;
     }
 
     public static boolean loadChoicesOfAllLocations() {
+        parsingPack = false;
         Display.displayPackMessage("Loading the choices of all locations");
         Display.changePackTabbing(true);
         if(!choicesOfAllLocationsFile.exists()) { Display.displayError("Could not find the default choices of all locations file."); Display.changePackTabbing(false); return false; }
@@ -1605,8 +1619,8 @@ public class TextFighter {
             Display.changePackTabbing(false);
             file=choicesOfAllLocationsFile;
             parsingPack=false;
-            if(namesToBeOmitted.contains("%all%")) { break; }
         }
+        parsingPack = false;
         Display.displayProgressMessage("Choices of all locations loaded.");
         Display.changePackTabbing(false);
         return true;

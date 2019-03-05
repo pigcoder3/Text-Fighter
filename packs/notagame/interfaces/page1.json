@@ -1,0 +1,14 @@
+{
+    "name" : "page1",
+
+    "interface" : [
+
+        "----------------------",
+        "   To  omit all assets",
+        "create  a new omit.txt",
+        "file   in  each  asset",
+        "and  put '%all%' in it "
+
+    ]
+
+}
