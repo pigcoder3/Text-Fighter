@@ -533,7 +533,6 @@ public class TextFighter {
                 try (BufferedReader br = new BufferedReader(new FileReader(omissionFile));) {
                     String line;
                     while ((line = br.readLine()) != null) {
-                        if(line.equals("%all%")) { System.out.println("e"); }
                         omittedAssets.add(line);
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the omit file (The file does exist). Continuing normally..."); }
@@ -755,9 +754,9 @@ public class TextFighter {
             if(l.getName().equals("menu")) { menuGiven = true; }
             if(l.getName().equals("fight")) { fightGiven = true; }
         }
-        if(!startGiven) { Display.displayError("No start location was given. Cannot run the game."); return false; }
-        if(!menuGiven) { Display.displayError("No menu location was given. Cannot run the game."); return false; }
-        if(!fightGiven) { Display.displayError("No fight location was given. Cannot run the game."); return false; }
+        if(!startGiven) { Display.displayWarning("No start location was given."); }
+        if(!menuGiven) { Display.displayWarning("No menu location was given."); }
+        if(!fightGiven) { Display.displayWarning("No fight location was given."); }
         Display.displayProgressMessage("Locations loaded.");
         Display.changePackTabbing(false);
         return true;
@@ -854,29 +853,35 @@ public class TextFighter {
         //Determine if there is a pack to be loaded from and start loading from it if there is
         File packDirectory = getPackDirectory("tags", packUsed);
         if(packDirectory != null && packDirectory.list() != null) {
-            for(String s : packDirectory.list()) {
-                if(s == "tags.json") {
-                    file = new File(packDirectory + "/tags.json");
-                }
-            }
+            File newFile = new File(packDirectory + "/tags.json");
+            if(newFile.exists()) { file = newFile; parsingPack = true; }
         }
+
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(file.getParentFile());
 
         //Load them
         for(int num=0; num<2; num++) {
-            if(!parsingPack) { num++; Display.displayPackMessage("Loading parsing tags from the default pack."); }
+            if(!parsingPack && namesToBeOmitted.contains("%all%")) { continue; }
+            if(!parsingPack) {Display.displayPackMessage("Loading parsing tags from the default pack."); }
             JSONObject tagsFile = null;
             try { tagsFile = (JSONObject)parser.parse(new FileReader(file));  } catch (IOException | ParseException e) { Display.displayPackError("Having trouble parsing from tags file"); e.printStackTrace(); continue; }
             if(tagsFile == null) { continue; }
             JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
             if(tagsArray == null) { continue; }
             //Load each of the tags
-            for(UiTag t : (ArrayList<UiTag>)loadMethods(UiTag.class, (JSONArray)tagsFile.get("tags"), null)) {
-                Display.interfaceTags.add(t);
+            for(Object obj1 : tagsArray) {
+                JSONObject obj = (JSONObject)obj1;
+                if(obj.get("tag") != null) {
+                    if(namesToBeOmitted.contains(obj.get("tag"))) {
+                        UiTag tag = (UiTag)loadMethod(UiTag.class, obj, null); 
+                        if(tag != null) { Display.interfaceTags.add(tag); }
+                    }
+                }
             }
             parsingPack = false;
             file = tagFile;
-            Display.displayProgressMessage("Parsing tags loaded.");
         }
+        Display.displayProgressMessage("Parsing tags loaded.");
         Display.changePackTabbing(false);
         return true;
     }
@@ -1563,12 +1568,13 @@ public class TextFighter {
         File packDirectory = getPackDirectory("choicesOfAllLocations", packUsed);
         if(packDirectory != null && packDirectory.list() != null) {
             File newFile = getPackFile("choicesOfAllLocations", packDirectory);
-            if(newFile != null) { file = newFile; }
+            if(newFile != null) { file = newFile; parsingPack = true; }
         }
 
         ArrayList<String> namesToBeOmitted = getOmittedAssets(packDirectory);
 
         for(int num=0; num<2; num++) {
+            if(!parsingPack && namesToBeOmitted.contains("%all%")) { continue; }
             if(!parsingPack) { num++; Display.displayPackMessage("Loading choices of all locations from the default pack."); }
             Display.changePackTabbing(true);
             JSONArray choicesFile = null;
@@ -1578,6 +1584,7 @@ public class TextFighter {
                 JSONObject obj = (JSONObject)choicesFile.get(i);
                 String name = (String)obj.get("name");
                 Display.displayPackMessage("Loading choice '" + name + "'");
+                if(namesToBeOmitted.contains(name) || usedNames.contains(name)) { continue; }
                 Display.changePackTabbing(true);
                 String desc = (String)obj.get("description");
                 String usage = (String)obj.get("usage");
