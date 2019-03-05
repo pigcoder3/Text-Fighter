@@ -529,14 +529,11 @@ public class TextFighter {
         ArrayList<String> omittedAssets = new ArrayList<String>();
         if(parsingPack) {
             File omissionFile = new File(directory + "/omit.txt");
-            System.out.println(omissionFile.getPath()); 
             if(omissionFile.exists()) {
-                System.out.println("e");
                 try (BufferedReader br = new BufferedReader(new FileReader(omissionFile));) {
                     String line;
                     while ((line = br.readLine()) != null) {
                         if(line.equals("%all%")) { System.out.println("e"); }
-                        System.out.println(line);
                         omittedAssets.add(line);
                     }
                 } catch (IOException e) { Display.displayWarning("IOException when attempting to read the omit file (The file does exist). Continuing normally..."); }
@@ -2243,6 +2240,8 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the assets!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
+        Display.displayProgressMessage(Display.errorsOnLoading + " errors occurred while loading the assets.");
+        addToOutput(Display.errorsOnLoading + " errors occurred while loading the assets.");
         player = new Player(getLocationByName("start"), playerCustomVariables, deathMethods, levelupMethods);
         //If the game is in test mode, then the game should not run for the user (Only get modpack feedback)
         if(!testMode) {
