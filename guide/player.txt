@@ -1,38 +1,38 @@
-Values in all player instances in mods (Whether or not they are used is up to the mod maker):
-    alive
-    deaths
-    inFight
-    totalProtection
-    currentWeapon
-    level
-    experience
-    experienceNeeded
-    score
-    hp
-    maxhp
-    strength
-    healthPotions
-    strengthPotions
-    invincibilityPotions
-    turnsWithStrengthLeft
-    turnsWithInvincibilityLeft
-    coins
-    magic
-    metalScraps
-    location
-    gameBeaten
-    inventory
-    achievements
-    customVariables
-    allDeathMethods
-    possibleDeathMethods
-    allLevelupMethods
-    possibleLevelupMethods
+Values (And their types) in all player instances in all mods (Whether or not they are used is up to the mod maker):
+    alive - boolean
+    deaths - int
+    inFight - boolean
+    totalProtection - double
+    currentWeapon - Weapon
+    level - int
+    experience - int
+    experienceNeeded - int
+    score - int
+    hp - int
+    maxhp - int
+    strength - int
+    healthPotions - int
+    strengthPotions - int
+    invincibilityPotions - int
+    turnsWithStrengthLeft - int
+    turnsWithInvincibilityLeft - int
+    coins - int
+    magic - int
+    metalScraps - int
+    location - Location
+    gameBeaten - boolean
+    inventory - ArrayList<Item>
+    achievements - ArrayList<Achievement>
+    customVariables - ArrayList<CustomVariable>
+    allDeathMethods - ArrayList<IDMethod>
+    possibleDeathMethods - ArrayList<IDMethod>
+    allLevelupMethods - ArrayList<IDMethod>
+    possibleLevelupMethods - ArrayList<IDMethod>
 
 Custom values in this mod:
-    coinsInBank
-    magicInBank
-    metalScrapsInBank
-    wood
-    leaves
-    bottles
+    coinsInBank - int
+    magicInBank - int
+    metalScrapsInBank - int
+    wood - int
+    leaves - int
+    bottles - int

@@ -23,7 +23,22 @@ public class Armor extends Item {
      * <p>Set to "An armor piece".</p>
      */
     public static String defaultDescription = "An armor piece";
-
+    /**
+     * Stores the default durability for armor.
+     * <p>Set to 100</p>
+     */
+    public static int defaultDurability = 100;
+    /**
+     * Store sthe default maximum durability for armor.
+     * <p>Set to 100</p>
+     */
+    public static int defaultMaxDurability = 100;
+    /**
+     * Stores the default unbreakable value.
+     * <p>Set to false.</p>
+     */
+    public static boolean defaultUnbreakable = false;
+    
     /**
      * Stores the item type for tools. Cannot be changed.
      * <p>Set to "armor".</p>
@@ -44,7 +59,22 @@ public class Armor extends Item {
      * <p>Set to {@link #defaultDescription}.</p>
      */
     private String description = defaultDescription;
-
+    /**
+     * Stores the durability of this armor.
+     * <p>Set tp {@link #defaultDurability}</p>
+     */
+    private int durability = defaultDurability;
+    /**
+     * Stores the maximum durability of this armor.
+     * <p>Set to {@link #defaultMaxDurability}</p>
+     */
+    private int maxDurability = defaultMaxDurability;
+    /**
+     * Stores whether or not the armor can break.
+     * <p>Set to {@link #defaultUnbreakable}.</p>
+     */
+    private boolean unbreakable = defaultUnbreakable;
+    
     /**
      * Stores the custom variables for this armor.
      * <p>Set to an empty ArrayList of CustomVariables.</p>
@@ -108,6 +138,34 @@ public class Armor extends Item {
      * @param s     The new value.
      */
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
+    /**
+     * Sets the value of {@link #durability}.
+     * <p>If the new value is less than 1, then the weapon breaks.</p>
+     * @param a     The new value.
+     */
+    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { broken(); }  }
+    /**
+     * Increases the value of {@link #durability}.
+     * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
+     * @param a     The new value.
+     */
+    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { broken(); }  }
+    /**
+     * Decrease the value of {@link #durability}.
+     * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
+     * @param a     The new value.
+     */
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { broken(); }  }
+    /**
+     * Returns {@link #unbreakable}.
+     * @return      {@link #unbreakable}
+     */
+    public boolean getUnbreakable() { return unbreakable; }
+    /**
+     * Returns {@link #maxDurability}.
+     * @return      {@link #maxDurability}
+     */
+    public int getMaxDurability() { return maxDurability; }
 
     //protectionAmount methods
     /**
@@ -150,11 +208,30 @@ public class Armor extends Item {
         return output;
     }
 
-    public Armor (String name, String description, double protectionAmount, ArrayList<CustomVariable> customVariables) {
+    /**
+     * Decrease the durability.
+     * @param durability        The amount of durability used
+     */
+    public void use(int durability) {
+        decreaseDurability(durability);
+    }
+
+    /**
+     * Removes the armor from the player's inventory
+     */
+    public void broken() {
+        TextFighter.player.removeFromInventory(name, ITEMTYPE);
+        TextFighter.addToOutput("Your " + name + " has broken!");
+    }
+
+    public Armor (String name, String description, double protectionAmount, int durability, int maxDurability, boolean unbreakable, ArrayList<CustomVariable> customVariables) {
         super(name, description);
         this.name = name;
         this.description = description;
         this.protectionAmount = protectionAmount;
+        this.durability = durability;
+        this.maxDurability = maxDurability;
+        this.unbreakable = unbreakable;
         this.customVariables = customVariables;
     }
 

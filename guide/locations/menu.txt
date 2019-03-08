@@ -59,12 +59,6 @@ Choices:
     Usage: witchhut
     Requirements: You must have the witchmap.
 
-    Name: home
-    Description: Goes to your home.
-    Function: Moves you to the home location.
-    Usage: home
-    Requirements: None
-
     Name: forest
     Description: Goes to the forest.
     Function: Moves you to the forest location.

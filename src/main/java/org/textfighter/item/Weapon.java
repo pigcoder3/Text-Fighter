@@ -93,7 +93,7 @@ public class Weapon extends Item {
      * Stores whether or not the weapon can break.
      * <p>Set to {@link #defaultUnbreakable}.</p>
      */
-    private boolean unbreakable = false;
+    private boolean unbreakable = defaultUnbreakable;
     /**
      * Stores the custom variables for this weapon.
      * <p>Set to an empty ArrayList of CustomVariables.</p>
@@ -110,7 +110,6 @@ public class Weapon extends Item {
         if(name == null) { return null; }
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
-                System.out.println(cv.getName() + ": " + cv.getValue().toString());
                 return cv.getValue();
             }
         }
@@ -292,7 +291,7 @@ public class Weapon extends Item {
         TextFighter.addToOutput("Your " + name + " has broken!");
     }
 
-    public Weapon(String name, String description, int damage, int critchance, int misschance, ArrayList<CustomVariable> customVariables, int durability, boolean unbreakable) {
+    public Weapon(String name, String description, int damage, int critchance, int misschance, ArrayList<CustomVariable> customVariables, int durability, int maxDurability, boolean unbreakable) {
         super(name, description);
         this.name = name;
         this.description = description;
@@ -302,6 +301,7 @@ public class Weapon extends Item {
         this.customVariables = customVariables;
         if(durability < 1 && !unbreakable) { broken(); }
         this.durability = durability;
+        this.maxDurability = maxDurability;
         this.unbreakable = unbreakable;
     }
 

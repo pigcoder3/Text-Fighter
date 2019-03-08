@@ -1,42 +1,35 @@
 {
-
-    "name" : "home",
-
+    "name" : "page1",
+    
     "interfaces" : [
-
-        "playerstats",
-        "home",
-        "choices"
-
+        "page1"
     ],
 
     "choices" : [
-
         {
-            "name" : "inventory",
-            "description" : "View your inventory.",
+            "name" : "next",
+            "description" : "go to the next page",
             "methods" : [
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["inventory"],
+                    "arguments" : ["page2"],
                     "argumentTypes" : ["0"]
                 }
-            ],
-            "usage" : "inventory"
+            ]
         },
         {
             "name" : "back",
-            "description" : "Moves you back to the menu",
+            "description" : "go back one page",
             "methods" : [
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["menu"],
-                    "argumentTypes" : ["0"],
+                    "arguments" : ["page2"],
+                    "argumentTypes" : ["0"]
                 }
-            ],
-            "usage" : "back"
+            ]
         }
     ]
 }
+

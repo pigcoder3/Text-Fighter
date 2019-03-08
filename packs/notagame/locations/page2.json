@@ -1,0 +1,23 @@
+{
+    "name" : "page2",
+    
+    "interfaces" : [
+        "page2"
+    ],
+    
+    "choices" : [
+        {
+            "name" : "back",
+            "description" : "Move back one page",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "org.textfighter.PackMethods",
+                    "arguments" : ["page1"],
+                    "argumentTypes" : ["0"]
+                }
+            ]
+        }
+    ]
+}
+

@@ -1,0 +1,13 @@
+Basic Info:
+    Name: wizard
+    Description: Obtain the battlewand.
+
+Obtaining:
+    Obtain the battlewand.
+
+Rewards:
+    100 coins - 100% chance
+    100 experience - 100% chance
+
+Extra Info:
+    None

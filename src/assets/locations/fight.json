@@ -10,27 +10,6 @@
 
     ],
 
-    "premethods" : [
-        {
-            "method" : "increaseTurnsWithInvincibilityLeft",
-            "class" : "org.textfighter.Player",
-            "arguments" : ["2"],
-            "argumentTypes" : ["1"],
-            "field" : "player",
-            "fieldclass" : "org.textfighter.TextFighter",
-            "requirements" : [
-                {
-                    "method" : "isCarrying",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : ["leafdisguise","specialitem"],
-                    "argumentTypes" : ["0","0"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter"
-                }
-            ]
-        }
-    ],
-
     "choices" : [
 
         {
@@ -138,7 +117,7 @@
                     "arguments" : ["1"],
                     "argumentTypes" : ["1"],
                     "field" : "player",
-                    "fieldclassString" : "org.textfighter.TextFighter"
+                    "fieldclass" : "org.textfighter.TextFighter"
                 }
             ],
             "requirements" : [
@@ -183,7 +162,7 @@
                     "arguments" : ["1"],
                     "argumentTypes" : ["1"],
                     "field" : "player",
-                    "fieldclassString" : "org.textfighter.TextFighter"
+                    "fieldclass" : "org.textfighter.TextFighter"
                 }
             ],
             "requirements" : [

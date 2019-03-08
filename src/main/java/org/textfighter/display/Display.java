@@ -11,6 +11,9 @@ import java.io.*;
 
 public class Display {
 
+    /***Stores the number of errors that occurred while loading the assets*/
+    public static int errorsOnLoading = 0;
+
     /***The directory where all error logs are stored*/
     public static final File logDir = new File("../../../logs");
 
@@ -98,6 +101,7 @@ public class Display {
      * @param e     The message
      */
     public static void displayError(String e) {
+        errorsOnLoading++;
         // Used for displaying errors such as something could not be found
         if(ANSI) {
             System.err.println(error + "[Error] " + e + RESET);
@@ -112,6 +116,7 @@ public class Display {
      * @param e     The message
      */
     public static void displayPackError(String e) {
+        errorsOnLoading++;
         // Displays errors that deal with packs
         if(TextFighter.testMode) {
             if(ANSI) {
@@ -182,7 +187,7 @@ public class Display {
 
     }
 
-     /**
+    /**
      * Displays a loading progress message.
      * @param e     The message
      */
@@ -198,6 +203,7 @@ public class Display {
 
     /*** Displays the previous command.*/
     public static void displayPreviousCommand() {
+        if(previousCommandString == null || previousCommandString.length() < 1) { return; }
         //Displays the command the user previously inputted
         if(ANSI) {
             System.out.println(previousCommand + "Previous choice: '" + previousCommandString + "'" + RESET + "\n");

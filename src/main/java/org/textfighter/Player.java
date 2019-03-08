@@ -129,6 +129,8 @@ public class Player {
     private boolean alive = true;
     /***Stores the number of deaths.*/
     private int deaths = 0;
+    /***Stores the number of kills.*/
+    private int kills = 0;
 
     /**
      * Stores whether or not the player is in a fight.
@@ -234,6 +236,12 @@ public class Player {
      * <p>Set to null.</p>
      */
     private Location location;
+
+    /**
+     * Stores the player's last location.
+     * <p>Set to null.</p>
+     */
+    private Location lastLocation;
 
     /**
      * Stores whether or not the game has been beaten.
@@ -462,6 +470,36 @@ public class Player {
      */
     public int getDeaths() { return deaths; }
 
+    /**
+     * Returns {@link #kills}.
+     * @return      {@link #kills}
+     */
+    public int getKills() { return kills; }
+
+    /**
+     * Increases the {@link #kills}.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The amount to increase by.
+     */
+    public void increaseKills(int a) { kills+=a; if(kills < 0) { kills = 0; } }
+
+    /**
+     * Decreases the {@link #kills}.
+     * <p>If the new value is less than 0, set it to 0.</p>
+     * @param a     The amount to decrease by.
+     */
+    public void decreaseKills(int a) { kills-=a; if(kills < 0) { kills = 0; } }
+
+    /**
+     * Sets {@link #kills} to the value given.
+     * <p>If {@link #kills} is less than 0, then set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setKills(int a) {
+        kills = a;
+        if(kills < 0) { kills = 0; }
+    }
+
     //inFight methods
     /**
      * Returns {@link #inFight}.
@@ -472,7 +510,7 @@ public class Player {
      * Sets {@link #inFight} to the value given.
      * @param b     The new value.
      */
-    public void setInFight(boolean b) { inFight=b; }
+    public void setInFight(boolean b) { inFight=b; if(!b){ TextFighter.actedSinceStartOfFight = false; } }
 
     //totalProtection methods
     /**
@@ -768,6 +806,15 @@ public class Player {
      * @param a     The amount to decrease by.
      */
     public void decreaseScore(int a) { score-=a; if(score < 0) { score = 0; } }
+    /**
+     * Sets {@link #score} to the value given.
+     * <p>If {@link #score} is less than 0, then set it to 0.</p>
+     * @param a     The new value.
+     */
+    public void setScore(int a) {
+        score = a;
+        if(score < 0) { score = 0; }
+    }
 
     //health methods
     /**
@@ -797,6 +844,12 @@ public class Player {
         hp = hp - (int)Math.round(a/(totalProtection+1)); //total protection Increased by 1 here so that the game doesn't divide by 0
 		if(hp < 0) { hp = 0; }
 		if(hp > maxhp) { hp = maxhp; }
+
+        for(Item i : inventory) {
+            if(i instanceof Armor) {
+                ((Armor)i).use(1); //Decrease its durability by 1
+            }
+        }
 
         if(customString != null) { TextFighter.addToOutput(customString);}
         TextFighter.addToOutput("You have been hurt for " + a + " hp.");
@@ -865,7 +918,7 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { magic=0; } }
+    public void spendMagic(int a) {  if (magic-a >= 0) { magic-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " magic because you do not have enough"); } }
     /**
      * Increases the {@link #magic}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -890,7 +943,7 @@ public class Player {
      * <p>If the new value is less than 0, set it to 0.</p>
      * @param a     The amount to decrease by.
      */
-    public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { metalScraps=0; }  }
+    public void spendMetalScraps(int a) { if(metalScraps-a >=0) { metalScraps-=a; } else { TextFighter.addToOutput("You cannot spend " + a + " metal scraps because you do not have enough"); } }
     /**
      * Increases the {@link #metalScraps}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -913,6 +966,22 @@ public class Player {
             if(l.getName().equals(loc)) {
                 location = l;
 
+            }
+        }
+    }
+    /**
+     * Returns the {@link #lastLocation}.
+     * @return      {@link #lastLocation}
+     */
+    public Location getLastLocation() { return lastLocation; }
+    /**
+     * Sets the value of {@link #lastLocation} to the location with the name given.
+     * @param loc     The name of the last location.
+     */
+    public void setLastLocation(String loc) {
+        for(Location l : TextFighter.locations) {
+            if(l.getName().equals(loc)) {
+                lastLocation = l;
             }
         }
     }
@@ -1039,7 +1108,10 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(int deaths, int kills, Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+        this.location = location;
+        this.deaths = deaths;
+        this.kills = kills;
         this.hp = hp;
         this.maxhp = maxhp;
         this.coins = coins;
@@ -1062,7 +1134,8 @@ public class Player {
         calculateStrength();
     }
 
-    public Player(Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(Location location, Weapon currentWeapon, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+        this.location = location;
         this.currentWeapon = currentWeapon;
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
@@ -1070,7 +1143,8 @@ public class Player {
         calculateStrength();
     }
 
-    public Player(ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(Location location, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+        this.location = location;
         this.customVariables = customVariables;
         this.allDeathMethods = deathMethods;
         this.allLevelupMethods = levelupmethods;

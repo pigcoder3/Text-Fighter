@@ -10,7 +10,7 @@
     "choices" : [
         {
             "name" : "staff",
-            "description" : "Cost: 30 metal scraps, crafts a staff.",
+            "description" : "Cost: 30 wood, crafts a staff.",
             "methods" : [
                 {
                     "method" : "addToInventory",
@@ -69,116 +69,6 @@
                         },
                         ">=",
                         "30"
-                    ],
-                    "argumentTypes" : ["1","0","1"]
-                }
-            ]
-        },
-        {
-            "name" : "leafdisguise",
-            "description" : "Cost: 200 leaves and 20 wood, crafts a leaf disguise.",
-            "methods" : [
-                {
-                    "method" : "addToInventory",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : ["leafdisguise", "specialitem"],
-                    "argumentTypes" : ["0","0"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter"
-                },
-                {
-                    "method" : "setCustomVariableByName",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : [
-                        "wood",
-                        {
-                            "method" : "calculateFromTwoIntegers",
-                            "class" : "org.textfighter.PackMethods",
-                            "arguments" : [
-                                {
-                                    "method" : "getCustomVariableFromName",
-                                    "class" : "org.textfighter.Player",
-                                    "arguments" : ["wood"],
-                                    "argumentTypes" : ["0"],
-                                    "field" : "player",
-                                    "fieldclass" : "org.textfighter.TextFighter"
-                                },
-                                "-",
-                                "20"
-                            ],
-                            "argumentTypes" : ["1","0","1"],
-                        }
-                    ],
-                    "argumentTypes" : ["0","*1"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter"
-                },
-                {
-                    "method" : "setCustomVariableByName",
-                    "class" : "org.textfighter.Player",
-                    "arguments" : [
-                        "leaves",
-                        {
-                            "method" : "calculateFromTwoIntegers",
-                            "class" : "org.textfighter.PackMethods",
-                            "arguments" : [
-                                {
-                                    "method" : "getCustomVariableFromName",
-                                    "class" : "org.textfighter.Player",
-                                    "arguments" : ["leaves"],
-                                    "argumentTypes" : ["0"],
-                                    "field" : "player",
-                                    "fieldclass" : "org.textfighter.TextFighter"
-                                },
-                                "-",
-                                "200"
-                            ],
-                            "argumentTypes" : ["1","0","1"],
-                        }
-                    ],
-                    "argumentTypes" : ["0","*1"],
-                    "field" : "player",
-                    "fieldclass" : "org.textfighter.TextFighter"
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "org.textfighter.TextFighter",
-                    "arguments" : ["You crafted a leafdisguise."],
-                    "argumentTypes" : ["0"]
-                }
-            ],
-            "requirements" : [
-                {
-                    "method" : "variableComparison",
-                    "class" : "org.textfighter.PackMethods",
-                    "arguments" : [
-                        {
-                            "method" : "getCustomVariableFromName",
-                            "class" : "org.textfighter.Player",
-                            "arguments" : ["wood"],
-                            "argumentTypes" : ["0"],
-                            "field" : "player",
-                            "fieldclass" : "org.textfighter.TextFighter"
-                        },
-                        ">=",
-                        "20"
-                    ],
-                    "argumentTypes" : ["1","0","1"]
-                },
-                {
-                    "method" : "variableComparison",
-                    "class" : "org.textfighter.PackMethods",
-                    "arguments" : [
-                        {
-                            "method" : "getCustomVariableFromName",
-                            "class" : "org.textfighter.Player",
-                            "arguments" : ["leaves"],
-                            "argumentTypes" : ["0"],
-                            "field" : "player",
-                            "fieldclass" : "org.textfighter.TextFighter"
-                        },
-                        ">=",
-                        "200"
                     ],
                     "argumentTypes" : ["1","0","1"]
                 }

@@ -78,7 +78,18 @@
                 {
                     "method" : "movePlayer",
                     "class" : "org.textfighter.PackMethods",
-                    "arguments" : ["home"],
+                    "arguments" : [
+                        {
+                            "method" : "getName",
+                            "class" : "org.textfighter.location.Location",
+                            "field" : {
+                                "method" : "getLastLocation",
+                                "class" : "org.textfighter.Player",
+                                "field" : "player",
+                                "fieldclass" : "org.textfighter.TextFighter"
+                            }
+                        }
+                    ],
                     "argumentTypes" : ["0"]
                 }
             ],

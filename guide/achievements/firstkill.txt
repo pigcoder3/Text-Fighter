@@ -1,0 +1,12 @@
+Basic Info:
+    Name: firstkill
+    Description: Not a bad start.
+
+Obtaining:
+    Get your first kill
+
+Rewards:
+    10 experience - 100% chance
+
+Extra Info:
+    None
