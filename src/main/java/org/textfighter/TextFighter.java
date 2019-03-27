@@ -34,11 +34,11 @@ make an enemy perform an action,
 And a lot more.
 
     ChoiceMethods have arguments that are inputted by the user.
-These areguments are specified by "%ph%[inputIndex]", and are replaced
+These arguments are specified by "%ph%[inputIndex]", and are replaced
 just before they are invoked. If an argument is a method,
 then placeholder arguments are replaced by input.
     If something went wrong with putting input into the arguments,
-the user is notified and the usage of the choies is outputted.
+the user is notified and the usage of the chocies is outputted.
 
 */
 

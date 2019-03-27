@@ -192,7 +192,7 @@ public class UiTag {
         if(field != null && field.getClass().equals(FieldMethod.class)) {
             ((FieldMethod)field).resetArguments();
         }
-        arguments = new ArrayList<>(originalArguments);;
+        arguments = new ArrayList<Object>(originalArguments);;
      }
 
     public UiTag(String tag, Method method, ArrayList<Object> arguments, ArrayList<Class> argumentTypes, Object field, ArrayList<Requirement> requirements) {

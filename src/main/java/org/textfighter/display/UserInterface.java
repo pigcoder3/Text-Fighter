@@ -76,11 +76,11 @@ public class UserInterface {
                             }
                         }
                         tagUsed = true;
+                        break;
                     }
                 }
                 //If it is not used or doesnt exist, just add the tag back to the interface
                 if(!tagUsed) { uiInProgress+=currentTag; }
-                tagUsed=false;
                 inTag=false;
             } else if (inTag){
                 //Continue recording the tag
