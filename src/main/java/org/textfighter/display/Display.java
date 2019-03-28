@@ -346,8 +346,10 @@ public class Display {
                 displayProgressMessage("Display colors loaded.");
                 //The warning is there just so that the users know about this
                 if(ANSI && colorWarning) {
+					TextFighter.addToOutput("WARNING: Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the display config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.\n");
                     displayWarning("Display colors are enabled. If you wish to disable them,\nor you are getting unusual character sequences,\nyou can disable them in the display config file.\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
                 } else if(!ANSI && colorWarning) {
+					TextFighter.addToOutput("WARNING: Display colors are disabled. If you wish to enable them,\n remove 'disable' from the display config file.\nIf you wish to disable this message,\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.\n");
                     displayWarning("Display colors are disabled. If you wish to enable them,\n remove 'disable' from the display config file.\nIf you wish to disable this message,\nIf you wish to disable this message,\ntype 'disableWarning' in the display config file.");
                 }
             }
