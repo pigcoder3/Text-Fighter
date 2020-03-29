@@ -378,6 +378,7 @@ public class TextFighter {
      * @return      the json files represented as strings.
      */
     public static ArrayList<String> getJsonFilesAsString(String path) {
+        System.out.println(path);
         ArrayList<String> jsonStrings = new ArrayList<>();
         try {
             final File jarFile = new File(TextFighter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
@@ -387,9 +388,12 @@ public class TextFighter {
                 while(entries.hasMoreElements()) {
                     String name = entries.nextElement().getName();
                     if (name.startsWith(path.substring(1) + "/") && name.endsWith(".json")) { //filter according to the path and json file
+                        String json = "";
                         InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Notes the forward-slash
                         if(stream == null) { continue; }
-                        String json = new String(stream.readAllBytes());
+                        Scanner scan = new Scanner(stream).useDelimiter("\\Z");
+                        try { json = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
+                        scan.close();
                         if(json.isEmpty()) {
                             json = "{}";
                         }
@@ -409,16 +413,15 @@ public class TextFighter {
      * @return      the json files represented as strings.
      */
     public static String getSingleJsonFileAsString(String path) {
+        System.out.println(path);
         String jsonString = "{}";
-        try {
-            InputStream stream = TextFighter.class.getResourceAsStream(path);
-            if(stream == null) { return ""; }
-            jsonString = new String(stream.readAllBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream stream = TextFighter.class.getResourceAsStream(path);
+        if(stream == null) { return "{}"; }
+        Scanner scan = new Scanner(stream).useDelimiter("\\Z");
+        try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
+        scan.close();
         if(jsonString.isEmpty()) {
-            jsonString = "{}";
+            return "{}";
         }
         return jsonString;
     }
