@@ -1,4 +1,6 @@
 {
+    "owner" : "player",
+
     "values" : [
         {
             "name" : "coinsInBank",

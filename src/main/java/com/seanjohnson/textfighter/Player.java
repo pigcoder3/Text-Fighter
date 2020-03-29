@@ -1020,6 +1020,8 @@ public class Player {
             if(item != null) {
                 try { inventory.add((Weapon)item.clone()); } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
+            } else {
+                Display.displayError("Unkown weapon '" + name + "'");
             }
         }
         else if(type.equals("armor")) {
@@ -1029,6 +1031,8 @@ public class Player {
                 try { inventory.add((Armor)item.clone());  } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 calculateTotalProtection(); //Recalculate the total protection because there is more armor
+            } else {
+                Display.displayError("Unkown armor piece '" + name + "'");
             }
         }
         else if(type.equals("tool")) {
@@ -1037,6 +1041,8 @@ public class Player {
             if(item != null) {
                 try { inventory.add((Tool)item.clone()); } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
+            } else {
+                Display.displayError("Unkown tool '" + name + "'");
             }
         }
         else if(type.equals("specialitem")) {
@@ -1045,6 +1051,8 @@ public class Player {
             if(item != null) {
                 try { inventory.add((SpecialItem)item.clone());  } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
+            } else {
+                Display.displayError("Unkown specialitem '" + name + "'");
             }
         }
     }

@@ -15,7 +15,7 @@ public class Display {
     public static int errorsOnLoading = 0;
 
     /***The directory where all error logs are stored*/
-    public static final File logDir = new File("logs");
+    public static File logDir;
 
     /***The file where the log is stored*/
     public static File logFile;
@@ -83,6 +83,7 @@ public class Display {
      * @param msg       The message to log.
      */
     public static void writeToLogFile(String msg) {
+        if(logDir == null) { return; } //No installation has occurred yet, so don't worry about it
         try {
             if(logFile == null || !logFile.exists()) {
                 if(!logDir.exists()) {
