@@ -187,7 +187,7 @@ public class TextFighter {
 
     //Version
     /**The file that the version of the game is stored in.*/
-    public static File versionFile = new File("VERSION.txt");
+    public static String versionFile = "VERSION.txt";
     /**Stores the current version.*/
     public static String version;
 
@@ -359,12 +359,11 @@ public class TextFighter {
      * @return      returns the version that is read. If no version was read, then returns "unknown".
      */
     public static String readVersionFromFile() {
-        if(versionFile == null) { Display.displayWarning("Could not read the version from file"); return "Unknown"; }
-        try (BufferedReader br = new BufferedReader(new FileReader(versionFile))) {
-            String line = br.readLine();
-            if(line != null) { return line; } else { return "Unknown"; }
-        } catch(IOException e) { Display.displayWarning("Could not read the version from file");}
-        return "Unknown";
+        InputStream stream = TextFighter.class.getResourceAsStream("/VERSION.txt");
+        if(stream == null) { Display.displayError("Difficulty reading the version file."); return "Unknown"; }
+        Scanner scan = new Scanner(stream);
+        String line = scan.next();
+        if(line != null) { return line; } else { return "Unknown"; }
     }
 
     /**
