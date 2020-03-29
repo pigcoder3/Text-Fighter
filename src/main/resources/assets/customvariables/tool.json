@@ -1,4 +1,6 @@
 {
+    "owner" : "tool",
+
     "values" : [
         {
             "name" : "metalScrapsToRepairAtStation",
@@ -12,13 +14,6 @@
             "value" : "true",
             "type" : "3",
             "inOutput" : "false",
-            "isSaved" : "false"
-        },
-        {
-            "name" : "longRanged",
-            "value" : "false",
-            "type" : "3",
-            "inOutput" : "true",
             "isSaved" : "false"
         }
     ]
