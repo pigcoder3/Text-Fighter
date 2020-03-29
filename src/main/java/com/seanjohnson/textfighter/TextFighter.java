@@ -128,21 +128,21 @@ public class TextFighter {
             //Saves
             savesDir = new File(installationRoot.getAbsolutePath() + "/saves");
             if(!savesDir.exists()) {
-                Display.displayProgressMessage("Creating Directory: " + installationRoot.getAbsolutePath());
+                Display.displayProgressMessage("Creating Directory: " + savesDir.getAbsolutePath());
                 savesDir.mkdirs();
             }
 
             //Packs
             packDir = new File(installationRoot.getAbsolutePath() + "/packs");
             if(!packDir.exists()) {
-                Display.displayProgressMessage("Creating Directory: " + installationRoot.getAbsolutePath());
+                Display.displayProgressMessage("Creating Directory: " + packDir.getAbsolutePath());
                 packDir.mkdirs();
             }
 
             //Config
             configDir = new File(installationRoot.getAbsolutePath() + "/config");
             if(!configDir.exists()) {
-                Display.displayProgressMessage("Creating Directory: " + installationRoot.getAbsolutePath());
+                Display.displayProgressMessage("Creating Directory: " + configDir.getAbsolutePath());
                 configDir.mkdirs();
             }
 
@@ -159,10 +159,15 @@ public class TextFighter {
                     try { displayFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the display colors configuration file."); }
                 }
 
-            //guide
-            //File guideDir = new File(installationRoot.getAbsolutePath() + "/guide");
+            //logging
+            Display.logDir = new File(installationRoot.getAbsolutePath() + "/logs");
+            if(!Display.logDir.exists()) {
+                Display.displayProgressMessage("Creating Directory: " + Display.logDir.getAbsolutePath());
+                Display.logDir.mkdirs();
+            }
+
         } else {
-            Display.displayError("ERROR: could not find directory '" + installationLocation.getAbsolutePath() + "' for installation");
+            Display.displayError("Could not find directory '" + installationLocation.getAbsolutePath() + "' for installation");
             return false;
         }
         return true;
@@ -2867,6 +2872,7 @@ public class TextFighter {
                 testMode = true;
             }
         }
+
         if(!testMode) { Display.clearScreen(); }
 
         //Install the game if not already installed
@@ -2886,6 +2892,21 @@ public class TextFighter {
         if(!testMode) {
             PackMethods.getSaveFiles();
             player.setLocation("start");
+
+            addToOutput("\nVisit https://github.com/seanmjohns/Text-Fighter/wiki\n" +
+                                "for a guide to configuration, playing the game, and\n" +
+                                "creating a mod of your own!\n" +
+                                "A guide for each mod should be located in the mod's\n" +
+                                "folder, which are to be placed in the `packs` folder.\n" +
+                                "The configuration files are located in one of the\n" +
+                                "following locations:\n" +
+                                "   - Windows: `C:\\\\Program Files\\textfighter\\config`\\\n" +
+                                "   - MacOS: `~/Library/Application Support/textfighter/config/`\n" +
+                                "   - Linux: `/opt/config/`\n" +
+                                "(Windows is not yet supported)\n" +
+                                "The vanilla textfighter guide is located at\n" +
+                                "https://github.com/seanmjohns/Text-Fighter/tree/master/guide");
+
             while(player.getAlive() || player.getGameBeaten()) {
                 playGame();
             }
