@@ -1,0 +1,10 @@
+{
+
+    "name" : "chestplate",
+    "description" : "A piece of armor that covers your torso",
+    "protectionamount" : "25",
+    "durability" : "200",
+    "maxDurability" : "200",
+    "unbreakable" : "false"
+
+}

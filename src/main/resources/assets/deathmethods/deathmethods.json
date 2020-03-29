@@ -1,0 +1,100 @@
+{
+    "deathmethods" : [
+        {
+            "id" : "divideCoinsByTwo",
+            "method" : "setCoins",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        }
+                        "/",
+                        "2"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "id" : "TellPlayerTheyLostCoins",
+            "method" : "addToOutput",
+            "class" : "com.seanjohnson.textfighter.TextFighter",
+            "arguments" : ["You lost half your coins."],
+            "argumentTypes" : ["0"]
+        }
+        {
+            "id" : "divideMagicByTwo",
+            "method" : "setMagic",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMagic",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        }
+                        "/",
+                        "2"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "id" : "TellPlayerTheyLostMagic",
+            "method" : "addToOutput",
+            "class" : "com.seanjohnson.textfighter.TextFighter",
+            "arguments" : ["You lost half your magic points."],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "id" : "divideMetalScrapsByTwo",
+            "method" : "setMetalScraps",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : [
+                {
+                    "method" : "calculateFromTwoIntegers",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        }
+                        "/",
+                        "2"
+                    ],
+                    "argumentTypes" : ["1","0","1"],
+                }
+            ],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "id" : "TellPlayerTheyLostMetalScraps",
+            "method" : "addToOutput",
+            "class" : "com.seanjohnson.textfighter.TextFighter",
+            "arguments" : ["You lost half your metal scraps."],
+            "argumentTypes" : ["0"]
+        }
+    ]
+}

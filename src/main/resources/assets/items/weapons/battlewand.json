@@ -1,0 +1,10 @@
+{
+    "name" : "battlewand",
+    "description" : "A semi-powerful wand that was specially crafted for combat",
+    "damage" : "15",
+    "critchance" : "30",
+    "misschance" : "5",
+    "canBeRepairedAtStation" : "false",
+    "longRanged" : "true",
+    "unbreakable" : "true"
+}

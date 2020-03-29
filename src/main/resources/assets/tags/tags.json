@@ -1,0 +1,344 @@
+{
+    "tags" : [
+        {
+            "tag" : "<saves>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getSaveFiles"
+        },
+        {
+            "tag" : "<enemies>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getPossibleEnemyOutputs"
+        },
+        {
+            "tag" : "<choices>",
+            "class" : "com.seanjohnson.textfighter.location.Location",
+            "method" : "getChoiceOutputs",
+            "field" : {
+                "method" : "getLocation",
+                "class" : "com.seanjohnson.textfighter.Player",
+                "field" : "player",
+                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            },
+            "fieldclass" : "com.seanjohnson.textfighter.Player"
+        },
+        {
+            "tag" : "<version>",
+            "class" : "com.seanjohnson.textfighter.TextFighter",
+            "method" : "getVersion"
+        },
+        {
+            "tag" : "<modname>",
+            "class" : "com.seanjohnson.textfighter.TextFighter",
+            "method" : "getModName"
+        },
+        {
+            "tag" : "<allItemSimpleOutputs>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["all"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allWeaponSimpleOutputs>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["weapon"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allArmorSimpleOutputs>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["armor"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allToolSimpleOutputs>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["tool"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allSpecialItemSimpleOutputs>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputs",
+            "arguments" : ["specialitem"],
+            "argumentTypes" : ["0"]
+        },
+
+
+
+
+        {
+            "tag" : "<coins>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCoins",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<str>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getStrength",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<magic>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getMagic",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<metal>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getMetalScraps",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<health>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getHp",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<maxhealth>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getMaxHp",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<deaths>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getDeaths",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<level>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getLevel",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<experience>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getExperience",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<experienceNeeded>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getExperienceNeeded",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<healthPotions>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getHealthPotions",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<strengthPotions>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getStrengthPotions",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<invincibilityPotions>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getInvincibilityPotions",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<turnsWithStrengthLeft>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getTurnsWithStrengthLeft",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<turnsWithInvincibilityLeft>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getTurnsWithInvincibilityLeft",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<weapon>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCurrentWeaponName",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<durability>",
+            "class" : "com.seanjohnson.textfighter.item.Weapon",
+            "method" : "getDurability",
+            "field" : {
+                "method" : "getCurrentWeapon",
+                "class" : "com.seanjohnson.textfighter.Player",
+                "field" : "player",
+                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            }
+        },
+        {
+            "tag" : "<currentWeaponUnbreakable>",
+            "method" : "getUnbreakable",
+            "class" : "com.seanjohnson.textfighter.item.Weapon",
+            "field" : {
+                "method" : "getCurrentWeapon",
+                "class" : "com.seanjohnson.textfighter.Player",
+                "field" : "player",
+                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            }
+        },
+        {
+            "tag" : "<allItemSimpleOutputsFromInventory>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputsFromInventory",
+            "arguments" : ["all"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allWeaponSimpleOutputsFromInventory>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputsFromInventory",
+            "arguments" : ["weapon"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allArmorSimpleOutputsFromInventory>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputsFromInventory",
+            "arguments" : ["armor"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allToolSimpleOutputsFromInventory>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputsFromInventory",
+            "arguments" : ["tool"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<allSpecialItemSimpleOutputsFromInventory>",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "method" : "getAllItemSimpleOutputsFromInventory",
+            "arguments" : ["specialitem"],
+            "argumentTypes" : ["0"]
+        },
+        {
+            "tag" : "<coinsInBank>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["coinsInBank"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<magicInBank>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["magicInBank"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<metalScrapsInBank>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["metalScrapsInBank"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<wood>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["wood"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<leaves>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["leaves"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<bottles>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getCustomVariableFromName",
+            "arguments" : ["bottles"],
+            "argumentTypes" : ["0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        }
+
+
+
+
+        {
+            "tag" : "<enemyhp>",
+            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+            "method" : "getHp",
+            "field" : "currentEnemy",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemymaxhp>",
+            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+            "method" : "getMaxHp",
+            "field" : "currentEnemy",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemystr>",
+            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+            "method" : "getStrength",
+            "field" : "currentEnemy",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemylevelreq>",
+            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+            "method" : "getLevelRequirement",
+            "field" : "currentEnemy",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemydifficulty>",
+            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+            "method" : "getDifficulty",
+            "field" : "currentEnemy",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "tag" : "<enemyTurnsWithInvincibilityLeft>",
+            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+            "method" : "getTurnsWithInvincibilityLeft",
+            "field" : "currentEnemy",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        }
+    ]
+}

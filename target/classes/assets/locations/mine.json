@@ -1,0 +1,64 @@
+{
+
+    "name" : "mine",
+
+    "interfaces" : [
+        "mine",
+        "choices"
+    ],
+
+    "choices" : [
+        {
+            "name" : "mine",
+            "description" : "mines 1 metal scrap",
+            "methods" : [
+                {
+                    "method" : "gainMetalScraps",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "decreaseDurability",
+                    "class" : "com.seanjohnson.textfighter.item.Tool",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : {
+                        "method" : "getFromInventory",
+                        "class" : "com.seanjohnson.textfighter.Player",
+                        "arguments" : ["pickaxe","tool"],
+                        "argumentTypes" : ["0","0"],
+                        "field" : "player",
+                        "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                    }
+                }
+            ],
+            "usage" : "mine",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["pickaxe", "tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                }
+            ]
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "name" : "miner",
+    "description" : "A strong enemy who carries a pickaxe.",
+    "health" : "40",
+    "maxhealth" : "40",
+    "strength" : "15",
+    "levelRequirement" : "3",
+    "requirements" : [],
+    "finalBoss" : "false",
+    "postMethods" : [],
+    "preMethods" : [],
+    "rewardMethods" : [
+        {
+            "method" : "addToInventory",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["pickaxe","tool"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["pickaxe","tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ],
+            "chance" : "50",
+            "rewarditem" : "A pickaxe. It can be used to mine metal scraps."
+        },
+        {
+            "method" : "increaseExperience",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["25"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        },
+        {
+            "method" : "gainCoins",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["25"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+        }
+    ]
+}

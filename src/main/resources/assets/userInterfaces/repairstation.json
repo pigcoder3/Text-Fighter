@@ -1,0 +1,15 @@
+{
+    "name" : "repairstation",
+
+    "interface" : [
+
+        "----------------------",
+        "    REPAIR STATION    ",
+        "                      ",
+        " Metal Scraps: <metal>",
+        "                      ",
+        " Costs:               ",
+        "   Sword: 30          ",
+        "   Deagle: 35         "
+    ]
+}
