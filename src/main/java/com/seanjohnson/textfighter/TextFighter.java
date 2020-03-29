@@ -378,7 +378,6 @@ public class TextFighter {
      * @return      the json files represented as strings.
      */
     public static ArrayList<String> getJsonFilesAsString(String path) {
-        System.out.println(path);
         ArrayList<String> jsonStrings = new ArrayList<>();
         try {
             final File jarFile = new File(TextFighter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
@@ -413,7 +412,6 @@ public class TextFighter {
      * @return      the json files represented as strings.
      */
     public static String getSingleJsonFileAsString(String path) {
-        System.out.println(path);
         String jsonString = "{}";
         InputStream stream = TextFighter.class.getResourceAsStream(path);
         if(stream == null) { return "{}"; }
