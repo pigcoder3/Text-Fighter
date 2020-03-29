@@ -1,0 +1,164 @@
+{
+
+    "name" : "shop",
+
+    "interfaces" : [
+        "playerstats",
+        "shop",
+        "choices"
+    ],
+
+    "choices" : [
+        {
+            "name" : "healthpotion",
+            "description" : "Cost: 20 coins, heals you for 30 health",
+            "methods" : [
+                {
+                    "method" : "increaseHealthPotions",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendCoins",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["20"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : ["You bought a health potion for 20 coins."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "healthpotion",
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "20"
+                    ],
+                    "argumentTypes" : ["1", "0", "1"]
+                }
+            ]
+        },
+        {
+            "name" : "strengthpotion",
+            "description" : "Cost: 50 coins, doubles your strength for 2 turns",
+            "methods" : [
+                {
+                    "method" : "increaseStrengthPotions",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendCoins",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["50"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : ["You bought a strength potion for 50 coins."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "strengthpotion",
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "50"
+                    ],
+                    "argumentTypes" : ["1", "0", "1"]
+                }
+            ]
+        },
+        {
+            "name" : "invincibilitypotion",
+            "description" : "Cost: 200 coins, makes you invinsible for 2 turns",
+            "methods" : [
+                {
+                    "method" : "increaseInvincibilityPotions",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendCoins",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["200"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : ["You bought an invincibility potion for 200 coins."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "invincibilitypotion",
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCoins",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "200"
+                    ],
+                    "argumentTypes" : ["1", "0", "1"]
+                }
+            ]
+        },
+        {
+            "name" : "back",
+            "description" : "Moves you back to the menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["menu"],
+                    "argumentTypes" : ["0"],
+                }
+            ],
+            "usage" : "back"
+        }
+    ]
+}

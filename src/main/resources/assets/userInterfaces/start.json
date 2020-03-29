@@ -1,0 +1,16 @@
+{
+
+    "name" : "start",
+
+    "interface" : [
+
+        "Version: <version>    ",
+        "mod used: <modname>   ",
+        "----------------------",
+        "     TEXT-FIGHTER     ",
+        "   'start' to begin   ",
+        "----------------------"
+
+    ]
+
+}

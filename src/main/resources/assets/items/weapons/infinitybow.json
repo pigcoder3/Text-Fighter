@@ -1,0 +1,14 @@
+{
+
+    "name" : "infinitybow",
+    "description" : "A bow of infinite arrows.",
+    "damage" : "25",
+    "critchance" : "20",
+    "misschance" : "30",
+    "durability" : "200",
+    "maxDurability" : "200",
+    "canBeRepairedAtStation" : "false",
+    "longRanged" : "true",
+    "unbreakable" : "false"
+
+}

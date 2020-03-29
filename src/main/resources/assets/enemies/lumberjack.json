@@ -1,0 +1,53 @@
+{
+
+    "name" : "lumberjack",
+    "description" : "He makes his living from cutting down trees with his trusty axe.",
+    "health" : "50",
+    "maxhealth" : "50",
+    "strength" : "15",
+    "levelRequirement" : "1",
+    "finalBoss" : "false",
+    "rewards" : [
+        {
+            "method" : "addToInventory",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["axe","tool"],
+            "argumentTypes" : ["0","0"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "chance" : "40",
+            "rewarditem" : "An axe.",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["axe","tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                }
+            ]
+        },
+        {
+            "method" : "increaseExperience",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["20"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "chance" : "100",
+            "rewarditem" : "20 experience"
+        },
+        {
+            "method" : "gainCoins",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "arguments" : ["15"],
+            "argumentTypes" : ["1"],
+            "chance" : "100",
+            "rewarditem" : "15 coins"
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "name" : "deagle",
+    "description" : "A powerful gun.",
+    "damage" : "20",
+    "critchance" : "10",
+    "misschance" : "30",
+    "durability" : "200",
+    "maxDurability" : "200",
+    "metalScrapsToRepairAtStation" : "30",
+    "canBeRepairedAtStation" : "true",
+    "longRanged" : "true",
+    "unbreakable" : "false"
+}

@@ -1,0 +1,40 @@
+{
+    "values" : [
+        {
+            "name" : "coinsInBank",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        },
+        {
+            "name" : "magicInBank",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        },
+        {
+            "name" : "metalScrapsInBank",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        },
+        {
+            "name" : "wood",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        },
+        {
+            "name" : "leaves",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        }
+        {
+            "name" : "bottles",
+            "value" : "0",
+            "type" : "1",
+            "isSaved" : "true"
+        }
+    ]
+}
