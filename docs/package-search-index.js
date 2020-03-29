@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"org.textfighter"},{"l":"org.textfighter.display"},{"l":"org.textfighter.enemy"},{"l":"org.textfighter.item"},{"l":"org.textfighter.location"},{"l":"org.textfighter.method"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.textfighter"},{"l":"org.textfighter.display"},{"l":"org.textfighter.enemy"},{"l":"org.textfighter.item"},{"l":"org.textfighter.location"},{"l":"org.textfighter.method"}]
