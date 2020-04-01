@@ -84,18 +84,20 @@ public class Display {
      */
     public static void writeToLogFile(String msg) {
         if(logDir == null) { return; } //No installation has occurred yet, so don't worry about it
+        //If there is no log file, then try to create one
         try {
             if(logFile == null || !logFile.exists()) {
                 if(!logDir.exists()) {
-                    logDir.mkdir();
+                    logDir.mkdirs();
                 }
-                logFile = new File(logDir.getPath() + "/" + new Date().toString());
+                logFile = new File(logDir.getAbsolutePath() + File.separatorChar + "Textfighter-" + new Date().toString());
                 logFile.createNewFile();
             }
-        } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "' because unable to create one"); }
+        } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "' because unable to create one"); return; }
+        //Write to the log file
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
             out.println(msg);
-        } catch (IOException e) { System.out.println("Could not write to log file '" + logFile.getName() + "'"); }
+        } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "'"); }
     }
     /**
      * Displays an error message.
@@ -281,7 +283,7 @@ public class Display {
      */
     public static void loadDesiredColors() {
         displayProgressMessage("Loading the display colors...");
-        File displayColors = new File(TextFighter.configDir.getAbsolutePath() + "/display");
+        File displayColors = new File(TextFighter.configDir.getAbsolutePath() + File.separatorChar + "display");
         if(!displayColors.exists()) { return; }
         try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {
             String line;
