@@ -45,6 +45,8 @@ import org.json.simple.parser.*;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.Text;
 
+import javax.swing.*;
+
 /* HOW IT WORKS
 
     Mods are loaded.
@@ -66,7 +68,7 @@ These arguments are specified by "%ph%[inputIndex]", and are replaced
 just before they are invoked. If an argument is a method,
 then placeholder arguments are replaced by input.
     If something went wrong with putting input into the arguments,
-the user is notified and the usage of the chocies is outputted.
+the user is notified and the usage of the choices is outputted.
 
 */
 
@@ -78,6 +80,9 @@ the user is notified and the usage of the chocies is outputted.
  */
 
 public class TextFighter {
+
+    /**Object that waits for a message*/
+    public static Object waiter = new Object();
 
     /**The default installation location on Windows10/8/7*/
     public static File windowsInstallLocation = new File("C:\\ProgramFiles\\");
@@ -2683,15 +2688,29 @@ public class TextFighter {
      * Gets and handles player input.
      * @return      True if a valid choice. False if not.
      */
-    public static boolean invokePlayerInput() {
+    public synchronized static boolean invokePlayerInput() {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         try {
-            //Display the prompt to the screen
-            Display.promptUser();
-            //Get the player's input
-            String input = in.readLine();
-            Display.resetColors();
+            String input = "";
+            if(Display.gui != null) {
+                Display.gui.canEnterInput = true;
+                synchronized (waiter) {
+                    try {
+                        waiter.wait();
+                        input = Display.gui.inputArea.getText();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Display.gui.canEnterInput = false;
+            } else {
+                //Display the prompt to the screen
+                Display.promptUser();
+                //Get the player's input
+                input = in.readLine();
+                Display.resetColors();
+            }
             Display.previousCommandString = input;
             if(input.trim() != null) {
                 Display.writeToLogFile("[Input] " + input);
@@ -2720,14 +2739,16 @@ public class TextFighter {
                         if(c.getName().equals(commandName)) {
                             //Pass the input to the choice so that the choice can put the input where placeholders ("%ph%") are in the arguments
                             if(inputArrayList != null) {
+                                Display.gui.inputArea.setText(""); //Empty the input area only if they entered valid input. If not, then let them fix what they did.
                                 return(c.invokeMethods(inputArrayList));
                             } else {
+                                Display.gui.inputArea.setText(""); //Empty the input area only if they entered valid input. If not, then let them fix what they did.
                                 return(c.invokeMethods(new ArrayList<String>()));
                             }
                         }
                     }
 					return true;
-                } else { //The choice doesnt exist
+                } else { //The choice doesn't exist
                     if(input.indexOf(" ") != -1) {
                         addToOutput("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
                     } else {
@@ -2802,7 +2823,7 @@ public class TextFighter {
     public static void playGame() {
         Display.writeToLogFile("[<----------------------------------START OF TURN---------------------------------->]");
         Display.clearScreen();
-        Display.displayOutputMessage("<----------START OF TURN---------->");
+        if(!Display.guiMode) { Display.displayOutputMessage("<----------START OF TURN---------->"); }
         Display.displayPreviousCommand();
         //Determine if any achievements should be recieved
         if(gameLoaded()) {
@@ -2854,7 +2875,7 @@ public class TextFighter {
             currentEnemy = null;
         }
         if(player.getInFight() && validInput) { actedSinceStartOfFight = true; }
-        Display.displayOutputMessage("<----------END OF TURN---------->");
+        if(!Display.guiMode) { Display.displayOutputMessage("<----------END OF TURN---------->"); }
         Display.writeToLogFile("[<-----------------------------------END OF TURN----------------------------------->]");
     }
 
@@ -2870,7 +2891,13 @@ public class TextFighter {
         for(String a : args) {
             if(a.equals("test")) {
                 testMode = true;
+            } else if(a.equals("nogui")) {
+                Display.guiMode = true;
             }
+        }
+
+        if(Display.guiMode) {
+            Display.createGui();
         }
 
         if(!testMode) { Display.clearScreen(); }
@@ -2885,6 +2912,12 @@ public class TextFighter {
             Display.displayError("An error occured while trying to load the assets!\nMake sure they are in the correct directory.");
             System.exit(1);
         }
+
+        //Update the title to include the mod (If not using a mod, then nothing changes)
+        if(Display.guiMode) {
+            Display.gui.updateTitle();
+        }
+
         Display.displayProgressMessage(Display.errorsOnLoading + " errors occurred while loading the assets.");
         addToOutput(Display.errorsOnLoading + " errors occurred while loading the assets.");
         player = new Player(getLocationByName("start"), playerCustomVariables, deathMethods, levelupMethods);
