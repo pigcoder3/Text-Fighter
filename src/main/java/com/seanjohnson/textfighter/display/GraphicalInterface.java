@@ -146,7 +146,7 @@ public class GraphicalInterface extends JFrame {
 		//StyleConstants.setBackground(attributes, background); In case I ever want to do backgrounds
 
 		try {
-			gameOutputArea.getStyledDocument().insertString(gameOutputArea.getDocument().getLength(), "\n" + e, attributes);
+			gameOutputArea.getStyledDocument().insertString(gameOutputArea.getDocument().getLength(), e + "\n", attributes);
 		} catch (BadLocationException ignored) { }
 	}
 
