@@ -2744,10 +2744,8 @@ public class TextFighter {
                         if(c.getName().equals(commandName)) {
                             //Pass the input to the choice so that the choice can put the input where placeholders ("%ph%") are in the arguments
                             if(inputArrayList != null) {
-                                Display.gui.inputArea.setText(""); //Empty the input area only if they entered valid input. If not, then let them fix what they did.
                                 return(c.invokeMethods(inputArrayList));
                             } else {
-                                Display.gui.inputArea.setText(""); //Empty the input area only if they entered valid input. If not, then let them fix what they did.
                                 return(c.invokeMethods(new ArrayList<String>()));
                             }
                         }
@@ -2856,6 +2854,7 @@ public class TextFighter {
         //Display the interface and get input
         Display.displayInterfaces(player.getLocation());
         boolean validInput = invokePlayerInput();
+        if(validInput && Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area if a valid choice was given, otherwise let them fix it.
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
         if(actedSinceStartOfFight && validInput && player.getInFight() && player.getLocation().getName().equals("fight")) {
             player.decreaseTurnsWithStrengthLeft(1);
@@ -2939,9 +2938,9 @@ public class TextFighter {
                                 "folder, which are to be placed in the `packs` folder.\n" +
                                 "The configuration files are located in one of the\n" +
                                 "following locations:\n" +
-                                "   - Windows: `C:\\\\Program Files\\textfighter\\config`\\\n" +
+                                "   - Windows: `C:\\Users\\Username\\Appdata\\Roaming\\textfighter\\config\\`\n" +
                                 "   - MacOS: `~/Library/Application Support/textfighter/config/`\n" +
-                                "   - Linux: `/opt/config/`\n" +
+                                "   - Linux: `~/.textfighter/config/`\n" +
                                 "(Windows is not yet supported)\n" +
                                 "The vanilla textfighter guide is located at\n" +
                                 "https://github.com/seanmjohns/Text-Fighter/tree/master/guide");

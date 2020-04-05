@@ -42,7 +42,6 @@ public class GraphicalInterface extends JFrame {
 	public JScrollPane scrollPane;
 	public JTextPane gameOutputArea;
 	public HintTextField inputArea;
-	public JButton inputConfirmButton;
 
 	public boolean canEnterInput = false;
 
@@ -122,10 +121,11 @@ public class GraphicalInterface extends JFrame {
 		contentPane.add(textSizeSlider, BorderLayout.EAST);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		contentPane.add(inputArea, BorderLayout.SOUTH);
-		//contentPane.add(inputConfirmButton, BorderLayout.SOUTH);
 
 		this.setContentPane(contentPane);
 		this.setVisible(true);
+
+		inputArea.requestFocusInWindow();
 
 	}
 
