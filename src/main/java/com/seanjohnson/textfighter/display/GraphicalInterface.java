@@ -135,9 +135,13 @@ public class GraphicalInterface extends JFrame {
 	 * the mod has been loaded.
 	 */
 	public void updateTitle() {
-		if (TextFighter.getModName() != null) {
-			this.setTitle("Text Fighter - " + TextFighter.getModName());
+		String title = "Text Fighter";
+		if (TextFighter.testMode) {
+			title = title + " (mod testing)";
+		} if (TextFighter.getModName() != null) {
+			title = title + " - " + TextFighter.getModName();
 		}
+		this.setTitle(title);
 	}
 
 	public void addOutputText(String e, Color c) {
