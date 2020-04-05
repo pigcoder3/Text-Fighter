@@ -3,8 +3,6 @@ package com.seanjohnson.textfighter.display;
 import com.seanjohnson.textfighter.TextFighter;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.text.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -12,6 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
+import java.io.File;
+import java.io.IOException;
 
 /*
 
@@ -31,9 +32,8 @@ public class GraphicalInterface extends JFrame {
 	private static int maxFontSize = 20;
 	private static int minFontSize = 1;
 
-	private static String fontString = "Menlo";
-
-	private static Font displayFont = new Font(fontString, Font.PLAIN, defaultFontSize);
+	private static File fontFile = new File("DejaVuSansMono.ttf");
+	private static Font displayFont;
 
 	private static Color backgroundColor = Color.GRAY;
 
@@ -61,6 +61,7 @@ public class GraphicalInterface extends JFrame {
 
 		//The text size scroller area
 		textSizeSlider = new JSlider(1, minFontSize, maxFontSize, defaultFontSize);
+		textSizeSlider.setBackground(backgroundColor);
 		textSizeSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -151,6 +152,16 @@ public class GraphicalInterface extends JFrame {
 	}
 
 	public GraphicalInterface() {
+		//Loads the menlo font
+
+		try {
+			displayFont = Font.createFont(Font.TRUETYPE_FONT,TextFighter.class.getResourceAsStream("/" + fontFile.getName()));
+			displayFont = displayFont.deriveFont((float)defaultFontSize);
+		} catch (IOException | FontFormatException e) {
+			Display.displayError("The display font file not found or cannot be read. Defaulting to Courier New.");
+			displayFont = new Font("Courier New", Font.PLAIN, defaultFontSize);
+		}
+		//displayFont = new Font("Menlo", Font.PLAIN, defaultFontSize);
 		initComponents();
 	}
 

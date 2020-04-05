@@ -110,7 +110,7 @@ public class Display {
                 if(!logDir.exists()) {
                     logDir.mkdirs();
                 }
-                logFile = new File(logDir.getAbsolutePath() + File.separatorChar + "Textfighter-" + new Date().toString());
+                logFile = new File(logDir.getAbsolutePath() + File.separatorChar + "TextfighterLog-" + new Date().toString().replace(":", "-"));
                 logFile.createNewFile();
             }
         } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "' because unable to create one"); return; }
@@ -126,7 +126,7 @@ public class Display {
     public static void displayError(String e) {
         errorsOnLoading++;
         // Used for displaying errors such as something could not be found
-        if(guiMode) {
+        if(gui != null) { //Its possible that the gui has not yet been created
             gui.addOutputText("\n[Error] " + e, errorColor);
         } else if(ANSI) {
             System.err.println(error + "[Error] " + e + RESET);
