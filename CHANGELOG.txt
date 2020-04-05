@@ -1,3 +1,18 @@
+Release v1.3-Snapshot-1
+  - Added a gui
+    - Those without experience in a text-based environment can play
+    - Text size slider
+	  - Located on the right.
+	  - It is recommended to decrease the textsize to fit all the text on the screen at once.
+	- It is recommended to maximize the window size.
+
+Release v1.2
+  - Changed Linux installation directory to ~/.textfighter
+
+1.2-Hotfix-1
+  - Added support for Java 8
+    - Allows most users to play
+
 Release v1.1
   - The game can now be run from a jar file.
     - The game will be installed automatically.
