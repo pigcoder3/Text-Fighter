@@ -195,6 +195,17 @@
             }
         },
         {
+            "tag" : "<maxDurability>",
+            "class" : "com.seanjohnson.textfighter.item.Weapon",
+            "method" : "getMaxDurability",
+            "field" : {
+                "method" : "getCurrentWeapon",
+                "class" : "com.seanjohnson.textfighter.Player",
+                "field" : "player",
+                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            }
+        },
+        {
             "tag" : "<currentWeaponUnbreakable>",
             "method" : "getUnbreakable",
             "class" : "com.seanjohnson.textfighter.item.Weapon",
@@ -293,7 +304,7 @@
             "argumentTypes" : ["0"],
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-        }
+        },
 
 
 

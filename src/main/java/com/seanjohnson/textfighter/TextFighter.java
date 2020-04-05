@@ -390,12 +390,12 @@ public class TextFighter {
                 final Enumeration<JarEntry> entries = jar.entries();
                 while(entries.hasMoreElements()) {
                     String name = entries.nextElement().getName();
-                    if (name.startsWith(path.substring(1) + File.separatorChar) && name.endsWith(".json")) { //filter according to the path and json file
+                    if (name.startsWith(path.substring(1) + "/") && name.endsWith(".json")) { //filter according to the path and json file
                         String json = "";
-                        InputStream stream = TextFighter.class.getResourceAsStream(File.separatorChar + name); //Notes the forward-slash
+                        InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
                         if(stream == null) { continue; }
                         Scanner scan = new Scanner(stream).useDelimiter("\\Z");
-                        try { json = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
+                        try { json = scan.next(); } catch(NoSuchElementException e) { } //This means the file is empty and we should pretty much ignore it
                         scan.close();
                         if(json.isEmpty()) {
                             json = "{}";
@@ -436,22 +436,22 @@ public class TextFighter {
         Display.displayProgressMessage("Loading the assets...");
         //Loads all the directories
         final File jarFile = new File(TextFighter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        assetsDir = new File(File.separatorChar + "assets");
-        tagFile = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "tags/tags.json");
-        defaultValuesDirectory = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "defaultvalues");
-        interfaceDir = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "userInterfaces/");
-        locationDir = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "locations");
+        assetsDir = new File("/assets");
+        tagFile = new File(assetsDir.getPath() + "/" + "tags/tags.json");
+        defaultValuesDirectory = new File(assetsDir.getPath() + "/" + "defaultvalues");
+        interfaceDir = new File(assetsDir.getPath() + "/" + "userInterfaces/");
+        locationDir = new File(assetsDir.getPath() + "/" + "locations");
         //savesDir = new File("saves");
-        enemyDir = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "enemies");
-        achievementDir = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "achievements");
-        itemDir = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "items");
+        enemyDir = new File(assetsDir.getPath() + "/" + "enemies");
+        achievementDir = new File(assetsDir.getPath() + "/" + "achievements");
+        itemDir = new File(assetsDir.getPath() + "/" + "items");
         //configDir = new File("config");
         //packFile = new File(configDir.getPath() + Character.toString(File.separatorChar) + "pack");
         //packDir = new File("packs");
-        customVariablesDir = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "customvariables");
-        deathmethodsFile = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "deathmethods/deathmethods.json");
-        levelupmethodsFile = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "levelupmethods/levelupmethods.json");
-        choicesOfAllLocationsFile = new File(assetsDir.getPath() + Character.toString(File.separatorChar) + "choicesOfAllLocations/choicesOfAllLocations.json");
+        customVariablesDir = new File(assetsDir.getPath() + "/" + "customvariables");
+        deathmethodsFile = new File(assetsDir.getPath() + "/" + "deathmethods/deathmethods.json");
+        levelupmethodsFile = new File(assetsDir.getPath() + "/" + "levelupmethods/levelupmethods.json");
+        choicesOfAllLocationsFile = new File(assetsDir.getPath() + "/" + "choicesOfAllLocations/choicesOfAllLocations.json");
         version = readVersionFromFile();
         //Load some things
         loadConfig();
@@ -750,7 +750,7 @@ public class TextFighter {
             if (!parsingPack) {
                 num++;
                 Display.displayPackMessage("Loading userinterfaces from the default pack.");
-                jsonStrings = getJsonFilesAsString(directory.getPath());
+                jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 jsonStrings = new ArrayList<String>();
@@ -855,7 +855,7 @@ public class TextFighter {
             //Get all the assets from the mod and the default assets
             if(!parsingPack) {
                 num++; Display.displayPackMessage("Loading locations from the default pack.");
-                jsonStrings = getJsonFilesAsString(directory.getPath());
+                jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 jsonStrings = new ArrayList<String>();
@@ -1021,7 +1021,7 @@ public class TextFighter {
             //Get all the assets from the mod and the default assets
             if(!parsingPack) {
                 num++; Display.displayPackMessage("Loading enemies from the default pack.");
-                jsonStrings = getJsonFilesAsString(directory.getPath());
+                jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 jsonStrings = new ArrayList<String>();
@@ -1112,7 +1112,7 @@ public class TextFighter {
             //Get all the assets from the mod and the default assets
             if(!parsingPack) {
                 num++; Display.displayPackMessage("Loading parsing tags from the default pack.");
-                jsonString = getSingleJsonFileAsString(file.getPath());
+                jsonString = getSingleJsonFileAsString(file.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 try {
@@ -1176,7 +1176,7 @@ public class TextFighter {
             //Get all the assets from the mod and the default assets
             if(!parsingPack) {
                 num++; Display.displayPackMessage("Loading achievements from the default pack.");
-                jsonStrings = getJsonFilesAsString(directory.getPath());
+                jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 jsonStrings = new ArrayList<String>();
@@ -1245,7 +1245,7 @@ public class TextFighter {
                 //Get all the assets from the mod and the default assets
                 if(!parsingPack) {
                     num++; Display.displayPackMessage("Loading weapons from the default pack.");
-                    jsonStrings = getJsonFilesAsString(directory.getPath() + Character.toString(File.separatorChar) + "weapons");
+                    jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/weapons");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
@@ -1317,7 +1317,7 @@ public class TextFighter {
                 //Get all the assets from the mod and the default assets
                 if(!parsingPack) {
                     num++; Display.displayPackMessage("Loading armor from the default pack.");
-                    jsonStrings = getJsonFilesAsString(directory.getPath() + Character.toString(File.separatorChar) + "armor");
+                    jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/armor");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
@@ -1387,7 +1387,7 @@ public class TextFighter {
                 //Get all the assets from the mod and the default assets
                 if(!parsingPack) {
                     num++; Display.displayPackMessage("Loading tools from the default pack.");
-                    jsonStrings = getJsonFilesAsString(directory.getPath() + Character.toString(File.separatorChar) + "tools");
+                    jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/tools");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
@@ -1456,7 +1456,7 @@ public class TextFighter {
                 //Get all the assets from the mod and the default assets
                 if(!parsingPack) {
                     num++; Display.displayPackMessage("Loading specialitems from the default pack.");
-                    jsonStrings = getJsonFilesAsString(directory.getPath() + Character.toString(File.separatorChar) + "specialitems");
+                    jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/specialitems");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
@@ -1554,7 +1554,7 @@ public class TextFighter {
             if(!parsingPack) {
                 num++;
                 Display.displayPackMessage("Loading custom variables from the default pack");
-                jsonStrings = getJsonFilesAsString(directory.getPath());
+                jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 jsonStrings = new ArrayList<String>();
@@ -1723,7 +1723,7 @@ public class TextFighter {
                     String jsonString = "{}";
                     if (!parsingPack) {
                         Display.displayPackMessage("Loading player values from the default pack");
-                        jsonString = getSingleJsonFileAsString(directory + Character.toString(File.separatorChar) + "player.json");
+                        jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/player.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
@@ -1798,7 +1798,7 @@ public class TextFighter {
                     String jsonString = "{}";
                     if (!parsingPack) {
                         Display.displayPackMessage("Loading enemy values from the default pack");
-                        jsonString = getSingleJsonFileAsString(directory + Character.toString(File.separatorChar) + "enemy.json");
+                        jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/enemy.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
@@ -1835,19 +1835,19 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-        /*
-        if(true) {
-            Display.displayPackMessage("Loading item values");
-            Display.changePackTabbing(true);
-            try {
-                String jsonString = getSingleJsonFileAsString(directory.getPath() + Character.toString(File.separatorChar) + "item.json");
-                JSONObject valuesFile = (JSONObject)parser.parse(jsonString);
-                //Item values
-                if(valuesFile.get("name") != null) {                        Item.defaultName = (String)valuesFile.get("name"); }
-                if(valuesFile.get("description") != null) {                 Item.defaultDescription = (String)valuesFile.get("description"); }
-                Display.changePackTabbing(false);
-            } catch (ParseException e) { Display.changePackTabbing(false); }
-        }*/
+            /*
+            if(true) {
+                Display.displayPackMessage("Loading item values");
+                Display.changePackTabbing(true);
+                try {
+                    String jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/item.json");
+                    JSONObject valuesFile = (JSONObject)parser.parse(jsonString);
+                    //Item values
+                    if(valuesFile.get("name") != null) {                        Item.defaultName = (String)valuesFile.get("name"); }
+                    if(valuesFile.get("description") != null) {                 Item.defaultDescription = (String)valuesFile.get("description"); }
+                    Display.changePackTabbing(false);
+                } catch (ParseException e) { Display.changePackTabbing(false); }
+            }*/
             if (true) {
                 Display.displayPackMessage("Loading weapon values");
                 Display.changePackTabbing(true);
@@ -1855,7 +1855,7 @@ public class TextFighter {
                     String jsonString = "{}";
                     if (!parsingPack) {
                         Display.displayPackMessage("Loading weapon values from the default pack");
-                        jsonString = getSingleJsonFileAsString(directory + Character.toString(File.separatorChar) + "weapon.json");
+                        jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/weapon.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
@@ -1906,7 +1906,7 @@ public class TextFighter {
                     String jsonString = "{}";
                     if (!parsingPack) {
                         Display.displayPackMessage("Loading armor values from the default pack");
-                        jsonString = getSingleJsonFileAsString(directory + Character.toString(File.separatorChar) + "armor.json");
+                        jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/armor.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
@@ -1950,7 +1950,7 @@ public class TextFighter {
                     String jsonString = "{}";
                     if (!parsingPack) {
                         Display.displayPackMessage("Loading tool values from the default pack");
-                        jsonString = getSingleJsonFileAsString(directory + Character.toString(File.separatorChar) + "tool.json");
+                        jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/tool.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
@@ -1991,7 +1991,7 @@ public class TextFighter {
                     String jsonString = "{}";
                     if (!parsingPack) {
                         Display.displayPackMessage("Loading specialitem values from the default pack");
-                        jsonString = getSingleJsonFileAsString(directory + Character.toString(File.separatorChar) + "specialitem.json");
+                        jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/specialitem.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
@@ -2056,7 +2056,7 @@ public class TextFighter {
             if(!parsingPack) {
                 num++;
                 Display.displayPackMessage("Loading deathmethods from the default pack");
-                jsonString = getSingleJsonFileAsString(deathmethodsFile.getPath());
+                jsonString = getSingleJsonFileAsString(deathmethodsFile.getPath().replace("\\", "/"));
                 if(jsonString.isEmpty()) { jsonString = "{}"; }
             } else {
                 Display.displayPackMessage("Loading from modpack");
@@ -2130,7 +2130,7 @@ public class TextFighter {
             if(!parsingPack) {
                 num++;
                 Display.displayPackMessage("Loading deathmethods from the default pack");
-                jsonString = getSingleJsonFileAsString(file.getPath());
+                jsonString = getSingleJsonFileAsString(file.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 try {
@@ -2202,7 +2202,7 @@ public class TextFighter {
             if(!parsingPack) {
                 num++;
                 Display.displayPackMessage("Loading choices of all locations from the default pack");
-                jsonString = getSingleJsonFileAsString(file.getPath());
+                jsonString = getSingleJsonFileAsString(file.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
                 try {
@@ -2896,12 +2896,14 @@ public class TextFighter {
             if(a.equals("test")) {
                 testMode = true;
             } else if(a.equals("nogui")) {
-                Display.guiMode = true;
+                Display.guiMode = false;
             }
         }
 
         if(Display.guiMode) {
             Display.createGui();
+            Display.gui.updateTitle();
+	        if(testMode) { Display.gui.inputArea.setEnabled(false); }
         }
 
         if(!testMode) { Display.clearScreen(); }
@@ -2946,6 +2948,15 @@ public class TextFighter {
 
             while(player.getAlive() || player.getGameBeaten()) {
                 playGame();
+            }
+        } else if(Display.guiMode) {
+            //We want the modmakers to be able to see what is happening, so dont close the window
+            try {
+                synchronized (waiter) {
+                    waiter.wait();
+                }
+            } catch(InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
