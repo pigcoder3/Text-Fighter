@@ -4,12 +4,19 @@ import com.seanjohnson.textfighter.location.Location;
 import com.seanjohnson.textfighter.TextFighter;
 import com.seanjohnson.textfighter.display.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 
 import java.io.*;
 
 public class Display {
+
+    /***Stores whether or not a gui is used*/
+    public static boolean guiMode = true;
+
+    /***Stories the gui. Null if not in guimode*/
+    public static GraphicalInterface gui = null;
 
     /***Stores the number of errors that occurred while loading the assets*/
     public static int errorsOnLoading = 0;
@@ -42,16 +49,22 @@ public class Display {
 
     /***The default code for previous command.*/
     public static String previousCommand = COLORCODES[2];
+    public static Color previousCommandColor = Color.GREEN;
     /***The default code for error.*/
     public static String error = COLORCODES[1];
+    public static Color errorColor = Color.RED;
     /***The default code for warning.*/
     public static String warning = COLORCODES[3];
+    public static Color warningColor = Color.YELLOW;
     /***The default code for progress.*/
     public static String progress = COLORCODES[4];
+    public static Color progressColor = Color.BLUE;
     /***The default code for output.*/
     public static String output = COLORCODES[2];
+    public static Color outputColor = Color.GREEN;
     /***The default code for prompt.*/
     public static String prompt = COLORCODES[2];
+    public static Color promptColor = Color.GREEN;
 
     /***whether or not ansi codes whould be used.*/
     public static boolean ANSI = true;
@@ -66,6 +79,13 @@ public class Display {
      * <p>Set to an empty ArrayList of UserInterfaces.</p>
      */
     public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+
+    /**
+     * Creates the gui
+     * */
+    public static void createGui() {
+        gui = new GraphicalInterface();
+    }
 
     /**
      * Turns an exception stack trace to a string.
@@ -106,11 +126,14 @@ public class Display {
     public static void displayError(String e) {
         errorsOnLoading++;
         // Used for displaying errors such as something could not be found
-        if(ANSI) {
+        if(guiMode) {
+            gui.addOutputText("\n[Error] " + e, errorColor);
+        } else if(ANSI) {
             System.err.println(error + "[Error] " + e + RESET);
         } else {
             System.err.println("[Error] " + e);
         }
+
         writeToLogFile("[Error] " + e);
     }
 
@@ -122,11 +145,14 @@ public class Display {
         errorsOnLoading++;
         // Displays errors that deal with packs
         if(TextFighter.testMode) {
-            if(ANSI) {
+            if(guiMode) {
+                gui.addOutputText(packTabbing + "[PackError] " + e, errorColor);
+            } else if(ANSI) {
                 System.err.println(error + packTabbing + "[PackError] " + e + RESET);
             } else {
                 System.err.println(packTabbing + "[PackError] " + e);
             }
+
             writeToLogFile(packTabbing + "[PackError] " + e);
         }
     }
@@ -138,7 +164,9 @@ public class Display {
     public static void displayPackMessage(String e) {
         // Displays messages that deal with packs
         if(TextFighter.testMode) {
-            if(ANSI) {
+            if(guiMode) {
+                gui.addOutputText(packTabbing + "[PackMessage] " + e, progressColor);
+            } else if(ANSI) {
                 System.err.println(progress + packTabbing + "[PackMessage] " + e + RESET);
             } else {
                 System.err.println(packTabbing + "[PackMessage] " + e);
@@ -167,7 +195,9 @@ public class Display {
      */
     public static void displayWarning(String e) {
         // Displays warnings
-        if(ANSI) {
+        if(guiMode) {
+            gui.addOutputText("[Warning] " + e, warningColor);
+        } else if(ANSI) {
             System.err.println(warning + "[Warning] " + e + RESET);
         } else {
             System.err.println("[Warning] " + e);
@@ -181,7 +211,9 @@ public class Display {
      */
     public static void displayOutputMessage(String e) {
         // Used for displaying messages that explain loading resource progess
-        if(ANSI) {
+        if(guiMode) {
+            gui.addOutputText(e, outputColor);
+        } else if(ANSI) {
             System.err.println(output + e + RESET);
         } else {
             System.err.println(e);
@@ -196,7 +228,9 @@ public class Display {
      */
     public static void displayProgressMessage(String e) {
         // Used for displaying the output field in TextFighter class
-        if(ANSI) {
+        if(guiMode) {
+            gui.addOutputText("[Progress] " + e, progressColor);
+        } else if(ANSI) {
             System.out.println(progress + "[Progress] " + e + RESET);
         } else {
             System.out.println("[Progress] " + e);
@@ -208,7 +242,9 @@ public class Display {
     public static void displayPreviousCommand() {
         if(previousCommandString == null || previousCommandString.length() < 1) { return; }
         //Displays the command the user previously inputted
-        if(ANSI) {
+        if(guiMode) {
+            gui.addOutputText("Previous choice: " + previousCommandString, previousCommandColor);
+        } else if(ANSI) {
             System.out.println(previousCommand + "Previous choice: '" + previousCommandString + "'" + RESET + "\n");
         } else {
             System.out.println("Previous choice: " + previousCommandString + "\n");
@@ -218,6 +254,7 @@ public class Display {
 
     /***Displays the {@link #prompt}.*/
     public static void promptUser() {
+        if(guiMode) { return; } // No prompt needed in gui mode
         //Displays the prompt
         if(ANSI) {
             System.out.print(prompt + promptString + RESET);
@@ -232,7 +269,9 @@ public class Display {
      * @param name      The name of the achievement.
      */
     public static void achievementEarned(String name) {
-        if(ANSI) {
+        if(guiMode) {
+            gui.addOutputText("You have earned the achievement '" + name + "'!", outputColor);
+        } else if(ANSI) {
             TextFighter.addToOutput(output + BOLD + "You have earned the achievement '" + name + "'!" + RESET);
         } else {
             TextFighter.addToOutput("You have earned the achievement '" + name + "'!");
@@ -242,6 +281,7 @@ public class Display {
 
     /***Resets text styling.*/
     public static void resetColors() {
+        if(guiMode) { return; }
         //Resets the colors for err and out
         if(ANSI) {
             System.out.println(RESET);
@@ -252,8 +292,9 @@ public class Display {
 
     /***Clears the screen.*/
     public static void clearScreen() {
-        //Puts the character back to the home and clears the screen
-        if(ANSI) {
+        if(guiMode) {
+            gui.gameOutputArea.setText("");
+        } else if(ANSI) {
             System.out.println("\u001b[H \u001b[2J");
             writeToLogFile("[Screen Cleared]");
         }
@@ -267,7 +308,11 @@ public class Display {
         l.filterPossibleChoices();
         for(UserInterface ui : l.getInterfaces()) {
             ui.parseInterface();
-            System.out.println(ui.getParsedUI());
+            if(guiMode) {
+                gui.addOutputText(ui.getParsedUI(), Color.BLACK);
+            } else {
+                System.out.println(ui.getParsedUI());
+            }
         }
         writeToLogFile("[Interfaces Displayed]");
     }
@@ -306,42 +351,49 @@ public class Display {
                 }
                 //Set each field to the value specified by the key
                 if(key.equals("error")) {
+                    errorColor = Color.getColor(value);
                     for(int i=0; i<COLORNAMES.length; i++) {
                         if(COLORNAMES[i].equals(value)) {
                             error = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("progress")) {
+                    progressColor = Color.getColor(value);
                     for(int i=0; i<COLORNAMES.length; i++) {
                         if(COLORNAMES[i].equals(value)) {
                             progress = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("output")) {
+                    outputColor = Color.getColor(value);
                     for(int i=0; i<COLORNAMES.length; i++) {
                         if(COLORNAMES[i].equals(value)) {
                             output = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("prompt")) {
+                    promptColor = Color.getColor(value);
                     for(int i=0; i<COLORNAMES.length; i++) {
                         if(COLORNAMES[i].equals(value)) {
                             prompt = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("previousCommand")) {
+                    previousCommandColor = Color.getColor(value);
                     for(int i=0; i<COLORNAMES.length; i++) {
                         if(COLORNAMES[i].equals(value)) {
                             previousCommand = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("warning")) {
+                    warningColor = Color.getColor(value);
                     for(int i=0; i<COLORNAMES.length; i++) {
                         if(COLORNAMES[i].equals(value)) {
                             warning = COLORCODES[i];
                         }
                     }
                 } else if(key.equals("promptString")) {
+                    promptColor = Color.getColor(value);
                     promptString = value;
                 }
             }
