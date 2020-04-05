@@ -2902,6 +2902,8 @@ public class TextFighter {
 
         if(Display.guiMode) {
             Display.createGui();
+            Display.gui.updateTitle();
+	        if(testMode) { Display.gui.inputArea.setEnabled(false); }
         }
 
         if(!testMode) { Display.clearScreen(); }
@@ -2951,7 +2953,6 @@ public class TextFighter {
             //We want the modmakers to be able to see what is happening, so dont close the window
             try {
                 synchronized (waiter) {
-                    Display.gui.inputArea.setEnabled(false);
                     waiter.wait();
                 }
             } catch(InterruptedException e) {
