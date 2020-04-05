@@ -2941,7 +2941,6 @@ public class TextFighter {
                                 "   - Windows: `C:\\Users\\Username\\Appdata\\Roaming\\textfighter\\config\\`\n" +
                                 "   - MacOS: `~/Library/Application Support/textfighter/config/`\n" +
                                 "   - Linux: `~/.textfighter/config/`\n" +
-                                "(Windows is not yet supported)\n" +
                                 "The vanilla textfighter guide is located at\n" +
                                 "https://github.com/seanmjohns/Text-Fighter/tree/master/guide");
 
