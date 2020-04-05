@@ -3,6 +3,8 @@ package com.seanjohnson.textfighter.display;
 import com.seanjohnson.textfighter.TextFighter;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.text.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,7 +35,7 @@ public class GraphicalInterface extends JFrame {
 
 	private static Font displayFont = new Font(fontString, Font.PLAIN, defaultFontSize);
 
-	//private static Color backgroundColor =
+	private static Color backgroundColor = Color.GRAY;
 
 	//All the components
 	public JSlider textSizeSlider;
@@ -52,12 +54,13 @@ public class GraphicalInterface extends JFrame {
 
 		//The content pane
 		JPanel contentPane = new JPanel();
+		contentPane.setBackground(backgroundColor);
 		BorderLayout layout = new BorderLayout();
 		layout.setHgap(5);
 		layout.setVgap(5);
 		contentPane.setLayout(layout);
 
-		//The text size scroller
+		//The text size scroller area
 		textSizeSlider = new JSlider(1, minFontSize, maxFontSize, defaultFontSize);
 		textSizeSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -66,12 +69,20 @@ public class GraphicalInterface extends JFrame {
 				gameOutputArea.setFont(displayFont);
 			}
 		});
+		textSizeSlider.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(10,0,5,0), //The top is greater than the bottom to compensate for the layout.VGap
+				BorderFactory.createMatteBorder(0,1,0,0,Color.DARK_GRAY)
+		));
 
 		//The game output area
 		gameOutputArea = new JTextPane();
+		gameOutputArea.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		gameOutputArea.setBackground(backgroundColor);
 		gameOutputArea.setFont(displayFont);
 		gameOutputArea.setEditable(false); //We don't want the player to be able to edit stuff
-		scrollPane = new JScrollPane(gameOutputArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane = new JScrollPane(gameOutputArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBackground(backgroundColor);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 		Action enterInput = new AbstractAction() {
 			@Override
@@ -105,11 +116,7 @@ public class GraphicalInterface extends JFrame {
 				}
 			}
 		});
-
-		//The input button
-		inputConfirmButton = new JButton("Enter");
-		inputConfirmButton.setFont(displayFont);
-		inputConfirmButton.addActionListener(enterInput);
+		inputArea.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 		//Add all the components
 		contentPane.add(textSizeSlider, BorderLayout.EAST);
