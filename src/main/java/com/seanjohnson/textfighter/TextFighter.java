@@ -2801,7 +2801,7 @@ public class TextFighter {
      * Moves the player to the "win" location.
      */
     public static void playerWins() {
-        PackMethods.movePlayer("Win");
+        PackMethods.movePlayer("win");
     }
 
     //Exit game. The reason I need this method is because it wont let me use System.exit(code) in packs (Because Class.forName() claims the class doesn't exist)

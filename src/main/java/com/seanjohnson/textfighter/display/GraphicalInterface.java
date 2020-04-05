@@ -33,6 +33,8 @@ public class GraphicalInterface extends JFrame {
 
 	private static Font displayFont = new Font(fontString, Font.PLAIN, defaultFontSize);
 
+	//private static Color backgroundColor =
+
 	//All the components
 	public JSlider textSizeSlider;
 	public JScrollPane scrollPane;
@@ -134,7 +136,7 @@ public class GraphicalInterface extends JFrame {
 
 		AttributeSet attributes = new SimpleAttributeSet(gameOutputArea.getInputAttributes());
 		StyleConstants.setForeground((MutableAttributeSet)attributes, c);
-		//StyleConstants.setBackground(attributes, background);
+		//StyleConstants.setBackground(attributes, background); In case I ever want to do backgrounds
 
 		try {
 			gameOutputArea.getStyledDocument().insertString(gameOutputArea.getDocument().getLength(), "\n" + e, attributes);

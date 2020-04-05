@@ -49,7 +49,7 @@ public class Display {
 
     /***The default code for previous command.*/
     public static String previousCommand = COLORCODES[2];
-    public static Color previousCommandColor = Color.RED;
+    public static Color previousCommandColor = Color.GREEN;
     /***The default code for error.*/
     public static String error = COLORCODES[1];
     public static Color errorColor = Color.RED;
