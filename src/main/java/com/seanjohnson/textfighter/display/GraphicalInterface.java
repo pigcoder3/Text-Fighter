@@ -206,8 +206,14 @@ public class GraphicalInterface extends JFrame {
 				fileViewer.setText("Unfortunately, this mod does not have a guide.");
 			}
 		} else {
-			fileTree.setRootVisible(false);
-			fileViewer.setText("The mod guide is not yet supported for vanilla TextFighter.");
+			if(!TextFighter.vanillaGuideDir.exists()) {
+				fileTree.setRootVisible(false);
+				fileViewer.setText("The vanilla mod guide was not able to be loaded.");
+			} else {
+				fileTree = new JTree(getGuideFiles(TextFighter.vanillaGuideDir));
+				fileTree.setRootVisible(false);
+				fileViewer.setText("Open a file on the right to get started.");
+			}
 		}
 
 		//Created the filetree area
@@ -225,12 +231,18 @@ public class GraphicalInterface extends JFrame {
 		//Allow the nodes to be clicked to open
 		fileTree.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
+				File directory;
+				if(TextFighter.packUsed == null) {
+					directory = TextFighter.installationRoot;
+				} else {
+					directory = TextFighter.packUsed;
+				}
 				int selRow = fileTree.getRowForLocation(e.getX(), e.getY());
 				TreePath selPath = fileTree.getPathForLocation(e.getX(), e.getY());
 				if(selRow != -1) {
 					if(e.getClickCount() == 1) {
 						String path = String.join(File.pathSeparator, Arrays.toString(selPath.getPath())).replace(", ", File.separator);
-						path = TextFighter.packUsed + File.separator + path.substring(1,path.length()-1);
+						path = directory + File.separator + path.substring(1,path.length()-1);
 						File guideFile = new File(path);
 						if(guideFile.isFile()) { //I dont want random errors because I am trying to open a directory
 							try {
