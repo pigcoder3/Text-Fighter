@@ -115,7 +115,6 @@ public class GraphicalInterface extends JFrame {
 								TextFighter.waiter.notify();
 							}
 						}
-						TextFighter.inputHistory.printHistory();
 						break;
 					case(KeyEvent.VK_UP): //Scroll up through the command history
 						if(copiedInputHistory.getCurrentIndex() < TextFighter.inputHistory.size() - 1) {
