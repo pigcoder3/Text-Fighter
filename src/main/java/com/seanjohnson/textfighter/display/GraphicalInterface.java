@@ -1,5 +1,6 @@
 package com.seanjohnson.textfighter.display;
 
+import com.seanjohnson.textfighter.HistoryLinkedList;
 import com.seanjohnson.textfighter.TextFighter;
 
 import javax.swing.*;
@@ -7,9 +8,7 @@ import javax.swing.text.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +26,8 @@ BOTTOM: Input field
  */
 
 public class GraphicalInterface extends JFrame {
+
+	public HistoryLinkedList<String> copiedInputHistory = new HistoryLinkedList<>();
 
 	private static int defaultFontSize = 10;
 	private static int maxFontSize = 20;
@@ -84,22 +85,10 @@ public class GraphicalInterface extends JFrame {
 		scrollPane.setBackground(backgroundColor);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
-		Action enterInput = new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				synchronized (TextFighter.waiter) {
-					if (canEnterInput) {
-						TextFighter.waiter.notify();
-					}
-				}
-			}
-		};
-
 		//The input area
 		inputArea = new HintTextField("Enter Your Action");
 		inputArea.setFont(displayFont);
-		inputArea.addActionListener(enterInput);
-		inputArea.addFocusListener(new FocusListener() {
+		inputArea.addFocusListener(new FocusListener() { //Input hint
 			@Override
 			public void focusGained(FocusEvent e) {
 				if(inputArea.getText().isEmpty()) {
@@ -113,6 +102,38 @@ public class GraphicalInterface extends JFrame {
 				if(inputArea.getText().isEmpty()) {
 					inputArea.setText(inputArea.getHint());
 					inputArea.hintShown = true;
+				}
+			}
+		});
+		inputArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				switch(e.getKeyCode()) {
+					case(KeyEvent.VK_ENTER):
+						synchronized (TextFighter.waiter) {
+							if (canEnterInput) {
+								TextFighter.waiter.notify();
+							}
+						}
+						TextFighter.inputHistory.printHistory();
+						break;
+					case(KeyEvent.VK_UP): //Scroll up through the command history
+						if(copiedInputHistory.getCurrentIndex() < TextFighter.inputHistory.size() - 1) {
+							copiedInputHistory.set(copiedInputHistory.getCurrentIndex(), inputArea.getText());
+							copiedInputHistory.setCurrentIndex(copiedInputHistory.getCurrentIndex() + 1);
+							inputArea.setText(copiedInputHistory.getCurrentIndexValue());
+						}
+						break;
+					case(KeyEvent.VK_DOWN):
+						if(copiedInputHistory.getCurrentIndex() > 0) {
+							copiedInputHistory.set(copiedInputHistory.getCurrentIndex(), inputArea.getText());
+							copiedInputHistory.setCurrentIndex(copiedInputHistory.getCurrentIndex() - 1);
+							inputArea.setText(copiedInputHistory.getCurrentIndexValue());
+						}
+						break;
+					default:
+						super.keyReleased(e);
+						break;
 				}
 			}
 		});

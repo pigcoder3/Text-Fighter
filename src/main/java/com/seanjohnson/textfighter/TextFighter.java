@@ -301,6 +301,9 @@ public class TextFighter {
     /**All the choices of all locations are copied from here to the loaded location*/
     public static ArrayList<ChoiceOfAllLocations> choicesOfAllLocations = new ArrayList<ChoiceOfAllLocations>();
 
+    /**The recent input commands saved. This is only used in the gui.*/
+    public static HistoryLinkedList<String> inputHistory = new HistoryLinkedList<>();
+
     /**
      * Gets a location from the {@link #locations} arraylist
      * @param name  the name of the location that is to be found
@@ -2699,9 +2702,11 @@ public class TextFighter {
         try {
             String input = "";
             if(Display.gui != null) {
-                Display.gui.canEnterInput = true;
+                if(inputHistory.size() == 0) { inputHistory.addCommand(""); } //Create a new command in the history.
+                inputHistory.setCurrentIndex(0);
                 synchronized (waiter) {
                     try {
+                        Display.gui.canEnterInput = true;
                         waiter.wait();
                         input = Display.gui.inputArea.getText();
                     } catch (InterruptedException e) {
@@ -2717,6 +2722,13 @@ public class TextFighter {
                 Display.resetColors();
             }
             Display.previousCommandString = input;
+
+            if(Display.guiMode && !input.isEmpty()) {
+                inputHistory.set(0,input);
+                inputHistory.addCommand(""); //Create a new command in the history. The old one was already added so we vibin'.
+                Display.gui.copiedInputHistory = (HistoryLinkedList)inputHistory.clone();
+                Display.gui.copiedInputHistory.setCurrentIndex(0);
+            }
             if(input.trim() != null) {
                 Display.writeToLogFile("[Input] " + input);
                 boolean validChoice = false;
@@ -2854,7 +2866,7 @@ public class TextFighter {
         //Display the interface and get input
         Display.displayInterfaces(player.getLocation());
         boolean validInput = invokePlayerInput();
-        if(validInput && Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area if a valid choice was given, otherwise let them fix it.
+        if(Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area. If they want to fix it, then they just have to hit the up arrow
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
         if(actedSinceStartOfFight && validInput && player.getInFight() && player.getLocation().getName().equals("fight")) {
             player.decreaseTurnsWithStrengthLeft(1);
