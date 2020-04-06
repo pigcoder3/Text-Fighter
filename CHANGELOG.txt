@@ -1,10 +1,16 @@
+Release v1.3-Snapshot-2
+  - Added a history mechanism for the gui
+    - Scroll the last 50 input commands using the up and down arrows
+  - Added a mod guide viewer as another tab with the main game tab
+    - Shows mod guides (and shows the vanilla textfigher guide)
+
 Release v1.3-Snapshot-1
   - Added a gui
     - Those without experience in a text-based environment can play
     - Text size slider
-	  - Located on the right.
-	  - It is recommended to decrease the textsize to fit all the text on the screen at once.
-	- It is recommended to maximize the window size.
+      - Located on the right.
+      - It is recommended to decrease the textsize to fit all the text on the screen at once.
+    - It is recommended to maximize the window size.
 
 Release v1.2
   - Changed Linux installation directory to ~/.textfighter

@@ -26,6 +26,7 @@ SOFTWARE.
 
 */
 
+import java.nio.file.*;
 import java.util.*;
 import java.io.*;
 
@@ -46,6 +47,7 @@ import org.json.simple.parser.ParseException;
 import org.w3c.dom.Text;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /* HOW IT WORKS
 
@@ -96,6 +98,9 @@ public class TextFighter {
     /**Application installation directory name*/
     public static String appInstallDirName = "textfighter";
 
+    /**Stores the install location*/
+    public static File installationRoot;
+
     /**
      * Installs the game.
      * Installation locations:
@@ -126,8 +131,8 @@ public class TextFighter {
         //Install the game in the location
         if(installationLocation.exists()) {
             //Copy files and create directories there
-            File installationRoot = new File(installationLocation.getAbsolutePath() + Character.toString(File.separatorChar) + appInstallDirName);
-            if(!windowsOrMac) { installationRoot = new File(installationLocation.getAbsolutePath() + Character.toString(File.separatorChar) + "." + appInstallDirName); } //Make it a dotfile instead
+            installationRoot = new File(installationLocation.getAbsolutePath() + File.separator + appInstallDirName);
+            if(!windowsOrMac) { installationRoot = new File(installationLocation.getAbsolutePath() + File.separator + "." + appInstallDirName); } //Make it a dotfile instead
 
             if(!installationRoot.exists()) {
                 Display.displayProgressMessage("Installing TextFighter");
@@ -135,45 +140,73 @@ public class TextFighter {
                 installationRoot.mkdir(); //NOTE: Do NOT create parent directories if they were deleted just after the check. Just let the installation fail.
             }
 
+            boolean updatedSinceLastLaunch = false;
+
+            //Version File
+            installationVersionFile = new File(installationRoot.getAbsoluteFile() + File.separator + "VERSION.txt");
+            String installedVersion = readVersionFromInstallationLocation();
+            if(!installationVersionFile.exists() || !version.equalsIgnoreCase(installedVersion)) { //We will need to copy the guide and the newest version over
+                updatedSinceLastLaunch = true;
+                Display.displayProgressMessage("Creating File: " + installationVersionFile.getAbsolutePath());
+                try {
+                    InputStream stream = TextFighter.class.getResourceAsStream("/VERSION.txt");
+                    Files.copy(stream, Paths.get(installationVersionFile.getPath()), StandardCopyOption.REPLACE_EXISTING);
+                    stream.close();
+                } catch(IOException | NullPointerException e) {
+                    Display.displayError("Unable to copy the Version file.");
+                }
+            }
+
             //Saves
-            savesDir = new File(installationRoot.getAbsolutePath() + Character.toString(File.separatorChar) + "saves");
+            savesDir = new File(installationRoot.getAbsolutePath() + File.separator + "saves");
             if(!savesDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + savesDir.getAbsolutePath());
                 savesDir.mkdirs();
             }
 
             //Packs
-            packDir = new File(installationRoot.getAbsolutePath() + Character.toString(File.separatorChar) + "packs");
+            packDir = new File(installationRoot.getAbsolutePath() + File.separator + "packs");
             if(!packDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + packDir.getAbsolutePath());
                 packDir.mkdirs();
             }
 
             //Config
-            configDir = new File(installationRoot.getAbsolutePath() + Character.toString(File.separatorChar) + "config");
+            configDir = new File(installationRoot.getAbsolutePath() + File.separator + "config");
             if(!configDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + configDir.getAbsolutePath());
                 configDir.mkdirs();
             }
 
                 //I hate it when people do this, but it feels a little more organized this way.
-                packFile = new File(configDir.getAbsolutePath() + Character.toString(File.separatorChar) + "pack.txt");
+                packFile = new File(configDir.getAbsolutePath() + File.separator + "pack.txt");
                 if(!packFile.exists()) {
                     Display.displayProgressMessage("Creating File: " + packFile.getAbsolutePath());
                     try { packFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the modpack configuration file."); }
                 }
 
-                File displayFile = new File(configDir.getAbsolutePath() + Character.toString(File.separatorChar) + "display.txt");
+                File displayFile = new File(configDir.getAbsolutePath() + File.separator + "display.txt");
                 if(!displayFile.exists()) {
                     Display.displayProgressMessage("Creating File: " + displayFile.getAbsolutePath());
                     try { displayFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the display colors configuration file."); }
                 }
 
             //logging
-            Display.logDir = new File(installationRoot.getAbsolutePath() + Character.toString(File.separatorChar) + "logs");
+            Display.logDir = new File(installationRoot.getAbsolutePath() + File.separator + "logs");
             if(!Display.logDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + Display.logDir.getAbsolutePath());
                 Display.logDir.mkdirs();
+            }
+
+            //The vanilla guide
+            vanillaGuideDir = new File(installationRoot.getAbsolutePath() + File.separator + "guide");
+            if(updatedSinceLastLaunch) { //The guide should only be copied when a new version is released
+                //Clear out the entire vanilla guide directory
+                clearDirectory(vanillaGuideDir);
+            }
+            //Create (or recreate) the vanilla guide directory and copy all the stuff into it from the jar.
+            if(!copyVanillaGuide()) {
+                Display.displayError("Unable to copy the vanilla guide to the installation directory.");
             }
 
         } else {
@@ -252,6 +285,14 @@ public class TextFighter {
     /**Stores the directory where all config files are located*/
     public static File configDir;
 
+    /**Stores the path to the version file in the installation directory*/
+    public static File installationVersionFile;
+
+    /**Stores the location of the vanilla textfighter guide*.
+     *
+     */
+    public static File vanillaGuideDir;
+
     /**Stores the file where the pack used is defined*/
     public static File packFile;
     /**Stores the directory where all packs are to be put*/
@@ -300,6 +341,62 @@ public class TextFighter {
     public static ArrayList<IDMethod> levelupMethods = new ArrayList<IDMethod>();
     /**All the choices of all locations are copied from here to the loaded location*/
     public static ArrayList<ChoiceOfAllLocations> choicesOfAllLocations = new ArrayList<ChoiceOfAllLocations>();
+
+    /**The recent input commands saved. This is only used in the gui.*/
+    public static HistoryLinkedList<String> inputHistory = new HistoryLinkedList<>();
+
+    /**
+     * Copies the vanilla textfighter guide to the installation directory
+     */
+    public static boolean copyVanillaGuide() {
+        Display.displayProgressMessage("Copying the vanilla textfighter guide to the installation location.");
+        String jarGuideDir = "/guide";
+        try {
+            final File jarFile = new File(TextFighter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            if(jarFile.isFile()) {  // Run with JAR file
+                final JarFile jar = new JarFile(jarFile);
+                final Enumeration<JarEntry> entries = jar.entries();
+                while(entries.hasMoreElements()) {
+                    String name = entries.nextElement().getName();
+                    System.out.println(name);
+                    if (name.startsWith(jarGuideDir.substring(1))) { //filter according to the path and json file
+                        if(name.endsWith(".txt")) { //It is a file, so we should copy it
+                            Display.displayProgressMessage("Copying file: " + name);
+                            InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
+                            Files.copy(stream, Paths.get(installationRoot.getPath() + File.separator + name), StandardCopyOption.REPLACE_EXISTING);
+                            stream.close();
+                        } else { //It is a directory, so we should create an identical one
+                            File directory = new File(installationRoot.getPath() + File.separator + name);
+                            Display.displayProgressMessage("Copying Directory: " + name);
+                            if(!directory.exists() && !directory.mkdirs()) {
+                                Display.displayError("Unable to create a directory.");
+                                return false;
+                            }
+                        }
+
+                    }
+                }
+                jar.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    /**Completely clears an entire directory*/
+    public static void clearDirectory(File directory) {
+        if(!directory.exists()) { return; } //I gave a completely invalid directory
+        for(String f : directory.list()) {
+            File file = new File(directory.getAbsolutePath() + File.separatorChar + f);
+            if(file.exists() && file.isDirectory()) {
+                clearDirectory(file);
+                directory.delete();
+            } else if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
 
     /**
      * Gets a location from the {@link #locations} arraylist
@@ -358,7 +455,15 @@ public class TextFighter {
         }
     }
 
-    //Things to get the current version
+    /**
+     * Get the version from the installation location
+     */
+    public static String readVersionFromInstallationLocation() {
+        try (BufferedReader br = new BufferedReader(new FileReader(installationVersionFile))) {
+            return br.readLine();
+        } catch (IOException | NullPointerException e) { e.printStackTrace(); return "Unknown"; }
+    }
+
     /**
      * Get the version from the {@link #versionFile}.
      * @return      returns the version that is read. If no version was read, then returns "unknown".
@@ -395,11 +500,9 @@ public class TextFighter {
                         InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
                         if(stream == null) { continue; }
                         Scanner scan = new Scanner(stream).useDelimiter("\\Z");
-                        try { json = scan.next(); } catch(NoSuchElementException e) { } //This means the file is empty and we should pretty much ignore it
+                        try { json = scan.next(); } catch(NoSuchElementException e) { json = "{}"; } //This means the file is empty and we should pretty much ignore it
                         scan.close();
-                        if(json.isEmpty()) {
-                            json = "{}";
-                        }
+                        stream.close();
                         jsonStrings.add(json);
                     }
                 }
@@ -422,6 +525,7 @@ public class TextFighter {
         Scanner scan = new Scanner(stream).useDelimiter("\\Z");
         try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
         scan.close();
+        try { stream.close(); } catch (IOException e) {}
         if(jsonString.isEmpty()) {
             return "{}";
         }
@@ -446,13 +550,12 @@ public class TextFighter {
         achievementDir = new File(assetsDir.getPath() + "/" + "achievements");
         itemDir = new File(assetsDir.getPath() + "/" + "items");
         //configDir = new File("config");
-        //packFile = new File(configDir.getPath() + Character.toString(File.separatorChar) + "pack");
+        //packFile = new File(configDir.getPath() + File.separator + "pack");
         //packDir = new File("packs");
         customVariablesDir = new File(assetsDir.getPath() + "/" + "customvariables");
         deathmethodsFile = new File(assetsDir.getPath() + "/" + "deathmethods/deathmethods.json");
         levelupmethodsFile = new File(assetsDir.getPath() + "/" + "levelupmethods/levelupmethods.json");
         choicesOfAllLocationsFile = new File(assetsDir.getPath() + "/" + "choicesOfAllLocations/choicesOfAllLocations.json");
-        version = readVersionFromFile();
         //Load some things
         loadConfig();
         //loads the content
@@ -667,7 +770,7 @@ public class TextFighter {
         if(parent != null && parent.exists() && parent.isDirectory()) {
             for(String s : parent.list()) {
                 if(s.equals(directoryName)) {
-                    File pack = new File(parent.getPath() + Character.toString(File.separatorChar) + directoryName);
+                    File pack = new File(parent.getPath() + File.separator + directoryName);
                     if(pack.isDirectory()) {
                         if(parsingPack && packUsed != null) {  Display.displayPackMessage("loading " + directoryName + " from pack '" + packUsed.getName() + "'"); }
                         return pack;
@@ -688,7 +791,7 @@ public class TextFighter {
         if(parent != null && parent.exists() && parent.isDirectory()) {
             for(String s : parent.list()) {
                 if(s.equals(fileName)) {
-                    File pack = new File(parent.getPath() + Character.toString(File.separatorChar) + fileName);
+                    File pack = new File(parent.getPath() + File.separator + fileName);
                     if(pack.isFile()) {
                         if(parsingPack && packUsed != null) { Display.displayPackMessage("loading " + fileName + " from pack '" + packUsed.getName() + "'"); }
                         return pack;
@@ -739,7 +842,7 @@ public class TextFighter {
         if (packDirectory != null) { directory = packDirectory; parsingPack = true; }
 
         //Place where all names that are located in the omit file are stored
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + Character.toString(File.separatorChar) + "omit.txt"));
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
 
         //Now parses the interfaces, gets from the modpack first then the default pack
         for (int num = 0; num < 2; num++) {
@@ -756,7 +859,7 @@ public class TextFighter {
                 jsonStrings = new ArrayList<String>();
                 for (String s : directory.list()) {
                     try {
-                        Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                         try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
                         scan.close();
                     } catch (IOException | NullPointerException e) {
@@ -845,7 +948,7 @@ public class TextFighter {
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
         //Place where all names that are located in the omit file are stored
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + Character.toString(File.separatorChar) + "omit.txt"));
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
 
         //Load them
         for(int num=0; num<2; num++) {
@@ -861,7 +964,7 @@ public class TextFighter {
                 jsonStrings = new ArrayList<String>();
                 for (String s : directory.list()) {
                     try {
-                        Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                         try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
                         scan.close();
                     } catch (IOException | NullPointerException e) {
@@ -1012,7 +1115,7 @@ public class TextFighter {
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
         //Place where all names that are located in the omit file are stored
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + Character.toString(File.separatorChar) + "omit.txt"));
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
 
         for(int num=0; num<2; num++) {
 
@@ -1027,7 +1130,7 @@ public class TextFighter {
                 jsonStrings = new ArrayList<String>();
                 for (String s : directory.list()) {
                     try {
-                        Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                         try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
                         scan.close();
                     } catch (IOException | NullPointerException e) {
@@ -1098,11 +1201,11 @@ public class TextFighter {
         //Determine if there is a pack to be loaded from and start loading from it if there is
         File packDirectory = getPackDirectory("tags", packUsed);
         if(packDirectory != null && packDirectory.list() != null) {
-            File newFile = new File(packDirectory + Character.toString(File.separatorChar) + "tags.json");
+            File newFile = new File(packDirectory + File.separator + "tags.json");
             if(newFile.exists()) { file = newFile; parsingPack = true; }
         }
 
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(file.getParentFile().getAbsolutePath() + Character.toString(File.separatorChar) + "omit.txt"));
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(file.getParentFile().getAbsolutePath() + File.separator + "omit.txt"));
 
         //Load them
         for(int num=0; num<2; num++) {
@@ -1166,7 +1269,7 @@ public class TextFighter {
         File packDirectory = getPackDirectory("achievements", packUsed);
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + Character.toString(File.separatorChar) + "omit.txt")); //Place where all names that are located in the omit file are stored
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt")); //Place where all names that are located in the omit file are stored
 
         //Loads them
         for(int num=0; num<2; num++) {
@@ -1182,7 +1285,7 @@ public class TextFighter {
                 jsonStrings = new ArrayList<String>();
                 for (String s : directory.list()) {
                     try {
-                        Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                         try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
                         scan.close();
                     } catch (IOException | NullPointerException e) {
@@ -1230,7 +1333,7 @@ public class TextFighter {
         File packDirectory = getPackDirectory("items", packUsed);
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + Character.toString(File.separatorChar) + "omit.txt")); //Place where all names that are located in the omit file are stored
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt")); //Place where all names that are located in the omit file are stored
         for(int num=0; num<2; num++) {
 
             Display.changePackTabbing(true);
@@ -1249,11 +1352,11 @@ public class TextFighter {
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
-                    File itemDir = new File(directory.getPath() + Character.toString(File.separatorChar) + "weapons");
+                    File itemDir = new File(directory.getPath() + File.separator + "weapons");
                     if(itemDir.exists()) {
                         for (String s : directory.list()) {
                             try {
-                                Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                                Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                                 try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
                                 scan.close();
                             } catch (IOException | NullPointerException e) {
@@ -1321,11 +1424,11 @@ public class TextFighter {
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
-                    File itemDir = new File(directory.getPath() + Character.toString(File.separatorChar) + "armor");
+                    File itemDir = new File(directory.getPath() + File.separator + "armor");
                     if(itemDir.exists()) {
                         for (String s : directory.list()) {
                             try {
-                                Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                                Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                                 jsonStrings.add(scan.next());
                                 scan.close();
                             } catch (IOException | NullPointerException e) {
@@ -1391,11 +1494,11 @@ public class TextFighter {
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
-                    File itemDir = new File(directory.getPath() + Character.toString(File.separatorChar) + "tools");
+                    File itemDir = new File(directory.getPath() + File.separator + "tools");
                     if(itemDir.exists()) {
                         for (String s : directory.list()) {
                             try {
-                                Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                                Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                                 jsonStrings.add(scan.next());
                                 scan.close();
                             } catch (IOException | NullPointerException e) {
@@ -1460,11 +1563,11 @@ public class TextFighter {
                 } else {
                     Display.displayPackMessage("Loading from modpack");
                     jsonStrings = new ArrayList<String>();
-                    File itemDir = new File(directory.getPath() + Character.toString(File.separatorChar) + "specialitems");
+                    File itemDir = new File(directory.getPath() + File.separator + "specialitems");
                     if(itemDir.exists()) {
                         for (String s : directory.list()) {
                             try {
-                                Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                                Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                                 jsonStrings.add(scan.next());
                                 scan.close();
                             } catch (IOException | NullPointerException e) {
@@ -1543,7 +1646,7 @@ public class TextFighter {
         File packDirectory = getPackDirectory("customvariables", packUsed);
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
-        ArrayList<String> filesToBeOmitted = getOmittedAssets(new File(packDirectory + Character.toString(File.separatorChar) + "omit.txt"));
+        ArrayList<String> filesToBeOmitted = getOmittedAssets(new File(packDirectory + File.separator + "omit.txt"));
 
         //Load them
         for(int num=0; num<2; num++) {
@@ -1560,7 +1663,7 @@ public class TextFighter {
                 jsonStrings = new ArrayList<String>();
                 for (String s : directory.list()) {
                     try {
-                        Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + s)).useDelimiter("\\Z");
+                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
                         try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
                         scan.close();
                     } catch (IOException | NullPointerException e) {
@@ -1672,7 +1775,7 @@ public class TextFighter {
                 if(line != null && packDir != null && packDir.exists() && packDir.list() != null) {
                     for(String s : packDir.list()){
                         if(s.equals(line)) {
-                            packUsed = new File(packDir.getPath() + Character.toString(File.separatorChar) + line);
+                            packUsed = new File(packDir.getPath() + File.separator + line);
                             Display.displayProgressMessage("Current pack: " + line);
                             modName = line;
                         }
@@ -1702,7 +1805,7 @@ public class TextFighter {
         File packDirectory = getPackDirectory("defaultvalues", packUsed);
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
-        //ArrayList<String> filesToBeOmitted = getOmittedAssets(new File(packDirectory + Character.toString(File.separatorChar) + "omit.txt"));
+        //ArrayList<String> filesToBeOmitted = getOmittedAssets(new File(packDirectory + File.separator + "omit.txt"));
 
         //Load them
         Display.changePackTabbing(true);
@@ -1727,7 +1830,7 @@ public class TextFighter {
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
-                            Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + "player.json")).useDelimiter("\\Z");
+                            Scanner scan = new Scanner(new File(directory + File.separator + "player.json")).useDelimiter("\\Z");
                             try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
                             if(jsonString.isEmpty()) { jsonString = "{}"; }
                             scan.close();
@@ -1802,7 +1905,7 @@ public class TextFighter {
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
-                            Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + "enemy.json")).useDelimiter("\\Z");
+                            Scanner scan = new Scanner(new File(directory + File.separator + "enemy.json")).useDelimiter("\\Z");
                             jsonString = scan.next();
                             scan.close();
                         } catch (IOException | NullPointerException e) {
@@ -1859,7 +1962,7 @@ public class TextFighter {
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
-                            Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + "weapon.json")).useDelimiter("\\Z");
+                            Scanner scan = new Scanner(new File(directory + File.separator + "weapon.json")).useDelimiter("\\Z");
                             jsonString = scan.next();
                             scan.close();
                         } catch (IOException | NullPointerException e) {
@@ -1910,7 +2013,7 @@ public class TextFighter {
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
-                            Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + "armor.json")).useDelimiter("\\Z");
+                            Scanner scan = new Scanner(new File(directory + File.separator + "armor.json")).useDelimiter("\\Z");
                             jsonString = scan.next();
                             scan.close();
                         } catch (IOException | NullPointerException e) {
@@ -1954,7 +2057,7 @@ public class TextFighter {
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
-                            Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + "tool.json")).useDelimiter("\\Z");
+                            Scanner scan = new Scanner(new File(directory + File.separator + "tool.json")).useDelimiter("\\Z");
                             jsonString = scan.next();
                             scan.close();
                         } catch (IOException | NullPointerException e) {
@@ -1995,7 +2098,7 @@ public class TextFighter {
                     } else {
                         Display.displayPackMessage("Loading from modpack");
                         try {
-                            Scanner scan = new Scanner(new File(directory + Character.toString(File.separatorChar) + "specialitem.json")).useDelimiter("\\Z");
+                            Scanner scan = new Scanner(new File(directory + File.separator + "specialitem.json")).useDelimiter("\\Z");
                             jsonString = scan.next();
                             scan.close();
                         } catch (IOException | NullPointerException e) {
@@ -2042,11 +2145,11 @@ public class TextFighter {
         //Determine if there is a pack to be loaded and start loading from it if there is
         File packDirectory = getPackDirectory("deathmethods", packUsed);
         if(packDirectory != null && packDirectory.list() != null) {
-            File newFile = new File(packDirectory.getPath() + Character.toString(File.separatorChar) + "deathmethods.json");
+            File newFile = new File(packDirectory.getPath() + File.separator + "deathmethods.json");
             if(newFile.exists()) { file = newFile; parsingPack = true; }
         }
 
-        ArrayList<String> idsToBeOmitted = getOmittedAssets(new File(packDirectory + Character.toString(File.separatorChar) + "omit.txt")); //Place where all ids that are located in the omit file are stored
+        ArrayList<String> idsToBeOmitted = getOmittedAssets(new File(packDirectory + File.separator + "omit.txt")); //Place where all ids that are located in the omit file are stored
         //Loads them
         for(int num=0; num<2; num++) {
 
@@ -2120,7 +2223,7 @@ public class TextFighter {
             if(newFile != null) { file = newFile; parsingPack = true; }
         }
 
-        ArrayList<String> idsToBeOmitted = getOmittedAssets(new File(packDirectory + Character.toString(File.separatorChar) + "omit.txt")); //Place where all ids that are located in the omit file are stored
+        ArrayList<String> idsToBeOmitted = getOmittedAssets(new File(packDirectory + File.separator + "omit.txt")); //Place where all ids that are located in the omit file are stored
         //Loads them
         for(int num=0; num<2; num++) {
 
@@ -2192,7 +2295,7 @@ public class TextFighter {
             if(newFile != null) { file = newFile; parsingPack = true; }
         }
 
-        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(packDirectory + Character.toString(File.separatorChar) + "omit.txt"));
+        ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(packDirectory + File.separator + "omit.txt"));
 
         for(int num=0; num<2; num++) {
 
@@ -2261,7 +2364,7 @@ public class TextFighter {
 
         if(!PackMethods.areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
 
-        File f = new File(savesDir.getPath() + Character.toString(File.separatorChar) + saveName + ".json");
+        File f = new File(savesDir.getPath() + File.separator + saveName + ".json");
         if(!f.exists()) { addToOutput("Unable to find a save with name '" + saveName + "'."); return false; }
 
         currentSaveFile = f;
@@ -2414,7 +2517,7 @@ public class TextFighter {
             return;
         }
 
-        File newGameFile = new File(savesDir.getPath() + Character.toString(File.separatorChar) + name + ".json");
+        File newGameFile = new File(savesDir.getPath() + File.separator + name + ".json");
         try { newGameFile.createNewFile();} catch (IOException e) {
             addToOutput("Failed to create new file");
             e.printStackTrace();
@@ -2624,7 +2727,7 @@ public class TextFighter {
         for(int i=0;i<saves.size();i++){
             if(saves.get(i).equals(name)) {
                 saveExists = true;
-                File gameFile = new File(savesDir.getAbsolutePath() + Character.toString(File.separatorChar) + saves.get(i) + ".json");
+                File gameFile = new File(savesDir.getAbsolutePath() + File.separator + saves.get(i) + ".json");
                 if(!gameFile.delete()) {
                     addToOutput("File found, but was unable to delete it");
                     return;
@@ -2699,9 +2802,11 @@ public class TextFighter {
         try {
             String input = "";
             if(Display.gui != null) {
-                Display.gui.canEnterInput = true;
+                if(inputHistory.size() == 0) { inputHistory.addCommand(""); } //Create a new command in the history.
+                inputHistory.setCurrentIndex(0);
                 synchronized (waiter) {
                     try {
+                        Display.gui.canEnterInput = true;
                         waiter.wait();
                         input = Display.gui.inputArea.getText();
                     } catch (InterruptedException e) {
@@ -2717,6 +2822,13 @@ public class TextFighter {
                 Display.resetColors();
             }
             Display.previousCommandString = input;
+
+            if(Display.guiMode && !input.isEmpty()) {
+                inputHistory.set(0,input);
+                inputHistory.addCommand(""); //Create a new command in the history. The old one was already added so we vibin'.
+                Display.gui.copiedInputHistory = (HistoryLinkedList)inputHistory.clone();
+                Display.gui.copiedInputHistory.setCurrentIndex(0);
+            }
             if(input.trim() != null) {
                 Display.writeToLogFile("[Input] " + input);
                 boolean validChoice = false;
@@ -2854,7 +2966,7 @@ public class TextFighter {
         //Display the interface and get input
         Display.displayInterfaces(player.getLocation());
         boolean validInput = invokePlayerInput();
-        if(validInput && Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area if a valid choice was given, otherwise let them fix it.
+        if(Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area. If they want to fix it, then they just have to hit the up arrow
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
         if(actedSinceStartOfFight && validInput && player.getInFight() && player.getLocation().getName().equals("fight")) {
             player.decreaseTurnsWithStrengthLeft(1);
@@ -2890,6 +3002,8 @@ public class TextFighter {
      */
     public static void main(String[] args) {
 
+        version = readVersionFromFile(); //Important later
+
         //Determine if the game is run in pack test mode
         //When in pack test mode, the game just loads the assets and tells the user if there is anything wrong
         for(String a : args) {
@@ -2923,6 +3037,7 @@ public class TextFighter {
         //Update the title to include the mod (If not using a mod, then nothing changes)
         if(Display.guiMode) {
             Display.gui.updateTitle();
+            Display.gui.createGuideArea(); //Create the guide area using the loaded mod
         }
 
         Display.displayProgressMessage(Display.errorsOnLoading + " errors occurred while loading the assets.");
