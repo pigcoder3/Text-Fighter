@@ -2935,6 +2935,7 @@ public class TextFighter {
         //Update the title to include the mod (If not using a mod, then nothing changes)
         if(Display.guiMode) {
             Display.gui.updateTitle();
+            Display.gui.createGuideArea(); //Create the guide area using the loaded mod
         }
 
         Display.displayProgressMessage(Display.errorsOnLoading + " errors occurred while loading the assets.");
