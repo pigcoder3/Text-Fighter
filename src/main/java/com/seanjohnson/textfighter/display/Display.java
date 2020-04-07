@@ -21,16 +21,6 @@ public class Display {
     /***Stores the number of errors that occurred while loading the assets*/
     public static int errorsOnLoading = 0;
 
-    /**Stores whether or not an error occured.
-     * Important when determining if to write to a log file.
-     */
-    public static boolean errorOccured = false;
-
-    /**
-     * Stores the current log string. Used if not yet written to file.
-     */
-    public static String log = "";
-
     /***The directory where all error logs are stored*/
     public static File logDir;
 
@@ -113,26 +103,19 @@ public class Display {
      * @param msg       The message to log.
      */
     public static void writeToLogFile(String msg) {
-        if(!errorOccured || logDir == null) { //Dont write to the log file yet because no errors or the game has not yet been installed.
-            log.concat(msg);
-            return;
-        }
-
-        //Write to the log file if an error has occurred so far.
-        try { //If there is no log file, then try to create one
+        if(logDir == null) { return; } //No installation has occurred yet, so don't worry about it
+        //If there is no log file, then try to create one
+        try {
             if(logFile == null || !logFile.exists()) {
-                if(!logDir.exists()) { //Create the log directory if it does not exist.
+                if(!logDir.exists()) {
                     logDir.mkdirs();
                 }
-                //Note: The ':' must be replaced with '-' (or another character) because Windows does not allow colons in filenames
                 logFile = new File(logDir.getAbsolutePath() + File.separatorChar + "TextfighterLog-" + new Date().toString().replace(":", "-"));
                 logFile.createNewFile();
             }
         } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "' because unable to create one"); return; }
         //Write to the log file
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
-            if(log != null) { out.println(log); } //We will make this null so that it is not written again.
-            log = ""; //Empty the log string so that we don't write it again
             out.println(msg);
         } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "'"); }
     }
@@ -151,7 +134,6 @@ public class Display {
             System.err.println("[Error] " + e);
         }
 
-        errorOccured = true; //Therefore, the log should be written to the log file.
         writeToLogFile("[Error] " + e);
     }
 

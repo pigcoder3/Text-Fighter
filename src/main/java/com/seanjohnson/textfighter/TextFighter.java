@@ -143,13 +143,13 @@ public class TextFighter {
             boolean updatedSinceLastLaunch = false;
 
             //Version File
-            installationVersionFile = new File(installationRoot.getAbsoluteFile() + File.separator + versionFile);
+            installationVersionFile = new File(installationRoot.getAbsoluteFile() + File.separator + "VERSION.txt");
             String installedVersion = readVersionFromInstallationLocation();
             if(!installationVersionFile.exists() || !version.equalsIgnoreCase(installedVersion)) { //We will need to copy the guide and the newest version over
                 updatedSinceLastLaunch = true;
                 Display.displayProgressMessage("Creating File: " + installationVersionFile.getAbsolutePath());
                 try {
-                    InputStream stream = TextFighter.class.getResourceAsStream("/" + versionFile);
+                    InputStream stream = TextFighter.class.getResourceAsStream("/VERSION.txt");
                     Files.copy(stream, Paths.get(installationVersionFile.getPath()), StandardCopyOption.REPLACE_EXISTING);
                     stream.close();
                 } catch(IOException | NullPointerException e) {
@@ -201,13 +201,13 @@ public class TextFighter {
             //The vanilla guide
             vanillaGuideDir = new File(installationRoot.getAbsolutePath() + File.separator + "guide");
             if(updatedSinceLastLaunch) { //The guide should only be copied when a new version is released
-                //Clear out the entire vanilla guide directory (will fail silently if it is not there).
+                //Clear out the entire vanilla guide directory
                 clearDirectory(vanillaGuideDir);
-                if(!copyVanillaGuide()) { //Create (or recreate) the vanilla guide directory and copy all the stuff into it from the jar.
-                    Display.displayError("Unable to copy the vanilla guide to the installation directory.");
-                }
             }
-
+            //Create (or recreate) the vanilla guide directory and copy all the stuff into it from the jar.
+            if(!copyVanillaGuide()) {
+                Display.displayError("Unable to copy the vanilla guide to the installation directory.");
+            }
 
         } else {
             Display.displayError("Could not find directory '" + installationLocation.getAbsolutePath() + "' for installation");
@@ -358,6 +358,7 @@ public class TextFighter {
                 final Enumeration<JarEntry> entries = jar.entries();
                 while(entries.hasMoreElements()) {
                     String name = entries.nextElement().getName();
+                    System.out.println(name);
                     if (name.startsWith(jarGuideDir.substring(1))) { //filter according to the path and json file
                         if(name.endsWith(".txt")) { //It is a file, so we should copy it
                             Display.displayProgressMessage("Copying file: " + name);
@@ -383,10 +384,7 @@ public class TextFighter {
         return true;
     }
 
-    /**
-     * Completely clears an entire directory.
-     * Fails silently if the given directory does not exist.
-     */
+    /**Completely clears an entire directory*/
     public static void clearDirectory(File directory) {
         if(!directory.exists()) { return; } //I gave a completely invalid directory
         for(String f : directory.list()) {
@@ -471,7 +469,7 @@ public class TextFighter {
      * @return      returns the version that is read. If no version was read, then returns "unknown".
      */
     public static String readVersionFromFile() {
-        InputStream stream = TextFighter.class.getResourceAsStream("/" + versionFile);
+        InputStream stream = TextFighter.class.getResourceAsStream("/VERSION.txt");
         if(stream == null) { Display.displayError("Difficulty reading the version file."); return "Unknown"; }
         Scanner scan = new Scanner(stream);
         String line = scan.next();
