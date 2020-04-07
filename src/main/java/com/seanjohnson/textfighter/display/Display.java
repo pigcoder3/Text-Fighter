@@ -21,6 +21,16 @@ public class Display {
     /***Stores the number of errors that occurred while loading the assets*/
     public static int errorsOnLoading = 0;
 
+    /**Stores whether or not an error has occurred
+     * Used to determine if a log should be written.
+     */
+    public static boolean errorOccurred = false;
+
+    /**Stores the current log.
+     * used when it has not been written to a file.
+     */
+    public static String log = "";
+
     /***The directory where all error logs are stored*/
     public static File logDir;
 
@@ -103,7 +113,12 @@ public class Display {
      * @param msg       The message to log.
      */
     public static void writeToLogFile(String msg) {
-        if(logDir == null) { return; } //No installation has occurred yet, so don't worry about it
+
+        //Either no error occurred or the game has not been installed yet, so don't write to a log file.
+        if(!errorOccurred || logDir == null) {
+            log.concat(msg);
+            return;
+        }
         //If there is no log file, then try to create one
         try {
             if(logFile == null || !logFile.exists()) {
@@ -116,6 +131,8 @@ public class Display {
         } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "' because unable to create one"); return; }
         //Write to the log file
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
+            if(log!=null) { out.println(log); }
+            log = null; //So we dont write the log multiple times to the file.
             out.println(msg);
         } catch (IOException e) { System.err.println("Could not write to log file '" + logFile.getName() + "'"); }
     }
@@ -134,6 +151,7 @@ public class Display {
             System.err.println("[Error] " + e);
         }
 
+        errorOccurred = true; //Therefore we should write to the log file.
         writeToLogFile("[Error] " + e);
     }
 
