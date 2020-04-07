@@ -144,8 +144,7 @@ public class TextFighter {
 
             //Version File
             installationVersionFile = new File(installationRoot.getAbsoluteFile() + File.separator + "VERSION.txt");
-            String installedVersion = readVersionFromInstallationLocation();
-            if(!installationVersionFile.exists() || !version.equalsIgnoreCase(installedVersion)) { //We will need to copy the guide and the newest version over
+            if(!installationVersionFile.exists() || !version.equalsIgnoreCase(readVersionFromInstallationLocation())) { //We will need to copy the guide and the newest version over
                 updatedSinceLastLaunch = true;
                 Display.displayProgressMessage("Creating File: " + installationVersionFile.getAbsolutePath());
                 try {
@@ -462,6 +461,7 @@ public class TextFighter {
      * Get the version from the installation location
      */
     public static String readVersionFromInstallationLocation() {
+        if(!installationVersionFile.exists()) { return "Not installed"; }
         try (BufferedReader br = new BufferedReader(new FileReader(installationVersionFile))) {
             return br.readLine();
         } catch (IOException | NullPointerException e) { e.printStackTrace(); return "Unknown"; }
