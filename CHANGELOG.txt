@@ -1,3 +1,7 @@
+Release v1.3
+  - Log files are only written to if an error occurred
+  - Fixed bug that caused the vanilla textfighter guide to be copied from the jar after every launch of the game
+
 Release v1.3-Snapshot-2
   - Added a history mechanism for the gui
     - Scroll the last 50 input commands using the up and down arrows

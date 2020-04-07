@@ -203,10 +203,10 @@ public class TextFighter {
             if(updatedSinceLastLaunch) { //The guide should only be copied when a new version is released
                 //Clear out the entire vanilla guide directory
                 clearDirectory(vanillaGuideDir);
-            }
-            //Create (or recreate) the vanilla guide directory and copy all the stuff into it from the jar.
-            if(!copyVanillaGuide()) {
-                Display.displayError("Unable to copy the vanilla guide to the installation directory.");
+                //Create (or recreate) the vanilla guide directory and copy all the stuff into it from the jar.
+                if(!copyVanillaGuide()) {
+                    Display.displayError("Unable to copy the vanilla guide to the installation directory.");
+                }
             }
 
         } else {
@@ -358,7 +358,6 @@ public class TextFighter {
                 final Enumeration<JarEntry> entries = jar.entries();
                 while(entries.hasMoreElements()) {
                     String name = entries.nextElement().getName();
-                    System.out.println(name);
                     if (name.startsWith(jarGuideDir.substring(1))) { //filter according to the path and json file
                         if(name.endsWith(".txt")) { //It is a file, so we should copy it
                             Display.displayProgressMessage("Copying file: " + name);
