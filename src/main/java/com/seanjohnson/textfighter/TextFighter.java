@@ -207,6 +207,10 @@ public class TextFighter {
                 if(!copyVanillaGuide()) {
                     Display.displayError("Unable to copy the vanilla guide to the installation directory.");
                 }
+            } if (!vanillaGuideDir.exists()) {
+                if(!copyVanillaGuide()) {
+                    Display.displayError("Unable to copy the vanilla guide to the installation directory.");
+                }
             }
 
         } else {
