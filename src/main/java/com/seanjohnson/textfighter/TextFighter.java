@@ -358,7 +358,6 @@ public class TextFighter {
                 final Enumeration<JarEntry> entries = jar.entries();
                 while(entries.hasMoreElements()) {
                     String name = entries.nextElement().getName();
-                    System.out.println(name);
                     if (name.startsWith(jarGuideDir.substring(1))) { //filter according to the path and json file
                         if(name.endsWith(".txt")) { //It is a file, so we should copy it
                             Display.displayProgressMessage("Copying file: " + name);
