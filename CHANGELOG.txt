@@ -1,6 +1,3 @@
-Release v1.3-hotfix-1
-  - Fixed bug that caused the vanilla textfighter guide to not be copied ever.
-
 Release v1.3
   - Log files are only written to if an error occurred
   - Fixed bug that caused the vanilla textfighter guide to be copied from the jar after every launch of the game
