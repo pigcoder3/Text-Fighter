@@ -148,7 +148,7 @@
                 }
             ],
             "usage" : "repairstation"
-        }
+        },
         {
             "name" : "help",
             "description" : "Goes to the help menu",
@@ -181,7 +181,7 @@
             "methods" : [
                 {
                     "method" : "saveGame",
-                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "class" : "com.seanjohnson.textfighter.TextFighter"
                 }
             ],
             "usage" : "savegame"
