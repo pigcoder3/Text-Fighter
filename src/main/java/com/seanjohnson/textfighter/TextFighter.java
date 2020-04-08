@@ -349,7 +349,8 @@ public class TextFighter {
     public static HistoryLinkedList<String> inputHistory = new HistoryLinkedList<>();
 
     /**
-     * Copies the vanilla textfighter guide to the installation directory
+     * Copies the vanilla textfighter guide to the installation directory.
+     * @return      Success or failure
      */
     public static boolean copyVanillaGuide() {
         Display.displayProgressMessage("Copying the vanilla textfighter guide to the installation location.");
@@ -386,7 +387,10 @@ public class TextFighter {
         return true;
     }
 
-    /**Completely clears an entire directory*/
+    /**
+     * Completely clears an entire directory
+     * @param directory      The directory to clear
+     */
     public static void clearDirectory(File directory) {
         if(!directory.exists()) { return; } //I gave a completely invalid directory
         for(String f : directory.list()) {
@@ -459,6 +463,7 @@ public class TextFighter {
 
     /**
      * Get the version from the installation location
+     * @return      The version read from the installation version file.
      */
     public static String readVersionFromInstallationLocation() {
         if(!installationVersionFile.exists()) { return "Not installed"; }
@@ -488,6 +493,7 @@ public class TextFighter {
     /**
      * Returns a group of json files as strings for parsing from a jar.
      * @return      the json files represented as strings.
+     * @param path  The path within the jar file that all files within should be collected from.
      */
     public static ArrayList<String> getJsonFilesAsString(String path) {
         ArrayList<String> jsonStrings = new ArrayList<>();
@@ -520,6 +526,7 @@ public class TextFighter {
     /**
      * Returns a group of json files as strings for parsing from a jar.
      * @return      the json files represented as strings.
+     * @param path  The path to the file within the jar.
      */
     public static String getSingleJsonFileAsString(String path) {
         String jsonString = "{}";
@@ -1632,6 +1639,7 @@ public class TextFighter {
     /**
      * Loads the custom variables.
      * <p>First loads from the pack (If one is specified in the config file), then loads from the default pack.
+     * @return      Whether or not successful.
      */
     public static boolean loadCustomVariables() {
         parsingPack = false;
@@ -1796,6 +1804,7 @@ public class TextFighter {
     /**
      * Loads the default values.
      * <p>NOTE: This one is different from the rest (Except custom variables): Loads from the default pack or the custom pack NOT BOTH.</p>
+     * @return      Whether or not successful.
      */
     public static boolean loadDefaultValues() {
         parsingPack = false;
@@ -2895,6 +2904,7 @@ public class TextFighter {
             if(enemy.getName().equals(en)) {
                 try {
                     Enemy newEnemy = (Enemy)enemy.clone();
+                    newEnemy.setOriginalHp(newEnemy.getHp()); //Make sure the original health stays as it is supposed to so that the difficulty of the enemy doesnt go wack.
                     currentEnemy = newEnemy;
                     newEnemy.invokePremethods();
                     validEnemy = true;

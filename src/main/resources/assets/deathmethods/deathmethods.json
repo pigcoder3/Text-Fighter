@@ -14,11 +14,11 @@
                             "class" : "com.seanjohnson.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                        }
+                        },
                         "/",
                         "2"
                     ],
-                    "argumentTypes" : ["1","0","1"],
+                    "argumentTypes" : ["1","0","1"]
                 }
             ],
             "argumentTypes" : ["1"],
@@ -46,11 +46,11 @@
                             "class" : "com.seanjohnson.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                        }
+                        },
                         "/",
                         "2"
                     ],
-                    "argumentTypes" : ["1","0","1"],
+                    "argumentTypes" : ["1","0","1"]
                 }
             ],
             "argumentTypes" : ["1"],
@@ -78,11 +78,11 @@
                             "class" : "com.seanjohnson.textfighter.Player",
                             "field" : "player",
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                        }
+                        },
                         "/",
                         "2"
                     ],
-                    "argumentTypes" : ["1","0","1"],
+                    "argumentTypes" : ["1","0","1"]
                 }
             ],
             "argumentTypes" : ["1"],

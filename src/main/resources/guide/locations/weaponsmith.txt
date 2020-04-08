@@ -45,9 +45,3 @@ Leaving:
 
 Extra Info:
     None
-
-Name:
-Description:
-Function:
-Usage:
-Requirements:

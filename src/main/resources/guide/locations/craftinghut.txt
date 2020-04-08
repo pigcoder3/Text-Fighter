@@ -9,7 +9,7 @@ Interface:
 Choices:
 
     Name: staff
-    Description: Cost: 30 metal scraps, crafts a staff.
+    Description: Cost: 30 wood, crafts a staff.
     Function: Gives you a new staff and takes 30 wood.
     Usage: staff
     Requirements: You must have at least 30 wood.

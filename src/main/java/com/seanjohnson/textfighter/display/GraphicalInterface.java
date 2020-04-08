@@ -10,6 +10,7 @@ import javax.swing.text.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -192,7 +193,9 @@ public class GraphicalInterface extends JFrame {
 		fileViewer.setFont(displayFont);
 		fileViewer.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		fileViewer.setBackground(backgroundColor);
-		JScrollPane fileViewerScrollPane = new JScrollPane(fileViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JPanel noWrapPanel = new JPanel( new BorderLayout() );
+		noWrapPanel.add(fileViewer, BorderLayout.CENTER);
+		JScrollPane fileViewerScrollPane = new JScrollPane(noWrapPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		fileViewerScrollPane.setBackground(backgroundColor);
 		fileViewerScrollPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 

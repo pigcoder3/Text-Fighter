@@ -66,6 +66,10 @@ public class Enemy implements Cloneable {
      */
     private int hp = defaultHp;
     /**
+     * Stores the original health from at the start of a fight.
+     */
+    private int originalHp = defaultHp;
+    /**
      * Stores the strength of this enemy.
      * <p>Set to {@link #defaultStrength}.</p>
      */
@@ -258,6 +262,23 @@ public class Enemy implements Cloneable {
      */
     public int getHp() { return hp; }
     /**
+     * Returns the {@link #originalHp}
+     * @return      {@link #originalHp}
+     */
+    public int getOriginalHp() { return originalHp; }
+    /**
+     * Sets the {@link #originalHp}
+     * @return      {@link #originalHp}
+     */
+    public void setOriginalHp(int hp) {
+        if(hp <= maxhp) {
+            originalHp = hp;
+        } else {
+            originalHp = maxhp;
+        }
+    }
+
+    /**
      * Decreases the value of {@link #hp} by the value given assuming the enemy can be hurt this turn.
      * <p>If the new value given is less than 0, Then set it to 0. If greater than {@link #maxhp}, then set it to the maxhp.</p>
      * @param a             The amount damaged.
@@ -308,7 +329,7 @@ public class Enemy implements Cloneable {
      * Calculates and returns the {@link #difficulty}.
      * @return      {@link #difficulty}
      */
-    public int getDifficulty() { difficulty = Math.round(hp * strength * levelRequirement / 100); return difficulty; }
+    public int getDifficulty() { difficulty = Math.round(originalHp * strength * levelRequirement / 100); return difficulty; }
 
     //turnsWithInvincibilityLeft methods
     /**
