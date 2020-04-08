@@ -1,6 +1,12 @@
 Release v1.3.1-snaphot-1
   - Fixed crash on installation caused by missing file.
-  - Updated the documentation (It was a few versions behind, although not much had changed);
+  - For modmakers:
+    - Updated the documentation (It was a few versions behind, although not much had changed);
+    - Added a guide compiler for mod makers
+      - Adds vanilla textfighter guide files to (intentionally) missing guide files.
+      - Run the jar with the `compileguide` argument to add vanilla textfighter guide files.
+	  - The mod must be selected and the copied guide files will be put into the mod folder.
+    - Removed .txt extension from all vanilla guide files to improve aesthetics of the guide tab (modmakers must do the same in order for the mod to function)
   - Vanilla TextFighter:
     - Fixed losing all coins, magic points, metal scraps when dying (players should lose half)
 	- Fixed the accidental changing difficulty of an enemy during a fight as health decreased

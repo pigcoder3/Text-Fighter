@@ -2,7 +2,6 @@ package com.seanjohnson.textfighter.display;
 
 import com.seanjohnson.textfighter.HistoryLinkedList;
 import com.seanjohnson.textfighter.TextFighter;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -10,7 +9,6 @@ import javax.swing.text.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 import java.awt.event.*;
 
