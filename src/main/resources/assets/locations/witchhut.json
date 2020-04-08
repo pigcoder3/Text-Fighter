@@ -32,7 +32,7 @@
                     "method" : "addToOutput",
                     "class" : "com.seanjohnson.textfighter.TextFighter",
                     "arguments" : ["You bought an invincibility potion for 20 magic."],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [

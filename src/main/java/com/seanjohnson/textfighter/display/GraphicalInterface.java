@@ -2,7 +2,6 @@ package com.seanjohnson.textfighter.display;
 
 import com.seanjohnson.textfighter.HistoryLinkedList;
 import com.seanjohnson.textfighter.TextFighter;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;

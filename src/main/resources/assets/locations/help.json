@@ -85,7 +85,7 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "inspectitem <nameofweapon>"
+            "usage" : "inspectitem <nameofspecialitem>"
         },
         {
             "name" : "winning",
@@ -133,7 +133,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "com.seanjohnson.textfighter.TextFighter",
-                    "arguments" : ["To save your current game state, navigate to the in game menu,\nand chose the 'savegame' choice. The save file is located in\nthe 'saves' directory at the root of the repository."],
+                    "arguments" : ["To save your current game state, navigate to the in game menu,\nand chose the 'savegame' choice. The save file is located in\nthe 'saves' directory in the installation directory."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -172,7 +172,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "com.seanjohnson.textfighter.TextFighter",
-                    "arguments" : ["For a better explanation and how to use them, visit\nhttps://github.com/pigcoder3/Text-Fighter/wiki/Configuration.\nThe display colors file changes the display colors of the output."],
+                    "arguments" : ["For a better explanation and how to use them, visit\nhttps://github.com/pigcoder3/Text-Fighter/wiki/Configuration.\nThe display colors file in the config folder of the installation directory\nchanges the display colors of the output."],
                     "argumentTypes" : ["0"]
                 }
             ],
@@ -185,7 +185,7 @@
                 {
                     "method" : "addToOutput",
                     "class" : "com.seanjohnson.textfighter.TextFighter",
-                    "arguments" : ["Mods should be placed in the 'packs' directory in the root of the repository.\nThe name of the mod you would like to use should be specified in the 'pack' file\non its own line in the config directory which is located in the root of the directory."],
+                    "arguments" : ["Mods should be placed in the 'packs' directory in the installation direcory.\nThe name of the mod you would like to use should be specified in the 'pack' file\non its own line in the config directory which is located in the root of the installation directory."],
                     "argumentTypes" : ["0"]
                 }
             ],
