@@ -191,9 +191,7 @@ public class GraphicalInterface extends JFrame {
 		fileViewer.setFont(displayFont);
 		fileViewer.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		fileViewer.setBackground(backgroundColor);
-		JPanel noWrapPanel = new JPanel( new BorderLayout() );
-		noWrapPanel.add(fileViewer, BorderLayout.CENTER);
-		JScrollPane fileViewerScrollPane = new JScrollPane(noWrapPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane fileViewerScrollPane = new JScrollPane(fileViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		fileViewerScrollPane.setBackground(backgroundColor);
 		fileViewerScrollPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
