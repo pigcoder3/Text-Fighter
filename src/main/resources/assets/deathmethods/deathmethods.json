@@ -31,7 +31,7 @@
             "class" : "com.seanjohnson.textfighter.TextFighter",
             "arguments" : ["You lost half your coins."],
             "argumentTypes" : ["0"]
-        }
+        },
         {
             "id" : "divideMagicByTwo",
             "method" : "setMagic",
@@ -90,10 +90,21 @@
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
         },
         {
-            "id" : "TellPlayerTheyLostMetalScraps",
-            "method" : "addToOutput",
-            "class" : "com.seanjohnson.textfighter.TextFighter",
-            "arguments" : ["You lost half your metal scraps."],
+            "id": "TellPlayerTheyLostMetalScraps",
+            "method": "addToOutput",
+            "class": "com.seanjohnson.textfighter.TextFighter",
+            "arguments": [
+                "You lost half your metal scraps."
+            ],
+            "argumentTypes": [
+                "0"
+            ]
+        },
+        {
+            "id" : "backToMenu",
+            "method" : "movePlayer",
+            "class" : "com.seanjohnson.textfighter.PackMethods",
+            "arguments" : ["menu"],
             "argumentTypes" : ["0"]
         }
     ]

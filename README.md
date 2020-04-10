@@ -1,5 +1,5 @@
 # Text Fighter
-## graphical text game engine.
+## Graphical Text Game Engine.
 
 Vanilla Text Fighter is a graphical text game using the TextFighter text game engine. A guide for the game can be found on the GitHub [wiki](https://github.com/seanmjohns/Text-Fighter/wiki).
 

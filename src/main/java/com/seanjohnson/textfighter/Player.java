@@ -488,8 +488,8 @@ public class Player {
         TextFighter.addToOutput("You died!");
         deaths++;
         setHp(maxhp); //Restore the player's health
-        PackMethods.movePlayer("menu"); //When the player dies, they respawn at the in game menu (not start menu)
         invokeDeathMethods();
+        //Modmakers decide where to move the player.
     }
     /**
      * Returns {@link #deaths}.

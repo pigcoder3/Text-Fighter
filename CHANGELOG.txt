@@ -4,6 +4,8 @@ Release v1.3.1-snapshot-2
     - Wrote much needed Unit Tests
     - Added exceptions where they were needed (invalid arguments, etc.)
   - Modmakers:
+    - The TextFighter engine no longer forces the player to move back to the "menu" location.
+	  - Modmakers now decide using deathmethods
     - Added Player#isAchievementEarned(String name) so modmakers can see if the player has a specific achievement (usually as a requirement for something else).
     - Player#calculateTotalProtection() now returns protection instead of only setting the totalProtection variable.
     - Player#calculateStrength() now returns the new strength instead of only setting the strength variable.
