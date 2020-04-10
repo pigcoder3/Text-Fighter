@@ -293,7 +293,7 @@ public class GraphicalInterface extends JFrame {
 	 * the mod has been loaded.
 	 */
 	public void updateTitle() {
-		String title = "Text Fighter";
+		String title = "Text Fighter (" + TextFighter.version + ")";
 		if (TextFighter.testMode) {
 			title = title + " (mod testing)";
 		} if (TextFighter.getModName() != "-") {

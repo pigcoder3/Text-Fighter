@@ -1,3 +1,16 @@
+Release v1.3.1-snapshot-2
+  - The version is now shown in the title of the window of the gui version
+  - Developers:
+    - Wrote much needed Unit Tests
+    - Added exceptions where they were needed (invalid arguments, etc.)
+  - Modmakers:
+    - Added Player#isAchievementEarned(String name) so modmakers can see if the player has a specific achievement (usually as a requirement for something else).
+    - Player#calculateTotalProtection() now returns protection instead of only setting the totalProtection variable.
+    - Player#calculateStrength() now returns the new strength instead of only setting the strength variable.
+    - The fists weapon (when no weapon) always exists and cannot be broken (cannot be set to breakable by mods)
+    - Fixed bug that caused enemy actions to never have requirements
+    - Added getDurability method to Armor
+
 Release v1.3.1-snaphot-1
   - Fixed crash on installation caused by missing file.
   - For modmakers:
