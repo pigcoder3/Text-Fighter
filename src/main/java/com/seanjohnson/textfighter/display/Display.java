@@ -163,7 +163,7 @@ public class Display {
         errorsOnLoading++;
         // Displays errors that deal with packs
         if(TextFighter.testMode) {
-            if(guiMode) {
+            if(guiMode && TextFighter.configLoaded) {
                 gui.addOutputText(packTabbing + "[PackError] " + e, errorColor);
             } else if(ANSI) {
                 System.err.println(error + packTabbing + "[PackError] " + e + RESET);
@@ -182,7 +182,7 @@ public class Display {
     public static void displayPackMessage(String e) {
         // Displays messages that deal with packs
         if(TextFighter.testMode) {
-            if(guiMode) {
+            if(guiMode && TextFighter.configLoaded) {
                 gui.addOutputText(packTabbing + "[PackMessage] " + e, progressColor);
             } else if(ANSI) {
                 System.err.println(progress + packTabbing + "[PackMessage] " + e + RESET);
@@ -213,7 +213,7 @@ public class Display {
      */
     public static void displayWarning(String e) {
         // Displays warnings
-        if(guiMode) {
+        if(guiMode && TextFighter.configLoaded) {
             gui.addOutputText("[Warning] " + e, warningColor);
         } else if(ANSI) {
             System.err.println(warning + "[Warning] " + e + RESET);
@@ -229,7 +229,7 @@ public class Display {
      */
     public static void displayOutputMessage(String e) {
         // Used for displaying messages that explain loading resource progess
-        if(guiMode) {
+        if(guiMode && TextFighter.configLoaded) {
             gui.addOutputText(e, outputColor);
         } else if(ANSI) {
             System.err.println(output + e + RESET);
@@ -246,7 +246,7 @@ public class Display {
      */
     public static void displayProgressMessage(String e) {
         // Used for displaying the output field in TextFighter class
-        if(guiMode) {
+        if(guiMode && TextFighter.configLoaded) {
             gui.addOutputText("[Progress] " + e, progressColor);
         } else if(ANSI) {
             System.out.println(progress + "[Progress] " + e + RESET);
@@ -260,7 +260,7 @@ public class Display {
     public static void displayPreviousCommand() {
         if(previousCommandString == null || previousCommandString.length() < 1) { return; }
         //Displays the command the user previously inputted
-        if(guiMode) {
+        if(guiMode && TextFighter.configLoaded) {
             gui.addOutputText("Previous choice: " + previousCommandString, previousCommandColor);
         } else if(ANSI) {
             System.out.println(previousCommand + "Previous choice: '" + previousCommandString + "'" + RESET + "\n");
@@ -287,7 +287,7 @@ public class Display {
      * @param name      The name of the achievement.
      */
     public static void achievementEarned(String name) {
-        if(guiMode) {
+        if(guiMode && TextFighter.configLoaded) {
             gui.addOutputText("You have earned the achievement '" + name + "'!", outputColor);
         } else if(ANSI) {
             TextFighter.addToOutput(output + BOLD + "You have earned the achievement '" + name + "'!" + RESET);

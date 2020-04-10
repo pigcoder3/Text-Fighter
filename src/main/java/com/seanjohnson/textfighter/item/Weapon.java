@@ -9,11 +9,6 @@ import java.util.ArrayList;
 public class Weapon extends Item {
 
     /**
-     * Stores the default name for weapons.
-     * <p>Set to "weaponName".</p>
-     */
-    public static String defaultName = "weaponName";
-    /**
      * Stores the default damage for weapons.
      * <p>Set to 5.</p>
      */
@@ -56,9 +51,9 @@ public class Weapon extends Item {
     private final String ITEMTYPE = "weapon";
     /**
      * Stores the name of this weapon.
-     * <p>Set to {@link #defaultName}.</p>
+     * <p>Set to "".</p>
      */
-    private String name = defaultName;
+    private String name = "";
     /**
      * Stores the damage of this weapon.
      * <p>Set to {@link #defaultDamage}.</p>
@@ -99,6 +94,18 @@ public class Weapon extends Item {
      * <p>Set to an empty ArrayList of CustomVariables.</p>
      */
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+
+    public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
+
+    /**
+     * Sets the {@link #customVariables}.
+     * @param cv    The new arraylist
+     */
+    public void setCustomVariables(ArrayList<CustomVariable> cv) {
+        if(cv == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        customVariables = cv;
+    }
+
 
     /**
      * Returns the value of the custom variable in {@link #customVariables} with the name given.
@@ -200,28 +207,29 @@ public class Weapon extends Item {
 
     //durability methods
     /**
-     * Returns the {@link #durability}.
-     * @return       {@link #durability}
-     */
-    public int getDurability() { return durability; }
-    /**
      * Sets the value of {@link #durability}.
      * <p>If the new value is less than 1, then the weapon breaks.</p>
      * @param a     The new value.
      */
-    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { broken(); }  }
+    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
+    /**
+     * Gets the value of {@link #durability}.
+     * @return      The value.
+     */
+    public int getDurability() { return durability; }
+
     /**
      * Increases the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { broken(); }  }
+    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
     /**
      * Decrease the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { broken(); }  }
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
     /**
      * Returns {@link #unbreakable}.
      * @return      {@link #unbreakable}
@@ -286,7 +294,7 @@ public class Weapon extends Item {
     //When the weapon breaks, remove it from the player's inventory
     /***Removes this from the player's inventory*/
     public void broken() {
-        if(unbreakable || name.equals("fists")) { return; }
+        if(unbreakable) { return; }
         TextFighter.player.removeFromInventory(name, ITEMTYPE);
         TextFighter.addToOutput("Your " + name + " has broken!");
     }

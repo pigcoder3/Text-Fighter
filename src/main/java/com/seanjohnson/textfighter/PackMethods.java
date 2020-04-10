@@ -203,7 +203,7 @@ public class PackMethods {
      */
     public static boolean movePlayer(String location) {
         if(location == null) { return false; }
-        if(TextFighter.player.getLocation() != null && location.equals(TextFighter.player.getLocation())) { return true; }
+        if(location.equals(TextFighter.player.getLocation().getName())) { return true; }
         for(Location l : TextFighter.locations) {
             if(l.getName().equals(location)) {
                 TextFighter.player.setLastLocation(TextFighter.player.getLocation().getName());
@@ -217,7 +217,7 @@ public class PackMethods {
             }
         }
         TextFighter.addToOutput("No such location '" + location + "'");
-         return false;
+        return false;
     }
 
 

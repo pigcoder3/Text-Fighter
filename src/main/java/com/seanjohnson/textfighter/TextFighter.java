@@ -248,6 +248,9 @@ public class TextFighter {
     /***Stores whether or not the player has acted since the fight has started*/
     public static boolean actedSinceStartOfFight = false;
 
+    /**Whether or not {@link #loadConfig()} has been called*/
+    public static boolean configLoaded = false;
+
     /**
      * Stores the directory of the used pack.
      * If there is no pack, this will remain null.
@@ -1579,6 +1582,8 @@ public class TextFighter {
         File packDirectory = getPackDirectory("items", packUsed);
         if(packDirectory != null) { directory = packDirectory; parsingPack = true;}
 
+        boolean modSetFists = false;
+
         ArrayList<String> namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt")); //Place where all names that are located in the omit file are stored
         for(int num=0; num<2; num++) {
 
@@ -1632,6 +1637,11 @@ public class TextFighter {
                     ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
                     for(int i=0; i<weaponCustomVariables.size(); i++) {
                         CustomVariable c = weaponCustomVariables.get(i);
+                        if(c.getName().equalsIgnoreCase("fists") && c.getName().equalsIgnoreCase("unbreakable")) { //The fists cannot break no matter what
+                            c.setValue(false);
+                            if(parsingPack) { modSetFists = true; }
+                            continue;
+                        }
                         if(itemFile.get(c.getName()) != null) {
                             CustomVariable cv = new CustomVariable(c.getName(), c.getValue(), c.getValueType(), c.getInOutput(), c.getIsSaved());
                             try {
@@ -1656,6 +1666,10 @@ public class TextFighter {
                     weapons.add(new Weapon(name, description, damage, critChance, missChance, customVars, durability,  maxDurability, unbreakable));
                     usedNames.add(name);
                     Display.changePackTabbing(false);
+                }
+                //Add the fists weapon, which always exists (not if the mod already added it
+                if(!modSetFists) {
+                    weapons.add(new Weapon("fists", "Your fists, you don't need a description about what that is.", 5, 10, 5, new ArrayList<>(), 100, 100, true));
                 }
             }
             if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("armor", directory)) != null && itemDirectory != null)) {
@@ -2040,6 +2054,7 @@ public class TextFighter {
             Display.displayWarning("The config directory could not be found!\n Creating new config directory.");
             configDir.mkdirs();
         }
+        configLoaded = true;
     }
 
     /**
