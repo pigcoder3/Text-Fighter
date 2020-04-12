@@ -221,6 +221,9 @@ public class TextFighter {
     /**True if loading assets from a pack.*/
     public static boolean parsingPack = false;
 
+    /** True if running from jar */
+    public static boolean runFromJar = false;
+
     //Version
     /**The file that the version of the game is stored in.*/
     public static String versionFile = "VERSION.txt";
@@ -386,175 +389,381 @@ public class TextFighter {
             return;
         }
 
-        //Locations
+        if(runFromJar) { //then the game is run from a jar
+            //Locations
 
-        File directory = getPackDirectory("locations", packUsed);
-        ArrayList<String> namesToBeOmitted = new ArrayList<>();
-        if (directory != null) {
-            namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
-        }
-        if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-            for (String s : getNamesFromJarFile(locationDir.getPath())) {
-                if(!s.contains(".json")) { continue; } //The method grabbed a directory here.
-                if (!namesToBeOmitted.contains(s)) {
-                    File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
-                    destDir.mkdirs(); //Will fail silently if it already exists
-                    File destFile = new File(destDir + File.separator + s);
-                    if (!destFile.exists()) {
-                        File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
-                        copyFileFromJar(guideFile, destFile);
-                    } //else: it already exists, so dont touch it
-                }
+            File directory = getPackDirectory("locations", packUsed);
+            ArrayList<String> namesToBeOmitted = new ArrayList<>();
+            if (directory != null) {
+                namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
             }
-        }
-
-        //items
-        directory = getPackDirectory("items", packUsed);
-        for (String type : getNamesFromJarFile(itemDir.getPath())) {
-            if(type.contains(".txt") || type.contains(".json")) { continue; } //Ignore it. This is not a directory.
-            if (type.equalsIgnoreCase("/weapons/")) {
-                File weaponsDir = new File(directory + "/weapons");
-                File jarDir = new File(itemDir.getPath() + "/weapons");
-                namesToBeOmitted = new ArrayList<>();
-                if (directory != null) {
-                    namesToBeOmitted = getOmittedAssets(new File(weaponsDir + File.separator + "omit.txt"));
-                }
-                if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-                    for (String s : getNamesFromJarFile(jarDir.getPath())) {
-                        if(s.endsWith("/")) { continue; } //It is a directory so ignore it
-                        if (!namesToBeOmitted.contains(s)) {
-                            File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
-                            destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                            File destFile = new File(destDir + File.separator + s);
-                            if (!destFile.exists()) {
-                                copyFileFromJar(new File( "/guide/items/weapons/" + s), destFile);
-                            } //else: it already exists, so dont touch it
-                        }
-                    }
-                }
-            } else if (type.equalsIgnoreCase("/tools/")) {
-                File toolsDir = new File(directory + "/tools");
-                File jarDir = new File(itemDir.getPath() + "/tools");
-                namesToBeOmitted = new ArrayList<>();
-                if (directory != null) {
-                    namesToBeOmitted = getOmittedAssets(new File(toolsDir + File.separator + "omit.txt"));
-                }
-                if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-                    for (String s : getNamesFromJarFile(jarDir.getPath())) {
-                        if(s.endsWith("/")) { continue; } //It is a directory so ignore it
-                        if (!namesToBeOmitted.contains(s)) {
-                            File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
-                            destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                            File destFile = new File(destDir + File.separator + s);
-                            if (!destFile.exists()) {
-                                copyFileFromJar(new File("/guide/items/tools/" + s), destFile);
-                            } //else: it already exists, so dont touch it
-                        }
-                    }
-                }
-            } else if (type.equalsIgnoreCase("/armor/")) {
-                File armorDir = new File(directory + "/armor");
-                File jarDir = new File(itemDir.getPath() + "/armor/");
-                namesToBeOmitted = new ArrayList<>();
-                if (directory != null) {
-                    namesToBeOmitted = getOmittedAssets(new File(armorDir + File.separator + "omit.txt"));
-                }
-                if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-                    for (String s : getNamesFromJarFile(jarDir.getPath())) {
-                        if(s.endsWith("/")) { continue; } //It is a directory so ignore it
-                        if (!namesToBeOmitted.contains(s)) {
-                            File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
-                            destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                            File destFile = new File(destDir + File.separator + s);
-                            if (!destFile.exists()) {
-                                copyFileFromJar(new File("/guide/items/armor/" + s), destFile);
-                            } //else: it already exists, so dont touch it
-                        }
-                    }
-                }
-            } else if (type.equalsIgnoreCase("/specialitems/")) {
-                File specialitemsDir = new File(directory + "/specialitems");
-                File jarDir = new File(itemDir.getPath() + "/specialitems");
-                namesToBeOmitted = new ArrayList<>();
-                if (directory != null) {
-                    namesToBeOmitted = getOmittedAssets(new File(specialitemsDir + File.separator + "omit.txt"));
-                }
-                if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-                    for (String s : getNamesFromJarFile(jarDir.getPath())) {
-                        if(s.endsWith("/")) { continue; } //It is a directory so ignore it
-                        if (!namesToBeOmitted.contains(s)) {
-                            File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
-                            destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                            File destFile = new File(destDir + File.separator + s);
-                            if (!destFile.exists()) {
-                                copyFileFromJar(new File("/guide/items/specialitems/" + s), destFile);
-                            } //else: it already exists, so dont touch it
-                        }
+            if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                for (String s : getNamesFromJarFile(locationDir.getPath())) {
+                    if (!s.contains(".json")) {
+                        continue;
+                    } //The method grabbed a directory here.
+                    if (!namesToBeOmitted.contains(s)) {
+                        File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
+                        destDir.mkdirs(); //Will fail silently if it already exists
+                        File destFile = new File(destDir + File.separator + s);
+                        if (!destFile.exists()) {
+                            File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
+                            copyFileFromJar(guideFile, destFile);
+                        } //else: it already exists, so dont touch it
                     }
                 }
             }
-        }
 
-        //Enemies
-        directory = getPackDirectory("enemies", packUsed);
-        namesToBeOmitted = new ArrayList<>();
-        if (directory != null) {
-            namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
-        }
-        if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-            for (String s : getNamesFromJarFile(enemyDir.getPath())) {
-                if(!s.contains(".json")) { continue; } //The method grabbed a directory here.
-                if (!namesToBeOmitted.contains(s)) {
-                    File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
-                    destDir.mkdirs(); //Will fail silently if it already exists
-                    File destFile = new File(destDir + File.separator + s);
-                    if (!destFile.exists()) {
-                        copyFileFromJar(new File("/guide/enemies/" + s), destFile);
-                    } //else: it already exists, so dont touch it
+            //items
+            directory = getPackDirectory("items", packUsed);
+            for (String type : getNamesFromJarFile(itemDir.getPath())) {
+                if (type.contains(".txt") || type.contains(".json")) {
+                    continue;
+                } //Ignore it. This is not a directory.
+                if (type.equalsIgnoreCase("/weapons/")) {
+                    File weaponsDir = new File(directory + "/weapons");
+                    File jarDir = new File(itemDir.getPath() + "/weapons");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(weaponsDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/weapons/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                } else if (type.equalsIgnoreCase("/tools/")) {
+                    File toolsDir = new File(directory + "/tools");
+                    File jarDir = new File(itemDir.getPath() + "/tools");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(toolsDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/tools/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                } else if (type.equalsIgnoreCase("/armor/")) {
+                    File armorDir = new File(directory + "/armor");
+                    File jarDir = new File(itemDir.getPath() + "/armor/");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(armorDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/armor/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                } else if (type.equalsIgnoreCase("/specialitems/")) {
+                    File specialitemsDir = new File(directory + "/specialitems");
+                    File jarDir = new File(itemDir.getPath() + "/specialitems");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(specialitemsDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/specialitems/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
                 }
             }
-        }
 
-        //Achievements
-        directory = getPackDirectory("achievements", packUsed);
-        namesToBeOmitted = new ArrayList<>();
-        if (directory != null) {
-            namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
-        }
-        if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
-            for (String s : getNamesFromJarFile(achievementDir.getPath())) {
-                if(!s.contains(".json")) { continue; } //The method grabbed a directory here.
-                if(!namesToBeOmitted.contains(s)) {
-                    File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
-                    destDir.mkdirs(); //Will fail silently if it already exists
-                    File destFile = new File(destDir + File.separator + s);
-                    if(!destFile.exists()) {
-                        copyFileFromJar(new File("/guide/achievements/" + s), destFile);
-                    } //else: it already exists, so dont touch it
+            //Enemies
+            directory = getPackDirectory("enemies", packUsed);
+            namesToBeOmitted = new ArrayList<>();
+            if (directory != null) {
+                namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
+            }
+            if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                for (String s : getNamesFromJarFile(enemyDir.getPath())) {
+                    if (!s.contains(".json")) {
+                        continue;
+                    } //The method grabbed a directory here.
+                    if (!namesToBeOmitted.contains(s)) {
+                        File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
+                        destDir.mkdirs(); //Will fail silently if it already exists
+                        File destFile = new File(destDir + File.separator + s);
+                        if (!destFile.exists()) {
+                            copyFileFromJar(new File("/guide/enemies/" + s), destFile);
+                        } //else: it already exists, so dont touch it
+                    }
                 }
             }
-        }
 
-        /*For the following, we must figure out if they exist first. If not, then copy them.*/
-        //death
+            //Achievements
+            directory = getPackDirectory("achievements", packUsed);
+            namesToBeOmitted = new ArrayList<>();
+            if (directory != null) {
+                namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
+            }
+            if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                for (String s : getNamesFromJarFile(achievementDir.getPath())) {
+                    if (!s.contains(".json")) {
+                        continue;
+                    } //The method grabbed a directory here.
+                    if (!namesToBeOmitted.contains(s)) {
+                        File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
+                        destDir.mkdirs(); //Will fail silently if it already exists
+                        File destFile = new File(destDir + File.separator + s);
+                        if (!destFile.exists()) {
+                            copyFileFromJar(new File("/guide/achievements/" + s), destFile);
+                        } //else: it already exists, so dont touch it
+                    }
+                }
+            }
 
-        File file = getPackFile("death", guideDirectory);
-        if(file == null) {
-            copyFileFromJar(new File("/guide/death"), new File(guideDirectory + "/death"));
-        }
+            /*For the following, we must figure out if they exist first. If not, then copy them.*/
+            //death
 
-        //player
+            File file = getPackFile("death", guideDirectory);
+            if (file == null) {
+                copyFileFromJar(new File("/guide/death"), new File(guideDirectory + "/death"));
+            }
 
-        file = getPackFile("player", guideDirectory);
-        if(file == null) {
-            copyFileFromJar(new File("/guide/player"), new File(guideDirectory + "/player"));
-        }
+            //player
 
-        //levelup
+            file = getPackFile("player", guideDirectory);
+            if (file == null) {
+                copyFileFromJar(new File("/guide/player"), new File(guideDirectory + "/player"));
+            }
 
-        file = getPackFile("levelup", guideDirectory);
-        if(file == null) {
-            copyFileFromJar(new File("/guide/levelup"), new File(guideDirectory + "/levelup"));
+            //levelup
+
+            file = getPackFile("levelup", guideDirectory);
+            if (file == null) {
+                copyFileFromJar(new File("/guide/levelup"), new File(guideDirectory + "/levelup"));
+            }
+        } else { ///running from ide
+
+            //Locations
+
+            File directory = getPackDirectory("locations", packUsed);
+            ArrayList<String> namesToBeOmitted = new ArrayList<>();
+            if (directory != null) {
+                namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
+            }
+            if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                for (String s : getNamesFromJarFile(locationDir.getPath())) {
+                    if (!s.contains(".json")) {
+                        continue;
+                    } //The method grabbed a directory here.
+                    if (!namesToBeOmitted.contains(s)) {
+                        File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
+                        destDir.mkdirs(); //Will fail silently if it already exists
+                        File destFile = new File(destDir + File.separator + s);
+                        if (!destFile.exists()) {
+                            File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
+                            copyFileFromJar(guideFile, destFile);
+                        } //else: it already exists, so dont touch it
+                    }
+                }
+            }
+
+            //items
+            directory = getPackDirectory("items", packUsed);
+            for (String type : getNamesFromJarFile(itemDir.getPath())) {
+                if (type.contains(".txt") || type.contains(".json")) {
+                    continue;
+                } //Ignore it. This is not a directory.
+                if (type.equalsIgnoreCase("/weapons/")) {
+                    File weaponsDir = new File(directory + "/weapons");
+                    File jarDir = new File(itemDir.getPath() + "/weapons");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(weaponsDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/weapons/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                } else if (type.equalsIgnoreCase("/tools/")) {
+                    File toolsDir = new File(directory + "/tools");
+                    File jarDir = new File(itemDir.getPath() + "/tools");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(toolsDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/tools/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                } else if (type.equalsIgnoreCase("/armor/")) {
+                    File armorDir = new File(directory + "/armor");
+                    File jarDir = new File(itemDir.getPath() + "/armor/");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(armorDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/armor/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                } else if (type.equalsIgnoreCase("/specialitems/")) {
+                    File specialitemsDir = new File(directory + "/specialitems");
+                    File jarDir = new File(itemDir.getPath() + "/specialitems");
+                    namesToBeOmitted = new ArrayList<>();
+                    if (directory != null) {
+                        namesToBeOmitted = getOmittedAssets(new File(specialitemsDir + File.separator + "omit.txt"));
+                    }
+                    if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                        for (String s : getNamesFromJarFile(jarDir.getPath())) {
+                            if (s.endsWith("/")) {
+                                continue;
+                            } //It is a directory so ignore it
+                            if (!namesToBeOmitted.contains(s)) {
+                                File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                File destFile = new File(destDir + File.separator + s);
+                                if (!destFile.exists()) {
+                                    copyFileFromJar(new File("/guide/items/specialitems/" + s), destFile);
+                                } //else: it already exists, so dont touch it
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Enemies
+            directory = getPackDirectory("enemies", packUsed);
+            namesToBeOmitted = new ArrayList<>();
+            if (directory != null) {
+                namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
+            }
+            if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                for (String s : getNamesFromJarFile(enemyDir.getPath())) {
+                    if (!s.contains(".json")) {
+                        continue;
+                    } //The method grabbed a directory here.
+                    if (!namesToBeOmitted.contains(s)) {
+                        File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
+                        destDir.mkdirs(); //Will fail silently if it already exists
+                        File destFile = new File(destDir + File.separator + s);
+                        if (!destFile.exists()) {
+                            copyFileFromJar(new File("/guide/enemies/" + s), destFile);
+                        } //else: it already exists, so dont touch it
+                    }
+                }
+            }
+
+            //Achievements
+            directory = getPackDirectory("achievements", packUsed);
+            namesToBeOmitted = new ArrayList<>();
+            if (directory != null) {
+                namesToBeOmitted = getOmittedAssets(new File(directory + File.separator + "omit.txt"));
+            }
+            if (!namesToBeOmitted.contains("%all%")) { //If all were omitted then dont worry about this.
+                for (String s : getNamesFromJarFile(achievementDir.getPath())) {
+                    if (!s.contains(".json")) {
+                        continue;
+                    } //The method grabbed a directory here.
+                    if (!namesToBeOmitted.contains(s)) {
+                        File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
+                        destDir.mkdirs(); //Will fail silently if it already exists
+                        File destFile = new File(destDir + File.separator + s);
+                        if (!destFile.exists()) {
+                            copyFileFromJar(new File("/guide/achievements/" + s), destFile);
+                        } //else: it already exists, so dont touch it
+                    }
+                }
+            }
+
+            /*For the following, we must figure out if they exist first. If not, then copy them.*/
+            //death
+
+            File file = getPackFile("death", guideDirectory);
+            if (file == null) {
+                copyFileFromJar(new File("/guide/death"), new File(guideDirectory + "/death"));
+            }
+
+            //player
+
+            file = getPackFile("player", guideDirectory);
+            if (file == null) {
+                copyFileFromJar(new File("/guide/player"), new File(guideDirectory + "/player"));
+            }
+
+            //levelup
+
+            file = getPackFile("levelup", guideDirectory);
+            if (file == null) {
+                copyFileFromJar(new File("/guide/levelup"), new File(guideDirectory + "/levelup"));
+            }
         }
     }
 
@@ -621,6 +830,7 @@ public class TextFighter {
      * @return                  Whether or not successful
      */
     public static boolean copyFileFromJar(File fileInJar, File dest) {
+
         fileInJar = new File(fileInJar.getPath().replace(".json", ""));
         dest = new File(dest.getPath().replace(".json",""));
         Display.displayProgressMessage("Copying File: " + fileInJar + " to " + dest);
@@ -729,28 +939,59 @@ public class TextFighter {
      */
     public static ArrayList<String> getJsonFilesAsString(String path) {
         ArrayList<String> jsonStrings = new ArrayList<>();
-        try {
-            final File jarFile = new File(TextFighter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-            if(jarFile.isFile()) {  // Run with JAR file
-                final JarFile jar = new JarFile(jarFile);
-                final Enumeration<JarEntry> entries = jar.entries();
-                while(entries.hasMoreElements()) {
-                    String name = entries.nextElement().getName();
-                    if (name.startsWith(path.substring(1) + "/") && name.endsWith(".json")) { //filter according to the path and json file
-                        String json = "";
-                        InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
-                        if(stream == null) { continue; }
-                        Scanner scan = new Scanner(stream).useDelimiter("\\Z");
-                        try { json = scan.next(); } catch(NoSuchElementException e) { json = "{}"; } //This means the file is empty and we should pretty much ignore it
-                        scan.close();
-                        stream.close();
-                        jsonStrings.add(json);
+        if(runFromJar) {
+            try {
+                final File jarFile = new File(TextFighter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+                if (jarFile.isFile()) {  // Run with JAR file
+                    final JarFile jar = new JarFile(jarFile);
+                    final Enumeration<JarEntry> entries = jar.entries();
+                    while (entries.hasMoreElements()) {
+                        String name = entries.nextElement().getName();
+                        if (name.startsWith(path.substring(1) + "/") && name.endsWith(".json")) { //filter according to the path and json file
+                            String json = "";
+                            InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
+                            if (stream == null) {
+                                continue;
+                            }
+                            Scanner scan = new Scanner(stream).useDelimiter("\\Z");
+                            try {
+                                json = scan.next();
+                            } catch (NoSuchElementException e) {
+                                json = "{}";
+                            } //This means the file is empty and we should pretty much ignore it
+                            scan.close();
+                            stream.close();
+                            jsonStrings.add(json);
+                        }
                     }
+                    jar.close();
                 }
-                jar.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            File dir = new File("target" + File.separator  + "classes" + File.separator + path);
+            if(!dir.exists() && !dir.isDirectory()) {
+                Display.displayError("Directory given does not exist (not loading from jar)");
+                return new ArrayList<String>(Arrays.asList(new String[]{"{}"}));
+            }
+            try {
+                for(String name : dir.list()) {
+                    String filename = dir.getAbsolutePath() + File.separator + name;
+                    String json = "";
+                    File file = new File(filename);
+                    Scanner scan = new Scanner(file).useDelimiter("\\Z");
+                    try {
+                        json = scan.next();
+                    } catch (NoSuchElementException e) {
+                        json = "{}";
+                    } //This means the file is empty and we should pretty much ignore it
+                    scan.close();
+                    jsonStrings.add(json);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return jsonStrings;
     }
@@ -762,14 +1003,40 @@ public class TextFighter {
      */
     public static String getSingleJsonFileAsString(String path) {
         String jsonString = "{}";
-        InputStream stream = TextFighter.class.getResourceAsStream(path);
-        if(stream == null) { return "{}"; }
-        Scanner scan = new Scanner(stream).useDelimiter("\\Z");
-        try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
-        scan.close();
-        try { stream.close(); } catch (IOException e) {}
-        if(jsonString.isEmpty()) {
-            return "{}";
+        if(runFromJar) {
+            InputStream stream = TextFighter.class.getResourceAsStream(path);
+            if (stream == null) {
+                return "{}";
+            }
+            Scanner scan = new Scanner(stream).useDelimiter("\\Z");
+            try {
+                jsonString = scan.next();
+            } catch (NoSuchElementException e) {
+            } //I know this is bad
+            scan.close();
+            try {
+                stream.close();
+            } catch (IOException e) {
+            }
+            if (jsonString.isEmpty()) {
+                return "{}";
+            }
+        } else {
+            String filename = "target" + File.separator + "classes" + File.separator + path;
+            File file = new File(filename);
+            try {
+
+                Scanner scan = new Scanner(file).useDelimiter("\\Z");
+                try {
+                    jsonString = scan.next();
+                } catch (NoSuchElementException e) {
+                    jsonString = "{}";
+                } //This means the file is empty and we should pretty much ignore it
+                scan.close();
+            } catch (FileNotFoundException e) {
+                Display.displayError("file '" + file.getAbsolutePath() + "' does not exist. Unable to get json from it.");
+                return "{}";
+            }
         }
         return jsonString;
     }
@@ -777,21 +1044,39 @@ public class TextFighter {
     /**Defines all resource directories*/
     public static void loadDirectories() {
         //Loads all the directories
-        assetsDir = new File("/assets");
-        tagFile = new File(assetsDir.getPath() + "/" + "tags/tags.json");
-        defaultValuesDirectory = new File(assetsDir.getPath() + "/" + "defaultvalues");
-        interfaceDir = new File(assetsDir.getPath() + "/" + "userInterfaces/");
-        locationDir = new File(assetsDir.getPath() + "/" + "locations");
-        enemyDir = new File(assetsDir.getPath() + "/" + "enemies");
-        achievementDir = new File(assetsDir.getPath() + "/" + "achievements");
-        itemDir = new File(assetsDir.getPath() + "/" + "items");
-        //configDir = new File("config");
-        //packFile = new File(configDir.getPath() + File.separator + "pack");
-        //packDir = new File("packs");
-        customVariablesDir = new File(assetsDir.getPath() + "/" + "customvariables");
-        deathmethodsFile = new File(assetsDir.getPath() + "/" + "deathmethods/deathmethods.json");
-        levelupmethodsFile = new File(assetsDir.getPath() + "/" + "levelupmethods/levelupmethods.json");
-        choicesOfAllLocationsFile = new File(assetsDir.getPath() + "/" + "choicesOfAllLocations/choicesOfAllLocations.json");
+        if(runFromJar) { //then the game is run from a jar
+            assetsDir = new File("/assets");
+            tagFile = new File(assetsDir.getPath() + "/" + "tags/tags.json");
+            defaultValuesDirectory = new File(assetsDir.getPath() + "/" + "defaultvalues");
+            interfaceDir = new File(assetsDir.getPath() + "/" + "userInterfaces/");
+            locationDir = new File(assetsDir.getPath() + "/" + "locations");
+            enemyDir = new File(assetsDir.getPath() + "/" + "enemies");
+            achievementDir = new File(assetsDir.getPath() + "/" + "achievements");
+            itemDir = new File(assetsDir.getPath() + "/" + "items");
+            //configDir = new File("config");
+            //packFile = new File(configDir.getPath() + File.separator + "pack");
+            //packDir = new File("packs");
+            customVariablesDir = new File(assetsDir.getPath() + "/" + "customvariables");
+            deathmethodsFile = new File(assetsDir.getPath() + "/" + "deathmethods/deathmethods.json");
+            levelupmethodsFile = new File(assetsDir.getPath() + "/" + "levelupmethods/levelupmethods.json");
+            choicesOfAllLocationsFile = new File(assetsDir.getPath() + "/" + "choicesOfAllLocations/choicesOfAllLocations.json");
+        } else {
+            assetsDir = new File("assets");
+            tagFile = new File(assetsDir.getPath() + File.separator + "tags/tags.json");
+            defaultValuesDirectory = new File(assetsDir.getPath() + File.separator + "defaultvalues");
+            interfaceDir = new File(assetsDir.getPath() + File.separator + "userInterfaces/");
+            locationDir = new File(assetsDir.getPath() + File.separator + "locations");
+            enemyDir = new File(assetsDir.getPath() + File.separator + "enemies");
+            achievementDir = new File(assetsDir.getPath() + "/" + "achievements");
+            itemDir = new File(assetsDir.getPath() + File.separator + "items");
+            //configDir = new File("config");
+            //packFile = new File(configDir.getPath() + File.separator + "pack");
+            //packDir = new File("packs");
+            customVariablesDir = new File(assetsDir.getPath() + File.separator + "customvariables");
+            deathmethodsFile = new File(assetsDir.getPath() + File.separator + "deathmethods/deathmethods.json");
+            levelupmethodsFile = new File(assetsDir.getPath() + File.separator + "levelupmethods/levelupmethods.json");
+            choicesOfAllLocationsFile = new File(assetsDir.getPath() + File.separator + "choicesOfAllLocations/choicesOfAllLocations.json");
+        }
     }
 
     /**
@@ -805,10 +1090,6 @@ public class TextFighter {
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
         if (!loadDefaultValues() || !loadCustomVariables() || !loadDeathMethods() || !loadLevelUpMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadChoicesOfAllLocations() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
-        if (!savesDir.exists()) {
-            Display.displayWarning("The saves directory does not exist!\nCreating a new saves directory...");
-            if (!new File("../../../saves/").mkdirs()) { Display.displayError("Unable to create a new saves directory!"); return false; }
-        }
         return true;
     }
 
@@ -3270,6 +3551,10 @@ public class TextFighter {
      * @param args  Command line input.
      */
     public static void main(String[] args) {
+
+        if(TextFighter.class.getResource("TextFighter.class").toString().startsWith(".jar")) { //then the game is run from a jar
+            runFromJar = true;
+        }
 
         version = readVersionFromFile(); //Important later
 

@@ -232,9 +232,9 @@ public class Display {
         if(guiMode && TextFighter.configLoaded) {
             gui.addOutputText(e, outputColor);
         } else if(ANSI) {
-            System.err.println(output + e + RESET);
+            System.out.println(output + e + RESET);
         } else {
-            System.err.println(e);
+            System.out.println(e);
         }
         writeToLogFile("[Output] " + e);
 
