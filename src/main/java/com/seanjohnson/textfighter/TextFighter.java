@@ -3551,8 +3551,9 @@ public class TextFighter {
      * @param args  Command line input.
      */
     public static void main(String[] args) {
-
-        if(TextFighter.class.getResource("TextFighter.class").toString().startsWith(".jar")) { //then the game is run from a jar
+        System.out.println(TextFighter.class.getResource("TextFighter.class").toString());
+        if(TextFighter.class.getResource("TextFighter.class").toString().startsWith("jar:")) { //then the game is run from a jar
+            System.out.println(TextFighter.class.getResource("TextFighter.class").toString());
             runFromJar = true;
         }
 
