@@ -14,6 +14,8 @@ public class Display {
 
     /***Stores whether or not a gui is used*/
     public static boolean guiMode = true;
+    /***Stores whether or not should automatically log without an error*/
+    public static boolean logMode = false;
 
     /***Stories the gui. Null if not in guimode*/
     public static GraphicalInterface gui = null;
@@ -114,8 +116,11 @@ public class Display {
      */
     public static void writeToLogFile(String msg) {
 
-        //Either no error occurred or the game has not been installed yet, so don't write to a log file.
-        if(!errorOccurred || logDir == null) {
+        if(logDir == null) { return; } //We cannot write to log file if not yet installed
+
+        //Either no error occurred or the game has not been installed yet, so don't write to a log file. Or not in log mode
+        if (!logMode && !errorOccurred) {
+            System.out.println("No error has occurred yet");
             log.concat(msg);
             return;
         }

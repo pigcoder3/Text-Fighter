@@ -3558,8 +3558,7 @@ public class TextFighter {
 
         version = readVersionFromFile(); //Important later
 
-        //Determine if the game is run in pack test mode
-        //When in pack test mode, the game just loads the assets and tells the user if there is anything wrong
+        //Command Line arguments
         for(String a : args) {
             if(a.equals("test")) {
                 testMode = true;
@@ -3568,6 +3567,8 @@ public class TextFighter {
             } else if(a.equals("compileguide") && !testMode) {
                 guideCompileMode = true;
                 Display.guiMode = false;
+            } else if(a.equals("log")) {
+                Display.logMode = true; //Automatically log everything even if there are no errors
             }
         }
 

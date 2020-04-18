@@ -3,9 +3,12 @@ Release v1.3.1-snapshot-2
   - Developers:
     - Wrote much needed Unit Tests
     - Added exceptions where they were needed (invalid arguments, etc.)
+	- The game now will run in your development environment (no need to package it in order to run it)
   - Modmakers:
     - The TextFighter engine no longer forces the player to move back to the "menu" location.
 	  - Modmakers now decide using deathmethods
+	- Logging can now be forced using the command line argument `log`
+	  - No errors have to occur for logging to occur with this argument
     - Added Player#isAchievementEarned(String name) so modmakers can see if the player has a specific achievement (usually as a requirement for something else).
     - Player#calculateTotalProtection() now returns protection instead of only setting the totalProtection variable.
     - Player#calculateStrength() now returns the new strength instead of only setting the strength variable.
