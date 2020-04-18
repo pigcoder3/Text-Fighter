@@ -1,0 +1,229 @@
+{
+
+    "name" : "menu",
+
+    "interfaces" : [
+
+        "playerstats",
+        "choices"
+
+    ],
+
+    "choices" : [
+
+        {
+            "name" : "fight",
+            "description" : "shows a list of enemies to fight",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "arguments" : ["enemychoices"],
+                    "argumentTypes" : ["0"],
+                    "class" : "com.seanjohnson.textfighter.PackMethods"
+                }
+            ],
+            "usage" : "fight"
+        },
+        {
+            "name" : "shop",
+            "description" : "Goes to the shop",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["shop"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "shop"
+        },
+        {
+            "name" : "mine",
+            "description" : "Goes to the mine",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["mine"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "mine",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["pickaxe", "tool"],
+                    "argumentTypes" : ["0", "0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "mine"
+        },
+        {
+            "name" : "witchhut",
+            "description" : "Goes to the witch hut",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["witchhut"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["witchmap", "specialitem"],
+                    "argumentTypes" : ["0", "0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "witchhut"
+        },
+        {
+            "name" : "forest",
+            "description" : "Goes to the forest",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["forest"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "forest"
+        },
+        {
+            "name" : "weaponsmith",
+            "description" : "Goes to the weapon smith",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["weaponsmith"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "weaponsmith"
+        },
+        {
+            "name" : "craft",
+            "description" : "Goes to the crafting hut",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["craftinghut"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "craft"
+        },
+        {
+            "name" : "forge",
+            "description" : "Goes to the forge where you can craft armor",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["forge"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "forge"
+        },
+        {
+            "name" : "repairstation",
+            "description" : "Goes to the repair station",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["repairstation"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "repairstation"
+        }
+        {
+            "name" : "help",
+            "description" : "Goes to the help menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["help"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "help"
+        },
+        {
+            "name" : "bank",
+            "description" : "Goes to the bank where you can safely store currencies",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["bank"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "bank"
+        },
+        {
+            "name" : "savegame",
+            "description" : "Saves the game",
+            "methods" : [
+                {
+                    "method" : "saveGame",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                }
+            ],
+            "usage" : "savegame"
+        },
+        {
+            "name" : "savemenu",
+            "description" : "Moves you to the saves menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["saves"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "savesmenu"
+        },
+        {
+            "name" : "debug",
+            "description" : "Moves you to the debug menu",
+            "methods" : [
+                {
+                    "method" : "movePlayer",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : ["debug"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "debug"
+        },
+        {
+            "name" : "respawn",
+            "description" : "Respawn. WARNING: All things that normally happen when you die will happen.",
+            "methods" : [
+                {
+                    "method" : "died",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                }
+            ],
+            "usage" : "respawn"
+        }
+    ]
+}

@@ -296,19 +296,28 @@ public class Player {
     public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
 
     /**
+     * Sets the {@link #customVariables}.
+     * @param cv    The new arraylist
+     */
+    public void setCustomVariables(ArrayList<CustomVariable> cv) {
+        if(cv == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        customVariables = cv;
+    }
+
+    /**
      * Returns the value of the custom variable in {@link #customVariables} with the name given.
      * <p>If name is null, or no variable with that name is found, return null.</p>
      * @param name  The name of the custom variable.
      * @return      The value of the customvariable with the name given. If no name given or one not found, return null.
      */
     public Object getCustomVariableFromName(String name) {
-        if(name == null) { return null; }
+        if(name == null) { throw new IllegalArgumentException("Name cannot be null"); }
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
                 return cv.getValue();
             }
         }
-        return null;
+        throw new IllegalArgumentException("No custom variable with the name '" + name + "'.");
     }
     /**
      * Sets the value of the variable in {@link #customVariables} with the name given.
@@ -316,15 +325,16 @@ public class Player {
      * @param name      The name of the custom variable.
      * @param value     The value that the custom variable will be set to.
      */
-    public void setCustomVariableByName(String name, Object value) {
-        if(name == null) { return; }
+    public void setCustomVariableByName(String name, Object value) throws IllegalArgumentException {
+        if(name == null) { throw new IllegalArgumentException("Name cannot be null"); }
         for(CustomVariable cv : customVariables) {
             if(cv.getName().equals(name)) {
                 cv.setValue(value);
-                if(cv.getIsSaved()) {  }
+                //if(cv.getIsSaved()) {  }
                 return;
             }
         }
+        throw new IllegalArgumentException("No custom variable with the name '" + name + "'.");
     }
 
     /**
@@ -332,6 +342,15 @@ public class Player {
      * @return      {@link #allDeathMethods}.
      */
     public ArrayList<IDMethod> getDeathMethods() { return allDeathMethods; }
+
+    /**
+     * Sets the {@link #allDeathMethods}.
+     * @param dm    The new arraylist
+     */
+    public void setAllDeathMethods(ArrayList<IDMethod> dm) {
+        if(dm == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        allDeathMethods = dm;
+    }
 
     /**
      * Returns the {@link #possibleDeathMethods}.
@@ -384,6 +403,15 @@ public class Player {
     public ArrayList<IDMethod> getLevelupMethods() { return allLevelupMethods; }
 
     /**
+     * Sets the {@link #allLevelupMethods}.
+     * @param lm    The new arraylist
+     */
+    public void setAllLevelupMethods(ArrayList<IDMethod> lm) {
+        if(lm == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        allLevelupMethods = lm;
+    }
+
+    /**
      * Returns the {@link #possibleLevelupMethods}.
      * @return      {@link #possibleLevelupMethods}.
      */
@@ -430,12 +458,11 @@ public class Player {
     /**
      * Attacks the enemy with the {@link #currentWeapon}.
      * <p>Calls the damaged method of the Enemy instance. If you want to just damage the player, then just use the damaged method directly.</p>
-     * @param customString  The string to be displayed with the default output.
+     * @param customString  The string to be displayed with the default output. A null customString is allowed, and nothing will be printed.
      */
     public void attack(String customString) {
         int newStrength = strength;
-        if(currentWeapon == null) { TextFighter.addToOutput("You do not have a weapon, so you attack with your fists."); }
-        //isses
+        //Misses
         int number = new Random().nextInt(99)+1;
         if(number < currentWeapon.getMissChance()) { TextFighter.addToOutput("Your attack missed your enemy."); return; }
         //Critical hits
@@ -461,8 +488,8 @@ public class Player {
         TextFighter.addToOutput("You died!");
         deaths++;
         setHp(maxhp); //Restore the player's health
-        PackMethods.movePlayer("menu"); //When the player dies, they respawn at the in game menu (not start menu)
         invokeDeathMethods();
+        //Modmakers decide where to move the player.
     }
     /**
      * Returns {@link #deaths}.
@@ -518,14 +545,18 @@ public class Player {
      * @return      {@link #totalProtection}
      */
     public double getTotalProtection() { return totalProtection+1; } //Increase by one here because that is what happens in the damaged method
-    /*** Calculates the total protection and sets {@link #totalProtection} to the new amount (Can only go up to 75%).*/
-    public void calculateTotalProtection() {
+    /***
+     * Calculates the total protection and sets {@link #totalProtection} to the new amount (Can only go up to 75%).
+     * @return      the total protection from the {@link #defaultTotalProtection} + the protection gained from the armors up to 75%
+     */
+    public double calculateTotalProtection() {
         totalProtection=defaultTotalProtection;
         for(Item i : inventory) {
             if(i instanceof Armor) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
-		// I use 74 because I increase the total protection in the damaged method so that it doesn't divide by 0
+		// I use 74 (not 75) because I increase the total protection in the damaged method so that it doesn't divide by 0
         if(totalProtection > 74) { totalProtection = 74; }
+        return totalProtection;
     }
 
     //currentWeapon methods
@@ -544,18 +575,17 @@ public class Player {
      * @param name  The new weapon's name.
      */
     public void setCurrentWeapon(String name) {
-        if(name == null) { name = defaultCurrentWeaponName; }
-        if(name == "fists") {
+        if(name == "fists" || name == null) {
             currentWeapon = TextFighter.getWeaponByName("fists");
-            TextFighter.addToOutput("Equiped weapon 'fists'");
+            TextFighter.addToOutput("Equipped weapon 'fists'");
             calculateStrength();
             return;
         }
         Weapon weapon = (Weapon)getFromInventory(name, "weapon");
-        if(weapon == null) { TextFighter.addToOutput("You do not have weapon '" + name + "'"); return; }
+        if(weapon == null) { TextFighter.addToOutput("The player has no weapon of name '" + name + "'"); return; }
         else {
             currentWeapon = weapon;
-            TextFighter.addToOutput("Equiped weapon '" + name + "'");
+            TextFighter.addToOutput("Equipped weapon '" + name + "'");
             calculateStrength();
             return;
         }
@@ -566,7 +596,7 @@ public class Player {
      * @return          Whether or not the weapon is equipped.
      */
     public boolean equippedWeapon(String name) {
-        if(currentWeapon == null && name.equals("fists")) { return true;}
+        if(currentWeapon == null && (name == null || name.equals("fists"))) { return true;}
         if(currentWeapon != null) {
             if(currentWeapon.getName() != null) {
                 return currentWeapon.getName() == name;
@@ -576,8 +606,11 @@ public class Player {
     }
 
     //Strength methods
-    /*** Calculates the strength of the player. Takes the player's weapon damage (If one is equipped). If a strength potion is in effect, multiply by {@link #defaultStrengthPotionMultiplier}.*/
-    public void calculateStrength() {
+    /***
+     * Calculates the strength of the player. Takes the player's weapon damage (If one is equipped). If a strength potion is in effect, multiply by {@link #defaultStrengthPotionMultiplier}.
+     * @return      The player's total strength from their weapon damage and the strength potion multiplier
+     */
+    public int calculateStrength() {
         if(currentWeapon != null) {
             if(turnsWithStrengthLeft > 0) {
                 strength = (int)Math.round(currentWeapon.getDamage()*defaultStrengthPotionMultiplier);
@@ -591,6 +624,7 @@ public class Player {
                 strength = defaultStrength;
             }
         }
+        return strength;
     }
     /**
      * Gets the {@link #strength}.
@@ -736,11 +770,21 @@ public class Player {
      */
     public int getLevel() { return level; }
     /**
+     * Sets the {@link #level}.
+     * @param level {@link #level}
+     */
+    public void setLevel(int level) {
+        this.level = level;
+        if(level < 1) { level = 1; }
+    }
+    /**
      * Increases the {@link #level}.
      * <p>If the new value is less than 1, set it to 1.</p>
      * @param a     The amount to increase by.
      */
-    public void increaseLevel(int a) { level+=a; if(level<1){level = 1;} }
+    public void increaseLevel(int a) {
+        level+=a; if(level<1){level = 1;}
+    }
     /**
      * Decreases the {@link #level}.
      * <p>If the new value is less than 1, set it to 1.</p>
@@ -752,6 +796,15 @@ public class Player {
      * @return      {@link #experience}
      */
     public int getExperience() { return experience; }
+    /**
+     * Sets the {@link #experience}.
+     * @param exp   The new value
+     */
+    public void setExperience(int exp) {
+        experience = exp;
+        if(experience < 0) { experience = 0; }
+        checkForLevelUp();
+    }
     /**
      * Increases the {@link #experience}.
      * <p>If the new value is less than 0, set it to 0.</p>
@@ -859,7 +912,10 @@ public class Player {
      * <p>If the new value given is less than 0, Then set it to 0. If greater than {@link #maxhp}, then set it to the maxhp.</p>
      * @param a     The amount healed.
      */
-    public void heal(int a) { if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; } }
+    public void heal(int a) {
+        if (hp+a > maxhp) { hp = maxhp; } else { hp+=a; }
+        if(hp < 0) { hp = 0; }
+    }
     /**
      * Returns the {@link #maxhp}.
      * @return      {@link #maxhp}
@@ -1110,6 +1166,30 @@ public class Player {
         achievements.add(a);
         Display.achievementEarned(a.getName());
     }
+
+    /**
+     * Returns whether or not the achievement with the given name has been earned.
+     * @param achievementName   The name of the achievement to test.
+     * @return                  Whether or not the player has earned the achievement with the given name
+     */
+    public boolean isAchievementEarned(String achievementName) {
+        for(Achievement achievement : achievements) {
+            if(achievement.getName().equalsIgnoreCase(achievementName)) {
+                return true;
+            }
+        }
+        return false; //Gets here if no acheivements the player has earned have this name (also includes if the achievement doesnt exists).
+    }
+
+    /**
+     * Sets the {@link #achievements}.
+     * @param ach    The new arraylist
+     */
+    public void setAchievements(ArrayList<Achievement> ach) {
+        if(ach == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        achievements = ach;
+    }
+
     /**
      * Returns {@link #achievements}.
      * @return      {@link #achievements}

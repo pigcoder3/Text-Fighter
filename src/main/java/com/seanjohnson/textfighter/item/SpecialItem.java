@@ -6,13 +6,8 @@ import com.seanjohnson.textfighter.TextFighter;
 
 import java.util.ArrayList;
 
-public class    SpecialItem extends Item {
+public class SpecialItem extends Item {
 
-    /**
-     * Stores the default name for special items.
-     * <p>Set to "specialItemName".</p>
-     */
-    public static String defaultName = "specialItemName";
     /**
      * Stores the default description for special items.
      * <p>Set to "A special item".</p>
@@ -26,9 +21,9 @@ public class    SpecialItem extends Item {
     private final String ITEMTYPE = "specialitem";
     /**
      * Stores the name of this special item.
-     * <p>Set to {@link #defaultName}.</p>
+     * <p>Set to null.</p>
      */
-    private String name = defaultName;
+    private String name = "";
     /**
      * Stores the description of this special item.
      * <p>Set to {@link #defaultDescription}.</p>
@@ -40,6 +35,21 @@ public class    SpecialItem extends Item {
      * <p>Set to an empty ArrayList of CustomVariables.</p>
      */
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+    /**
+     * Returns the {@link #customVariables}.
+     * @return      {@link #customVariables}
+     */
+    public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
+
+    /**
+     * Sets the {@link #customVariables}.
+     * @param cv    The new arraylist
+     */
+    public void setCustomVariables(ArrayList<CustomVariable> cv) {
+        if(cv == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        customVariables = cv;
+    }
+
 
     /**
      * Returns the value of the custom variable in {@link #customVariables} with the name given.
@@ -86,7 +96,7 @@ public class    SpecialItem extends Item {
      * <p>If the name given is null, then dont do anything.</p>
      * @param s     The new value.
      */
-    public void setName(String s) { name=s; if(name == null) { name=defaultName; }}
+    public void setName(String s) { if(s!=null && s.trim() != null) {name=s;} }
     /**
      * Returns the {@link #description}.
      * @return       {@link #description}

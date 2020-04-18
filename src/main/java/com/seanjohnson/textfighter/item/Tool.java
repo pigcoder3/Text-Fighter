@@ -9,11 +9,6 @@ import java.util.ArrayList;
 public class Tool extends Item {
 
     /**
-     * Stores the default name for tools.
-     * <p>Set to "toolName".</p>
-     */
-    public static String defaultName = "toolName";
-    /**
      * Stores the default description for tools.
      * <p>Set to "A tool".</p>
      */
@@ -41,9 +36,9 @@ public class Tool extends Item {
     private final String ITEMTYPE = "tool";
     /**
      * Stores the name of this tool.
-     * <p>Set to {@link #defaultName}.</p>
+     * <p>Set to null.</p>
      */
-    private String name = defaultName;
+    private String name = "";
     /**
      * Stores the description of this tool.
      * <p>Set to {@link #defaultDescription}.</p>
@@ -70,6 +65,18 @@ public class Tool extends Item {
      * <p>Set to an empty ArrayList of CustomVariables.</p>
      */
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+
+    public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
+
+    /**
+     * Sets the {@link #customVariables}.
+     * @param cv    The new arraylist
+     */
+    public void setCustomVariables(ArrayList<CustomVariable> cv) {
+        if(cv == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        customVariables = cv;
+    }
+
 
     /**
      * Returns the value of the custom variable in {@link #customVariables} with the name given.
@@ -116,7 +123,7 @@ public class Tool extends Item {
      * <p>If the name given is null, then dont do anything.</p>
      * @param s     The new value.
      */
-    public void setName(String s) { name=s; if(name == null) { name = defaultName; }}
+    public void setName(String s) { if(s!=null && s.trim() != null) {name=s;} }
     /**
      * Sets the value of {@link #description}.
      * @return      {@link #description}
@@ -130,25 +137,30 @@ public class Tool extends Item {
     public void setDescription(String s) { description=s; if(description == null) { description=defaultDescription;} }
 
     //durability methods
-    public int getDurability() { return durability; }
-    /**
-     * Returns the {@link #durability}.
-     * <p>If the new value is less than 1, then it breaks.</p>
-     * @param a     The new value
-     */
-    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { broken(); }  }
     /**
      * Sets the value of {@link #durability}.
-     * <p>If the tool is {@link #unbreakable} then nothing changes. If the new value is less than 1, then it breaks.</p>
+     * <p>If the new value is less than 1, then the weapon breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { if(unbreakable) { return; }  durability=+a; if(durability < 1) { broken(); }  }
+    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
+    /**
+     * Gets the value of {@link #durability}.
+     * @return      The value.
+     */
+    public int getDurability() { return durability; }
+
     /**
      * Increases the value of {@link #durability}.
-     * <p>If the tool is {@link #unbreakable} then nothing changes. If the new value is less than 1, then it breaks.</p>
+     * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { if(unbreakable) { return; } durability=-a; if(durability < 1) { broken(); }  }
+    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
+    /**
+     * Decrease the value of {@link #durability}.
+     * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
+     * @param a     The new value.
+     */
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
     /**
      * Returns {@link #unbreakable}.
      * @return      {@link #unbreakable}
@@ -201,7 +213,7 @@ public class Tool extends Item {
 
     /***Removes this from the player's inventory*/
     public void broken() {
-        TextFighter.player.removeFromInventory(name, ITEMTYPE);
+        if(TextFighter.player != null) { TextFighter.player.removeFromInventory(name, ITEMTYPE); }
         TextFighter.addToOutput("Your " + name + " has broken!");
     }
 

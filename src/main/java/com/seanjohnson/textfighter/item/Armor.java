@@ -7,12 +7,6 @@ import com.seanjohnson.textfighter.TextFighter;
 import java.util.ArrayList;
 
 public class Armor extends Item {
-
-    /**
-     * Stores the default name for armor.
-     * <p>Set to "armorName".</p>
-     */
-    public static String defaultName = "armorName";
     /**
      * Stores the default protection amount for armor.
      * <p>Set to "A special item".</p>
@@ -46,9 +40,9 @@ public class Armor extends Item {
     private final String ITEMTYPE = "armor";
     /**
      * Stores the name of this name
-     * <p>Set to {@link #defaultName}.</p>
+     * <p>Set to null.</p>
      */
-    private String name = defaultName;
+    private String name = "";
     /**
      * Stores the protection amount of this armor.
      * <p>Set to {@link #defaultDescription}.</p>
@@ -80,6 +74,21 @@ public class Armor extends Item {
      * <p>Set to an empty ArrayList of CustomVariables.</p>
      */
     private ArrayList<CustomVariable> customVariables = new ArrayList<CustomVariable>();
+
+    /**
+     * Returns the {@link #customVariables}.
+     * @return      {@link #customVariables}
+     */
+    public ArrayList<CustomVariable> getCustomVariables() { return customVariables; }
+
+    /**
+     * Sets the {@link #customVariables}.
+     * @param cv    The new arraylist
+     */
+    public void setCustomVariables(ArrayList<CustomVariable> cv) {
+        if(cv == null) { throw new IllegalArgumentException("new ArrayList cannot be null"); }
+        customVariables = cv;
+    }
 
     /**
      * Returns the value of the custom variable in {@link #customVariables} with the name given.
@@ -126,7 +135,7 @@ public class Armor extends Item {
      * <p>If the name given is null, then dont do anything.</p>
      * @param s     The new value.
      */
-    public void setName(String s) { if(s != null && s.trim() != null) {name=s;} }
+    public void setName(String s) { if(s!=null && s.trim() != null) {name=s;} }
     /**
      * Returns the {@link #description}.
      * @return       {@link #description}
@@ -143,19 +152,26 @@ public class Armor extends Item {
      * <p>If the new value is less than 1, then the weapon breaks.</p>
      * @param a     The new value.
      */
-    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { broken(); }  }
+    public void setDurability(int a) { if(unbreakable) { return; } durability=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
+    /**
+     * Gets the value of {@link #durability}.
+     * @return      The value.
+     */
+    public int getDurability() { return durability; }
+
     /**
      * Increases the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { broken(); }  }
+    public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
     /**
      * Decrease the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
      * @param a     The new value.
      */
-    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { broken(); }  }
+    public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
+
     /**
      * Returns {@link #unbreakable}.
      * @return      {@link #unbreakable}
@@ -220,7 +236,7 @@ public class Armor extends Item {
      * Removes the armor from the player's inventory
      */
     public void broken() {
-        TextFighter.player.removeFromInventory(name, ITEMTYPE);
+        if(TextFighter.player != null) { TextFighter.player.removeFromInventory(name, ITEMTYPE); }
         TextFighter.addToOutput("Your " + name + " has broken!");
     }
 

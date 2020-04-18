@@ -37,7 +37,7 @@ public class EnemyAction {
         }
     }
 
-    public EnemyAction(ArrayList<EnemyActionMethod> methods, ArrayList<Requirement> requirement) {
+    public EnemyAction(ArrayList<EnemyActionMethod> methods, ArrayList<Requirement> requirements) {
         this.requirements = requirements;
         this.methods = methods;
     }

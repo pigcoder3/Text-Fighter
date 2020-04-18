@@ -1,5 +1,6 @@
 package com.seanjohnson.textfighter;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class HistoryLinkedList<E> extends LinkedList {
@@ -7,7 +8,7 @@ public class HistoryLinkedList<E> extends LinkedList {
 	//NOTE: The first element is the current command (The user has not yet hit enter)
 
 	/**The maximum number of recent input commands saved*/
-	public static final int maxHistory = 50; //Input history. Works like a shell history.
+	public int maxHistory = 50; //Input history. Works like a shell history.
 
 	/**The current command history browsing history*/
 	private int currentIndex = 0;
@@ -56,7 +57,6 @@ public class HistoryLinkedList<E> extends LinkedList {
 			System.out.println(this.get(i));
 		}
 	}
-
 
 
 }
