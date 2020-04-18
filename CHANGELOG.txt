@@ -1,4 +1,4 @@
-Release v1.3.1-snapshot-2
+Release v1.3.1
   - The version is now shown in the title of the window of the gui version
   - Developers:
     - Wrote much needed Unit Tests
