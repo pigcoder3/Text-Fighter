@@ -120,7 +120,6 @@ public class Display {
 
         //Either no error occurred or the game has not been installed yet, so don't write to a log file. Or not in log mode
         if (!logMode && !errorOccurred) {
-            System.out.println("No error has occurred yet");
             log.concat(msg);
             return;
         }

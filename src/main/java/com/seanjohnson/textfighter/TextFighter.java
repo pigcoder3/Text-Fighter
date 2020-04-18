@@ -1084,11 +1084,11 @@ public class TextFighter {
      * @return      True if successful. False is unsuccessful.
      */
     public static boolean loadassets() {
-        Display.displayProgressMessage("Loading the assets...");
         //Load some things
         loadConfig();
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
+        Display.displayProgressMessage("Loading the assets...");
         if (!loadDefaultValues() || !loadCustomVariables() || !loadDeathMethods() || !loadLevelUpMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadChoicesOfAllLocations() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
         return true;
     }
