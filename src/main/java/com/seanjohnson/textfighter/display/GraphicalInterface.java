@@ -282,7 +282,6 @@ public class GraphicalInterface extends JFrame {
 			if(file.exists() && file.isDirectory()) {
 				root.add(getGuideFiles(file));
 			} else if (file.exists()) {
-				if(f.endsWith(".txt")) { f = f.substring(0, f.length()-4); } //Remove the .txt file extension
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode(f);
 				root.add(node);
 			}
