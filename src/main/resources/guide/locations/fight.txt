@@ -35,9 +35,7 @@ Interface:
     ----------------------
           ENEMY STATS
     ----------------------
-     hp: <enemyhp>
-     maxhp: <enemymaxhp>
-
+     hp: <enemyhp> / <enemymaxhp>
      strength: <enemystr>
 
      Turns with Invincibility Left: <enemyTurnsWithInvincibilityLeft>

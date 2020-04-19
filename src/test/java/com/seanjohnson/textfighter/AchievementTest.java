@@ -42,7 +42,7 @@ public class AchievementTest {
 			// Give the player 10 coins and 20 magic points
 			Achievement ach = new Achievement("testAchievement", "gives the player 10 coins and 20 magic points", new ArrayList<>(), rewards);
 
-			ach.invokeRewards();
+			ach.invokeRewardMethods();
 			assertEquals(10, player.getCoins());
 			assertEquals(20, player.getMagic());
 		} catch(NoSuchMethodException | NoSuchFieldException e) {

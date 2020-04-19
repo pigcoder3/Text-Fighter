@@ -4,6 +4,8 @@ Basic Info:
     Durability: 30
     Maximum Durability: 30
     Unbreakable: false
+    canBeRepairedAtStation: true
+    metalScrapsToRepairAtStation: 35
 
 Obtaining:
     Dropped from the miner at a 50% chance

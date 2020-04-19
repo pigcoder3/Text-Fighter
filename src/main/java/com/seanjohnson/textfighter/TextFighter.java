@@ -1247,11 +1247,11 @@ public class TextFighter {
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
                 int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
-                if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
-                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
+                if(chance == 0) { Display.displayPackError("This reward has no chance. Omitting..."); return null; }
+                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
                 //Achievement rewards always run (So no chance needed)
-                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
+                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Achievement.class), 100, (String)obj.get("rewarditem"));
             }
         } else if(type.equals(UiTag.class)) {
             String tag = (String)obj.get("tag");
