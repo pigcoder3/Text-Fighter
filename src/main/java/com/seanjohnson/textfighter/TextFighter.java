@@ -785,7 +785,7 @@ public class TextFighter {
                         if(name.endsWith(".txt")) { //It is a file, so we should copy it
                             Display.displayProgressMessage("Copying file: " + name);
                             InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
-                            Files.copy(stream, Paths.get(installationRoot.getPath() + File.separator + name), StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(stream, Paths.get(installationRoot.getPath() + File.separator + name.substring(0, name.length()-4)), StandardCopyOption.REPLACE_EXISTING); //Note this removes the .txt file extension
                             stream.close();
                         } else { //It is a directory, so we should create an identical one
                             File directory = new File(installationRoot.getPath() + File.separator + name);
@@ -1908,6 +1908,7 @@ public class TextFighter {
                     String name = Weapon.defaultName;                           if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
                     if(usedNames.contains(name) || (!parsingPack && namesToBeOmitted.contains(name))) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading item '" + name + "' of type 'weapon'");
+                    if(name.equalsIgnoreCase("fists")) { modSetFists = true; }
                     int damage = Weapon.defaultDamage;                          if(itemFile.get("damage") != null) { damage = Integer.parseInt((String)itemFile.get("damage")); }
                     int critChance = Weapon.defaultCritChance;                  if(itemFile.get("critchance") != null) { critChance = Integer.parseInt((String)itemFile.get("critchance")); }
                     int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
@@ -1949,7 +1950,7 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
                 //Add the fists weapon, which always exists (not if the mod already added it
-                if(!modSetFists) {
+                if(!modSetFists) { //Note that the vanilla textfighter mod also sets the fists
                     weapons.add(new Weapon("fists", "Your fists, you don't need a description about what that is.", 5, 10, 5, new ArrayList<>(), 100, 100, true));
                 }
             }
@@ -3551,9 +3552,7 @@ public class TextFighter {
      * @param args  Command line input.
      */
     public static void main(String[] args) {
-        System.out.println(TextFighter.class.getResource("TextFighter.class").toString());
         if(TextFighter.class.getResource("TextFighter.class").toString().startsWith("jar:")) { //then the game is run from a jar
-            System.out.println(TextFighter.class.getResource("TextFighter.class").toString());
             runFromJar = true;
         }
 

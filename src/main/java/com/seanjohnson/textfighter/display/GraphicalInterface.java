@@ -276,11 +276,13 @@ public class GraphicalInterface extends JFrame {
 	public DefaultMutableTreeNode getGuideFiles(File parentDirectory) {
 		//We be using recursion here
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(parentDirectory.getName());
+		if(parentDirectory.list() == null) { return root; }
 		for(String f : parentDirectory.list()) {
 			File file = new File(parentDirectory.getAbsolutePath() + File.separatorChar + f);
 			if(file.exists() && file.isDirectory()) {
 				root.add(getGuideFiles(file));
 			} else if (file.exists()) {
+				if(f.endsWith(".txt")) { f = f.substring(0, f.length()-4); } //Remove the .txt file extension
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode(f);
 				root.add(node);
 			}
