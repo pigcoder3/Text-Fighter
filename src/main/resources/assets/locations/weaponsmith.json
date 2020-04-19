@@ -74,9 +74,24 @@
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
                         },
                         ">=",
-                        "100"
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "com.seanjohnson.textfighter.item.Weapon",
+                            "field" : {
+                                "method" : "getWeaponByName",
+                                "class" : "com.seanjohnson.textfighter.TextFighter",
+                                "arguments" : [
+                                    "sword"
+                                ],
+                                "argumentTypes" : [
+                                    "0"
+                                ]
+                            },
+                            "arguments" : ["costAtWeaponsmith"],
+                            "argumentTypes" : ["0"]
+                        }
                     ],
-                    "argumentTypes" : ["1","0","1"],
+                    "argumentTypes" : ["1","0","1"]
                 },
                 {
                     "method" : "isCarrying",
@@ -129,9 +144,24 @@
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
                         },
                         ">=",
-                        "300"
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "com.seanjohnson.textfighter.item.Weapon",
+                            "field" : {
+                                "method" : "getWeaponByName",
+                                "class" : "com.seanjohnson.textfighter.TextFighter",
+                                "arguments" : [
+                                    "deagle"
+                                ],
+                                "argumentTypes" : [
+                                    "0"
+                                ]
+                            },
+                            "arguments" : ["costAtWeaponsmith"],
+                            "argumentTypes" : ["0"]
+                        }
                     ],
-                    "argumentTypes" : ["1","0","1"],
+                    "argumentTypes" : ["1","0","1"]
                 },
                 {
                     "method" : "isCarrying",
@@ -153,7 +183,7 @@
                     "method" : "movePlayer",
                     "class" : "com.seanjohnson.textfighter.PackMethods",
                     "arguments" : ["menu"],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "back"
