@@ -1,3 +1,25 @@
+Release v1.3.2
+  - Modmakers:
+    - Achievement rewards can now have requirements
+    - The fists weapon is now not duplicated (which caused it to show multiple times in various places)
+    - Added Vanilla Custom variable “priceAtWeaponSmith” to weapons
+    - Added custom variable “canBeBoughtAtWeaponsmith” to weapons
+  - Vanilla TextFighter:
+    - Interfaces:
+      - Only weapons that can be bought at the weaponsmith are shown in its interface
+      - The vanilla textfighter shop now shows product prices
+	- Visual:
+	  - The guide file tree container now resizes automatically to fit all the files on the screen
+	  - Text No longer wraps in the output and file viewer text areas
+      - Compressed enemy stats (Takes up less lines)
+	  - Fixed vanilla textfighter guide copying (the guide can now be correctly viewed in the gui)
+	- Fixes:
+	  - Fists shown twice in the weaponsmith (The fists may have been loaded twice)
+      - Experience required to level up does not increase with level
+      - Cannot equip fists
+      - Rewards were not given with achievements
+      - Crash Fix: Textfighter crashed when giving rewards to players that involved invoking methods
+
 Release v1.3.1
   - The version is now shown in the title of the window of the gui version
   - Developers:
