@@ -8,7 +8,7 @@ Basic info:
     longRanged: true
 
 Obtaining:
-    Information about how to obtain this weapon (Or just say "Cannot be obtained" if it cannot be).
+    None
 
 More Info:
     Anything that does not go in the other categories.

@@ -7,10 +7,13 @@
         "----------------------",
         "     WEAPON SMITH     ",
         "                      ",
-        "<allWeaponSimpleOutputs>",
+        "Sword",
+        "    Cost: 100 Coins",
         "",
-        "Weapons you can buy are shown in the choices interface."
-        "Note that not all weapons shown can be bought here."
+        "Deagle",
+        "    Cost: 300 Coins",
+        "",
+        "Weapons you can currently buy are shown in the choices interface."
 
     ]
 

@@ -405,7 +405,8 @@ public class TextFighter {
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
                         destDir.mkdirs(); //Will fail silently if it already exists
-                        File destFile = new File(destDir + File.separator + s);
+                        String newName = s.substring(0,s.length()-5);
+                        File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
                             File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
                             copyFileFromJar(guideFile, destFile);
@@ -435,7 +436,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/weapons/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -457,7 +459,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/tools/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -479,7 +482,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/armor/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -501,7 +505,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/specialitems/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -525,7 +530,8 @@ public class TextFighter {
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
                         destDir.mkdirs(); //Will fail silently if it already exists
-                        File destFile = new File(destDir + File.separator + s);
+                        String newName = s.substring(0,s.length()-5);
+                        File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
                             copyFileFromJar(new File("/guide/enemies/" + s), destFile);
                         } //else: it already exists, so dont touch it
@@ -547,7 +553,8 @@ public class TextFighter {
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
                         destDir.mkdirs(); //Will fail silently if it already exists
-                        File destFile = new File(destDir + File.separator + s);
+                        String newName = s.substring(0,s.length()-5);
+                        File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
                             copyFileFromJar(new File("/guide/achievements/" + s), destFile);
                         } //else: it already exists, so dont touch it
@@ -560,21 +567,21 @@ public class TextFighter {
 
             File file = getPackFile("death", guideDirectory);
             if (file == null) {
-                copyFileFromJar(new File("/guide/death"), new File(guideDirectory + "/death"));
+                copyFileFromJar(new File("/guide/death.txt"), new File(guideDirectory + "/death"));
             }
 
             //player
 
             file = getPackFile("player", guideDirectory);
             if (file == null) {
-                copyFileFromJar(new File("/guide/player"), new File(guideDirectory + "/player"));
+                copyFileFromJar(new File("/guide/player.txt"), new File(guideDirectory + "/player"));
             }
 
             //levelup
 
             file = getPackFile("levelup", guideDirectory);
             if (file == null) {
-                copyFileFromJar(new File("/guide/levelup"), new File(guideDirectory + "/levelup"));
+                copyFileFromJar(new File("/guide/levelup.txt"), new File(guideDirectory + "/levelup"));
             }
         } else { ///running from ide
 
@@ -593,7 +600,8 @@ public class TextFighter {
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
                         destDir.mkdirs(); //Will fail silently if it already exists
-                        File destFile = new File(destDir + File.separator + s);
+                        String newName = s.substring(0,s.length()-5);
+                        File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
                             File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
                             copyFileFromJar(guideFile, destFile);
@@ -623,7 +631,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/weapons/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -645,7 +654,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/tools/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -667,7 +677,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/armor/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -689,7 +700,8 @@ public class TextFighter {
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
                                 destDir.mkdirs(); //Will fail silently if it already exists so we vibin
-                                File destFile = new File(destDir + File.separator + s);
+                                String newName = s.substring(0,s.length()-5);
+                                File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
                                     copyFileFromJar(new File("/guide/items/specialitems/" + s), destFile);
                                 } //else: it already exists, so dont touch it
@@ -713,7 +725,8 @@ public class TextFighter {
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
                         destDir.mkdirs(); //Will fail silently if it already exists
-                        File destFile = new File(destDir + File.separator + s);
+                        String newName = s.substring(0,s.length()-5);
+                        File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
                             copyFileFromJar(new File("/guide/enemies/" + s), destFile);
                         } //else: it already exists, so dont touch it
@@ -735,7 +748,8 @@ public class TextFighter {
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
                         destDir.mkdirs(); //Will fail silently if it already exists
-                        File destFile = new File(destDir + File.separator + s);
+                        String newName = s.substring(0,s.length()-5);
+                        File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
                             copyFileFromJar(new File("/guide/achievements/" + s), destFile);
                         } //else: it already exists, so dont touch it
@@ -748,21 +762,21 @@ public class TextFighter {
 
             File file = getPackFile("death", guideDirectory);
             if (file == null) {
-                copyFileFromJar(new File("/guide/death"), new File(guideDirectory + "/death"));
+                copyFileFromJar(new File("/guide/death.txt"), new File(guideDirectory + "/death"));
             }
 
             //player
 
             file = getPackFile("player", guideDirectory);
             if (file == null) {
-                copyFileFromJar(new File("/guide/player"), new File(guideDirectory + "/player"));
+                copyFileFromJar(new File("/guide/player.txt"), new File(guideDirectory + "/player"));
             }
 
             //levelup
 
             file = getPackFile("levelup", guideDirectory);
             if (file == null) {
-                copyFileFromJar(new File("/guide/levelup"), new File(guideDirectory + "/levelup"));
+                copyFileFromJar(new File("/guide/levelup.txt"), new File(guideDirectory + "/levelup"));
             }
         }
     }
@@ -785,7 +799,7 @@ public class TextFighter {
                         if(name.endsWith(".txt")) { //It is a file, so we should copy it
                             Display.displayProgressMessage("Copying file: " + name);
                             InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
-                            Files.copy(stream, Paths.get(installationRoot.getPath() + File.separator + name), StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(stream, Paths.get(installationRoot.getPath() + File.separator + name.substring(0, name.length()-4)), StandardCopyOption.REPLACE_EXISTING); //Note this removes the .txt file extension
                             stream.close();
                         } else { //It is a directory, so we should create an identical one
                             File directory = new File(installationRoot.getPath() + File.separator + name);
@@ -831,7 +845,7 @@ public class TextFighter {
      */
     public static boolean copyFileFromJar(File fileInJar, File dest) {
 
-        fileInJar = new File(fileInJar.getPath().replace(".json", ""));
+        fileInJar = new File(fileInJar.getPath().replace(".json", ".txt"));
         dest = new File(dest.getPath().replace(".json",""));
         Display.displayProgressMessage("Copying File: " + fileInJar + " to " + dest);
         try {
@@ -1247,11 +1261,11 @@ public class TextFighter {
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
                 int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
-                if(chance == 0) { Display.displayPackError("This reward have no chance. Omitting..."); return null; }
-                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
+                if(chance == 0) { Display.displayPackError("This reward has no chance. Omitting..."); return null; }
+                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
                 //Achievement rewards always run (So no chance needed)
-                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Reward.class, (JSONArray)obj.get("requirements"), Enemy.class), 100, (String)obj.get("rewarditem"));
+                o=new Reward(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Achievement.class), 100, (String)obj.get("rewarditem"));
             }
         } else if(type.equals(UiTag.class)) {
             String tag = (String)obj.get("tag");
@@ -1908,6 +1922,7 @@ public class TextFighter {
                     String name = Weapon.defaultName;                           if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
                     if(usedNames.contains(name) || (!parsingPack && namesToBeOmitted.contains(name))) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading item '" + name + "' of type 'weapon'");
+                    if(name.equalsIgnoreCase("fists")) { modSetFists = true; }
                     int damage = Weapon.defaultDamage;                          if(itemFile.get("damage") != null) { damage = Integer.parseInt((String)itemFile.get("damage")); }
                     int critChance = Weapon.defaultCritChance;                  if(itemFile.get("critchance") != null) { critChance = Integer.parseInt((String)itemFile.get("critchance")); }
                     int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
@@ -1949,7 +1964,7 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
                 //Add the fists weapon, which always exists (not if the mod already added it
-                if(!modSetFists) {
+                if(!modSetFists) { //Note that the vanilla textfighter mod also sets the fists
                     weapons.add(new Weapon("fists", "Your fists, you don't need a description about what that is.", 5, 10, 5, new ArrayList<>(), 100, 100, true));
                 }
             }
@@ -3551,9 +3566,7 @@ public class TextFighter {
      * @param args  Command line input.
      */
     public static void main(String[] args) {
-        System.out.println(TextFighter.class.getResource("TextFighter.class").toString());
         if(TextFighter.class.getResource("TextFighter.class").toString().startsWith("jar:")) { //then the game is run from a jar
-            System.out.println(TextFighter.class.getResource("TextFighter.class").toString());
             runFromJar = true;
         }
 

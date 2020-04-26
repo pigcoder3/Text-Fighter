@@ -8,6 +8,8 @@
     "maxDurability" : "200",
     "metalScrapsToRepairAtStation" : "30",
     "canBeRepairedAtStation" : "true",
+    "canBeBoughtAtWeaponsmith" : "true",
+    "costAtWeaponsmith" : "300",
     "longRanged" : "true",
     "unbreakable" : "false"
 }

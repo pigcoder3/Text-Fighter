@@ -216,6 +216,7 @@
                 "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
             }
         },
+
         {
             "tag" : "<allItemSimpleOutputsFromInventory>",
             "class" : "com.seanjohnson.textfighter.PackMethods",
@@ -251,6 +252,7 @@
             "arguments" : ["specialitem"],
             "argumentTypes" : ["0"]
         },
+
         {
             "tag" : "<coinsInBank>",
             "class" : "com.seanjohnson.textfighter.Player",
@@ -278,6 +280,7 @@
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
         },
+
         {
             "tag" : "<wood>",
             "class" : "com.seanjohnson.textfighter.Player",

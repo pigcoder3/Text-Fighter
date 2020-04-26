@@ -22,6 +22,20 @@
             "type" : "3",
             "inOutput" : "true",
             "isSaved" : "false"
+        },
+        {
+            "name" : "canBeBoughtAtWeaponsmith",
+            "value" : "false",
+            "type" : "3",
+            "inOutput" : "true",
+            "isSaved" : "false"
+        },
+        {
+            "name" : "costAtWeaponsmith",
+            "value" : "-1",
+            "type" : "1",
+            "inOutput" : "true",
+            "isSaved" : "false"
         }
     ]
 }

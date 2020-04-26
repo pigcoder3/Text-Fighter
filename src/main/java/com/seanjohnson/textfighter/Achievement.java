@@ -41,18 +41,64 @@ public class Achievement {
     public ArrayList<Reward> getRewards() { return rewards; }
 
     /**
-     * Loops through each of the {@link #rewards} and invokes them, then outputs their rewardstrings.
-     * @return      All of the rewards.
+     * Stores all rewards (methods that are invoked when the achievement is earned) of this achievement that meet their own requirements.
+     * <p>Set to an empty ArrayList of Rewards.</p>
      */
-    public String invokeRewards() {
-        String rewardsString = "";
-        for(Reward r : rewards) {
-            rewardsString += r.invokeMethod() + "\n";
+    private ArrayList<Reward> possibleRewards = new ArrayList<Reward>();
+
+    //reward methods
+    /**
+     * Invokes all the {@link #possibleRewards}.
+     * <p>First calls {@link #filterRewardMethods}, then invokes them.</p>
+     */
+    public void invokeRewardMethods() {
+        filterRewardMethods();
+        ArrayList<String> rewardStrings = new ArrayList<String>();
+        //Give the player the rewards
+        if(possibleRewards != null) {
+            for(Reward r : possibleRewards) {
+                String output = r.invokeMethod();
+                if(output != null) { rewardStrings.add(output); }
+            }
         }
-        if(rewardsString != null) {
-            return "Rewards: \n" + rewardsString;
-        } else {
-            return "";
+        //Print out all of the rewards the player recieved
+        if(rewardStrings.size() > 0) {
+            TextFighter.addToOutput("Rewards:");
+            for(int i=0; i<rewardStrings.size(); i++) {
+                String s = rewardStrings.get(i);
+                if(i != rewardStrings.size()-1) {
+                    s+=","; //If this is the last reward do not put a comma
+                }
+                TextFighter.addToOutput(s);
+            }
+        }
+    }
+    /**
+     * Loops over all rewardMethods and adds all that meet their own requirements to {@link #rewards}.
+     * <p>Adds valid rewardMethods to a new ArrayList that the {@link #possibleRewards} is set to after.</p>
+     */
+    public void filterRewardMethods() {
+        //Filter out any rewards that do not meet the requirements
+        possibleRewards.clear();
+        if(rewards != null){
+            for(Reward r : rewards) {
+                boolean valid = true;
+                if(r.getRequirements() != null) {
+                    System.out.println(r.getRequirements().getClass());
+                    for(Requirement rq : r.getRequirements()) {
+                        if(!rq.invokeMethod()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if(valid) {
+                        possibleRewards.add(r);
+                    }
+                }
+                else {
+                    possibleRewards.add(r);
+                }
+            }
         }
     }
 

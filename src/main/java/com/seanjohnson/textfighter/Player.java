@@ -1069,7 +1069,8 @@ public class Player {
      * @param type      The type of the item.
      */
     public void addToInventory(String name, String type) {
-        if(name == null || name == "fists" || type == null) { return;}
+        if(name.equalsIgnoreCase("fists")) { TextFighter.addToOutput("You cannot add your fists to your inventory"); }
+        if(name == null || type == null) { return;}
         if(type.equals("weapon")) {
             if(isCarrying(name, "weapon")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Weapon item = TextFighter.getWeaponByName(name);
@@ -1112,6 +1113,7 @@ public class Player {
             }
         }
     }
+
     public void removeFromInventory(String name, String type) {
         for(int i=0;i<inventory.size();i++) {
             if(name.equals(inventory.get(i).getName()) && type.equals(inventory.get(i).getItemType())) {
@@ -1124,6 +1126,7 @@ public class Player {
         }
 		TextFighter.addToOutput("You are not carrying a(n) '" + name + "' of type '" + type + "'");
     }
+
     /**
      * Returns whether or not the player is carrying an item with the name and type given.
      * <p>If the name or type is null, return false.</p>
@@ -1147,6 +1150,9 @@ public class Player {
      * @return      hether or not the player is carrying an item with the name and type given. If there is none or name or type is null, then return null.
      */
     public Item getFromInventory(String name, String type) {
+        if(name.equalsIgnoreCase("fists") && type.equalsIgnoreCase("weapon")) { //Ensure that the player will always have fists in their inventory
+            return TextFighter.getWeaponByName("fists");
+        }
         if(name == null || type == null) { TextFighter.addToOutput("The method was given invalid input."); return null;}
         for(Item i : inventory) {
             if(i.getName().equals(name) && i.getItemType().equals(type)) {
@@ -1164,6 +1170,7 @@ public class Player {
      */
     public void achievementEarned(Achievement a) {
         achievements.add(a);
+        a.invokeRewardMethods();
         Display.achievementEarned(a.getName());
     }
 
@@ -1207,6 +1214,7 @@ public class Player {
         this.metalScraps = metalScraps;
         this.level = level;
         this.experience = experience;
+        this.experienceNeeded = this.level * 10 + 100;
         this.score = score;
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
@@ -1238,5 +1246,5 @@ public class Player {
         this.allLevelupMethods = levelupmethods;
     }
 
-    public Player() {}
+    public Player() { }
 }
