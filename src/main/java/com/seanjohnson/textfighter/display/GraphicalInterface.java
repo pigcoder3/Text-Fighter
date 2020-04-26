@@ -230,6 +230,12 @@ public class GraphicalInterface extends JFrame {
 		//Allow the nodes to be clicked to open
 		fileTree.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
+				System.out.println("BRUH");
+				guideArea.revalidate();
+				//This will cause the guide file system area to be resized
+				/*BorderLayout layout = (BorderLayout)(guideArea.getLayout());
+				layout.setHgap(layout.getHgap());
+				guideArea.setLayout(layout);*/
 				File directory;
 				if(TextFighter.packUsed == null) {
 					directory = TextFighter.installationRoot;

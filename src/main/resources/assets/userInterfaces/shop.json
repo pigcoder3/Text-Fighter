@@ -5,7 +5,14 @@
     "interface" : [
 
         "----------------------",
-        "         SHOP         "
+        "         SHOP         ",
+        "",
+        "Health Potion - Heals 20 hp",
+        "    Cost: 20 Coins",
+        "Strength Potion - Double strength for 2 turns",
+        "    Cost: 50 Coins",
+        "Invincibility Potion - Invincible for 2 turns",
+        "    Cost: 200 Coins"
 
     ]
 
