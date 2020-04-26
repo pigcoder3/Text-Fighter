@@ -47,7 +47,7 @@ public class GraphicalInterface extends JFrame {
 	//All the components
 	public JSlider textSizeSlider;
 	public JScrollPane scrollPane;
-	public JTextPane gameOutputArea;
+	public NoWrapJTextPane gameOutputArea;
 	public HintTextField inputArea;
 
 	public boolean canEnterInput = false;
@@ -58,7 +58,7 @@ public class GraphicalInterface extends JFrame {
 	public JPanel guideArea = new JPanel();
 
 	public JTree fileTree;
-	public JTextPane fileViewer;
+	public NoWrapJTextPane fileViewer;
 
 	private void initComponents() {
 
@@ -101,7 +101,7 @@ public class GraphicalInterface extends JFrame {
 		));
 
 		//The game output area
-		gameOutputArea = new JTextPane();
+		gameOutputArea = new NoWrapJTextPane();
 		gameOutputArea.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		gameOutputArea.setBackground(backgroundColor);
 		gameOutputArea.setFont(displayFont);
@@ -186,7 +186,7 @@ public class GraphicalInterface extends JFrame {
 	    fileTree = new JTree(new DefaultMutableTreeNode(TextFighter.modName));
 
 		//The file viewer area
-		fileViewer = new JTextPane();
+		fileViewer = new NoWrapJTextPane();
 		fileViewer.setEditable(false);
 		fileViewer.setFont(displayFont);
 		fileViewer.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -230,12 +230,7 @@ public class GraphicalInterface extends JFrame {
 		//Allow the nodes to be clicked to open
 		fileTree.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				System.out.println("BRUH");
-				guideArea.revalidate();
-				//This will cause the guide file system area to be resized
-				/*BorderLayout layout = (BorderLayout)(guideArea.getLayout());
-				layout.setHgap(layout.getHgap());
-				guideArea.setLayout(layout);*/
+				guideArea.revalidate(); //Have it resize to automatically fit all the filenames
 				File directory;
 				if(TextFighter.packUsed == null) {
 					directory = TextFighter.installationRoot;
@@ -361,6 +356,21 @@ public class GraphicalInterface extends JFrame {
 			this.setText(hint);
 		}
 
+	}
+
+	public class NoWrapJTextPane extends JTextPane {
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			// Only track viewport width when the viewport is wider than the preferred width
+			return getUI().getPreferredSize(this).width
+					<= getParent().getSize().width;
+		};
+
+		@Override
+		public Dimension getPreferredSize() {
+			// Avoid substituting the minimum width for the preferred width when the viewport is too narrow
+			return getUI().getPreferredSize(this);
+		};
 	}
 
 }
