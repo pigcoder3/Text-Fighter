@@ -23,7 +23,8 @@
             "arguments" : ["10000"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "10000 Experience."
         },
         {
             "method" : "gainCoins",
@@ -31,7 +32,8 @@
             "arguments" : ["10000"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "10000 Coins."
         },
         {
             "method" : "gainMagic",
@@ -40,16 +42,7 @@
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "org.textfight.TextFighter",
-            "requirements" : [
-                {
-                    "method" : "isCarrying",
-                    "class" : "com.seanjohnson.textfighter.Player",
-                    "arguments" : ["manapouch","specialitem"],
-                    "argumentTypes" : ["0","0"],
-                    "field" : "player",
-                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                }
-            ]
+            "rewarditem" : "5000 Magic."
         }
 
     ],

@@ -41,7 +41,7 @@
                         {
                             "method" : "getCustomVariableFromName",
                             "class" : "com.seanjohnson.textfighter.Player",
-                            "arguments" : ["wood"],
+                            "arguments" : ["bottle"],
                             "argumentTypes" : ["0"],
                             "field" : "player",
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
@@ -61,12 +61,12 @@
         {
             "method" : "increaseExperience",
             "class" : "com.seanjohnson.textfighter.Player",
-            "arguments" : ["20"],
+            "arguments" : ["30"],
             "argumentTypes" : ["1"],
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
             "chance" : "100",
-            "rewarditem" : "20 experience"
+            "rewarditem" : "30 experience"
         },
         {
             "method" : "gainCoins",
@@ -76,17 +76,17 @@
             "arguments" : ["30"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "10 coins"
+            "rewarditem" : "30 coins"
         },
         {
             "method" : "increaseMagic",
             "class" : "com.seanjohnson.textfighter.Player",
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
-            "arguments" : ["30"],
+            "arguments" : ["20"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "30 magic"
+            "rewarditem" : "20 magic"
         }
     ],
     "actions" : [
@@ -109,7 +109,7 @@
                                     "class" : "com.seanjohnson.textfighter.Enemy",
                                     "field" : "currentEnemy",
                                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                                }
+                                },
                                 "<",
                                 "1"
                             ]

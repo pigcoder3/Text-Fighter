@@ -43,10 +43,11 @@
         {
             "method" : "increaseExperience",
             "class" : "com.seanjohnson.textfighter.Player",
-            "arguments" : ["20"],
+            "arguments" : ["25"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "25 Experience"
         },
         {
             "method" : "gaincoins",
@@ -54,7 +55,8 @@
             "arguments" : ["15"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "20 Coins."
         },
         {
             "method" : "addToInventory",
@@ -75,7 +77,7 @@
                 }
             ],
             "chance" : "50",
-            "rewarditem" : "An infinity bow. A bow of inifinte arrows."
+            "rewarditem" : "An infinity bow. A bow of infinite arrows."
         },
     ]
 }

@@ -13,9 +13,9 @@ Special Actions:
     Gives itself invincibility for 2 turns
 
 Rewards:
-    20 experience - 100% chance
+    30 experience - 100% chance
     30 coins - 100% chance
-    30 magic - 100% chance
+    20 magic - 100% chance
     Witch Map - 75% chance (Assuming you do not have one)
 
 Entering Fight:

@@ -135,9 +135,10 @@ public class GraphicalInterface extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				switch(e.getKeyCode()) {
 					case(KeyEvent.VK_ENTER):
+						if(inputArea.getText().length() < 1) { break; } //If the input area is empty, then dont do anything because you are then wasting processing power
 						synchronized (TextFighter.waiter) {
 							if (canEnterInput) {
-								TextFighter.waiter.notify();
+								TextFighter.waiter.notify(); //so that the game logic will run
 							}
 						}
 						break;

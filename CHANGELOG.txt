@@ -1,3 +1,16 @@
+Release v1.3.3
+  - General Fixes:
+    - Accepts input even if input field is empty (waste of processing power)
+  - Vanilla TextFighter:
+    - Fixes:
+      - Rewards are not given when killing the lumberjack
+      - No reward string was displayed for coins and experience when miner is killed
+      - Lumberjack guide does not say that axe can be dropped
+      - Executioner enemy guide has typo
+      - sorcerer magic drop required a special item that did not exist (“manapouch”)
+      - Fixed various guide and game text typos
+      - Reduced coin and experience reward of most enemies
+
 Release v1.3.2
   - Modmakers:
     - Achievement rewards can now have requirements

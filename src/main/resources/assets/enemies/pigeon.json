@@ -1,6 +1,6 @@
 {
     "name" : "pigeon",
-    "description" : "This white and gray bird is a surprisingly powerful foe considering its size.",
+    "description" : "This white and gray bird is a surprisingly powerful foe considering its size and intelligence.",
     "health" : "20",
     "maxhealth" : "20",
     "strength" : "10",
@@ -9,18 +9,20 @@
         {
             "method" : "increaseExperience",
             "class" : "com.seanjohnson.textfighter.Player",
-            "arguments" : ["20"],
+            "arguments" : ["7"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "7 experience"
         },
         {
             "method" : "gaincoins",
             "class" : "com.seanjohnson.textfighter.Player",
-            "arguments" : ["10"],
+            "arguments" : ["7"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "7 coins"
         }
     ],
     "actions" : [
@@ -29,7 +31,7 @@
                 {
                     "method" : "attack",
                     "class" : "com.seanjohnson.textfighter.enemy.Enemy",
-                    "arguments" : ["20","The pidgeon uses its super beak thrust attack which deals 15 damage."],
+                    "arguments" : ["20","The pidgeon uses its super beak thrust attack which deals 20 damage."],
                     "argumentTypes" : ["1","0"],
                     "field" : "currentEnemy",
                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
