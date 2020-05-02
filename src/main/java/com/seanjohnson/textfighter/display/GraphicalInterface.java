@@ -2,6 +2,7 @@ package com.seanjohnson.textfighter.display;
 
 import com.seanjohnson.textfighter.HistoryLinkedList;
 import com.seanjohnson.textfighter.TextFighter;
+import com.seanjohnson.textfighter.location.Choice;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -130,6 +131,7 @@ public class GraphicalInterface extends JFrame {
 				}
 			}
 		});
+		inputArea.setFocusTraversalKeysEnabled(false); // so we can hit tab
 		inputArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -149,13 +151,62 @@ public class GraphicalInterface extends JFrame {
 							inputArea.setText(copiedInputHistory.getCurrentIndexValue());
 						}
 						break;
-					case(KeyEvent.VK_DOWN):
+					case(KeyEvent.VK_DOWN): //Scroll down through command history
 						if(copiedInputHistory.getCurrentIndex() > 0) {
 							copiedInputHistory.set(copiedInputHistory.getCurrentIndex(), inputArea.getText());
 							copiedInputHistory.setCurrentIndex(copiedInputHistory.getCurrentIndex() - 1);
 							inputArea.setText(copiedInputHistory.getCurrentIndexValue());
 						}
 						break;
+					case(KeyEvent.VK_TAB): //Autocomplete commands with tab (as is done in most terminals)
+						if(inputArea.getText().length() == 0 || TextFighter.player.getLocation().getPossibleChoices().size() == 0) { break; } // Dont do anything if there is no input or there are no possible choices
+						//This gets the first command (getting the rest of the commands is too resources intensive as of all the ways I've tried).
+						String currentInputText = inputArea.getText();
+						String[] possibleWantedCommands = new String[TextFighter.player.getLocation().getPossibleChoices().size()];
+						int i = 0;
+						for(Choice c : TextFighter.player.getLocation().getPossibleChoices()) {
+							if(c.getName().startsWith(currentInputText)) {
+								possibleWantedCommands[i] = c.getName();
+								i++; //increase in possibleWantedCommands
+							}
+						}
+						if(possibleWantedCommands[0] == null) { break; } //If there are none, then do nothing
+						if(possibleWantedCommands[1] == null) { //If there is only one, then we are good to just use it
+							inputArea.setText(possibleWantedCommands[0] + " "); //Change the input area
+							inputArea.setCaretPosition((possibleWantedCommands[0] + " ").length()); //Put the inputArea cursor at the end
+							break;
+						}
+						//What if there are multiple commands that start with the current string?
+						int commandIndex = inputArea.getText().length()-1;
+						boolean firstCommand = true;
+						boolean done = false;
+						while(true) {
+							firstCommand = true;
+							char character = ' ';
+							for(int p=0; p<i; p++) {
+								String name = possibleWantedCommands[p];
+								if(name.length()-1 < commandIndex) { //Then this is what we will use
+									inputArea.setText(name.substring(0,commandIndex)); //Change the input area
+									inputArea.setCaretPosition(commandIndex); //Put the inputArea cursor at the end
+									done = true;
+									break;
+								}
+
+								if(firstCommand) {
+									character = name.charAt(commandIndex);
+									firstCommand = false;
+								} else if(name.charAt(commandIndex) == character) {
+									continue;
+								} else if(name.charAt(commandIndex) != character) { //there are different ones
+									inputArea.setText(name.substring(0,commandIndex)); //Change the input area
+									inputArea.setCaretPosition(commandIndex); //Put the inputArea cursor at the end
+									done = true;
+									break;
+								}
+							}
+							commandIndex++;
+							if(done) { break; }
+						}
 					default:
 						super.keyReleased(e);
 						break;
