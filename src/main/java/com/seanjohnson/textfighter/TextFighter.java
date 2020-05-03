@@ -3010,7 +3010,7 @@ public class TextFighter {
             if(achievementsArray != null  && achievementsArray.size()>0) {
                 for(int i=0; i<achievementsArray.size(); i++) {
                     for(Achievement a : achievements) {
-                        if(achievementsArray.get(i) == a.getName()) {
+                        if(achievementsArray.get(i).equals(a.getName())) {
                             playerAchievements.add(a);
                         }
                     }
@@ -3508,7 +3508,7 @@ public class TextFighter {
         //Determine if any achievements should be recieved
         if(gameLoaded()) {
             for(Achievement a : achievements) {
-                if(!player.getAchievements().contains(a)) {
+                if(!player.isAchievementEarned(a.getName())) {
                     boolean earned = true;
                     //Make sure the requirements have been met
                     for(Requirement r : a.getRequirements()) {
@@ -3533,7 +3533,7 @@ public class TextFighter {
         boolean validInput = invokePlayerInput();
         if(Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area. If they want to fix it, then they just have to hit the up arrow
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
-        if(actedSinceStartOfFight && validInput && player.getInFight() && player.getLocation().getName().equals("fight")) {
+        if(actedSinceStartOfFight && validInput && player.getInFight()) {
             player.decreaseTurnsWithStrengthLeft(1);
             player.decreaseTurnsWithInvincibilityLeft(1);
             if(currentEnemy != null) {

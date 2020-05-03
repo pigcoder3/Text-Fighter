@@ -1169,6 +1169,7 @@ public class Player {
      * @param a     The achievement that is earned.
      */
     public void achievementEarned(Achievement a) {
+        if(isAchievementEarned(a.getName())) { return; } //The player already has this achievement tho
         achievements.add(a);
         a.invokeRewardMethods();
         Display.achievementEarned(a.getName());
@@ -1180,12 +1181,13 @@ public class Player {
      * @return                  Whether or not the player has earned the achievement with the given name
      */
     public boolean isAchievementEarned(String achievementName) {
+
         for(Achievement achievement : achievements) {
             if(achievement.getName().equalsIgnoreCase(achievementName)) {
                 return true;
             }
         }
-        return false; //Gets here if no acheivements the player has earned have this name (also includes if the achievement doesnt exists).
+        return false; //Gets here if no achievements the player has earned have this name (also includes if the achievement doesnt exist).
     }
 
     /**
