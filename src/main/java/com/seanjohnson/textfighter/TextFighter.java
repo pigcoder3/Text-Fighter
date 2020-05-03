@@ -3534,8 +3534,6 @@ public class TextFighter {
         if(Display.guiMode) { Display.gui.inputArea.setText(""); } // Empty the input area. If they want to fix it, then they just have to hit the up arrow
 		//If the player inputted something valid and the player is in a fight, then do enemy action stuff
         if(actedSinceStartOfFight && validInput && player.getInFight()) {
-            player.decreaseTurnsWithStrengthLeft(1);
-            player.decreaseTurnsWithInvincibilityLeft(1);
             if(currentEnemy != null) {
                 if(currentEnemy.getHp() <= 0) {
                     player.setInFight(false);
@@ -3550,6 +3548,8 @@ public class TextFighter {
                     currentEnemy.decreaseTurnsWithInvincibilityLeft(1);
                 }
             }
+            player.decreaseTurnsWithStrengthLeft(1);
+            player.decreaseTurnsWithInvincibilityLeft(1);
         }
 		if(player.getHp() < 1) {
             player.setInFight(false);

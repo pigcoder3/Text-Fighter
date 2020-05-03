@@ -1,0 +1,3 @@
+Name: Debug
+Author: Sean Johnson
+Description: The debug pack is used to for debugging the vanilla pack. It allows me to give myself items and the like to quickly uncover what is wrong.

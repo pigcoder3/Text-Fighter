@@ -278,6 +278,85 @@
             ]
         },
         {
+            "name" : "shield",
+            "description" : "Cost: 25 metal scraps and 15 wood, crafts a pair of gloves.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["shield", "tool"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "spendMetalScraps",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["25"],
+                    "argumentTypes" : ["1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["wood", "15"],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : ["You crafted a shield from 25 metal and 15 wood"],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["gloves", "armor"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "neededBoolean" : "false"
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getMetalScraps",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "25"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "arguments" : ["wood"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "15"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
             "name" : "back",
             "description" : "Moves you back to the menu",
             "methods" : [

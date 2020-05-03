@@ -7,6 +7,11 @@ Release v1.3.3
   - Modmakers:
     - Kills are now increased upon killing an enemy
   - Vanilla TextFighter:
+    - Additions:
+      - Added the shield tool
+	    - Make yourself invinsible for 1 turn during a fight (negating your enemy's next attack)
+	    - Crafted at the forge for 25 metal scraps and 15 wood
+		- One durability is used each time the shield is used
     - Interfaces:
 	  - Kills are now shown in the player stats interface
     - Fixes:

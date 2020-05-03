@@ -1,0 +1,101 @@
+Name: debug
+
+Description: A location used to modify values to order to uncover bugs
+
+Interface:
+	----------------------
+	        DEBUG         
+
+Choices:
+	Name: sethealth
+	Description: "Set your health to a value. Note that it won't go above your max health"
+	Function: Sets the player's health to the given value (up to the maximum health)
+	Usage: sethealth <amount>
+	Requirements: none
+
+	Name: setmaxhealth
+	Description: "Set your max health to a value."
+    Function: Sets the player's maximum health.
+	Usage: setmaxhealth <amount>
+	Requirements: none
+
+	Name: setcoins
+	Description: "Set your coins to a value"
+	Function: Sets the player's coins to the value given.
+	Usage: setcoins <amount>
+	Requirements: none
+
+	Name: setmagic
+	Description: "Set your magic points to a value"
+	Function: Sets the player's magic points to the value given.
+	Usage: setmagic <amount>
+	Requirements: none
+
+	Name: setmetalscraps
+	Description: "Set your metal scraps to a value"
+	Function: Sets the player's metal scrap count to the value given.
+	Usage: setmetalscraps <amount>
+	Requirements: none
+
+	Name: setinvincibilityturns
+	Description: "Set your turns with invincibility left."
+	Function: Sets the player's turns with invincibility left.
+	Usage: setinvincibilityturns <amount>
+	Requirements: none
+
+	Name: setstrengthturns
+	Description: "Set your turns with strength left."
+	Function: Sets the player's turns with super-strength left.
+	Usage: setstrengthturns <amount>
+	Requirements: none
+
+	Name: setinvincibilitypotions
+	Description: "Set how many invincibility potions you have"
+	Function: Sets the player's invincibility potion count.
+	Usage: setinvincibilitypotions <amount>
+	Requirements: none
+
+	Name: setstrengthpotions
+	Description: "Set how many strength potions you have"
+	Function: Sets the player's strength potion count.
+	Usage: setstrengthpotions <amount>
+	Requirements: none
+	
+	Name: sethealthpotions
+	Description: "Set how many health potions you have"
+	Function: Sets the player's health potion count.
+	Usage: sethealthpotions <amount>
+	Requirements: none
+
+	Name: setwood
+	Description: "Set your wood to a value"
+	Function: Sets the player's wood count
+	Usage: setwood <amount>
+	Requirements: none
+
+	Name: setleaves
+	Description: "Set your leaves to a value"
+	Function: Sets the player's leaf count.
+	Usage: setleaves <amount>
+	Requirements: none
+
+	Name: setbottles
+	Description: "Set your bottles to a value"
+	Function: Sets the player's bottle count.
+	Usage: setbottles <amount>
+	Requirements: none
+
+	Name: back
+	Description: "Moves you back to the menu"
+	Function: Moves the player back to the menu location
+	Usage: back
+	Requirements: none
+
+Entering:
+	Nothing
+
+Leaving:
+	Nothing
+
+Extra Info:
+	None

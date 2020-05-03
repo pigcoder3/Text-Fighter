@@ -6,6 +6,6 @@
     "maxDurability" : "50",
     "unbreakable" : "false",
     "canBeRepairedAtStation" : "true",
-    "metalScrapsToRepairAtStation" : "35",
+    "metalScrapsToRepairAtStation" : "35"
 
 }

@@ -7,13 +7,14 @@
         "         FORGE        ",
         "   Craft armor here   ",
         "",
-        " Metal scraps: <metal>"
+        " Metal scraps: <metal>",
         "",
         " Helmet:     50 metal ",
         " chestplate: 150 metal",
         " leggings:   125 metal",
         " boots:      40 metal ",
-        " gloves:     20 metal "
+        " gloves:     20 metal ",
+        " shield:     25 metal, 10 wood"
 
     ]
 }
