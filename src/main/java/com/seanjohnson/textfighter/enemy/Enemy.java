@@ -307,7 +307,6 @@ public class Enemy implements Cloneable {
         if(hp < 0) { hp = 0; }
         TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");
     }
-
     //strength methods
     /**
      * Returns the {@link #strength}.

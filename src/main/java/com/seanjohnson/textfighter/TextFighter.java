@@ -3537,7 +3537,7 @@ public class TextFighter {
             player.decreaseTurnsWithStrengthLeft(1);
             player.decreaseTurnsWithInvincibilityLeft(1);
             if(currentEnemy != null) {
-                if(currentEnemy.getHp() < 1) {
+                if(currentEnemy.getHp() <= 0) {
                     player.setInFight(false);
                     addToOutput("Your enemy has died!");
 					currentEnemy.invokeRewardMethods();

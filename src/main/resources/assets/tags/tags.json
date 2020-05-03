@@ -121,6 +121,13 @@
             "field" : "player"
         },
         {
+            "tag" : "<kills>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getKills",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
             "tag" : "<level>",
             "class" : "com.seanjohnson.textfighter.Player",
             "method" : "getLevel",

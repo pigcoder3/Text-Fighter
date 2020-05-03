@@ -5,10 +5,10 @@
     "interface" : [
 
         "----------------------",
-        "       YOUR STATS     ",
+        "      YOUR STATS      ",
         "----------------------",
-        "  hp:    <health> / <maxhealth>",
-        "  deaths: <deaths>",
+        "  hp: <health> / <maxhealth>",
+        "  Kills: <kills>, deaths: <deaths>",
         "",
         "  Health Potions: <healthPotions>",
         "  Strength potions: <strengthPotions>",
