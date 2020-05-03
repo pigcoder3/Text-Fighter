@@ -138,7 +138,7 @@ public class GraphicalInterface extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				switch(e.getKeyCode()) {
 					case(KeyEvent.VK_ENTER):
-						if(inputArea.getText().length() < 1) { break; } //If the input area is empty, then dont do anything because you are then wasting processing power
+						if(inputArea.getText().length() < 1) { break; } //If the input area is empty, then dont do anything because you are otherwise wasting processing power
 						synchronized (TextFighter.waiter) {
 							if (canEnterInput) {
 								TextFighter.waiter.notify(); //so that the game logic will run
@@ -300,10 +300,8 @@ public class GraphicalInterface extends JFrame {
 			}
 		}
 		int l = possibleWantedCommands.length;
-		System.out.println(l);
 		if(l > 0 && possibleWantedCommands[0] == null) { return inputText; } //If there are none, then do nothing
 		if((l == 1 && possibleWantedCommands[0] != null) || (l > 1 && possibleWantedCommands[1] == null)) { //If there is only one, then we are good to just use it
-			System.out.println("BRUH");
 			return possibleWantedCommands[0] + " ";
 		}
 		//What if there are multiple commands that start with the current string?

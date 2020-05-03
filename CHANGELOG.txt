@@ -1,5 +1,6 @@
 Release v1.3.3
-  - Added choice autocompletion (press tab with an incomplete choice in the input area)
+  - Interface:
+    - Added choice autocompletion (press tab with an incomplete choice in the input area)
   - General Fixes:
     - Accepts input even if input field is empty (waste of processing power)
   - Vanilla TextFighter:
