@@ -2,12 +2,15 @@ Release v1.3.3
   - Interface:
     - Added choice autocompletion (press tab with an incomplete choice in the input area)
   - General Fixes:
-    - Accepts input even if input field is empty (waste of processing power)
-  - General:
+    - Accepted input even if input field is empty (waste of processing power)
     - Achievements were not correctly loaded from files (meaning they were not kept when saved)
+  - Modmakers:
+    - Kills are now increased upon killing an enemy
   - Vanilla TextFighter:
+    - Interfaces:
+	  - Kills are now shown in the player stats interface
     - Fixes:
-      - Rewards are not given when killing the lumberjack
+      - Rewards were not given when killing the lumberjack
       - No reward string was displayed for coins and experience when miner is killed
       - Lumberjack guide does not say that axe can be dropped
       - Executioner enemy guide has typo
