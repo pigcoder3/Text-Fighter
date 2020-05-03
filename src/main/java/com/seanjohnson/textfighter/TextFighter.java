@@ -3540,6 +3540,7 @@ public class TextFighter {
                 if(currentEnemy.getHp() <= 0) {
                     player.setInFight(false);
                     addToOutput("Your enemy has died!");
+                    player.increaseKills(1);
 					currentEnemy.invokeRewardMethods();
                     currentEnemy.invokePostmethods();
 					PackMethods.movePlayer("menu");
