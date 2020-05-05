@@ -279,7 +279,7 @@
         },
         {
             "name" : "shield",
-            "description" : "Cost: 25 metal scraps and 15 wood, crafts a pair of gloves.",
+            "description" : "Cost: 25 metal scraps and 105 wood, crafts a pair of gloves.",
             "methods" : [
                 {
                     "method" : "addToInventory",

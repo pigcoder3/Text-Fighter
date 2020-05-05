@@ -1439,7 +1439,10 @@ public class TextFighter {
                 }
                 String uiString = "";
                 for (int i = 0; i < interfaceArray.size(); i++) {
-                    uiString += interfaceArray.get(i) + "\n";
+                    uiString += interfaceArray.get(i);
+                    if(i != interfaceArray.size()-1) {
+                        uiString += "\n";
+                    }
                 }
                 Display.interfaces.add(new UserInterface(name, uiString));
                 usedNames.add(name);
@@ -3362,8 +3365,7 @@ public class TextFighter {
      */
     public synchronized static boolean invokePlayerInput() {
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        try {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));){
             String input = "";
             if(Display.gui != null) {
                 if(inputHistory.size() == 0) { inputHistory.addCommand(""); } //Create a new command in the history.
