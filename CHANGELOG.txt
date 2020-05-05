@@ -22,6 +22,7 @@ Release v1.3.3
       - sorcerer magic drop required a special item that did not exist (“manapouch”)
       - Fixed various guide and game text typos
       - Reduced coin and experience reward of most enemies
+	  - Error upon using the `woodaxe` choice in the forest location (which caused axe durability to be unchanged)
 
 Release v1.3.2
   - Modmakers:
