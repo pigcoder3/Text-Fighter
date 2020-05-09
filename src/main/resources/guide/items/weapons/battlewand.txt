@@ -8,7 +8,7 @@ Basic info:
     longRanged: true
 
 Obtaining:
-    None
+    Kill the sorcerer - 10% chance
 
 More Info:
     Anything that does not go in the other categories.

@@ -26,6 +26,7 @@ Release v1.3.3
       - Reduced coin and experience reward of most enemies
 	  - Error upon using the `woodaxe` choice in the forest location (which caused axe durability to be unchanged)
       - Many of the enemies did not give rewards when killed
+	  - The leaf disguise could not be crafted in the crafting hut
 
 Release v1.3.2
   - Modmakers:

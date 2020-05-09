@@ -75,6 +75,116 @@
             ]
         },
         {
+            "name" : "leafdisguise",
+            "description" : "Cost: 30 wood and 200 leaves, crafts a leaf disguise.",
+            "methods" : [
+                {
+                    "method" : "addToInventory",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["leafdisguise", "specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : [
+                        "wood",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "com.seanjohnson.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "com.seanjohnson.textfighter.Player",
+                                    "arguments" : ["wood"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                                },
+                                "-",
+                                "30"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "setCustomVariableByName",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : [
+                        "leaves",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "com.seanjohnson.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "com.seanjohnson.textfighter.Player",
+                                    "arguments" : ["leaves"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                                },
+                                "-",
+                                "200"
+                            ],
+                            "argumentTypes" : ["1","0","1"]
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : ["You crafted a leaf disguise."],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "arguments" : ["wood"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "30"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "arguments" : ["leaves"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "200"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                }
+            ]
+        },
+        {
             "name" : "healthpotion",
             "description" : "Cost: 1 bottle and 5 magic, crafts a health potion.",
             "methods" : [
