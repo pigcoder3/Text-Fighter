@@ -27,6 +27,7 @@ Release v1.3.3
 	  - Error upon using the `woodaxe` choice in the forest location (which caused axe durability to be unchanged)
       - Many of the enemies did not give rewards when killed
 	  - The leaf disguise could not be crafted in the crafting hut
+	  - Total protection from armor and other items is now shown in player stats interface
 
 Release v1.3.2
   - Modmakers:

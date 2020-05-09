@@ -19,6 +19,7 @@
         "",
         "  weapon: <weapon>, strength: <str>",
         "  durability: <durability> / <maxDurability>, unbreakable: <currentWeaponUnbreakable>",
+        "  total protection: <totalProtection>%",
         "",
         "  level: <level>, exp: <experience> / <experienceNeeded>",
         "",
