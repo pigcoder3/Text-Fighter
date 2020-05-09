@@ -41,7 +41,7 @@
             "arguments" : ["5000"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "org.textfight.TextFighter",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
             "rewarditem" : "5000 Magic."
         }
 

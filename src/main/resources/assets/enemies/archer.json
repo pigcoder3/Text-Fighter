@@ -50,7 +50,7 @@
             "rewarditem" : "25 Experience"
         },
         {
-            "method" : "gaincoins",
+            "method" : "gainCoins",
             "class" : "com.seanjohnson.textfighter.Player",
             "arguments" : ["15"],
             "argumentTypes" : ["1"],

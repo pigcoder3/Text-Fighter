@@ -79,7 +79,7 @@
             "rewarditem" : "30 coins"
         },
         {
-            "method" : "increaseMagic",
+            "method" : "gainMagic",
             "class" : "com.seanjohnson.textfighter.Player",
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
