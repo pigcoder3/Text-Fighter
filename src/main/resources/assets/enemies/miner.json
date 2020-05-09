@@ -9,7 +9,7 @@
     "finalBoss" : "false",
     "postMethods" : [],
     "preMethods" : [],
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "addToInventory",
             "class" : "com.seanjohnson.textfighter.Player",

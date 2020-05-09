@@ -7,7 +7,7 @@
     "strength" : "15",
     "levelRequirement" : "1",
     "finalBoss" : "false",
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "addToInventory",
             "class" : "com.seanjohnson.textfighter.Player",

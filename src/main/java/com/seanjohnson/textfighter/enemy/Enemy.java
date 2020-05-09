@@ -293,7 +293,7 @@ public class Enemy implements Cloneable {
             if(customString != null) { TextFighter.addToOutput(customString); }
             TextFighter.addToOutput("Your enemy has been hurt for " + a + " hp.");
         } else {
-            TextFighter.addToOutput("You enemy cannot be hurt this turn!");
+            TextFighter.addToOutput("Your enemy cannot be hurt this turn!");
         }
     }
     /**
@@ -505,6 +505,7 @@ public class Enemy implements Cloneable {
         if(possibleRewardMethods != null) {
             for(Reward r : possibleRewardMethods) {
                 String output = r.invokeMethod();
+                System.out.println(output);
                 if(output != null) { rewardStrings.add(output); }
             }
         }
@@ -525,12 +526,15 @@ public class Enemy implements Cloneable {
      * <p>Adds valid rewardMethods to a new ArrayList that the {@link #possibleRewardMethods} is set to after.</p>
      */
     public void filterRewardMethods() {
+        System.out.println("Filtering rewards");
         //Filter out any rewards that do not meet the requirements
         possibleRewardMethods.clear();
         if(allRewardMethods != null){
+            System.out.println("There are some possible rewards");
             for(Reward r : allRewardMethods) {
                 boolean valid = true;
                 if(r.getRequirements() != null) {
+                    System.out.println("This reward has requirements");
                     for(Requirement rq : r.getRequirements()) {
                         if(!rq.invokeMethod()) {
                             valid = false;

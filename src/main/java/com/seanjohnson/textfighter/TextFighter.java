@@ -1713,7 +1713,7 @@ public class TextFighter {
                             loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class),
                             loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class),
                             loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class),
-                            loadMethods(Reward.class, (JSONArray)enemyFile.get("rewardMethods"), Enemy.class),
+                            loadMethods(Reward.class, (JSONArray)enemyFile.get("rewards"), Enemy.class),
                             enemyActions, enemyCustomVariables));
                 usedNames.add(name);
                 Display.changePackTabbing(false);

@@ -7,6 +7,7 @@ Release v1.3.3
 	- Removing a weapon from the player's inventory uneqipped the player's weapon
   - Modmakers:
     - Kills are now increased upon killing an enemy
+	- Rewards json array name changed from "rewardMethods" to "rewards"
   - Vanilla TextFighter:
     - Additions:
       - Added the shield tool
@@ -24,6 +25,7 @@ Release v1.3.3
       - Fixed various guide and game text typos
       - Reduced coin and experience reward of most enemies
 	  - Error upon using the `woodaxe` choice in the forest location (which caused axe durability to be unchanged)
+      - Many of the enemies did not give rewards when killed
 
 Release v1.3.2
   - Modmakers:

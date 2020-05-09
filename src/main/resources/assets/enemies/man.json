@@ -8,7 +8,7 @@
     "requirements" : [],
     "finalBoss" : "false",
     "postMethods" : [],
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "gainCoins",
             "class" : "com.seanjohnson.textfighter.Player",
