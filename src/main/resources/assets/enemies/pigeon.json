@@ -5,7 +5,7 @@
     "maxhealth" : "20",
     "strength" : "10",
     "levelRequirement" : "2",
-    "rewardsMethods" : [
+    "rewards" : [
         {
             "method" : "increaseExperience",
             "class" : "com.seanjohnson.textfighter.Player",
