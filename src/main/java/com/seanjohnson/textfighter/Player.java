@@ -1117,10 +1117,9 @@ public class Player {
     public void removeFromInventory(String name, String type) {
         for(int i=0;i<inventory.size();i++) {
             if(name.equals(inventory.get(i).getName()) && type.equals(inventory.get(i).getItemType())) {
-                if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
+                if(name.equals(currentWeapon)) { setCurrentWeapon(null); }
 				inventory.remove(i);
 				TextFighter.addToOutput("'" + name + "' has been removed from your inventory");
-                setCurrentWeapon("fists");
                 return;
             }
         }
