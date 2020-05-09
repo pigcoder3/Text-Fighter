@@ -10,6 +10,27 @@
 
     ],
 
+    "premethods" : [
+        {
+            "method" : "increaseTurnsWithInvincibilityLeft",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["1"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["leafdisguise", "specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                }
+            ]
+        }
+    ],
+
     "choices" : [
 
         {

@@ -1711,8 +1711,8 @@ public class TextFighter {
                 //Add the enemy to the enemies arraylist
                 enemies.add(new Enemy(name, description, health, strength, levelRequirement, finalBoss,
                             loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class),
-                            loadMethods(TFMethod.class, (JSONArray)enemyFile.get("preMethods"), Enemy.class),
-                            loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postMethods"), Enemy.class),
+                            loadMethods(TFMethod.class, (JSONArray)enemyFile.get("premethods"), Enemy.class),
+                            loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postmethods"), Enemy.class),
                             loadMethods(Reward.class, (JSONArray)enemyFile.get("rewards"), Enemy.class),
                             enemyActions, enemyCustomVariables));
                 usedNames.add(name);

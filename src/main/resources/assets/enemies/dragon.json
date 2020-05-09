@@ -7,7 +7,7 @@
     "strength" : "50",
     "levelRequirement" : "10",
     "finalBoss" : "true",
-    "preMethods" : [
+    "premethods" : [
         {
             "method" : "addToOutput",
             "class" : "com.seanjohnson.textfighter.TextFighter",
