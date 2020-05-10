@@ -117,6 +117,11 @@ public class Player {
      */
     public static double defaultTotalProtection = 0;
     /**
+     * Default maximum protection.
+     * <p>Set to 75.</p>
+     */
+    public static double defaultMaxProtection = 75;
+    /**
      * Default strength potion multiplier
      * <p>Set to 2.</p>
      */
@@ -140,9 +145,15 @@ public class Player {
 
     /**
      * Stores the total protection.
-     * <p>Set to {@link #totalProtection} and can only go up to 75% protection.</p>
+     * <p>Set to {@link #defaultTotalProtection} and can only go up to 75% protection default.</p>
      */
     private double totalProtection = defaultTotalProtection;
+
+    /**
+     * Stores the maximum protection percent the player can have.
+     * <p>Set to {@link #defaultMaxProtection}.</p>
+     */
+    private double maxProtection = defaultMaxProtection;
 
     /**
      * Stores the equipped weapon.
@@ -544,7 +555,7 @@ public class Player {
      * Gets the {@link #totalProtection}.
      * @return      {@link #totalProtection}
      */
-    public double getTotalProtection() { return totalProtection+1; } //Increase by one here because that is what happens in the damaged method
+    public double getTotalProtection() { return totalProtection; } //Increase by one here because that is what happens in the damaged method
     /***
      * Calculates the total protection and sets {@link #totalProtection} to the new amount (Can only go up to 75%).
      * @return      the total protection from the {@link #defaultTotalProtection} + the protection gained from the armors up to 75%
@@ -554,8 +565,8 @@ public class Player {
         for(Item i : inventory) {
             if(i instanceof Armor) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
-		// I use 74 (not 75) because I increase the total protection in the damaged method so that it doesn't divide by 0
-        if(totalProtection > 74) { totalProtection = 74; }
+		// I use 75 (not 75) because I increase the total protection in the damaged method so that it doesn't divide by 0
+        if(totalProtection > maxProtection) { totalProtection = maxProtection; }
         return totalProtection;
     }
 
@@ -894,7 +905,12 @@ public class Player {
     public void damaged(int a, String customString) {
         if(turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
         calculateTotalProtection();
-        hp = hp - (int)Math.round(a/(totalProtection+1)); //total protection Increased by 1 here so that the game doesn't divide by 0
+        int damageTaken = a;
+        if(totalProtection >= 1) { //We dont want to divide by 0
+            damageTaken = (int) Math.round((double)a * (1.0 - (totalProtection / 100.0)));
+        }
+        hp = hp - damageTaken;
+
 		if(hp < 0) { hp = 0; }
 		if(hp > maxhp) { hp = maxhp; }
 
@@ -905,7 +921,7 @@ public class Player {
         }
 
         if(customString != null) { TextFighter.addToOutput(customString);}
-        TextFighter.addToOutput("You have been hurt for " + a + " hp.");
+        TextFighter.addToOutput("You have been hurt for " + damageTaken + " hp.");
     }
     /**
      * Increases the value of {@link #hp} by the value given.

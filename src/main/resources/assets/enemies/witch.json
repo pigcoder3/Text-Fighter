@@ -33,7 +33,7 @@
             "method" : "setCustomVariableByName",
             "class" : "com.seanjohnson.textfighter.Player",
             "arguments" : [
-                "bottle",
+                "bottles",
                 {
                     "method" : "calculateFromTwoIntegers",
                     "class" : "com.seanjohnson.textfighter.PackMethods",
@@ -41,7 +41,7 @@
                         {
                             "method" : "getCustomVariableFromName",
                             "class" : "com.seanjohnson.textfighter.Player",
-                            "arguments" : ["bottle"],
+                            "arguments" : ["bottles"],
                             "argumentTypes" : ["0"],
                             "field" : "player",
                             "fieldclass" : "com.seanjohnson.textfighter.TextFighter"

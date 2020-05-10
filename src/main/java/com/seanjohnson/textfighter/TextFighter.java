@@ -2417,14 +2417,17 @@ public class TextFighter {
                     if (valuesFile.get("metalscraps") != null) {
                         Player.defaultMetalscraps = Integer.parseInt((String) valuesFile.get("metalscraps"));
                     }
-                    if (valuesFile.get("strength") != null) {
-                        Player.defaultStrength = Integer.parseInt((String) valuesFile.get("strength"));
-                    }
                     if (valuesFile.get("health") != null) {
                         Player.defaulthp = Integer.parseInt((String) valuesFile.get("health"));
                     }
                     if (valuesFile.get("maxhp") != null) {
                         Player.defaultMaxhp = Integer.parseInt((String) valuesFile.get("maxhp"));
+                    }
+                    if (valuesFile.get("totalProtection") != null) {
+                        Player.defaultTotalProtection = Integer.parseInt((String) valuesFile.get("defaultTotalProtection"));
+                    }
+                    if (valuesFile.get("maxProtection") != null) {
+                        Player.defaultMaxProtection = Integer.parseInt((String) valuesFile.get("defaultMaxProtection"));
                     }
                     if (valuesFile.get("healthPotions") != null) {
                         Player.defaultHealthPotions = Integer.parseInt((String) valuesFile.get("healthPotions"));
@@ -2505,19 +2508,6 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            /*
-            if(true) {
-                Display.displayPackMessage("Loading item values");
-                Display.changePackTabbing(true);
-                try {
-                    String jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/item.json");
-                    JSONObject valuesFile = (JSONObject)parser.parse(jsonString);
-                    //Item values
-                    if(valuesFile.get("name") != null) {                        Item.defaultName = (String)valuesFile.get("name"); }
-                    if(valuesFile.get("description") != null) {                 Item.defaultDescription = (String)valuesFile.get("description"); }
-                    Display.changePackTabbing(false);
-                } catch (ParseException e) { Display.changePackTabbing(false); }
-            }*/
             if (true) {
                 Display.displayPackMessage("Loading weapon values");
                 Display.changePackTabbing(true);
