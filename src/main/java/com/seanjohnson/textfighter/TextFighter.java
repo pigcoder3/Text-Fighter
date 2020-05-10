@@ -77,7 +77,7 @@ public class TextFighter {
     public static final Object waiter = new Object();
 
     /**The default installation location on Windows10/8/7*/
-    public static File windowsInstallLocation = new File(System.getenv("APPDATA"));
+    public static File windowsInstallLocation; //we cannot run System.getenv("APPDATA") on OSes other than windows
 
     /**The default installation location on Windows10/8/7*/
     public static File macInstallLocation = new File(System.getProperty("user.home") + "/Library/Application support/");
@@ -110,7 +110,7 @@ public class TextFighter {
 
         //Get the place the game will be installed (depends on OS)
         if(operatingSystem.contains("Windows")) { //Windows
-            installationLocation = windowsInstallLocation;
+            installationLocation = new File(System.getenv("APPDATA"));
         } else if (operatingSystem.contains("Mac") || operatingSystem.contains("OS X")) { //Macos
             installationLocation = macInstallLocation;
         } else { //Other (including linux)
@@ -122,7 +122,7 @@ public class TextFighter {
         if(installationLocation.exists()) {
             //Copy files and create directories there
             installationRoot = new File(installationLocation.getAbsolutePath() + File.separator + appInstallDirName);
-            if(!windowsOrMac) { installationRoot = new File(installationLocation.getAbsolutePath() + File.separator + "." + appInstallDirName); } //Make it a dotfile instead
+            if(!windowsOrMac) { installationRoot = new File(installationLocation.getAbsolutePath() + File.separator + "." + appInstallDirName); } //Make it a dotfile instead cuz linux or something
 
             if(!installationRoot.exists()) {
                 Display.displayProgressMessage("Installing TextFighter");
