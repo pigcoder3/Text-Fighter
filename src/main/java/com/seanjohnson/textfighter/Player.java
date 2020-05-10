@@ -1220,7 +1220,7 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int deaths, int kills, Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(int deaths, int kills, Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, int turnsWithStrengthLeft, int turnsWithInvincibilityLeft, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
         this.location = location;
         this.deaths = deaths;
         this.kills = kills;
@@ -1236,6 +1236,8 @@ public class Player {
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
         this.invincibilityPotions = invincibilityPotions;
+        this.turnsWithStrengthLeft = turnsWithStrengthLeft;
+        this.turnsWithInvincibilityLeft = turnsWithInvincibilityLeft;
         this.currentWeapon = currentWeapon;
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;

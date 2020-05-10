@@ -36,7 +36,6 @@ import java.util.jar.JarFile;
 
 import com.seanjohnson.textfighter.display.*;
 import com.seanjohnson.textfighter.item.*;
-import com.seanjohnson.textfighter.*;
 import com.seanjohnson.textfighter.location.*;
 import com.seanjohnson.textfighter.enemy.*;
 import com.seanjohnson.textfighter.method.*;
@@ -44,10 +43,6 @@ import com.seanjohnson.textfighter.method.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.Text;
-
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /* HOW IT WORKS
 
@@ -76,18 +71,13 @@ the user is notified and the usage of the choices is outputted.
 
 @SuppressWarnings("unchecked")
 
-/**
- * @author      Sean Johnson <smjohns1@gmail.com>
- * @version     0.2.5
- */
-
 public class TextFighter {
 
     /**Object that waits for a message*/
-    public static Object waiter = new Object();
+    public static final Object waiter = new Object();
 
     /**The default installation location on Windows10/8/7*/
-    public static File windowsInstallLocation;
+    public static File windowsInstallLocation = new File(System.getenv("APPDATA"));
 
     /**The default installation location on Windows10/8/7*/
     public static File macInstallLocation = new File(System.getProperty("user.home") + "/Library/Application support/");
@@ -114,13 +104,13 @@ public class TextFighter {
 
         String operatingSystem = System.getProperty("os.name");
 
-        File installationLocation = new File("");
+        File installationLocation;
 
         boolean windowsOrMac = true;
 
         //Get the place the game will be installed (depends on OS)
         if(operatingSystem.contains("Windows")) { //Windows
-            installationLocation = new File(System.getenv("APPDATA"));
+            installationLocation = windowsInstallLocation;
         } else if (operatingSystem.contains("Mac") || operatingSystem.contains("OS X")) { //Macos
             installationLocation = macInstallLocation;
         } else { //Other (including linux)
@@ -137,13 +127,13 @@ public class TextFighter {
             if(!installationRoot.exists()) {
                 Display.displayProgressMessage("Installing TextFighter");
                 Display.displayProgressMessage("Creating Directory: " + installationRoot.getAbsolutePath());
-                installationRoot.mkdir(); //NOTE: Do NOT create parent directories if they were deleted just after the check. Just let the installation fail.
+                if(!installationRoot.mkdir()) { return false; } //NOTE: Do NOT create parent directories if they were deleted just after the check. Just let the installation fail.
             }
 
             boolean updatedSinceLastLaunch = false;
 
             //Version File
-            installationVersionFile = new File(installationRoot.getAbsoluteFile() + File.separator + "VERSION.txt");
+            installationVersionFile = new File(installationRoot.getAbsoluteFile() + File.separator + versionFile);
             if(!installationVersionFile.exists() || !version.equalsIgnoreCase(readVersionFromInstallationLocation())) { //We will need to copy the guide and the newest version over
                 updatedSinceLastLaunch = true;
                 copyFileFromJar(new File("/VERSION.txt"), installationVersionFile);
@@ -153,41 +143,41 @@ public class TextFighter {
             savesDir = new File(installationRoot.getAbsolutePath() + File.separator + "saves");
             if(!savesDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + savesDir.getAbsolutePath());
-                savesDir.mkdirs();
+                if(!savesDir.mkdirs()) { return false; }
             }
 
             //Packs
             packDir = new File(installationRoot.getAbsolutePath() + File.separator + "packs");
             if(!packDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + packDir.getAbsolutePath());
-                packDir.mkdirs();
+                if(!packDir.mkdirs()) { return false; }
             }
 
             //Config
             configDir = new File(installationRoot.getAbsolutePath() + File.separator + "config");
             if(!configDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + configDir.getAbsolutePath());
-                configDir.mkdirs();
+                if(!configDir.mkdirs()) { return false; }
             }
 
                 //I hate it when people do this, but it feels a little more organized this way.
                 packFile = new File(configDir.getAbsolutePath() + File.separator + "pack.txt");
                 if(!packFile.exists()) {
                     Display.displayProgressMessage("Creating File: " + packFile.getAbsolutePath());
-                    try { packFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the modpack configuration file."); }
+                    try { if(!packFile.createNewFile()) { return false; } } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the modpack configuration file."); }
                 }
 
                 File displayFile = new File(configDir.getAbsolutePath() + File.separator + "display.txt");
                 if(!displayFile.exists()) {
                     Display.displayProgressMessage("Creating File: " + displayFile.getAbsolutePath());
-                    try { displayFile.createNewFile(); } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the display colors configuration file."); }
+                    try { if(!displayFile.createNewFile()) { return false; } } catch (IOException e) { e.printStackTrace(); Display.displayWarning("Unable to create the display colors configuration file."); }
                 }
 
             //logging
             Display.logDir = new File(installationRoot.getAbsolutePath() + File.separator + "logs");
             if(!Display.logDir.exists()) {
                 Display.displayProgressMessage("Creating Directory: " + Display.logDir.getAbsolutePath());
-                Display.logDir.mkdirs();
+                if(!Display.logDir.mkdirs()) { return false; }
             }
 
             //The vanilla guide
@@ -307,44 +297,44 @@ public class TextFighter {
 
     //All things in the game
     /**All locations are stored here*/
-    public static ArrayList<Location> locations = new ArrayList<Location>();
+    public static ArrayList<Location> locations = new ArrayList<>();
     /**All save names are stored here*/
-    public static ArrayList<String> saves = new ArrayList<String>();
+    public static ArrayList<String> saves = new ArrayList<>();
     /**All enemies are stored here*/
-    public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    public static ArrayList<Enemy> enemies = new ArrayList<>();
     /**All possible enemies are stored here*/
-    public static ArrayList<Enemy> possibleEnemies = new ArrayList<Enemy>();
+    public static ArrayList<Enemy> possibleEnemies = new ArrayList<>();
     /**All achievements are stored here*/
-    public static ArrayList<Achievement> achievements = new ArrayList<Achievement>();
+    public static ArrayList<Achievement> achievements = new ArrayList<>();
     /**All armors are stored here*/
-    public static ArrayList<Armor> armors = new ArrayList<Armor>();
+    public static ArrayList<Armor> armors = new ArrayList<>();
     /**All weapons are stored here*/
-    public static ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+    public static ArrayList<Weapon> weapons = new ArrayList<>();
     /**All specialitems are stored here*/
-    public static ArrayList<SpecialItem> specialItems = new ArrayList<SpecialItem>();
+    public static ArrayList<SpecialItem> specialItems = new ArrayList<>();
     /**All tools are stored here*/
-    public static ArrayList<Tool> tools = new ArrayList<Tool>();
+    public static ArrayList<Tool> tools = new ArrayList<>();
 
     //All custom variable arrays
     /**All player custom variables are copied from here to the new instance*/
-    public static ArrayList<CustomVariable> playerCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> playerCustomVariables = new ArrayList<>();
     /**All enemy custom variables are copied from here to the new instance*/
-    public static ArrayList<CustomVariable> enemyCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> enemyCustomVariables = new ArrayList<>();
     /**All tool custom variables are copied from here to the new instance*/
-    public static ArrayList<CustomVariable> toolCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> toolCustomVariables = new ArrayList<>();
     /**All armor custom variables are copied from here to the new instance*/
-    public static ArrayList<CustomVariable> armorCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> armorCustomVariables = new ArrayList<>();
     /**All weapon custom variables are copied from here to the new instance*/
-    public static ArrayList<CustomVariable> weaponCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> weaponCustomVariables = new ArrayList<>();
     /**All special item custom variables are copied from here to the new instance*/
-    public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<CustomVariable>();
+    public static ArrayList<CustomVariable> specialitemCustomVariables = new ArrayList<>();
 
     /**All the death methods are copied from here to the new instance of player*/
-    public static ArrayList<IDMethod> deathMethods = new ArrayList<IDMethod>();
+    public static ArrayList<IDMethod> deathMethods = new ArrayList<>();
     /**All the level up methods are copied from here to the new instance of player*/
-    public static ArrayList<IDMethod> levelupMethods = new ArrayList<IDMethod>();
+    public static ArrayList<IDMethod> levelupMethods = new ArrayList<>();
     /**All the choices of all locations are copied from here to the loaded location*/
-    public static ArrayList<ChoiceOfAllLocations> choicesOfAllLocations = new ArrayList<ChoiceOfAllLocations>();
+    public static ArrayList<ChoiceOfAllLocations> choicesOfAllLocations = new ArrayList<>();
 
     /**The recent input commands saved. This is only used in the gui.*/
     public static HistoryLinkedList<String> inputHistory = new HistoryLinkedList<>();
@@ -404,11 +394,11 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
-                        destDir.mkdirs(); //Will fail silently if it already exists
+                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
-                            File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
+                            File guideFile = new File("/guide/locations/" + s);
                             copyFileFromJar(guideFile, destFile);
                         } //else: it already exists, so dont touch it
                     }
@@ -435,7 +425,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -458,7 +448,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -481,7 +471,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -504,7 +494,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -529,7 +519,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
-                        destDir.mkdirs(); //Will fail silently if it already exists
+                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -552,7 +542,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
-                        destDir.mkdirs(); //Will fail silently if it already exists
+                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -599,11 +589,11 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
-                        destDir.mkdirs(); //Will fail silently if it already exists
+                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
-                            File guideFile = new File("/guide/locations/" + s); //TODO: Figure out how to determine if this exists
+                            File guideFile = new File("/guide/locations/" + s);
                             copyFileFromJar(guideFile, destFile);
                         } //else: it already exists, so dont touch it
                     }
@@ -630,7 +620,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -653,7 +643,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -676,7 +666,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -699,7 +689,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
-                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
+                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -724,7 +714,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
-                        destDir.mkdirs(); //Will fail silently if it already exists
+                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -747,7 +737,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
-                        destDir.mkdirs(); //Will fail silently if it already exists
+                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -816,8 +806,9 @@ public class TextFighter {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -825,10 +816,10 @@ public class TextFighter {
      * @param directory      The directory to clear
      */
     public static void clearDirectory(File directory) {
-        if(!directory.exists()) { return; } //I gave a completely invalid directory
-        for(String f : directory.list()) {
+        if(directory == null || !directory.exists()) { return; } //I gave a completely invalid directory
+        for (String f : Objects.requireNonNull(directory.list())) {
             File file = new File(directory.getAbsolutePath() + File.separatorChar + f);
-            if(file.exists() && file.isDirectory()) {
+            if (file.exists() && file.isDirectory()) {
                 clearDirectory(file);
                 directory.delete();
             } else if (file.exists()) {
@@ -841,23 +832,20 @@ public class TextFighter {
      * Copies the file given from the jar to an external directory.
      * @param fileInJar         The file to copy out of the jar.
      * @param dest              The destination for the copied file.
-     * @return                  Whether or not successful
      */
-    public static boolean copyFileFromJar(File fileInJar, File dest) {
+    public static void copyFileFromJar(File fileInJar, File dest) {
 
         fileInJar = new File(fileInJar.getPath().replace(".json", ".txt"));
         dest = new File(dest.getPath().replace(".json",""));
         Display.displayProgressMessage("Copying File: " + fileInJar + " to " + dest);
         try {
-            new File(dest.getParent()).mkdirs();
+            if(!new File(dest.getParent()).mkdirs()) { return; }
             InputStream stream = TextFighter.class.getResourceAsStream(fileInJar.getPath()); //Note the forward-slash
             Files.copy(stream, Paths.get(dest.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             stream.close();
         } catch(IOException | NullPointerException e) {
             Display.displayError("Unable to copy file " + fileInJar + " to " + dest);
-            return false;
         }
-        return true;
     }
 
     /**
@@ -962,7 +950,7 @@ public class TextFighter {
                     while (entries.hasMoreElements()) {
                         String name = entries.nextElement().getName();
                         if (name.startsWith(path.substring(1) + "/") && name.endsWith(".json")) { //filter according to the path and json file
-                            String json = "";
+                            String json;
                             InputStream stream = TextFighter.class.getResourceAsStream("/" + name); //Note the forward-slash
                             if (stream == null) {
                                 continue;
@@ -987,12 +975,12 @@ public class TextFighter {
             File dir = new File("target" + File.separator  + "classes" + File.separator + path);
             if(!dir.exists() && !dir.isDirectory()) {
                 Display.displayError("Directory given does not exist (not loading from jar)");
-                return new ArrayList<String>(Arrays.asList(new String[]{"{}"}));
+                return new ArrayList<>(Collections.singletonList("{}"));
             }
             try {
-                for(String name : dir.list()) {
+                for(String name : Objects.requireNonNull(dir.list())) {
                     String filename = dir.getAbsolutePath() + File.separator + name;
-                    String json = "";
+                    String json;
                     File file = new File(filename);
                     Scanner scan = new Scanner(file).useDelimiter("\\Z");
                     try {
@@ -1016,22 +1004,16 @@ public class TextFighter {
      * @param path  The path to the file within the jar.
      */
     public static String getSingleJsonFileAsString(String path) {
-        String jsonString = "{}";
+        String jsonString;
         if(runFromJar) {
             InputStream stream = TextFighter.class.getResourceAsStream(path);
             if (stream == null) {
                 return "{}";
             }
-            Scanner scan = new Scanner(stream).useDelimiter("\\Z");
-            try {
+            try (Scanner scan = new Scanner(stream).useDelimiter("\\Z")){
                 jsonString = scan.next();
-            } catch (NoSuchElementException e) {
-            } //I know this is bad
-            scan.close();
-            try {
-                stream.close();
-            } catch (IOException e) {
-            }
+            } catch (NoSuchElementException e) {jsonString = " { }"; } //I know this is bad
+
             if (jsonString.isEmpty()) {
                 return "{}";
             }
@@ -1103,8 +1085,7 @@ public class TextFighter {
         //loads the content
         //If any of the necessary content fails to load, send an error and exit the game
         Display.displayProgressMessage("Loading the assets...");
-        if (!loadDefaultValues() || !loadCustomVariables() || !loadDeathMethods() || !loadLevelUpMethods() || !loadItems() || !loadParsingTags() || !loadInterfaces() || !loadChoicesOfAllLocations() || !loadLocations() || !loadEnemies() || !loadAchievements()) { return false; }
-        return true;
+        return loadDefaultValues() && loadCustomVariables() && loadDeathMethods() && loadLevelUpMethods() && loadItems() && loadParsingTags() && loadInterfaces() && loadChoicesOfAllLocations() && loadLocations() && loadEnemies() && loadAchievements();
     }
 
     /**
@@ -1118,9 +1099,9 @@ public class TextFighter {
     public static Object loadMethod(Class type, JSONObject obj, Class parentType) {
         ArrayList<Object> argumentsRaw = (JSONArray)obj.get("arguments");
         ArrayList<String> argumentTypesString = (JSONArray)obj.get("argumentTypes");
-        ArrayList<Class> argumentTypes = new ArrayList<Class>();
-        ArrayList<Class> parameterArgumentTypes = new ArrayList<Class>(); //Used for getting methods that need Object as a parameter type
-        if(type.equals(UiTag.class) && obj.get("tag") != null) { Display.displayPackMessage("Loading tag '" + (String)obj.get("tag") + "'"); }
+        ArrayList<Class> argumentTypes = new ArrayList<>();
+        ArrayList<Class> parameterArgumentTypes = new ArrayList<>(); //Used for getting methods that need Object as a parameter type
+        if(type.equals(UiTag.class) && obj.get("tag") != null) { Display.displayPackMessage("Loading tag '" + obj.get("tag") + "'"); }
         String methodString = (String)obj.get("method");
         Display.displayPackMessage("Loading method '" + methodString + "' of type '" + type.getSimpleName() + "'");
         Display.changePackTabbing(true);
@@ -1140,13 +1121,13 @@ public class TextFighter {
             //0 is String, 1 is int, 2 is double, 3 is boolean, 4 is class
             for (int g=0; g<argumentTypesString.size(); g++) {
                 String argType = argumentTypesString.get(g);
-                if(argType == null) { Display.displayPackError("This methods has a null value for an argument. Omitting..."); }
+                if(argType == null) { Display.displayPackError("This methods has an empty value for an argument. Omitting..."); Display.changePackTabbing(false); return null; }
                 // Check to see if the method recieving these arguments wants an Object
                 boolean isObject = false;
-                if(argType.length() > 1 && argType.substring(0,1).equals("*")) {
+                if(argType.length() > 1 && argType.startsWith("*")) {
                     parameterArgumentTypes.add(Object.class);
                     isObject = true;
-                    argumentTypesString.set(g, argType.substring(1, argType.length()));
+                    argumentTypesString.set(g, argType.substring(1));
                 }
                 int num = Integer.parseInt(argumentTypesString.get(g));
                 if(num == 0) {
@@ -1167,13 +1148,12 @@ public class TextFighter {
                 } else {
                     Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                     Display.changePackTabbing(false);
-                    continue;
                 }
             }
         }
 
         //Gets the class
-        Class clazz = null;
+        Class clazz;
         try {
             clazz = Class.forName(rawClass);
             if(rawField instanceof FieldMethod) {
@@ -1183,40 +1163,34 @@ public class TextFighter {
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e){ Display.displayPackError("This method has an invalid class. Make sure the class is not private. Omitting..."); Display.changePackTabbing(false); return null; }
 
-        Class fieldclass = null;
+        Class fieldclass;
         Object field = null;
 
         //If the field is not a method, and no fieldclass is given, then omit the method
-        if(rawField != null && rawField instanceof String && rawFieldClass == null) {
+        if(rawField instanceof String && rawFieldClass == null) {
             Display.displayPackError("This method has a non-method field, but no fieldclass. Omitting..."); Display.changePackTabbing(false); return null;
         }
 
-        if(rawField != null && rawField instanceof String) {
+        if(rawField instanceof String) {
             //Gets the fieldclass
-            if(rawFieldClass != null && rawField != null) { try { fieldclass = Class.forName((String)rawFieldClass); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); Display.changePackTabbing(false); return null; } }
+            try { fieldclass = Class.forName(rawFieldClass); } catch (ClassNotFoundException e){ Display.displayPackError("This method has an invalid fieldclass. Omitting..."); Display.changePackTabbing(false); return null; }
             //Gets the field from the class
             try {
-                if(rawField != null && rawFieldClass != null) {
-                    field = fieldclass.getField((String)rawField);
-                    if(!((Field)field).getType().equals(clazz)) { Display.displayPackError("This method's field is not an instance of the class given in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null; }
-                }
+                field = fieldclass.getField((String)rawField);
+                if(!((Field)field).getType().equals(clazz)) { Display.displayPackError("This method's field is not an instance of the class given in the 'class' key. Omitting..."); Display.changePackTabbing(false); return null; }
             } catch (NoSuchFieldException | SecurityException e) { Display.displayPackError("This method has an invalid field. Make sure the field is not private. Omitting..."); Display.changePackTabbing(false); return null; }
         } else if (rawField != null){
             field = rawField;
         }
 
         //Gets the method from the class
-        Method method = null;
+        Method method;
         try {
-            if(argumentTypes != null ) {
-                method = clazz.getMethod(methodString, parameterArgumentTypes.toArray(new Class[parameterArgumentTypes.size()]));
-            } else {
-                method = clazz.getMethod(methodString);
-            }
+            method = clazz.getMethod(methodString, parameterArgumentTypes.toArray(new Class[0])); //parameterArgumentTypes.size()
         } catch (NoSuchMethodException e){ Display.displayPackError("Method '" + methodString + "' of class '" + rawClass + "' with given arguments could not be found. Make sure the method is not private. Omitting..."); Display.changePackTabbing(false); return null; }
 
         //Makes the arguments the correct type (String, int, or boolean)
-        ArrayList<Object> arguments = new ArrayList<Object>();
+        ArrayList<Object> arguments = new ArrayList<>();
         if(argumentsRaw != null) {
             //Cast all of the arguments to the correct type
             for (int p=0; p<argumentTypes.size(); p++) {
@@ -1224,12 +1198,12 @@ public class TextFighter {
 					arguments.add(loadMethod(TFMethod.class, (JSONObject)argumentsRaw.get(p), type));
                 } else {
                     //The syntax for using a null value is "%null%"
-                    if(((String)argumentsRaw.get(p)).equals("%null%")) { arguments.add(null); }
+                    if((argumentsRaw.get(p)).equals("%null%")) { arguments.add(null); }
                     if(((String)argumentsRaw.get(p)).contains("%ph%")) { arguments.add(argumentsRaw.get(p)); }
                     else if(argumentTypes.get(p).equals(int.class)) {
                         arguments.add(Integer.parseInt((String)argumentsRaw.get(p)));
                     } else if (argumentTypes.get(p).equals(String.class)) {
-                        arguments.add((String)argumentsRaw.get(p));
+                        arguments.add(argumentsRaw.get(p));
                     } else if(argumentTypes.get(p).equals(double.class)) {
                         arguments.add(Double.parseDouble((String)argumentsRaw.get(p)));
                     } else if (argumentTypes.get(p).equals(boolean.class)) {
@@ -1239,7 +1213,6 @@ public class TextFighter {
                     } else {
                         Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
                         Display.changePackTabbing(false);
-                        continue;
                     }
                 }
             }
@@ -1260,7 +1233,7 @@ public class TextFighter {
             o=new TFMethod(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), TFMethod.class));
         } else if(type.equals(Reward.class)) {
             if(parentType.equals(Enemy.class)) {
-                int chance = Reward.defaultChance; if((String)obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
+                int chance = Reward.defaultChance; if(obj.get("chance") != null){chance=Integer.parseInt((String)obj.get("chance"));}
                 if(chance == 0) { Display.displayPackError("This reward has no chance. Omitting..."); return null; }
                 o=new Reward(method, arguments, argumentTypes, field, loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Enemy.class), chance, (String)obj.get("rewarditem"));
             } else {
@@ -1288,12 +1261,14 @@ public class TextFighter {
      * @return              An ArrayList of the type of methods loaded.
     */
     public static ArrayList loadMethods(Class type, JSONArray methodArray, Class parentType) {
-        ArrayList<Object> methods = new ArrayList<Object>();
+        ArrayList<Object> methods = new ArrayList<>();
         if((methodArray != null && methodArray.size() > 0)) {
-            for(int i=0; i<methodArray.size(); i++) {
-                JSONObject o = (JSONObject)methodArray.get(i);
+            for (Object value : methodArray) {
+                JSONObject o = (JSONObject) value;
                 Object method = loadMethod(type, o, parentType);
-                if(method != null) { methods.add(method); }
+                if (method != null) {
+                    methods.add(method);
+                }
             }
             return methods;
         } else { return null; }
@@ -1307,7 +1282,7 @@ public class TextFighter {
      */
     public static File getPackDirectory(String directoryName, File parent) {
         if(parent != null && parent.exists() && parent.isDirectory()) {
-            for(String s : parent.list()) {
+            for(String s : Objects.requireNonNull(parent.list())) {
                 if(s.equals(directoryName)) {
                     File pack = new File(parent.getPath() + File.separator + directoryName);
                     if(pack.isDirectory()) {
@@ -1328,7 +1303,7 @@ public class TextFighter {
      */
     public static File getPackFile(String fileName, File parent) {
         if(parent != null && parent.exists() && parent.isDirectory()) {
-            for(String s : parent.list()) {
+            for(String s : Objects.requireNonNull(parent.list())) {
                 if(s.equals(fileName)) {
                     File pack = new File(parent.getPath() + File.separator + fileName);
                     if(pack.isFile()) {
@@ -1347,7 +1322,7 @@ public class TextFighter {
      * @return              all names listed in the omit.txt file of the pack directory given.
      */
     public static ArrayList<String> getOmittedAssets(File file) {
-        ArrayList<String> omittedAssets = new ArrayList<String>();
+        ArrayList<String> omittedAssets = new ArrayList<>();
         if(!file.exists()) { return omittedAssets; }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -1373,7 +1348,7 @@ public class TextFighter {
             Display.changePackTabbing(false);
             return false;
         }*/
-        ArrayList<String> usedNames = new ArrayList<String>(); // Used to override default interfaces with ones in packs
+        ArrayList<String> usedNames = new ArrayList<>(); // Used to override default interfaces with ones in packs
         File directory = interfaceDir;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -1395,12 +1370,13 @@ public class TextFighter {
                 jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                jsonStrings = new ArrayList<String>();
-                for (String s : directory.list()) {
+                jsonStrings = new ArrayList<>();
+                for (String s : Objects.requireNonNull(directory.list())) {
                     try {
-                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
-                        try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
-                        scan.close();
+
+                        try (Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z")) {
+                            jsonStrings.add(scan.next());
+                        } catch(NoSuchElementException ignored) { } //I know this is bad
                     } catch (IOException | NullPointerException e) {
                         e.printStackTrace();
                         Display.displayError("Error while reading file '" + s + "' from modpack.");
@@ -1410,7 +1386,7 @@ public class TextFighter {
 
             for (String f : jsonStrings) {
                 //Load the values from the file. If any value is null (That is required), then omit the interface
-                JSONObject interfaceFile = null;
+                JSONObject interfaceFile;
                 try {
                     interfaceFile = (JSONObject) parser.parse(f);
                 } catch (ParseException e) {
@@ -1437,14 +1413,14 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                     continue;
                 }
-                String uiString = "";
+                StringBuilder uiString = new StringBuilder();
                 for (int i = 0; i < interfaceArray.size(); i++) {
-                    uiString += interfaceArray.get(i);
+                    uiString.append(interfaceArray.get(i));
                     if(i != interfaceArray.size()-1) {
-                        uiString += "\n";
+                        uiString.append("\n");
                     }
                 }
-                Display.interfaces.add(new UserInterface(name, uiString));
+                Display.interfaces.add(new UserInterface(name, uiString.toString()));
                 usedNames.add(name);
                 Display.changePackTabbing(false);
             }
@@ -1482,7 +1458,7 @@ public class TextFighter {
         Display.displayProgressMessage("Loading the locations...");
         Display.changePackTabbing(true);
         //if(!locationDir.exists()) { Display.displayError("Could not find the default locations directory."); Display.changePackTabbing(false); return false;}
-        ArrayList<String> usedNames = new ArrayList<String>();
+        ArrayList<String> usedNames = new ArrayList<>();
         File directory = locationDir;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -1503,13 +1479,12 @@ public class TextFighter {
                 jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                jsonStrings = new ArrayList<String>();
-                for (String s : directory.list()) {
+                jsonStrings = new ArrayList<>();
+                for (String s : Objects.requireNonNull(directory.list())) {
                     if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
-                    try {
-                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
-                        try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
-                        scan.close();
+                    try (Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z")) {
+                        jsonStrings.add(scan.next());
+                    } catch(NoSuchElementException e) {
                     } catch (IOException | NullPointerException e) {
                         e.printStackTrace();
                         Display.displayError("Error while reading file '" + s + "' from modpack.");
@@ -1530,24 +1505,26 @@ public class TextFighter {
                 Display.changePackTabbing(true);
                 if(name == null) { Display.displayPackError("This location does not have a name. Omitting..."); Display.changePackTabbing(false); continue; }
                 if(interfaceJArray == null) { Display.displayPackError("Location '" + name + "' does not have any interfaces. Omitting..."); Display.changePackTabbing(false); continue; }
-                ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+                ArrayList<UserInterface> interfaces = new ArrayList<>();
                 boolean hasChoiceInterface = false;
-                for(int i=0; i<interfaceJArray.size(); i++) {
-                    String interfaceName = (String)interfaceJArray.get(i);
+                for (Object o : interfaceJArray) {
+                    String interfaceName = (String) o;
                     boolean validInterface = false;
-                    for(UserInterface ui : Display.interfaces) {
-                        if(ui.getName().equals(interfaceName)) {
+                    for (UserInterface ui : Display.interfaces) {
+                        if (ui.getName().equals(interfaceName)) {
                             validInterface = true;
                             break;
                         }
                     }
-                    if(!validInterface) { Display.displayPackError("Unknown interface '" + interfaceName + "'"); }
+                    if (!validInterface) {
+                        Display.displayPackError("Unknown interface '" + interfaceName + "'");
+                    }
                 }
                 //Determines if the location has a choices interface
-                for(int i=0; i<interfaceJArray.size(); i++) {
-                    for(UserInterface ui : Display.interfaces) {
-                        if(ui.getName().equals(interfaceJArray.get(i))) {
-                            if(ui.getName().equals("choices")) {
+                for (Object o : interfaceJArray) {
+                    for (UserInterface ui : Display.interfaces) {
+                        if (ui.getName().equals(o)) {
+                            if (ui.getName().equals("choices")) {
                                 hasChoiceInterface = true;
                             }
                             interfaces.add(ui);
@@ -1564,21 +1541,31 @@ public class TextFighter {
                     }
                 }
                 JSONArray choiceArray = (JSONArray)locationFile.get("choices");
-                ArrayList<Choice> choices = new ArrayList<Choice>();
-                ArrayList<String> usedChoiceNames = new ArrayList<String>();
+                ArrayList<Choice> choices = new ArrayList<>();
+                ArrayList<String> usedChoiceNames = new ArrayList<>();
                 //Loads the choices from the file
                 if(choiceArray != null && choiceArray.size() > 0) {
-                    for (int i=0; i<choiceArray.size(); i++) {
-                        JSONObject obj = (JSONObject)choiceArray.get(i);
-                        String choicename = (String)obj.get("name");
+                    for (Object o : choiceArray) {
+                        JSONObject obj = (JSONObject) o;
+                        String choicename = (String) obj.get("name");
                         Display.displayPackMessage("Loading choice '" + choicename + "'");
                         Display.changePackTabbing(true);
-                        String desc = (String)obj.get("description");
-                        String usage = (String)obj.get("usage");
-                        if(obj.get("methods") == null) { Display.displayPackError("This choice has no methods. Omitting..."); Display.changePackTabbing(false); continue; }
-                        if(choicename == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
-                        Choice c = new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class), (String)obj.get("failMessage"));
-                        if(c.getMethods() != null && c.getMethods().size() > 0) { choices.add(c) ; }
+                        String desc = (String) obj.get("description");
+                        String usage = (String) obj.get("usage");
+                        if (obj.get("methods") == null) {
+                            Display.displayPackError("This choice has no methods. Omitting...");
+                            Display.changePackTabbing(false);
+                            continue;
+                        }
+                        if (choicename == null) {
+                            Display.displayPackError("Ths choice has no name. Omitting...");
+                            Display.changePackTabbing(false);
+                            continue;
+                        }
+                        Choice c = new Choice(choicename, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray) obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray) obj.get("requirements"), Choice.class), (String) obj.get("failMessage"));
+                        if (c.getMethods() != null && c.getMethods().size() > 0) {
+                            choices.add(c);
+                        }
                         usedChoiceNames.add(choicename);
                         Display.changePackTabbing(false);
                     }
@@ -1607,11 +1594,11 @@ public class TextFighter {
 
                     Method method;
                     try {
-                        method = TextFighter.class.getMethod("exitGame", new Class[] {int.class});
+                        method = TextFighter.class.getMethod("exitGame", int.class);
                     } catch (NoSuchMethodException e){ Display.displayPackError("Cannot find method 'exitGame'. Omitting..."); Display.changePackTabbing(false); continue; }
-                    ArrayList<Object> arguments = new ArrayList<Object>(); arguments.add(0);
-                    ArrayList<Class> argumentTypes = new ArrayList<Class>(); argumentTypes.add(int.class);
-                    ArrayList<ChoiceMethod> choiceMethods = new ArrayList<ChoiceMethod>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, null, null));
+                    ArrayList<Object> arguments = new ArrayList<>(); arguments.add(0);
+                    ArrayList<Class> argumentTypes = new ArrayList<>(); argumentTypes.add(int.class);
+                    ArrayList<ChoiceMethod> choiceMethods = new ArrayList<>(); choiceMethods.add(new ChoiceMethod(method, arguments, argumentTypes, null, null));
                     choices.add(new Choice("quit", "quits the game", "quit", choiceMethods, null, null));
                     Display.changePackTabbing(false);
                 }
@@ -1650,7 +1637,7 @@ public class TextFighter {
         Display.displayProgressMessage("Loading the enemies...");
         Display.changePackTabbing(true);
         //if(!enemyDir.exists()) { Display.displayError("Could not find the default enemies directory."); Display.changePackTabbing(false); return false;}
-        ArrayList<String> usedNames = new ArrayList<String>();
+        ArrayList<String> usedNames = new ArrayList<>();
         File directory = enemyDir;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -1670,13 +1657,12 @@ public class TextFighter {
                 jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                jsonStrings = new ArrayList<String>();
-                for (String s : directory.list()) {
+                jsonStrings = new ArrayList<>();
+                for (String s : Objects.requireNonNull(directory.list())) {
                     if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
-                    try {
-                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
-                        try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
-                        scan.close();
+                    try (Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z")) {
+                            jsonStrings.add(scan.next());
+                    } catch (NoSuchElementException ignore) {
                     } catch (IOException | NullPointerException e) {
                         e.printStackTrace();
                         Display.displayError("Error while reading file '" + s + "' from modpack.");
@@ -1700,16 +1686,18 @@ public class TextFighter {
                 boolean finalBoss = false;                              if(enemyFile.get("finalBoss") != null){         finalBoss=Boolean.parseBoolean((String)enemyFile.get("finalBoss"));}
                 if(levelRequirement < 1) { levelRequirement=1; }
                 JSONArray enemyActionArray = (JSONArray)enemyFile.get("actions");
-                ArrayList<EnemyAction> enemyActions = new ArrayList<EnemyAction>();
+                ArrayList<EnemyAction> enemyActions = new ArrayList<>();
                 if(enemyActionArray != null && enemyActionArray.size() > 0) {
-                    for (int i=0; i<enemyActionArray.size(); i++) {
-                        JSONObject obj = (JSONObject)enemyActionArray.get(i);
-                        EnemyAction a = new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray)obj.get("requirements"), Enemy.class));
-                        if(a.getMethods() != null && a.getMethods().size() > 1) { enemyActions.add(a); }
+                    for (Object o : enemyActionArray) {
+                        JSONObject obj = (JSONObject) o;
+                        EnemyAction a = new EnemyAction(loadMethods(EnemyActionMethod.class, (JSONArray) obj.get("methods"), EnemyAction.class), loadMethods(EnemyActionMethod.class, (JSONArray) obj.get("requirements"), Enemy.class));
+                        if (a.getMethods() != null && a.getMethods().size() > 1) {
+                            enemyActions.add(a);
+                        }
                     }
                 }
                 //Add the enemy to the enemies arraylist
-                enemies.add(new Enemy(name, description, health, strength, levelRequirement, finalBoss,
+                enemies.add(new Enemy(name, description, health, maxhealth, strength, levelRequirement, finalBoss,
                             loadMethods(Requirement.class, (JSONArray)enemyFile.get("requirements"), Enemy.class),
                             loadMethods(TFMethod.class, (JSONArray)enemyFile.get("premethods"), Enemy.class),
                             loadMethods(TFMethod.class, (JSONArray)enemyFile.get("postmethods"), Enemy.class),
@@ -1739,7 +1727,7 @@ public class TextFighter {
         Display.displayProgressMessage("Loading the parsing tags...");
         Display.changePackTabbing(true);
         //if(!tagFile.exists()) { Display.displayError("Could not find the default tags file."); Display.changePackTabbing(false); return false;}
-        ArrayList<String> usedNames = new ArrayList<String>();
+        ArrayList<String> usedNames = new ArrayList<>();
         File file = tagFile;
 
         //Determine if there is a pack to be loaded from and start loading from it if there is
@@ -1764,8 +1752,7 @@ public class TextFighter {
                 Display.displayPackMessage("Loading from modpack");
                 try {
                     Scanner scan = new Scanner(file.getAbsolutePath());
-                    try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
-                    if(jsonString.isEmpty()) { jsonString = "{}"; }
+                    try { jsonString = scan.next(); } catch(NoSuchElementException e) { jsonString = "{}"; } //I know this is bad
                     scan.close();
                 } catch (NullPointerException e) {
                     Display.displayError("Error while reading file '" + file.getAbsolutePath() + "' from modpack.");
@@ -1773,7 +1760,7 @@ public class TextFighter {
             }
 
             if(!parsingPack && namesToBeOmitted.contains("%all%")) { continue; }
-            JSONObject tagsFile = null;
+            JSONObject tagsFile;
             try { tagsFile = (JSONObject)parser.parse(jsonString);  } catch (ParseException e) { Display.displayPackError("Having trouble parsing from tags file"); e.printStackTrace(); continue; }
             if(tagsFile == null) { continue; }
             JSONArray tagsArray = (JSONArray)tagsFile.get("tags");
@@ -1781,13 +1768,13 @@ public class TextFighter {
             //Load each of the tags
             for(Object obj1 : tagsArray) {
                 JSONObject obj = (JSONObject)obj1;
-                if(obj.get("tag") != null) {
-                    if((!parsingPack && namesToBeOmitted.contains(obj.get("tag"))) && usedNames.contains(obj.get("tag"))) {
-                        continue; //This one has been omitted or already used. dont use this.
-                    } else {
+                String tagName = (String)obj.get("tag");
+                if(tagName != null) {
+                    if (!(!parsingPack && namesToBeOmitted.contains(tagName) && !usedNames.contains(tagName))) {
                         UiTag tag = (UiTag)loadMethod(UiTag.class, obj, null);
-                        if(tag != null) { Display.interfaceTags.add(tag); }
+                        if(tag != null) { Display.interfaceTags.add(tag); usedNames.add(tag.getTag()); }
                     }
+
                 }
             }
             parsingPack = false;
@@ -1807,8 +1794,7 @@ public class TextFighter {
         parsingPack = false;
         Display.displayProgressMessage("Loading the achievements...");
         Display.changePackTabbing(true);
-        //if(!achievementDir.exists()) { Display.displayError("Could not find the default achievements directory."); Display.changePackTabbing(false); return false;}
-        ArrayList<String> usedNames = new ArrayList<String>();
+        ArrayList<String> usedNames = new ArrayList<>();
         File directory = achievementDir;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -1828,13 +1814,12 @@ public class TextFighter {
                 jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                jsonStrings = new ArrayList<String>();
-                for (String s : directory.list()) {
+                jsonStrings = new ArrayList<>();
+                for (String s : Objects.requireNonNull(directory.list())) {
                     if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
-                    try {
-                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
-                        try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
-                        scan.close();
+                    try (Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z")) {
+                            jsonStrings.add(scan.next());
+                    } catch(NoSuchElementException ignore) {
                     } catch (IOException | NullPointerException e) {
                         e.printStackTrace();
                         Display.displayError("Error while reading file '" + s + "' from modpack.");
@@ -1843,7 +1828,7 @@ public class TextFighter {
             }
 
             for(String f : jsonStrings) {
-                JSONObject achievementFile = null;
+                JSONObject achievementFile;
                 try { achievementFile = (JSONObject) parser.parse(f); } catch (ParseException e) { Display.displayPackError("Having trouble parsing from file '" + f + "'"); e.printStackTrace(); continue; }
                 if(achievementFile == null) { continue; }
                 String name = (String)achievementFile.get("name");
@@ -1887,10 +1872,9 @@ public class TextFighter {
 
             Display.changePackTabbing(true);
             //Determine if there is a pack to be loaded and start loading from it if there is
-            File itemDirectory;
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("weapons", directory)) != null && itemDirectory != null)) {
+            if(!parsingPack || getPackDirectory("weapons", directory) != null) {
                 Display.displayPackMessage("Loading weapons");
-                ArrayList<String> usedNames = new ArrayList<String>();
+                ArrayList<String> usedNames = new ArrayList<>();
 
                 ArrayList<String> jsonStrings;
 
@@ -1900,15 +1884,14 @@ public class TextFighter {
                     jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/weapons");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
-                    jsonStrings = new ArrayList<String>();
+                    jsonStrings = new ArrayList<>();
                     File itemDir = new File(directory.getPath() + File.separator + "weapons");
                     if(itemDir.exists()) {
-                        for (String s : directory.list()) {
+                        for (String s : Objects.requireNonNull(directory.list())) {
                             if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
-                            try {
-                                Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
-                                try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
-                                scan.close();
+                            try (Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z")) {
+                                jsonStrings.add(scan.next());
+                            } catch(NoSuchElementException e) {
                             } catch (IOException | NullPointerException e) {
                                 e.printStackTrace();
                                 Display.displayError("Error while reading file '" + s + "' from modpack.");
@@ -1919,7 +1902,7 @@ public class TextFighter {
 
                 for(String f : jsonStrings) {
                     Display.changePackTabbing(true);
-                    JSONObject itemFile = null;
+                    JSONObject itemFile;
                     try{ itemFile = (JSONObject) parser.parse(f); } catch(ParseException e) { Display.displayError("Having problems with parsing weapon in file '" + f + "'"); continue; }
                     if(itemFile == null) { continue; }
                     String name = Weapon.defaultName;                           if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
@@ -1933,33 +1916,45 @@ public class TextFighter {
                     int durability = Weapon.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
                     int maxDurability = Weapon.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Weapon.defaultUnbreakable;            if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
-                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
-                    for(int i=0; i<weaponCustomVariables.size(); i++) {
-                        CustomVariable c = weaponCustomVariables.get(i);
-                        if(c.getName().equalsIgnoreCase("fists") && c.getName().equalsIgnoreCase("unbreakable")) { //The fists cannot break no matter what
+                    ArrayList<CustomVariable> customVars = new ArrayList<>();
+                    for (CustomVariable c : weaponCustomVariables) {
+                        if (c.getName().equalsIgnoreCase("fists") && c.getName().equalsIgnoreCase("unbreakable")) { //The fists cannot break no matter what
                             c.setValue(false);
-                            if(parsingPack) { modSetFists = true; }
+                            if (parsingPack) {
+                                modSetFists = true;
+                            }
                             continue;
                         }
-                        if(itemFile.get(c.getName()) != null) {
+                        if (itemFile.get(c.getName()) != null) {
                             CustomVariable cv = new CustomVariable(c.getName(), c.getValue(), c.getValueType(), c.getInOutput(), c.getIsSaved());
                             try {
                                 //The syntax for using a null value is "%null%"
-                                if(((String)itemFile.get(c.getName())).equals("%null%")) { cv.setValue(null); }
-                                else if(cv.getValueType().equals(int.class)) {
-                                    cv.setValue(Integer.parseInt((String)itemFile.get(c.getName())));
+                                if ((itemFile.get(c.getName())).equals("%null%")) {
+                                    cv.setValue(null);
+                                } else if (cv.getValueType().equals(int.class)) {
+                                    cv.setValue(Integer.parseInt((String) itemFile.get(c.getName())));
                                 } else if (cv.getValueType().equals(String.class)) {
-                                    cv.setValue((String)itemFile.get(c.getName()));
-                                } else if(cv.getValueType().equals(double.class)) {
-                                    cv.setValue(Double.parseDouble((String)itemFile.get(c.getName())));
+                                    cv.setValue(itemFile.get(c.getName()));
+                                } else if (cv.getValueType().equals(double.class)) {
+                                    cv.setValue(Double.parseDouble((String) itemFile.get(c.getName())));
                                 } else if (cv.getValueType().equals(boolean.class)) {
-                                    cv.setValue(Boolean.parseBoolean((String)itemFile.get(c.getName())));
+                                    cv.setValue(Boolean.parseBoolean((String) itemFile.get(c.getName())));
                                 } else if (cv.getValueType().equals(Class.class)) {
-                                    try { cv.setValue(Class.forName((String)itemFile.get(c.getName()))); } catch(ClassNotFoundException e) { Display.changePackTabbing(false); continue;  }
+                                    try {
+                                        cv.setValue(Class.forName((String) itemFile.get(c.getName())));
+                                    } catch (ClassNotFoundException e) {
+                                        Display.changePackTabbing(false);
+                                        continue;
+                                    }
                                 }
                                 customVars.add(cv);
-                            } catch (Exception e) { e.printStackTrace(); customVars.add(c); }
-                        } else { customVars.add(c); }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                customVars.add(c);
+                            }
+                        } else {
+                            customVars.add(c);
+                        }
                     }
                     //Add it
                     weapons.add(new Weapon(name, description, damage, critChance, missChance, customVars, durability,  maxDurability, unbreakable));
@@ -1971,9 +1966,9 @@ public class TextFighter {
                     weapons.add(new Weapon("fists", "Your fists, you don't need a description about what that is.", 5, 10, 5, new ArrayList<>(), 100, 100, true));
                 }
             }
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("armor", directory)) != null)) {
+            if(!parsingPack || getPackDirectory("armor", directory) != null) {
                 Display.displayPackMessage("Loading armor");
-                ArrayList<String> usedNames = new ArrayList<String>();
+                ArrayList<String> usedNames = new ArrayList<>();
 
                 ArrayList<String> jsonStrings;
 
@@ -1983,10 +1978,10 @@ public class TextFighter {
                     jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/armor");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
-                    jsonStrings = new ArrayList<String>();
+                    jsonStrings = new ArrayList<>();
                     File itemDir = new File(directory.getPath() + File.separator + "armor");
                     if(itemDir.exists()) {
-                        for (String s : directory.list()) {
+                        for (String s : Objects.requireNonNull(directory.list())) {
                             if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
                             try {
                                 Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
@@ -2002,7 +1997,7 @@ public class TextFighter {
 
                 for(String f : jsonStrings) {
                     Display.changePackTabbing(true);
-                    JSONObject itemFile = null;
+                    JSONObject itemFile;
                     try{ itemFile = (JSONObject) parser.parse(f); } catch(ParseException e) { Display.displayError("Having problems with parsing armor in file '" + f + "'"); continue;}
                     if(itemFile == null) { continue; }
                     String name = Armor.defaultName;                            if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
@@ -2013,28 +2008,37 @@ public class TextFighter {
                     int durability = Armor.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
                     int maxDurability = Armor.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Armor.defaultUnbreakable;            if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
-                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
-                    for(int i=0; i<armorCustomVariables.size(); i++) {
-                        CustomVariable c = armorCustomVariables.get(i);
-                        if(itemFile.get(c.getName()) != null) {
+                    ArrayList<CustomVariable> customVars = new ArrayList<>();
+                    for (CustomVariable c : armorCustomVariables) {
+                        if (itemFile.get(c.getName()) != null) {
                             CustomVariable cv = new CustomVariable(c.getName(), c.getValue(), c.getValueType(), c.getInOutput(), c.getIsSaved());
                             try {
                                 //The syntax for using a null value is "%null%"
-                                if(((String)itemFile.get(cv.getName())).equals("%null%")) { cv.setValue(null); }
-                                else if(cv.getValueType().equals(int.class)) {
-                                    cv.setValue(Integer.parseInt((String)itemFile.get(cv.getName())));
+                                if ((itemFile.get(cv.getName())).equals("%null%")) {
+                                    cv.setValue(null);
+                                } else if (cv.getValueType().equals(int.class)) {
+                                    cv.setValue(Integer.parseInt((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(String.class)) {
-                                    cv.setValue((String)itemFile.get(cv.getName()));
-                                } else if(cv.getValueType().equals(double.class)) {
-                                    cv.setValue(Double.parseDouble((String)itemFile.get(cv.getName())));
+                                    cv.setValue(itemFile.get(cv.getName()));
+                                } else if (cv.getValueType().equals(double.class)) {
+                                    cv.setValue(Double.parseDouble((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(boolean.class)) {
-                                    cv.setValue(Boolean.parseBoolean((String)itemFile.get(cv.getName())));
+                                    cv.setValue(Boolean.parseBoolean((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(Class.class)) {
-                                    try { cv.setValue(Class.forName((String)itemFile.get(cv.getName()))); } catch(ClassNotFoundException e) { Display.changePackTabbing(false); continue;  }
+                                    try {
+                                        cv.setValue(Class.forName((String) itemFile.get(cv.getName())));
+                                    } catch (ClassNotFoundException e) {
+                                        Display.changePackTabbing(false);
+                                        continue;
+                                    }
                                 }
                                 customVars.add(cv);
-                            } catch (Exception e) { customVars.add(c); }
-                        } else { customVars.add(c); }
+                            } catch (Exception e) {
+                                customVars.add(c);
+                            }
+                        } else {
+                            customVars.add(c);
+                        }
                     }
                     //Add it
                     armors.add(new Armor(name, description, protectionamount, durability, maxDurability, unbreakable, customVars));
@@ -2042,9 +2046,9 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("tools", directory)) != null)) {
+            if(!parsingPack || getPackDirectory("tools", directory) != null) {
                 Display.displayPackMessage("Loading tools");
-                ArrayList<String> usedNames = new ArrayList<String>();
+                ArrayList<String> usedNames = new ArrayList<>();
 
                 ArrayList<String> jsonStrings;
 
@@ -2054,10 +2058,10 @@ public class TextFighter {
                     jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/tools");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
-                    jsonStrings = new ArrayList<String>();
+                    jsonStrings = new ArrayList<>();
                     File itemDir = new File(directory.getPath() + File.separator + "tools");
                     if(itemDir.exists()) {
-                        for (String s : directory.list()) {
+                        for (String s : Objects.requireNonNull(directory.list())) {
                             if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
                             try {
                                 Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
@@ -2073,7 +2077,7 @@ public class TextFighter {
 
                 for(String f : jsonStrings) {
                     Display.changePackTabbing(true);
-                    JSONObject itemFile = null;
+                    JSONObject itemFile;
                     try{ itemFile = (JSONObject) parser.parse(f);  } catch(ParseException e) { Display.displayError("Having problems with parsing tool in file '" + f + "'"); continue; }
                     if(itemFile == null) { continue; }
                     String name = Tool.defaultName; if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
@@ -2083,28 +2087,37 @@ public class TextFighter {
                     int durability = Tool.defaultDurability;                    if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
                     int maxDurability = Tool.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Tool.defaultUnbreakable;              if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
-                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
-                    for(int i=0; i<toolCustomVariables.size(); i++) {
-                        CustomVariable c =  toolCustomVariables.get(i);
-                        if(itemFile.get(c.getName()) != null) {
+                    ArrayList<CustomVariable> customVars = new ArrayList<>();
+                    for (CustomVariable c : toolCustomVariables) {
+                        if (itemFile.get(c.getName()) != null) {
                             CustomVariable cv = new CustomVariable(c.getName(), c.getValue(), c.getValueType(), c.getInOutput(), c.getIsSaved());
                             try {
                                 //The syntax for using a null value is "%null%"
-                                if(((String)itemFile.get(cv.getName())).equals("%null%")) { cv.setValue(null); }
-                                else if(cv.getValueType().equals(int.class)) {
-                                    cv.setValue(Integer.parseInt((String)itemFile.get(cv.getName())));
+                                if ((itemFile.get(cv.getName())).equals("%null%")) {
+                                    cv.setValue(null);
+                                } else if (cv.getValueType().equals(int.class)) {
+                                    cv.setValue(Integer.parseInt((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(String.class)) {
-                                    cv.setValue((String)itemFile.get(cv.getName()));
-                                } else if(cv.getValueType().equals(double.class)) {
-                                    cv.setValue(Double.parseDouble((String)itemFile.get(cv.getName())));
+                                    cv.setValue(itemFile.get(cv.getName()));
+                                } else if (cv.getValueType().equals(double.class)) {
+                                    cv.setValue(Double.parseDouble((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(boolean.class)) {
-                                    cv.setValue(Boolean.parseBoolean((String)itemFile.get(cv.getName())));
+                                    cv.setValue(Boolean.parseBoolean((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(Class.class)) {
-                                    try { cv.setValue(Class.forName((String)itemFile.get(cv.getName()))); } catch(ClassNotFoundException e) { Display.changePackTabbing(false); continue;  }
+                                    try {
+                                        cv.setValue(Class.forName((String) itemFile.get(cv.getName())));
+                                    } catch (ClassNotFoundException e) {
+                                        Display.changePackTabbing(false);
+                                        continue;
+                                    }
                                 }
                                 customVars.add(cv);
-                            } catch (Exception e) { customVars.add(c); }
-                        } else { customVars.add(c); }
+                            } catch (Exception e) {
+                                customVars.add(c);
+                            }
+                        } else {
+                            customVars.add(c);
+                        }
                     }
                     //Add it
                     tools.add(new Tool(name, description, customVars, durability, maxDurability, unbreakable));
@@ -2112,9 +2125,9 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("specialitems", directory)) != null)) {
+            if(!parsingPack || getPackDirectory("specialitems", directory) != null) {
                 Display.displayPackMessage("Loading specialitems");
-                ArrayList<String> usedNames = new ArrayList<String>();
+                ArrayList<String> usedNames = new ArrayList<>();
 
                 ArrayList<String> jsonStrings;
 
@@ -2124,10 +2137,10 @@ public class TextFighter {
                     jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/") + "/specialitems");
                 } else {
                     Display.displayPackMessage("Loading from modpack");
-                    jsonStrings = new ArrayList<String>();
+                    jsonStrings = new ArrayList<>();
                     File itemDir = new File(directory.getPath() + File.separator + "specialitems");
                     if(itemDir.exists()) {
-                        for (String s : directory.list()) {
+                        for (String s : Objects.requireNonNull(directory.list())) {
                             if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)s
                             try {
                                 Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
@@ -2143,35 +2156,44 @@ public class TextFighter {
 
                 for(String f : jsonStrings) {
                     Display.changePackTabbing(true);
-                    JSONObject itemFile = null;
+                    JSONObject itemFile;
                     try{ itemFile = (JSONObject) parser.parse(f); } catch(ParseException e) { Display.displayError("Having problems with parsing special item in file '" + f + "'"); continue; }
                     if(itemFile == null) { continue; }
                     String name = SpecialItem.defaultName;                      if(itemFile.get("name") != null) { name = (String)itemFile.get("name");}
                     if(usedNames.contains(name) || (!parsingPack && namesToBeOmitted.contains(name))) { Display.changePackTabbing(false); continue; }
                     Display.displayPackMessage("Loading item '" + name + "' of type 'specialitem'");
                     String description = SpecialItem.defaultDescription;        if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
-                    ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
-                    for(int i=0; i<specialitemCustomVariables.size(); i++) {
-                        CustomVariable c = specialitemCustomVariables.get(i);
-                        if(itemFile.get(c.getName()) != null) {
+                    ArrayList<CustomVariable> customVars = new ArrayList<>();
+                    for (CustomVariable c : specialitemCustomVariables) {
+                        if (itemFile.get(c.getName()) != null) {
                             CustomVariable cv = new CustomVariable(c.getName(), c.getValue(), c.getValueType(), c.getInOutput(), c.getIsSaved());
                             try {
                                 //The syntax for using a null value is "%null%"
-                                if(((String)itemFile.get(cv.getName())).equals("%null%")) { cv.setValue(null); }
-                                else if(cv.getValueType().equals(int.class)) {
-                                    cv.setValue(Integer.parseInt((String)itemFile.get(cv.getName())));
+                                if ((itemFile.get(cv.getName())).equals("%null%")) {
+                                    cv.setValue(null);
+                                } else if (cv.getValueType().equals(int.class)) {
+                                    cv.setValue(Integer.parseInt((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(String.class)) {
-                                    cv.setValue((String)itemFile.get(cv.getName()));
-                                } else if(cv.getValueType().equals(double.class)) {
-                                    cv.setValue(Double.parseDouble((String)itemFile.get(cv.getName())));
+                                    cv.setValue(itemFile.get(cv.getName()));
+                                } else if (cv.getValueType().equals(double.class)) {
+                                    cv.setValue(Double.parseDouble((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(boolean.class)) {
-                                    cv.setValue(Boolean.parseBoolean((String)itemFile.get(cv.getName())));
+                                    cv.setValue(Boolean.parseBoolean((String) itemFile.get(cv.getName())));
                                 } else if (cv.getValueType().equals(Class.class)) {
-                                    try { cv.setValue(Class.forName((String)itemFile.get(cv.getName()))); } catch(ClassNotFoundException e) { Display.changePackTabbing(false); continue;  }
+                                    try {
+                                        cv.setValue(Class.forName((String) itemFile.get(cv.getName())));
+                                    } catch (ClassNotFoundException e) {
+                                        Display.changePackTabbing(false);
+                                        continue;
+                                    }
                                 }
                                 customVars.add(cv);
-                            } catch (Exception e) { customVars.add(c); }
-                        } else { customVars.add(c); }
+                            } catch (Exception e) {
+                                customVars.add(c);
+                            }
+                        } else {
+                            customVars.add(c);
+                        }
                     }
                     //Add it
                     specialItems.add(new SpecialItem(name, description, customVars));
@@ -2198,12 +2220,12 @@ public class TextFighter {
         parsingPack = false;
         Display.displayProgressMessage("Loading the custom variables...");
         Display.changePackTabbing(true);
-        ArrayList<String> toolsUsedNames = new ArrayList<String>();
-        ArrayList<String> armorUsedNames = new ArrayList<String>();
-        ArrayList<String> weaponsUsedNames = new ArrayList<String>();
-        ArrayList<String> specialItemsUsedNames = new ArrayList<String>();
-        ArrayList<String> playerUsedNames = new ArrayList<String>();
-        ArrayList<String> enemiesUsedNames = new ArrayList<String>();
+        ArrayList<String> toolsUsedNames = new ArrayList<>();
+        ArrayList<String> armorUsedNames = new ArrayList<>();
+        ArrayList<String> weaponsUsedNames = new ArrayList<>();
+        ArrayList<String> specialItemsUsedNames = new ArrayList<>();
+        ArrayList<String> playerUsedNames = new ArrayList<>();
+        ArrayList<String> enemiesUsedNames = new ArrayList<>();
         File directory = customVariablesDir;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -2224,13 +2246,12 @@ public class TextFighter {
                 jsonStrings = getJsonFilesAsString(directory.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                jsonStrings = new ArrayList<String>();
-                for (String s : directory.list()) {
+                jsonStrings = new ArrayList<>();
+                for (String s : Objects.requireNonNull(directory.list())) {
                     if(!s.endsWith(".json")) { continue; } //This is not a file we want to look at (an omit file or a directory)
-                    try {
-                        Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z");
-                        try { jsonStrings.add(scan.next()); } catch(NoSuchElementException e) { } //I know this is bad
-                        scan.close();
+                    try (Scanner scan = new Scanner(new File(directory + File.separator + s)).useDelimiter("\\Z")) {
+                        jsonStrings.add(scan.next());
+                    } catch(NoSuchElementException e) {
                     } catch (IOException | NullPointerException e) {
                         e.printStackTrace();
                         Display.displayError("Error while reading file '" + s + "' from modpack.");
@@ -2241,55 +2262,104 @@ public class TextFighter {
             Display.changePackTabbing(true);
             for(String s : jsonStrings) { //Parse each file
                 if(filesToBeOmitted.contains(s)) { continue; }
-                ArrayList<CustomVariable> variables = new ArrayList<CustomVariable>();
-                JSONObject itemFile = null;
+                ArrayList<CustomVariable> variables = new ArrayList<>();
+                JSONObject itemFile;
                 try { itemFile = (JSONObject)parser.parse(s); } catch(ParseException e) { e.printStackTrace(); Display.displayPackError("Having trouble parsing custom variables from file '" + s + "'"); continue; }
                 String owner = (String)itemFile.get("owner"); if(owner == null) { Display.displayError("This customvariables file has no owner type. Omitting..."); continue; }
                 JSONArray valuesArray = null; if(itemFile.get("values") != null) { valuesArray = (JSONArray)itemFile.get("values"); }
                 if(valuesArray != null) {
-                    for (int i=0; i<valuesArray.size(); i++) {
-                        JSONObject obj = (JSONObject)valuesArray.get(i);
-                        String name = null;
-                        if(obj.get("name") != null) {
-                            name = (String)obj.get("name");
+                    for (Object o : valuesArray) {
+                        JSONObject obj = (JSONObject) o;
+                        String name;
+                        if (obj.get("name") != null) {
+                            name = (String) obj.get("name");
                             Display.displayPackMessage("Loading custom variable '" + name + "'.");
-                        } else { Display.displayPackError("This custom variable does not have a name. Omitting..."); continue; }
-                        if(s.equals("player.json")) { if(playerUsedNames.contains(name)) { Display.displayPackError("Found duplicate custom variable '" + name + "'"); continue; }; }
-                        else if(s.equals("enemy.json")) { if(enemiesUsedNames.contains(name)) { Display.displayPackError("Found duplicate custom variable '" + name + "'"); continue; }; }
-                        else if(s.equals("weapon.json")) { if(weaponsUsedNames.contains(name)) { Display.displayPackError("Found duplicate custom variable '" + name + "'"); continue; }; }
-                        else if(s.equals("armor.json")) { if(armorUsedNames.contains(name)) { Display.displayPackError("Found duplicate custom variable '" + name + "'"); continue; }; }
-                        else if(s.equals("specialitem.json")) { if(specialItemsUsedNames.contains(name)) { Display.displayPackError("Found duplicate custom variable '" + name + "'"); continue; }; }
-                        else if(s.equals("tool.json")) { if(toolsUsedNames.contains(name)) { Display.displayPackError("Found duplicate custom variable '" + name + "'"); continue; }; }
-                        Object value = null;
-                        if(obj.get("value") != null) {
+                        } else {
+                            Display.displayPackError("This custom variable does not have a name. Omitting...");
+                            continue;
+                        }
+                        switch (s) {
+                            case "player.json":
+                                if (playerUsedNames.contains(name)) {
+                                    Display.displayPackError("Found duplicate custom variable '" + name + "'");
+                                    continue;
+                                }
+                                break;
+                            case "enemy.json":
+                                if (enemiesUsedNames.contains(name)) {
+                                    Display.displayPackError("Found duplicate custom variable '" + name + "'");
+                                    continue;
+                                }
+                                break;
+                            case "weapon.json":
+                                if (weaponsUsedNames.contains(name)) {
+                                    Display.displayPackError("Found duplicate custom variable '" + name + "'");
+                                    continue;
+                                }
+                                break;
+                            case "armor.json":
+                                if (armorUsedNames.contains(name)) {
+                                    Display.displayPackError("Found duplicate custom variable '" + name + "'");
+                                    continue;
+                                }
+                                break;
+                            case "specialitem.json":
+                                if (specialItemsUsedNames.contains(name)) {
+                                    Display.displayPackError("Found duplicate custom variable '" + name + "'");
+                                    continue;
+                                }
+                                break;
+                            case "tool.json":
+                                if (toolsUsedNames.contains(name)) {
+                                    Display.displayPackError("Found duplicate custom variable '" + name + "'");
+                                    continue;
+                                }
+                                break;
+                        }
+                        Object value;
+                        if (obj.get("value") != null) {
                             value = obj.get("value");
-                        } else { Display.displayPackError("This custom variable does not have a value. Omitting..."); continue; }
+                        } else {
+                            Display.displayPackError("This custom variable does not have a value. Omitting...");
+                            continue;
+                        }
                         Class type = null;
-                        int typeRaw = 0;
-                        if(obj.get("type") != null) {
-                            typeRaw = Integer.parseInt((String)obj.get("type"));
-                        } else { Display.displayPackError("This custom variable does not have a type. Omitting..."); continue; }
+                        int typeRaw;
+                        if (obj.get("type") != null) {
+                            typeRaw = Integer.parseInt((String) obj.get("type"));
+                        } else {
+                            Display.displayPackError("This custom variable does not have a type. Omitting...");
+                            continue;
+                        }
                         boolean isSaved = false;
-                        if(obj.get("isSaved") != null) {
-                            isSaved = Boolean.parseBoolean((String)obj.get("isSaved"));
+                        if (obj.get("isSaved") != null) {
+                            isSaved = Boolean.parseBoolean((String) obj.get("isSaved"));
                         }
                         //Cast the values to the correct type
-                        if(value.equals("%null%")) { value = null; }
-                        else if(typeRaw == 0) {
-                            if(value.equals("%null%")) { value = null; }
-                            else { value = (String)value; }
+                        if (value.equals("%null%")) {
+                            value = null;
+                        } else if (typeRaw == 0) {
+                            if (value.equals("%null%")) {
+                                value = null;
+                            }
                             type = String.class;
-                        } else if(typeRaw == 1) {
-                            value = (int)Integer.parseInt((String)value);
+                        } else if (typeRaw == 1) {
+                            value = Integer.parseInt((String) value);
                             type = int.class;
-                        } else if(typeRaw == 2) {
-                            value = Double.parseDouble((String)value);
+                        } else if (typeRaw == 2) {
+                            value = Double.parseDouble((String) value);
                             type = double.class;
-                        } else if(typeRaw == 3) {
-                            value = Boolean.parseBoolean((String)value);
+                        } else if (typeRaw == 3) {
+                            value = Boolean.parseBoolean((String) value);
                             type = boolean.class;
-                        } else if(typeRaw == 4) {
-                            try { value = Class.forName((String)value); } catch(ClassNotFoundException e) { Display.displayPackError("The custom variable tried to get a class that does not exist. Omitting... "); Display.changePackTabbing(false); continue; }
+                        } else if (typeRaw == 4) {
+                            try {
+                                value = Class.forName((String) value);
+                            } catch (ClassNotFoundException e) {
+                                Display.displayPackError("The custom variable tried to get a class that does not exist. Omitting... ");
+                                Display.changePackTabbing(false);
+                                continue;
+                            }
                             type = Class.class;
                         } else {
                             Display.displayPackError("This method has arguments that are not String, int, double, boolean, or class. Omitting...");
@@ -2297,24 +2367,53 @@ public class TextFighter {
                         }
                         //InOuptut is true by default
                         boolean inOutput = true;
-                        if(obj.get("inoutput") != null) { inOutput = Boolean.parseBoolean((String)obj.get("inoutput")); }
+                        if (obj.get("inoutput") != null) {
+                            inOutput = Boolean.parseBoolean((String) obj.get("inoutput"));
+                        }
                         variables.add(new CustomVariable(name, value, type, inOutput, isSaved));
-                        if(owner.equals("player.json")) { playerUsedNames.add(name); }
-                        else if(owner.equals("enemy.json")) { enemiesUsedNames.add(name); }
-                        else if(owner.equals("weapon.json")) { weaponsUsedNames.add(name); }
-                        else if(owner.equals("armor.json")) { armorUsedNames.add(name); }
-                        else if(owner.equals("specialitem.json")) { specialItemsUsedNames.add(name); }
-                        else if(owner.equals("tool.json")) { toolsUsedNames.add(name); }
+                        switch (owner) {
+                            case "player.json":
+                                playerUsedNames.add(name);
+                                break;
+                            case "enemy.json":
+                                enemiesUsedNames.add(name);
+                                break;
+                            case "weapon.json":
+                                weaponsUsedNames.add(name);
+                                break;
+                            case "armor.json":
+                                armorUsedNames.add(name);
+                                break;
+                            case "specialitem.json":
+                                specialItemsUsedNames.add(name);
+                                break;
+                            case "tool.json":
+                                toolsUsedNames.add(name);
+                                break;
+                        }
                     }
                 }
                 //Add the customVariable to the correct arraylist
-                if(owner.equals("player")) { playerCustomVariables = variables; }
-                else if(owner.equals("enemy")) { enemyCustomVariables = variables; }
-                else if(owner.equals("weapon")) { weaponCustomVariables = variables; }
-                else if(owner.equals("armor")) { armorCustomVariables = variables; }
-                else if(owner.equals("specialitem")) { specialitemCustomVariables = variables; }
-                else if(owner.equals("tool")) { toolCustomVariables = variables; }
-                //Display.changePackTabbing(false);
+                switch (owner) {
+                    case "player":
+                        playerCustomVariables = variables;
+                        break;
+                    case "enemy":
+                        enemyCustomVariables = variables;
+                        break;
+                    case "weapon":
+                        weaponCustomVariables = variables;
+                        break;
+                    case "armor":
+                        armorCustomVariables = variables;
+                        break;
+                    case "specialitem":
+                        specialitemCustomVariables = variables;
+                        break;
+                    case "tool":
+                        toolCustomVariables = variables;
+                        break;
+                }
             }
             parsingPack = false;
             Display.changePackTabbing(false);
@@ -2338,7 +2437,7 @@ public class TextFighter {
             try (BufferedReader br = new BufferedReader(new FileReader(packFile))) {
                 String line = br.readLine();
                 if(line != null && packDir != null && packDir.exists() && packDir.list() != null) {
-                    for(String s : packDir.list()){
+                    for(String s : Objects.requireNonNull(packDir.list())){
                         if(s.equals(line)) {
                             packUsed = new File(packDir.getPath() + File.separator + line);
                             Display.displayProgressMessage("Current pack: " + line);
@@ -2351,7 +2450,7 @@ public class TextFighter {
             Display.displayProgressMessage("Config loaded.");
         } else {
             Display.displayWarning("The config directory could not be found!\n Creating new config directory.");
-            configDir.mkdirs();
+            if(!configDir.mkdirs()) { Display.displayWarning("Unable to create a new config directory"); }
         }
         configLoaded = true;
     }
@@ -2376,7 +2475,6 @@ public class TextFighter {
 
         //Load them
         Display.changePackTabbing(true);
-        File file;
         for(int num=0; num<2; num++) {
             if(!parsingPack) {
                 num++;
@@ -2385,6 +2483,7 @@ public class TextFighter {
                 Display.displayPackMessage("Loading default values from the modpack");
             }
 
+            //I know this is bad style, but the alternative way the code looks is just... please no.
             if (true) {
                 Display.displayPackMessage("Loading player values...");
 
@@ -2396,11 +2495,10 @@ public class TextFighter {
                         jsonString = getSingleJsonFileAsString(directory.getPath().replace("\\", "/") + "/player.json");
                     } else {
                         Display.displayPackMessage("Loading from modpack");
-                        try {
-                            Scanner scan = new Scanner(new File(directory + File.separator + "player.json")).useDelimiter("\\Z");
-                            try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
-                            if(jsonString.isEmpty()) { jsonString = "{}"; }
-                            scan.close();
+                        try (Scanner scan = new Scanner(new File(directory + File.separator + "player.json")).useDelimiter("\\Z")) {
+                            jsonString = scan.next();
+                        } catch(NoSuchElementException e) {
+                            jsonString = "{}";
                         } catch (IOException | NullPointerException e) {
                             e.printStackTrace();
                             Display.displayError("Error while reading file 'player.json' from modpack.");
@@ -2463,7 +2561,6 @@ public class TextFighter {
                 }
             }
             if (true) {
-
                 Display.displayPackMessage("Loading enemy values");
 
                 Display.changePackTabbing(true);
@@ -2695,8 +2792,7 @@ public class TextFighter {
         parsingPack = false;
         Display.displayProgressMessage("Loading the death methods...");
         Display.changePackTabbing(true);
-        //if(!deathmethodsFile.exists()) { Display.displayError("Could not find the default deathmethods file."); Display.changePackTabbing(false); return false;}
-        ArrayList<String> usedIds = new ArrayList<String>();
+        ArrayList<String> usedIds = new ArrayList<>();
         File file = deathmethodsFile;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -2720,28 +2816,31 @@ public class TextFighter {
                 if(jsonString.isEmpty()) { jsonString = "{}"; }
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                try {
-                    Scanner scan = new Scanner(file.getAbsolutePath());
-                    try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
-                    if(jsonString.isEmpty()) { jsonString = "{}"; }
-                    scan.close();
+                try (Scanner scan = new Scanner(file.getAbsolutePath())) {
+                    jsonString = scan.next();
+                } catch(NoSuchElementException e) {
+                    jsonString = "{}";
                 } catch (NullPointerException e) {
                     Display.displayError("Error while reading file '" + file.getAbsolutePath() + "' from modpack.");
                 }
             }
             Display.changePackTabbing(true);
-            JSONArray deathmethodFile = null;
+            JSONArray deathmethodFile;
             try { deathmethodFile = (JSONArray)(((JSONObject)parser.parse(jsonString)).get("deathmethods")); } catch ( ParseException e) { Display.displayPackError("Having trouble parsing from file '" + file.getName() + "'"); e.printStackTrace(); continue; }
             if(deathmethodFile == null) { continue; }
-            for(int i=0; i<deathmethodFile.size(); i++) {
-                JSONObject obj = (JSONObject)deathmethodFile.get(i);
-                String id = (String)obj.get("id");
-                if(id == null) { Display.displayPackError("A deathmethod to does not have an id. Omitting..."); }
-                if((!parsingPack && idsToBeOmitted.contains(id)) || usedIds.contains(id)) { continue; }
+            for (Object o : deathmethodFile) {
+                JSONObject obj = (JSONObject) o;
+                String id = (String) obj.get("id");
+                if (id == null) {
+                    Display.displayPackError("A deathmethod to does not have an id. Omitting...");
+                }
+                if ((!parsingPack && idsToBeOmitted.contains(id)) || usedIds.contains(id)) {
+                    continue;
+                }
                 Display.displayPackMessage("Loading deathmethod '" + id + "'");
                 Display.changePackTabbing(true);
-                TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, IDMethod.class);
-                if(method != null) {
+                TFMethod method = (TFMethod) loadMethod(TFMethod.class, obj, IDMethod.class);
+                if (method != null) {
                     deathMethods.add(new IDMethod(method, id));
                 } else {
                     Display.displayPackMessage("This death method does not have a valid method");
@@ -2769,8 +2868,7 @@ public class TextFighter {
         parsingPack = false;
         Display.displayProgressMessage("Loading the level up methods...");
         Display.changePackTabbing(true);
-        //if(!levelupmethodsFile.exists()) { Display.displayError("Could not find the default levelupmethods file."); Display.changePackTabbing(false); return false;}
-        ArrayList<String> usedIds = new ArrayList<String>();
+        ArrayList<String> usedIds = new ArrayList<>();
         File file = levelupmethodsFile;
 
         //Determine if there is a pack to be loaded and start loading from it if there is
@@ -2793,29 +2891,33 @@ public class TextFighter {
                 jsonString = getSingleJsonFileAsString(file.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                try {
-                    Scanner scan = new Scanner(file.getAbsolutePath());
-                    try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
-                    if(jsonString.isEmpty()) { jsonString = "{}"; }
-                    scan.close();
+                try (Scanner scan = new Scanner(file.getAbsolutePath())) {
+                    jsonString = scan.next();
+
+                } catch(NoSuchElementException e) {
+                    jsonString = "{}";
                 } catch (NullPointerException e) {
                     Display.displayError("Error while reading file '" + file.getAbsolutePath() + "' from modpack.");
                 }
             }
 
             Display.changePackTabbing(true);
-            JSONArray levelupmethodFile = null;
+            JSONArray levelupmethodFile;
             try { levelupmethodFile = (JSONArray)(((JSONObject)parser.parse(jsonString)).get("levelupmethods")); } catch (ParseException e) { Display.displayPackError("Having trouble parsing from file"); e.printStackTrace(); continue; }
             if(levelupmethodFile == null) { continue; }
-            for(int i=0; i<levelupmethodFile.size(); i++) {
-                JSONObject obj = (JSONObject)levelupmethodFile.get(i);
-                String id = (String)obj.get("id");
-                if((!parsingPack && idsToBeOmitted.contains(id)) || usedIds.contains(id)) { continue; }
-                if(id == null) { Display.displayPackError("A levelupmethod to does not have an id. Omitting..."); }
+            for (Object o : levelupmethodFile) {
+                JSONObject obj = (JSONObject) o;
+                String id = (String) obj.get("id");
+                if ((!parsingPack && idsToBeOmitted.contains(id)) || usedIds.contains(id)) {
+                    continue;
+                }
+                if (id == null) {
+                    Display.displayPackError("A levelupmethod to does not have an id. Omitting...");
+                }
                 Display.displayPackMessage("Loading levelupmethod '" + id + "'");
                 Display.changePackTabbing(true);
-                TFMethod method = (TFMethod)loadMethod(TFMethod.class, obj, IDMethod.class);
-                if(method != null) {
+                TFMethod method = (TFMethod) loadMethod(TFMethod.class, obj, IDMethod.class);
+                if (method != null) {
                     levelupMethods.add(new IDMethod(method, id));
                 } else {
                     Display.displayPackMessage("This levelupmethod does not have a valid method");
@@ -2842,7 +2944,7 @@ public class TextFighter {
         Display.displayProgressMessage("Loading the choices of all locations");
         Display.changePackTabbing(true);
         //if(!choicesOfAllLocationsFile.exists()) { Display.displayError("Could not find the default choices of all locations file."); Display.changePackTabbing(false); return false; }
-        ArrayList<String> usedNames = new ArrayList<String>();
+        ArrayList<String> usedNames = new ArrayList<>();
         File file = choicesOfAllLocationsFile;
 
         //Get the choices of all locations from the modpack
@@ -2865,40 +2967,48 @@ public class TextFighter {
                 jsonString = getSingleJsonFileAsString(file.getPath().replace("\\", "/"));
             } else {
                 Display.displayPackMessage("Loading from modpack");
-                try {
-                    Scanner scan = new Scanner(file.getAbsolutePath());
-                    try { jsonString = scan.next(); } catch(NoSuchElementException e) { } //I know this is bad
-                    if(jsonString.isEmpty()) { jsonString = "{}"; }
-                    scan.close();
+                try (Scanner scan = new Scanner(file.getAbsolutePath())) {
+                    jsonString = scan.next();
+                } catch(NoSuchElementException e) {
+                    jsonString = "{}";
                 } catch (NullPointerException e) {
                     Display.displayError("Error while reading file '" + file.getAbsolutePath() + "' from modpack.");
                 }
             }
 
             Display.changePackTabbing(true);
-            JSONArray choicesFile = null;
+            JSONArray choicesFile;
             try { choicesFile = (JSONArray)(((JSONObject)parser.parse(jsonString)).get("choices")); } catch (ParseException e) { Display.displayPackError("Having trouble parsing from file"); e.printStackTrace(); continue; }
             if(choicesFile == null) { continue; }
-            for (int i=0; i<choicesFile.size(); i++) {
-                JSONObject obj = (JSONObject)choicesFile.get(i);
-                String name = (String)obj.get("name");
+            for (Object o : choicesFile) {
+                JSONObject obj = (JSONObject) o;
+                String name = (String) obj.get("name");
                 Display.displayPackMessage("Loading choice '" + name + "'");
-                if((!parsingPack && namesToBeOmitted.contains(name)) || usedNames.contains(name)) { continue; }
-                Display.changePackTabbing(true);
-                String desc = (String)obj.get("description");
-                String usage = (String)obj.get("usage");
-                if(obj.get("methods") == null) { Display.displayPackError("This choice has no methods. Omitting..."); Display.changePackTabbing(false); continue; }
-                if(name == null) { Display.displayPackError("Ths choice has no name. Omitting..."); Display.changePackTabbing(false); continue; }
-                Choice c = new Choice(name, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray)obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray)obj.get("requirements"), Choice.class), (String)obj.get("failMessage"));
-                if(!(c.getMethods() != null && c.getMethods().size() > 0)) { Display.changePackTabbing(false); continue; }
-                JSONArray excludes = (JSONArray)obj.get("excludes");
-                Display.changePackTabbing(false);
-                if(c != null) {
-                    choicesOfAllLocations.add(new ChoiceOfAllLocations(excludes, c));
-                    usedNames.add(name);
-                } else {
-                    Display.displayPackMessage("This choice is not valid");
+                if ((!parsingPack && namesToBeOmitted.contains(name)) || usedNames.contains(name)) {
+                    continue;
                 }
+                Display.changePackTabbing(true);
+                String desc = (String) obj.get("description");
+                String usage = (String) obj.get("usage");
+                if (obj.get("methods") == null) {
+                    Display.displayPackError("This choice has no methods. Omitting...");
+                    Display.changePackTabbing(false);
+                    continue;
+                }
+                if (name == null) {
+                    Display.displayPackError("Ths choice has no name. Omitting...");
+                    Display.changePackTabbing(false);
+                    continue;
+                }
+                Choice c = new Choice(name, desc, usage, loadMethods(ChoiceMethod.class, (JSONArray) obj.get("methods"), Choice.class), loadMethods(Requirement.class, (JSONArray) obj.get("requirements"), Choice.class), (String) obj.get("failMessage"));
+                if (!(c.getMethods() != null && c.getMethods().size() > 0)) {
+                    Display.changePackTabbing(false);
+                    continue;
+                }
+                JSONArray excludes = (JSONArray) obj.get("excludes");
+                Display.changePackTabbing(false);
+                choicesOfAllLocations.add(new ChoiceOfAllLocations(excludes, c));
+                usedNames.add(name);
                 Display.changePackTabbing(false);
             }
             Display.changePackTabbing(false);
@@ -2934,15 +3044,15 @@ public class TextFighter {
             int level = 0;                                                              if(stats.get("level") != null)                      {level = Integer.parseInt((String)stats.get("level"));}
             int experience = 0;                                                         if(stats.get("experience") != null)                 {experience = Integer.parseInt((String)stats.get("experience"));}
             int score = 0;                                                              if(stats.get("score") != null)                      {score = Integer.parseInt((String)stats.get("score"));}
-            int maxhp = player.defaulthp;                                               if(stats.get("maxhealth") != null)                  {maxhp = Integer.parseInt((String)stats.get("maxhealth"));}
-            int hp = player.defaulthp;                                                  if(stats.get("health") != null)                     {hp = Integer.parseInt((String)stats.get("health"));}
+            int maxhp = Player.defaulthp;                                               if(stats.get("maxhealth") != null)                  {maxhp = Integer.parseInt((String)stats.get("maxhealth"));}
+            int hp = Player.defaulthp;                                                  if(stats.get("health") != null)                     {hp = Integer.parseInt((String)stats.get("health"));}
             int deaths = 0;                                                             if(stats.get("deaths") != null)                     {deaths = Integer.parseInt((String)stats.get("deaths"));}
             int kills = 0;                                                              if(stats.get("kills") != null)                      {kills = Integer.parseInt((String)stats.get("kills"));}
-            int coins = player.defaultCoins;                                            if(stats.get("coins") != null)                      {coins = Integer.parseInt((String)stats.get("coins"));}
-            int magic = player.defaultMagic;                                            if(stats.get("magic") != null)                      {magic = Integer.parseInt((String)stats.get("magic"));}
-            int metalscraps = player.defaultMetalscraps;                                if(stats.get("metalscraps") != null)                {metalscraps = Integer.parseInt((String)stats.get("metalscraps"));}
-            int healthPotions = player.defaultHealthPotions;                            if(stats.get("healthPotions") != null)              {healthPotions = Integer.parseInt((String)stats.get("healthPotions"));}
-            int strengthPotions = player.defaultStrengthPotions;                        if(stats.get("strengthPotions") != null)            {strengthPotions = Integer.parseInt((String)stats.get("strengthPotions"));}
+            int coins = Player.defaultCoins;                                            if(stats.get("coins") != null)                      {coins = Integer.parseInt((String)stats.get("coins"));}
+            int magic = Player.defaultMagic;                                            if(stats.get("magic") != null)                      {magic = Integer.parseInt((String)stats.get("magic"));}
+            int metalscraps = Player.defaultMetalscraps;                                if(stats.get("metalscraps") != null)                {metalscraps = Integer.parseInt((String)stats.get("metalscraps"));}
+            int healthPotions = Player.defaultHealthPotions;                            if(stats.get("healthPotions") != null)              {healthPotions = Integer.parseInt((String)stats.get("healthPotions"));}
+            int strengthPotions = Player.defaultStrengthPotions;                        if(stats.get("strengthPotions") != null)            {strengthPotions = Integer.parseInt((String)stats.get("strengthPotions"));}
             int invincibilityPotions = Player.defaultInvincibilityPotions;              if(stats.get("invincibilityPotions") != null)       {invincibilityPotions = Integer.parseInt((String)stats.get("invincibilityPotions"));}
             int turnsWithStrengthLeft = Player.defaultTurnsWithStrengthLeft;            if(stats.get("turnsWithStrengthLeft") != null)      {turnsWithStrengthLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
             int turnsWithInvincibilityLeft = Player.defaultTurnsWithInvincibilityLeft;  if(stats.get("turnsWithInvincibilityLeft") != null) {turnsWithInvincibilityLeft = Integer.parseInt((String)stats.get("turnsWithInvincibilityLeft"));}
@@ -2950,32 +3060,42 @@ public class TextFighter {
 
             JSONArray inventory = (JSONArray)file.get("inventory");
 
-            ArrayList<Item> newInventory = new ArrayList<Item>();
+            ArrayList<Item> newInventory = new ArrayList<>();
 
             //Inventory items
             if(inventory != null && inventory.size()>0) {
-                for (int i=0; i<inventory.size(); i++) {
-                    JSONObject jsonobj = (JSONObject)inventory.get(i);
-                    if(jsonobj.get("name") == null) { continue; }
-                    if(jsonobj.get("itemtype") != null) {
-                        if(jsonobj.get("itemtype").equals("armor")) {
-                            Armor item = getArmorByName((String)jsonobj.get("name"));
-                            if(item != null) { newInventory.add(item); }
-                        } else if(jsonobj.get("itemtype").equals("weapon")) {
-                            Weapon item = getWeaponByName((String)jsonobj.get("name"));
-                            if(item != null) {
-                                if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
+                for (Object o : inventory) {
+                    JSONObject jsonobj = (JSONObject) o;
+                    if (jsonobj.get("name") == null) {
+                        continue;
+                    }
+                    if (jsonobj.get("itemtype") != null) {
+                        if (jsonobj.get("itemtype").equals("armor")) {
+                            Armor item = getArmorByName((String) jsonobj.get("name"));
+                            if (item != null) {
                                 newInventory.add(item);
                             }
-                        } else if(jsonobj.get("itemtype").equals("tool")) {
-                            Tool item = getToolByName((String)jsonobj.get("name"));
-                            if(item != null) {
-                                if(jsonobj.get("durability") != null) { item.setDurability(Integer.parseInt((String)jsonobj.get("durability"))); }
+                        } else if (jsonobj.get("itemtype").equals("weapon")) {
+                            Weapon item = getWeaponByName((String) jsonobj.get("name"));
+                            if (item != null) {
+                                if (jsonobj.get("durability") != null) {
+                                    item.setDurability(Integer.parseInt((String) jsonobj.get("durability")));
+                                }
                                 newInventory.add(item);
                             }
-                        } else if(jsonobj.get("itemtype").equals("specialitem")) {
-                            SpecialItem item = getSpecialItemByName((String)jsonobj.get("name"));
-                            if(item != null) { newInventory.add(item); }
+                        } else if (jsonobj.get("itemtype").equals("tool")) {
+                            Tool item = getToolByName((String) jsonobj.get("name"));
+                            if (item != null) {
+                                if (jsonobj.get("durability") != null) {
+                                    item.setDurability(Integer.parseInt((String) jsonobj.get("durability")));
+                                }
+                                newInventory.add(item);
+                            }
+                        } else if (jsonobj.get("itemtype").equals("specialitem")) {
+                            SpecialItem item = getSpecialItemByName((String) jsonobj.get("name"));
+                            if (item != null) {
+                                newInventory.add(item);
+                            }
                         }
                     }
                 }
@@ -2990,30 +3110,30 @@ public class TextFighter {
             }
             if(currentWeapon == null) {
                 for(Weapon w : weapons) {
-                    if(w.getName().equals(player.defaultCurrentWeaponName)) {
+                    if(w.getName().equals(Player.defaultCurrentWeaponName)) {
                         currentWeapon = w;
                     }
                 }
             }
 
-            ArrayList<Achievement> playerAchievements = new ArrayList<Achievement>();
+            ArrayList<Achievement> playerAchievements = new ArrayList<>();
             JSONArray achievementsArray = (JSONArray)file.get("achievements");
 
             // Adds the previously earned achievements to a new array
             if(achievementsArray != null  && achievementsArray.size()>0) {
-                for(int i=0; i<achievementsArray.size(); i++) {
-                    for(Achievement a : achievements) {
-                        if(achievementsArray.get(i).equals(a.getName())) {
+                for (Object o : achievementsArray) {
+                    for (Achievement a : achievements) {
+                        if (o.equals(a.getName())) {
                             playerAchievements.add(a);
                         }
                     }
                 }
             }
 
-            ArrayList<CustomVariable> newPlayerCustomVariables = new ArrayList<CustomVariable>();
+            ArrayList<CustomVariable> newPlayerCustomVariables = new ArrayList<>();
             JSONArray customVariables = (JSONArray)file.get("customvariables");
 
-            ArrayList<CustomVariable> unusedCustomVariables = new ArrayList<CustomVariable>(playerCustomVariables);
+            ArrayList<CustomVariable> unusedCustomVariables = new ArrayList<>(playerCustomVariables);
 
             //loads the custom variables that were saved
             if((customVariables != null && customVariables.size()>0) && (playerCustomVariables != null && playerCustomVariables.size()>0)) {
@@ -3025,7 +3145,7 @@ public class TextFighter {
                         //Null values are specified by "%null%"
                         if(value.equals("%null%")) { value = null; }
                         else if(type == 0) {
-                            value = (String)obj.get("value");
+                            value = obj.get("value");
                         } else if(type == 1) {
                             value = Integer.parseInt((String)value);
                         } else if(type == 2) {
@@ -3046,12 +3166,14 @@ public class TextFighter {
                         }
                     }
                 }
-                //Add any remaining custom variables
-                for(CustomVariable cv : unusedCustomVariables) { newPlayerCustomVariables.add(cv); }
+                //Add any remaining custom variables not saved
+                newPlayerCustomVariables.addAll(unusedCustomVariables);
+                //Add the new and unused ones to the player's custom variables
+                playerCustomVariables.addAll(newPlayerCustomVariables);
             }
 
             //Create a new player instance with the loaded values
-            player = new Player(deaths, kills, player.getLocation(), hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
+            player = new Player(deaths, kills, player.getLocation(), hp, maxhp, coins, magic, metalscraps, level, experience, score, healthPotions, strengthPotions, invincibilityPotions, turnsWithStrengthLeft, turnsWithInvincibilityLeft, currentWeapon, gameBeaten, newInventory, playerAchievements, playerCustomVariables, deathMethods, levelupMethods);
             addToOutput("Loaded save '" + saveName + "'");
 
         } catch (IOException | ParseException e) { addToOutput("Unable to read the save"); e.printStackTrace(); return false; }
@@ -3075,7 +3197,7 @@ public class TextFighter {
         }
 
         File newGameFile = new File(savesDir.getPath() + File.separator + name + ".json");
-        try { newGameFile.createNewFile();} catch (IOException e) {
+        try { if(!newGameFile.createNewFile()) { addToOutput("Unable to create new file"); } } catch (IOException e) {
             addToOutput("Failed to create new file");
             e.printStackTrace();
             return;
@@ -3109,17 +3231,15 @@ public class TextFighter {
         JSONArray inventory = new JSONArray();
 
         Weapon currentWeapon = null;
-        if(currentWeapon == null) {
-            for(Weapon w : weapons) {
-                if(w.getName().equals(player.defaultCurrentWeaponName)) {
-                    currentWeapon = w;
-                    if(!w.getName().equals("fists")) {
-                        JSONObject weapon = new JSONObject();
-                        weapon.put("name", w.getName());
-                        weapon.put("itemtype", "weapon");
-                        weapon.put("durability", Integer.toString(w.getDurability()));
-                        inventory.add(weapon);
-                    }
+        for(Weapon w : weapons) {
+            if(w.getName().equals(Player.defaultCurrentWeaponName)) {
+                currentWeapon = w;
+                if(!w.getName().equals("fists")) {
+                    JSONObject weapon = new JSONObject();
+                    weapon.put("name", w.getName());
+                    weapon.put("itemtype", "weapon");
+                    weapon.put("durability", Integer.toString(w.getDurability()));
+                    inventory.add(weapon);
                 }
             }
         }
@@ -3160,7 +3280,7 @@ public class TextFighter {
         addToOutput("Added new save '" + name + "'");
 
         //Writes it
-        try (FileWriter w = new FileWriter(newGameFile);) {
+        try (FileWriter w = new FileWriter(newGameFile)) {
             w.write(base.toJSONString());
         } catch (IOException e) { e.printStackTrace(); }
     }
@@ -3172,7 +3292,13 @@ public class TextFighter {
      */
     public static boolean saveGame() {
 
-        if(currentSaveFile != null && !currentSaveFile.exists()) { try { currentSaveFile.createNewFile(); } catch (IOException e) { addToOutput("Unable to save game!"); return false; }}
+        if(currentSaveFile != null && !currentSaveFile.exists()) {
+            try {
+                if(!currentSaveFile.createNewFile()) { addToOutput("Unable to save game!"); return false; }
+            } catch (IOException e) {
+                addToOutput("Unable to save game!"); return false;
+            }
+        }
 
         //Rewrites the whole save file with the new stuff
 
@@ -3194,7 +3320,6 @@ public class TextFighter {
         stats.put("invincibilityPotions", Integer.toString(player.getInvincibilityPotions()));
         stats.put("turnsWithStrengthLeft", Integer.toString(player.getTurnsWithStrengthLeft()));
         stats.put("turnsWithInvincibilityLeft", Integer.toString(player.getTurnsWithInvincibilityLeft()));
-        stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
         if(player.getCurrentWeapon() != null) {stats.put("currentWeapon", player.getCurrentWeapon().getName());} else { stats.put("currentWeapon", "fists"); }
 
         JSONArray inventory = new JSONArray();
@@ -3253,7 +3378,7 @@ public class TextFighter {
         base.put("name", gameName);
 
         //Writes it
-        try (FileWriter w = new FileWriter(currentSaveFile);) {
+        try (FileWriter w = new FileWriter(currentSaveFile)) {
             w.write(base.toJSONString());
             addToOutput("Game saved in file '" + currentSaveFile.getName() + "'!");
         } catch (IOException e) { e.printStackTrace(); return false; }
@@ -3307,8 +3432,8 @@ public class TextFighter {
         //Iterate through the enemies and find out which has the lowest difficulty in the array
         //Then add that enemy to the sorted array and remove it from the remaining array
         //The loop continues iterating only on the unsorted (remaining array) enemies to save assets
-        ArrayList<Enemy> sorted = new ArrayList<Enemy>();
-        ArrayList<Enemy> remaining = new ArrayList<Enemy>(enemies);
+        ArrayList<Enemy> sorted = new ArrayList<>();
+        ArrayList<Enemy> remaining = new ArrayList<>(enemies);
         while(remaining.size() != 0) {
             int lowestDiffIndex = 0;
             int lowestKnownDifficulty = 0;
@@ -3328,7 +3453,7 @@ public class TextFighter {
 
     /*** Sets the possible enemies arraylist in TextFighter with enemies that meet their requirements for the player to fight.*/
     public static void setPossibleEnemies() {
-        ArrayList<Enemy> possible = new ArrayList<Enemy>();
+        ArrayList<Enemy> possible = new ArrayList<>();
         for(Enemy e : enemies) {
             boolean valid = true;
             if(e.getLevelRequirement() <= player.getLevel()) {
@@ -3355,7 +3480,7 @@ public class TextFighter {
      */
     public synchronized static boolean invokePlayerInput() {
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));){
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))){
             String input = "";
             if(Display.gui != null) {
                 if(inputHistory.size() == 0) { inputHistory.addCommand(""); } //Create a new command in the history.
@@ -3385,49 +3510,39 @@ public class TextFighter {
                 Display.gui.copiedInputHistory = (HistoryLinkedList)inputHistory.clone();
                 Display.gui.copiedInputHistory.setCurrentIndex(0);
             }
-            if(input.trim() != null) {
-                Display.writeToLogFile("[Input] " + input);
-                boolean validChoice = false;
-                //Iterate through all current possible choices
-                for(Choice c : player.getLocation().getPossibleChoices()){
-                    //Makes sure the input has any arguments
-                    if(input.indexOf(" ") != -1) {
-                        if (c.getName().equals(input.substring(0,input.indexOf(" ")))) {
-                            validChoice = true;
-                            break;
-                        }
-                    //If no arguments
-                    } else {
-                        if (c.getName().equals(input)) {
-                            validChoice = true;
-                            break;
-                        }
+            Display.writeToLogFile("[Input] " + input);
+            boolean validChoice = false;
+            //Iterate through all current possible choices
+            for(Choice c : player.getLocation().getPossibleChoices()){
+                //Makes sure the input has any arguments
+                if(input.contains(" ")) {
+                    if (c.getName().equals(input.substring(0,input.indexOf(" ")))) {
+                        validChoice = true;
+                        break;
+                    }
+                //If no arguments
+                } else {
+                    if (c.getName().equals(input)) {
+                        validChoice = true;
+                        break;
                     }
                 }
-                if(validChoice) { //The choice does exist
-                    ArrayList<String> inputArrayList = new ArrayList<String>(Arrays.asList(input.split(" ")));
-                    String commandName = inputArrayList.get(0);
-                    inputArrayList.remove(0);
-                    for(Choice c : player.getLocation().getPossibleChoices()) {
-                        if(c.getName().equals(commandName)) {
-                            //Pass the input to the choice so that the choice can put the input where placeholders ("%ph%") are in the arguments
-                            if(inputArrayList != null) {
-                                return(c.invokeMethods(inputArrayList));
-                            } else {
-                                return(c.invokeMethods(new ArrayList<String>()));
-                            }
-                        }
+            }
+            if(validChoice) { //The choice does exist
+                ArrayList<String> inputArrayList = new ArrayList<>(Arrays.asList(input.split(" ")));
+                String commandName = inputArrayList.get(0);
+                inputArrayList.remove(0);
+                for(Choice c : player.getLocation().getPossibleChoices()) {
+                    if(c.getName().equals(commandName)) {
+                        //Pass the input to the choice so that the choice can put the input where placeholders ("%ph%") are in the arguments
+                        return(c.invokeMethods(inputArrayList));
                     }
-					return true;
-                } else { //The choice doesn't exist
-                    if(input.indexOf(" ") != -1) {
-                        addToOutput("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
-                    } else {
-                        addToOutput("Invalid choice - '" + input + "'");
-                    }
-                    return false;
                 }
-            } else {addToOutput("Pick one of the choices shown.");}
+                return true;
+            } else { //The choice doesn't exist
+                addToOutput("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
+                return false;
+            }
         } catch (IOException e) {
             Display.displayError("An error occured while reading input!");
             e.printStackTrace();
