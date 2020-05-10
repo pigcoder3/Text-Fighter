@@ -74,7 +74,7 @@ the user is notified and the usage of the choices is outputted.
 public class TextFighter {
 
     /**Object that waits for a message*/
-    public static final Object waiter = new Object();
+    public static Object waiter = new Object();
 
     /**The default installation location on Windows10/8/7*/
     public static File windowsInstallLocation; //we cannot run System.getenv("APPDATA") on OSes other than windows
@@ -2085,6 +2085,7 @@ public class TextFighter {
                     Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
                     String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Tool.defaultDurability;                    if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
+                    System.out.println(name + " " + durability);
                     int maxDurability = Tool.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Tool.defaultUnbreakable;              if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     ArrayList<CustomVariable> customVars = new ArrayList<>();
@@ -3073,11 +3074,13 @@ public class TextFighter {
                         if (jsonobj.get("itemtype").equals("armor")) {
                             Armor item = getArmorByName((String) jsonobj.get("name"));
                             if (item != null) {
+                                item = (Armor)item.clone(); //We want a COPY
                                 newInventory.add(item);
                             }
                         } else if (jsonobj.get("itemtype").equals("weapon")) {
                             Weapon item = getWeaponByName((String) jsonobj.get("name"));
                             if (item != null) {
+                                item = (Weapon)item.clone(); //We want a COPY
                                 if (jsonobj.get("durability") != null) {
                                     item.setDurability(Integer.parseInt((String) jsonobj.get("durability")));
                                 }
@@ -3086,6 +3089,7 @@ public class TextFighter {
                         } else if (jsonobj.get("itemtype").equals("tool")) {
                             Tool item = getToolByName((String) jsonobj.get("name"));
                             if (item != null) {
+                                item = (Tool)item.clone(); //We want a COPY
                                 if (jsonobj.get("durability") != null) {
                                     item.setDurability(Integer.parseInt((String) jsonobj.get("durability")));
                                 }
@@ -3094,6 +3098,7 @@ public class TextFighter {
                         } else if (jsonobj.get("itemtype").equals("specialitem")) {
                             SpecialItem item = getSpecialItemByName((String) jsonobj.get("name"));
                             if (item != null) {
+                                item = (SpecialItem) item.clone(); //We want a COPY
                                 newInventory.add(item);
                             }
                         }
@@ -3137,28 +3142,32 @@ public class TextFighter {
 
             //loads the custom variables that were saved
             if((customVariables != null && customVariables.size()>0) && (playerCustomVariables != null && playerCustomVariables.size()>0)) {
-                for(int i=0; i<customVariables.size(); i++) {
-                    JSONObject obj = (JSONObject)customVariables.get(i);
-                    if(obj.get("name") != null && obj.get("type") != null && obj.get("value") != null) {
-                        int type = Integer.parseInt((String)obj.get("type"));
+                for (Object customVariable : customVariables) {
+                    JSONObject obj = (JSONObject) customVariable;
+                    if (obj.get("name") != null && obj.get("type") != null && obj.get("value") != null) {
+                        int type = Integer.parseInt((String) obj.get("type"));
                         Object value = obj.get("value");
                         //Null values are specified by "%null%"
-                        if(value.equals("%null%")) { value = null; }
-                        else if(type == 0) {
+                        if (value.equals("%null%")) {
+                            value = null;
+                        } else if (type == 0) {
                             value = obj.get("value");
-                        } else if(type == 1) {
-                            value = Integer.parseInt((String)value);
-                        } else if(type == 2) {
-                            value = Double.parseDouble((String)value);
-                        } else if(type == 3) {
-                            value = Boolean.parseBoolean((String)value);
-                        } else if(type == 4) {
-                            try { value = Class.forName((String)value); } catch(ClassNotFoundException e) { continue; }
+                        } else if (type == 1) {
+                            value = Integer.parseInt((String) value);
+                        } else if (type == 2) {
+                            value = Double.parseDouble((String) value);
+                        } else if (type == 3) {
+                            value = Boolean.parseBoolean((String) value);
+                        } else if (type == 4) {
+                            try {
+                                value = Class.forName((String) value);
+                            } catch (ClassNotFoundException e) {
+                                continue;
+                            }
                         }
 
-                        for(int p=0; p<unusedCustomVariables.size(); i++) {
-                            CustomVariable cv = unusedCustomVariables.get(i);
-                            if(cv.getName().equals(obj.get("name"))) {
+                        for (CustomVariable cv : unusedCustomVariables) {
+                            if (cv.getName().equals(obj.get("name"))) {
                                 cv.setValue(value);
                                 newPlayerCustomVariables.add(cv);
                                 break;
@@ -3314,6 +3323,7 @@ public class TextFighter {
         stats.put("kills", Integer.toString(player.getKills()));
         stats.put("coins", Integer.toString(player.getCoins()));
         stats.put("magic", Integer.toString(player.getMagic()));
+        stats.put("metalscraps", Integer.toString(player.getMetalScraps()));
         stats.put("gameBeaten", Boolean.toString(player.getGameBeaten()));
         stats.put("healthPotions", Integer.toString(player.getHealthPotions()));
         stats.put("strengthpotions", Integer.toString(player.getStrengthPotions()));
@@ -3540,7 +3550,11 @@ public class TextFighter {
                 }
                 return true;
             } else { //The choice doesn't exist
-                addToOutput("Invalid choice - '" + input.substring(0,input.indexOf(" ")) + "'");
+                if(input.contains(" ")) {
+                    addToOutput("Invalid choice - '" + input.substring(0, input.indexOf(" ")) + "'");
+                } else {
+                    addToOutput("Invalid choice - '" + input + "'");
+                }
                 return false;
             }
         } catch (IOException e) {
