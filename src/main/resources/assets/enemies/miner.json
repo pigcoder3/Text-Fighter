@@ -29,7 +29,7 @@
                 }
             ],
             "chance" : "50",
-            "rewarditem" : "A pickaxe. It can be used to mine metal scraps."
+            "rewarditem" : "pickaxe"
         },
         {
             "method" : "increaseExperience",

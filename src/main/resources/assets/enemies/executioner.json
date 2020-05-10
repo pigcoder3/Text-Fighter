@@ -16,7 +16,7 @@
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
             "chance" : "25",
-            "rewarditem" : "A battleaxe.",
+            "rewarditem" : "battleaxe",
             "requirements" : [
                 {
                     "method" : "isCarrying",

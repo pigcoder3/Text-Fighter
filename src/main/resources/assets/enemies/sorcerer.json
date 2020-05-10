@@ -29,7 +29,7 @@
                 }
             ],
             "chance" : "10",
-            "rewarditem" : "A battle wand"
+            "rewarditem" : "battle wand"
         },
         {
             "method" : "gainCoins",

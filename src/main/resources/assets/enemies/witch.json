@@ -16,7 +16,7 @@
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
             "chance" : "75",
-            "rewarditem" : "A map to a witch's hut",
+            "rewarditem" : "witch map",
             "requirements" : [
                 {
                     "method" : "isCarrying",
@@ -56,7 +56,7 @@
             "field" : "player",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
             "chance" : "75",
-            "rewarditem" : "A glass bottle."
+            "rewarditem" : "1 glass bottle"
         },
         {
             "method" : "increaseExperience",
