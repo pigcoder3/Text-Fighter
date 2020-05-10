@@ -505,13 +505,12 @@ public class Enemy implements Cloneable {
         if(possibleRewardMethods != null) {
             for(Reward r : possibleRewardMethods) {
                 String output = r.invokeMethod();
-                System.out.println(output);
                 if(output != null) { rewardStrings.add(output); }
             }
         }
         //Print out all of the rewards the player recieved
         if(rewardStrings.size() > 0) {
-            TextFighter.addToOutput("Rewards:");
+            TextFighter.addToOutput("Enemy Rewards:");
             for(int i=0; i<rewardStrings.size(); i++) {
                 String s = rewardStrings.get(i);
                 if(i != rewardStrings.size()-1) {
@@ -526,15 +525,12 @@ public class Enemy implements Cloneable {
      * <p>Adds valid rewardMethods to a new ArrayList that the {@link #possibleRewardMethods} is set to after.</p>
      */
     public void filterRewardMethods() {
-        System.out.println("Filtering rewards");
         //Filter out any rewards that do not meet the requirements
         possibleRewardMethods.clear();
         if(allRewardMethods != null){
-            System.out.println("There are some possible rewards");
             for(Reward r : allRewardMethods) {
                 boolean valid = true;
                 if(r.getRequirements() != null) {
-                    System.out.println("This reward has requirements");
                     for(Requirement rq : r.getRequirements()) {
                         if(!rq.invokeMethod()) {
                             valid = false;

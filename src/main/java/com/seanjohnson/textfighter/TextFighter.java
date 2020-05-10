@@ -1931,7 +1931,7 @@ public class TextFighter {
                     int missChance = Weapon.defaultMissChance;                  if(itemFile.get("misschance") != null) { missChance = Integer.parseInt((String)itemFile.get("misschance")); }
                     String description = Weapon.defaultDescription;             if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Weapon.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
-                    int maxDurability = Weapon.defaultMaxDurability;            if(itemFile.get("maxdurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxdurability")); }
+                    int maxDurability = Weapon.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Weapon.defaultUnbreakable;            if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
                     for(int i=0; i<weaponCustomVariables.size(); i++) {
@@ -1971,7 +1971,7 @@ public class TextFighter {
                     weapons.add(new Weapon("fists", "Your fists, you don't need a description about what that is.", 5, 10, 5, new ArrayList<>(), 100, 100, true));
                 }
             }
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("armor", directory)) != null && itemDirectory != null)) {
+            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("armor", directory)) != null)) {
                 Display.displayPackMessage("Loading armor");
                 ArrayList<String> usedNames = new ArrayList<String>();
 
@@ -2011,7 +2011,7 @@ public class TextFighter {
                     double protectionamount = Armor.defaultProtectionAmount;    if(itemFile.get("protectionamount") != null) { protectionamount = Double.parseDouble((String)itemFile.get("protectionamount")); }
                     String description = Armor.defaultDescription;              if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Armor.defaultDurability;                  if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
-                    int maxDurability = Armor.defaultMaxDurability;            if(itemFile.get("maxdurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxdurability")); }
+                    int maxDurability = Armor.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Armor.defaultUnbreakable;            if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
                     for(int i=0; i<armorCustomVariables.size(); i++) {
@@ -2042,7 +2042,7 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("tools", directory)) != null && itemDirectory != null)) {
+            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("tools", directory)) != null)) {
                 Display.displayPackMessage("Loading tools");
                 ArrayList<String> usedNames = new ArrayList<String>();
 
@@ -2081,7 +2081,7 @@ public class TextFighter {
                     Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
                     String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Tool.defaultDurability;                    if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
-                    int maxDurability = Tool.defaultMaxDurability;            if(itemFile.get("maxdurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxdurability")); }
+                    int maxDurability = Tool.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Tool.defaultUnbreakable;              if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     ArrayList<CustomVariable> customVars = new ArrayList<CustomVariable>();
                     for(int i=0; i<toolCustomVariables.size(); i++) {
@@ -2112,7 +2112,7 @@ public class TextFighter {
                     Display.changePackTabbing(false);
                 }
             }
-            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("specialitems", directory)) != null && itemDirectory != null)) {
+            if(!parsingPack || (parsingPack && (itemDirectory = getPackDirectory("specialitems", directory)) != null)) {
                 Display.displayPackMessage("Loading specialitems");
                 ArrayList<String> usedNames = new ArrayList<String>();
 

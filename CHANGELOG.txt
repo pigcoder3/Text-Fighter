@@ -5,9 +5,15 @@ Release v1.3.3
     - Accepted input even if input field is empty (waste of processing power)
     - Achievements were not correctly loaded from files (meaning they were not kept when saved)
 	- Removing a weapon from the player's inventory uneqipped the player's weapon
+	- Fixed protection
   - Modmakers:
-    - Kills are now increased upon killing an enemy
 	- Rewards json array name changed from "rewardMethods" to "rewards"
+	- Added totalProtection default value for the player
+	  - Stores minimum protection
+	- Added maxProtection default value for the player
+	- Fixes:
+	  - Kills were not increased upon killing an enemy
+	  - max durability was not loaded from mods correctly
   - Vanilla TextFighter:
     - Additions:
       - Added the shield tool

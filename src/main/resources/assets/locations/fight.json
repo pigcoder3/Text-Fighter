@@ -40,7 +40,7 @@
                 {
                     "method" : "use",
                     "class" : "com.seanjohnson.textfighter.item.Weapon",
-                    "arguments" : ["You attacked your enemy.","1"],
+                    "arguments" : ["","1"],
                     "argumentTypes" : ["0","1"],
                     "field" : {
                         "method" : "getCurrentWeapon",
