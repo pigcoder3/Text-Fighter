@@ -172,9 +172,9 @@ public class Player {
     private int experience = defaultExperience;
     /**
      * Stores the experience needed to level up.
-     * <p>Set to {@link #level} * 10 + 100
+     * <p>Set to {@link #level}^2 * 200
      */
-    private int experienceNeeded = level * 10 + 100;
+    private int experienceNeeded = (int)Math.pow(level, 2) * 200;
     /**
      * Stores the player's score.
      * <p>Set to {@link #defaultScore}.</p>
@@ -838,12 +838,12 @@ public class Player {
      * @return      Whether or not the player has leveled up.
      */
     public boolean checkForLevelUp() {
-        experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
+        experienceNeeded = (int)Math.pow(level, 2) * 200;
         if(experience >= experienceNeeded) {
             decreaseExperience(experienceNeeded);
             increaseLevel(1);
             TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
-            experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
+            experienceNeeded = (int)Math.pow(level, 2) * 200;
             invokeLevelupMethods();
             return true;
         } else {
@@ -1230,7 +1230,7 @@ public class Player {
         this.metalScraps = metalScraps;
         this.level = level;
         this.experience = experience;
-        this.experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
+        this.experienceNeeded = (int)Math.pow(level, 2) * 200;
         this.score = score;
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
