@@ -3413,7 +3413,6 @@ public class TextFighter {
         PackMethods.getSaveFiles();
         //Makes sure the player isnt attempting to delete the save that is currently being used and the player hasnt beaten the game
         //When the game has been beaten, saves are not deleted when the player dies
-        if(currentSaveFile != null && ( ( (name+".json").equals(currentSaveFile.getName()) && player.getAlive()) || player.getGameBeaten())) {return; }
         boolean saveExists = false;
         //Find the save in the saves array
         for(int i=0;i<saves.size();i++){

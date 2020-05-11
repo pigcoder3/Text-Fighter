@@ -1,6 +1,5 @@
 package com.seanjohnson.textfighter;
 
-import com.seanjohnson.textfighter.*;
 import com.seanjohnson.textfighter.location.Location;
 import com.seanjohnson.textfighter.*;
 import com.seanjohnson.textfighter.display.Display;
