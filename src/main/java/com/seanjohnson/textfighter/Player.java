@@ -841,10 +841,10 @@ public class Player {
     public boolean checkForLevelUp() {
         experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
         if(experience >= experienceNeeded) {
-            decreaseExperience(level*10+100);
+            decreaseExperience(experienceNeeded);
             increaseLevel(1);
             TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
-            experienceNeeded = level * 10 + 100;
+            experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
             invokeLevelupMethods();
             return true;
         } else {
