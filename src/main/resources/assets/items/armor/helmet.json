@@ -2,7 +2,7 @@
 
     "name" : "helmet",
     "description" : "A piece of armor that covers your head",
-    "protectionamount" : "15",
+    "protectionamount" : "7",
     "durability" : "100",
     "maxDurability" : "100",
     "unbreakable" : "false"

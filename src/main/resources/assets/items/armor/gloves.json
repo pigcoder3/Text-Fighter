@@ -2,7 +2,7 @@
 
     "name" : "gloves",
     "description" : "A piece of armor that covers your hands",
-    "protectionamount" : "5",
+    "protectionamount" : "3",
     "durability" : "75",
     "maxDurability" : "75",
     "unbreakable" : "false"

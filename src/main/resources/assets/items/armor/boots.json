@@ -2,7 +2,7 @@
 
     "name" : "boots",
     "description" : "A piece of armor that covers your feet",
-    "protectionamount" : "10",
+    "protectionamount" : "5",
     "durability" : "100",
     "maxDurability" : "100",
     "unbreakable" : "false"
