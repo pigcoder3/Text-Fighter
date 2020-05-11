@@ -3199,12 +3199,13 @@ public class TextFighter {
      */
     public static void newGame(String name) {
 
-        // Tells the player if they would overwrite a game (And doesnt allow them to do so)
+        // Tells the player if they would overwrite a save (And doesnt allow them to do so)
         if(PackMethods.getSaveFiles().contains(name)) {
             addToOutput("There is already a save with that name. Pick another.");
             return;
         }
 
+        // attempts to create the save file
         File newGameFile = new File(savesDir.getPath() + File.separator + name + ".json");
         try { if(!newGameFile.createNewFile()) { addToOutput("Unable to create new file"); } } catch (IOException e) {
             addToOutput("Failed to create new file");
@@ -3215,83 +3216,35 @@ public class TextFighter {
         currentSaveFile = newGameFile;
         gameName = name;
 
-        //Writes all the default stuff to the file
-
-        JSONObject base = new JSONObject();
-
-        JSONObject stats = new JSONObject();
-        stats.put("level", Integer.toString(Player.defaultLevel));
-        stats.put("experience", Integer.toString(Player.defaultExperience));
-        stats.put("score", Integer.toString(Player.defaultScore));
-        stats.put("maxhealth", Integer.toString(Player.defaulthp));
-        stats.put("health", Integer.toString(Player.defaulthp));
-        stats.put("deaths", 0);
-        stats.put("kills", 0);
-        stats.put("coins", Integer.toString(Player.defaultCoins));
-        stats.put("magic", Integer.toString(Player.defaultMagic));
-        stats.put("hppotions", Integer.toString(Player.defaultHealthPotions));
-        stats.put("strpotions", Integer.toString(Player.defaultStrengthPotions));
-        stats.put("invincibilityPotions", Integer.toString(Player.defaultInvincibilityPotions));
-        stats.put("turnsWithStrengthLeft", Integer.toString(Player.defaultTurnsWithStrengthLeft));
-        stats.put("turnsWithInvincibilityLeft", Integer.toString(Player.defaultTurnsWithInvincibilityLeft));
-        stats.put("gameBeaten", false);
-        stats.put("currentWeapon", Player.defaultCurrentWeaponName);
-
-        JSONArray inventory = new JSONArray();
-
-        Weapon currentWeapon = null;
-        for(Weapon w : weapons) {
-            if(w.getName().equals(Player.defaultCurrentWeaponName)) {
-                currentWeapon = w;
-                if(!w.getName().equals("fists")) {
-                    JSONObject weapon = new JSONObject();
-                    weapon.put("name", w.getName());
-                    weapon.put("itemtype", "weapon");
-                    weapon.put("durability", Integer.toString(w.getDurability()));
-                    inventory.add(weapon);
-                }
-            }
-        }
-
         //Initializes the game with a default player
-        player = new Player(player.getLocation(), currentWeapon, playerCustomVariables, deathMethods, levelupMethods);
-
-        JSONArray customVariables = new JSONArray();
-        //for all customvariables that are to be saved
-        if(player.getCustomVariables() != null) {
-            for(CustomVariable cv : player.getCustomVariables()) {
-                if(cv.getIsSaved()) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("name",cv.getName());
-                    if(cv.getValueType().equals(String.class)) {
-                        obj.put("type", "0");
-                    } else if(cv.getValueType().equals(int.class)) {
-                        obj.put("type", "1");
-                    } else if(cv.getValueType().equals(double.class)) {
-                        obj.put("type", "2");
-                    } else if(cv.getValueType().equals(boolean.class)) {
-                        obj.put("type", "3");
-                    } else if(cv.getValueType().equals(Class.class)) {
-                        obj.put("type", "4");
-                    } else {
-                        continue;
-                    }
-                    customVariables.add(obj);
-                }
-            }
-        }
-
-        base.put("customvariables", customVariables);
-        base.put("inventory", inventory);
-        base.put("stats", stats);
-        base.put("name", name);
-
-        addToOutput("Added new save '" + name + "'");
+        player = new Player(
+                0, //deaths
+                0, //kills
+                player.getLocation(),
+                Player.defaulthp,
+                Player.defaultMaxhp,
+                Player.defaultCoins,
+                Player.defaultMagic,
+                Player.defaultMetalscraps,
+                Player.defaultLevel,
+                Player.defaultExperience,
+                Player.defaultScore,
+                Player.defaultHealthPotions,
+                Player.defaultStrengthPotions,
+                Player.defaultInvincibilityPotions,
+                Player.defaultTurnsWithStrengthLeft,
+                Player.defaultTurnsWithInvincibilityLeft,
+                getWeaponByName(Player.defaultCurrentWeaponName),
+                false,
+                new ArrayList<>(),
+                achievements,
+                playerCustomVariables,
+                deathMethods,
+                levelupMethods
+        );
 
         //Writes it
-        try (FileWriter w = new FileWriter(newGameFile)) {
-            w.write(base.toJSONString());
-        } catch (IOException e) { e.printStackTrace(); }
+        saveGame();
     }
 
     /**
@@ -3301,7 +3254,9 @@ public class TextFighter {
      */
     public static boolean saveGame() {
 
-        if(currentSaveFile != null && !currentSaveFile.exists()) {
+        if(currentSaveFile == null) { addToOutput("No save loaded"); return false; }
+
+        if(!currentSaveFile.exists()) {
             try {
                 if(!currentSaveFile.createNewFile()) { addToOutput("Unable to save game!"); return false; }
             } catch (IOException e) {
@@ -3413,7 +3368,7 @@ public class TextFighter {
         PackMethods.getSaveFiles();
         //Makes sure the player isnt attempting to delete the save that is currently being used and the player hasnt beaten the game
         //When the game has been beaten, saves are not deleted when the player dies
-        if(currentSaveFile != null && ( ( (name+".json").equals(currentSaveFile.getName()))) { currentSaveFile = null; } //No longer loaded a save
+        if(currentSaveFile != null && ( ( (name+".json").equals(currentSaveFile.getName())))) { currentSaveFile = null; } //No longer loaded a save
         boolean saveExists = false;
         //Find the save in the saves array
         for(int i=0;i<saves.size();i++){

@@ -1230,7 +1230,7 @@ public class Player {
         this.metalScraps = metalScraps;
         this.level = level;
         this.experience = experience;
-        this.experienceNeeded = this.level * 10 + 100;
+        this.experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
         this.score = score;
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
