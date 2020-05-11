@@ -1,7 +1,7 @@
 Basic Info:
     Name: leggings
     Description: A piece of armor that covers your legs
-    Protection Amount: 20%
+    Protection Amount: 10%
 
 Obtaining:
     Crafted at the forge for 125 metal scraps
