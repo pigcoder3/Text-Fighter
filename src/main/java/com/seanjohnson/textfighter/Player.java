@@ -839,7 +839,7 @@ public class Player {
      * @return      Whether or not the player has leveled up.
      */
     public boolean checkForLevelUp() {
-        experienceNeeded = level * 10 + 100;
+        experienceNeeded = (int)Math.pow(level, 2) * 200 + 100;
         if(experience >= experienceNeeded) {
             decreaseExperience(level*10+100);
             increaseLevel(1);

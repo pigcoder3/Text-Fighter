@@ -17,11 +17,19 @@ Release v1.3.3
   - Vanilla TextFighter:
     - Additions:
       - Added the shield tool
-	    - Make yourself invinsible for 1 turn during a fight (negating your enemy's next attack)
+	    - Blocks your enemy's next attack
 	    - Crafted at the forge for 25 metal scraps and 15 wood
 		- One durability is used each time the shield is used
-    - Interfaces:
+	- Changes:
 	  - Kills are now shown in the player stats interface
+	  - Armor protection amounts decreased: 
+	    - Helmet: 7%
+		- Chestplate: 15%
+		- Gloves: 3%
+		- Leggings: 10%
+		- Boots: 5%
+	  - Increased experience requirement to level up
+	    - New formula: level^2 * 200 + 100
     - Fixes:
       - Rewards were not given when killing the lumberjack
       - No reward string was displayed for coins and experience when miner is killed
