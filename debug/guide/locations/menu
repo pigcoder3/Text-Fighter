@@ -107,16 +107,16 @@ Choices:
     Usage: savemenu
     Requirements: None
 
-    Name: debug
-    Description: Goes to the debug location.
-    Function: Moves you to the debug location.
-    Usage: debug
-    Requirements: None
-
     Name: respawn
     Description: Respawn. WARNING: All things that normally happen when you die will happen.
     Function: Kills you.
     Usage: respawn
+    Requirements: None
+
+    Name: debug
+    Description: Moves you to the debug menu
+    Function: Moves you to the debug menu where values can be modified for debugging purposes
+    Usage: debug
     Requirements: None
 
 Entering:

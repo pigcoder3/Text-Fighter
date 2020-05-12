@@ -79,10 +79,10 @@ public class TextFighter {
     /**The default installation location on Windows10/8/7*/
     public static File windowsInstallLocation; //we cannot run System.getenv("APPDATA") on OSes other than windows
 
-    /**The default installation location on Windows10/8/7*/
+    /**The default installation location on MacOS*/
     public static File macInstallLocation = new File(System.getProperty("user.home") + "/Library/Application support/");
 
-    /**The default installation location on Windows10/8/7*/
+    /**The default installation location on other OSes (like Linux, and literally any other OS to ever exist)*/
     public static File otherInstallLocation = new File(System.getProperty("user.home") + "/");
 
     /**Application installation directory name*/
