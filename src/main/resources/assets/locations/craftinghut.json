@@ -71,6 +71,15 @@
                         "30"
                     ],
                     "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["staff","weapon"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "neededBoolean" : "false"
                 }
             ]
         },
@@ -181,6 +190,15 @@
                         "200"
                     ],
                     "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["leafdisguise","specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "neededBoolean" : "false"
                 }
             ]
         },
