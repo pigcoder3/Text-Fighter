@@ -14,6 +14,7 @@ Release v1.3.3
 	- Fixes:
 	  - Kills were not increased upon killing an enemy
 	  - max durability was not loaded from mods correctly
+	  - Arguments were "stuck" if field of method was a null value
   - Vanilla TextFighter:
     - Additions:
       - Added the shield tool
@@ -42,6 +43,7 @@ Release v1.3.3
       - Many of the enemies did not give rewards when killed
 	  - The leaf disguise could not be crafted in the crafting hut
 	  - Total protection from armor and other items is now shown in player stats interface
+	  - Arguments got "stuck" after inputting incorrect arguments when equipping a weapon in the inventory
 
 Release v1.3.2
   - Modmakers:

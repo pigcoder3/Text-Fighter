@@ -590,12 +590,11 @@ public class Player {
             return;
         }
         Weapon weapon = (Weapon)getFromInventory(name, "weapon");
-        if(weapon == null) { TextFighter.addToOutput("The player has no weapon of name '" + name + "'"); return; }
+        if(weapon == null) { TextFighter.addToOutput("The player has no weapon of name '" + name + "'"); }
         else {
             currentWeapon = weapon;
             TextFighter.addToOutput("Equipped weapon '" + name + "'");
             calculateStrength();
-            return;
         }
     }
     /**
@@ -607,7 +606,7 @@ public class Player {
         if(currentWeapon == null && (name == null || name.equals("fists"))) { return true;}
         if(currentWeapon != null) {
             if(currentWeapon.getName() != null) {
-                return currentWeapon.getName() == name;
+                return currentWeapon.getName().equals(name);
             }
         }
         return false;
