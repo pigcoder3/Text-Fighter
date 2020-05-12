@@ -394,7 +394,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
-                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
+                        destDir.mkdirs(); //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -425,7 +425,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -448,7 +448,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -471,7 +471,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -494,7 +494,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -519,7 +519,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
-                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
+                        destDir.mkdirs(); //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -542,7 +542,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
-                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
+                        destDir.mkdirs(); //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -589,7 +589,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "locations");
-                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
+                        destDir.mkdirs(); //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -620,7 +620,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "weapons");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -643,7 +643,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "tools");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -666,7 +666,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsoluteFile() + File.separator + "items" + File.separator + "armor");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -689,7 +689,7 @@ public class TextFighter {
                             } //It is a directory so ignore it
                             if (!namesToBeOmitted.contains(s)) {
                                 File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "items" + File.separator + "specialitems");
-                                if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists so we vibin
+                                destDir.mkdirs(); //Will fail silently if it already exists so we vibin
                                 String newName = s.substring(0,s.length()-5);
                                 File destFile = new File(destDir + File.separator + newName);
                                 if (!destFile.exists()) {
@@ -714,7 +714,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "enemies");
-                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
+                        destDir.mkdirs(); //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -737,7 +737,7 @@ public class TextFighter {
                     } //The method grabbed a directory here.
                     if (!namesToBeOmitted.contains(s)) {
                         File destDir = new File(guideDirectory.getAbsolutePath() + File.separator + "achievements");
-                        if(!destDir.mkdirs()) { continue; } //Will fail silently if it already exists
+                        destDir.mkdirs(); //Will fail silently if it already exists
                         String newName = s.substring(0,s.length()-5);
                         File destFile = new File(destDir + File.separator + newName);
                         if (!destFile.exists()) {
@@ -837,9 +837,9 @@ public class TextFighter {
 
         fileInJar = new File(fileInJar.getPath().replace(".json", ".txt"));
         dest = new File(dest.getPath().replace(".json",""));
-        Display.displayProgressMessage("Copying File: " + fileInJar + " to " + dest);
+        Display.displayProgressMessage("Copying File: " + fileInJar + " to " + dest.getAbsolutePath());
         try {
-            if(!new File(dest.getParent()).mkdirs()) { return; }
+            new File(dest.getParent()).mkdirs();
             InputStream stream = TextFighter.class.getResourceAsStream(fileInJar.getPath()); //Note the forward-slash
             Files.copy(stream, Paths.get(dest.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             stream.close();
@@ -847,6 +847,9 @@ public class TextFighter {
             Display.displayError("Unable to copy file " + fileInJar + " to " + dest);
         }
     }
+
+    // guide/locations/inventory.txt
+    // /guide/locations/inventory.txt
 
     /**
      * Gets a location from the {@link #locations} arraylist
