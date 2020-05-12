@@ -3712,12 +3712,11 @@ public class TextFighter {
                                 "A guide for each mod should be located in the mod's\n" +
                                 "folder, which are to be placed in the `packs` folder.\n" +
                                 "The configuration files are located in one of the\n" +
-                                "following locations:\n" +
+                                "following locations (Depending on your OS):\n" +
                                 "   - Windows: `C:\\Users\\Username\\Appdata\\Roaming\\textfighter\\config\\`\n" +
                                 "   - MacOS: `~/Library/Application Support/textfighter/config/`\n" +
                                 "   - Linux: `~/.textfighter/config/`\n" +
-                                "The vanilla textfighter guide is located at\n" +
-                                "https://github.com/seanmjohns/Text-Fighter/tree/master/guide");
+                                "The vanilla textfighter guide is displayed in the `guide` tab\n");
 
             while(player.getAlive() || player.getGameBeaten()) {
                 playGame();

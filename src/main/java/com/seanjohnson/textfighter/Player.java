@@ -6,8 +6,6 @@ import com.seanjohnson.textfighter.display.Display;
 import com.seanjohnson.textfighter.item.*;
 import com.seanjohnson.textfighter.method.*;
 
-import java.lang.reflect.*;
-
 import java.util.*;
 
 public class Player {

@@ -12,8 +12,8 @@
                         {
                             "class" : "com.seanjohnson.textfighter.Player",
                             "method" : "getCoins",
-                            "field" : "player",
-                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                            "field" : "player"
                         },
                         "/",
                         "2"
