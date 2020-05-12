@@ -29,7 +29,7 @@ Release v1.3.3
 		- Leggings: 10%
 		- Boots: 5%
 	  - Increased experience requirement to level up
-	    - New formula: level^2 * 200
+	    - New formula: level^2 * 100
     - Fixes:
       - Rewards were not given when killing the lumberjack
       - No reward string was displayed for coins and experience when miner is killed
