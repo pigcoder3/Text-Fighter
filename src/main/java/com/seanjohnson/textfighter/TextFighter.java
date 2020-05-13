@@ -2088,7 +2088,6 @@ public class TextFighter {
                     Display.displayPackMessage("Loading item '" + name + "' of type 'tool'");
                     String description = Tool.defaultDescription;               if(itemFile.get("description") != null) { description = (String)itemFile.get("description"); }
                     int durability = Tool.defaultDurability;                    if(itemFile.get("durability") != null) { durability = Integer.parseInt((String)itemFile.get("durability")); }
-                    System.out.println(name + " " + durability);
                     int maxDurability = Tool.defaultMaxDurability;            if(itemFile.get("maxDurability") != null) { maxDurability = Integer.parseInt((String)itemFile.get("maxDurability")); }
                     boolean unbreakable = Tool.defaultUnbreakable;              if(itemFile.get("unbreakable") != null) { unbreakable = Boolean.parseBoolean((String)itemFile.get("unbreakable")); }
                     ArrayList<CustomVariable> customVars = new ArrayList<>();
@@ -3033,6 +3032,8 @@ public class TextFighter {
      */
     public static boolean loadGame(String saveName) {
 
+
+
         if(!PackMethods.areThereAnySaves()){ addToOutput("There are no saves, create one."); return false;}
 
         File f = new File(savesDir.getPath() + File.separator + saveName + ".json");
@@ -3144,7 +3145,7 @@ public class TextFighter {
             ArrayList<CustomVariable> unusedCustomVariables = new ArrayList<>(playerCustomVariables);
 
             //loads the custom variables that were saved
-            if((customVariables != null && customVariables.size()>0) && (playerCustomVariables != null && playerCustomVariables.size()>0)) {
+            if((customVariables != null && customVariables.size()>0)) {
                 for (Object customVariable : customVariables) {
                     JSONObject obj = (JSONObject) customVariable;
                     if (obj.get("name") != null && obj.get("type") != null && obj.get("value") != null) {
@@ -3173,6 +3174,7 @@ public class TextFighter {
                             if (cv.getName().equals(obj.get("name"))) {
                                 cv.setValue(value);
                                 newPlayerCustomVariables.add(cv);
+                                unusedCustomVariables.remove(cv); //This one is used
                                 break;
                             }
                         }
@@ -3180,8 +3182,9 @@ public class TextFighter {
                 }
                 //Add any remaining custom variables not saved
                 newPlayerCustomVariables.addAll(unusedCustomVariables);
-                //Add the new and unused ones to the player's custom variables
-                playerCustomVariables.addAll(newPlayerCustomVariables);
+
+                //Reset the player custom variables
+                playerCustomVariables = newPlayerCustomVariables;
             }
 
             //Create a new player instance with the loaded values
@@ -3346,7 +3349,7 @@ public class TextFighter {
         base.put("name", gameName);
 
         //Writes it
-        try (FileWriter w = new FileWriter(currentSaveFile)) {
+        try (FileWriter w = new FileWriter(currentSaveFile, false)) {
             w.write(base.toJSONString());
             addToOutput("Game saved in file '" + currentSaveFile.getName() + "'!");
         } catch (IOException e) { e.printStackTrace(); return false; }

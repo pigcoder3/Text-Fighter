@@ -15,6 +15,7 @@ Release v1.3.3
 	  - Kills were not increased upon killing an enemy
 	  - max durability was not loaded from mods correctly
 	  - Arguments were "stuck" if field of method was a null value
+	  - Saved custom variables were duplicated in save files
   - Vanilla TextFighter:
     - Additions:
       - Added the shield tool
@@ -44,6 +45,7 @@ Release v1.3.3
 	  - The leaf disguise could not be crafted in the crafting hut
 	  - Total protection from armor and other items is now shown in player stats interface
 	  - Arguments got "stuck" after inputting incorrect arguments when equipping a weapon in the inventory
+	  - The staff and the leafdisguise could be crafted despite already having them
 
 Release v1.3.2
   - Modmakers:

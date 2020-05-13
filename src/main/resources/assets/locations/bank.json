@@ -281,7 +281,7 @@
                             "argumentTypes" : ["1","0","1"]
                         }
                     ]
-                },
+                }
             ],
             "requirements" : [
                 {
@@ -306,7 +306,7 @@
         },
         {
             "name" : "depositcoins",
-            "description" : "deposit coins. If you do not have enough, then none will be depositted.",
+            "description" : "deposit amount of coins given with a 10% fee. If you do not have enough, then none will be depositted.",
             "methods" : [
                 {
                     "method" : "setCustomVariableByName",
@@ -324,9 +324,35 @@
                                     "argumentTypes" : ["0"],
                                     "field" : "player",
                                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                                }
+                                },
                                 "+",
-                                "%ph%0"
+                                {
+                                    "method" : "valueOf",
+                                    "class" : "java.lang.Integer",
+                                    "arguments" : [
+                                        {
+                                            "method" : "toString",
+                                            "class" : "java.lang.Double",
+                                            "arguments" : [
+                                                {
+                                                    "method" : "ceil",
+                                                    "class" : "java.lang.Math",
+                                                    "arguments" : [
+                                                        {
+                                                            "method" : "calculateFromTwoDoubles",
+                                                            "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                            "arguments" : ["%ph%0", "*", ".90"],
+                                                            "argumentTypes" : ["2", "0", "2"]
+                                                        }
+                                                    ],
+                                                    "argumentTypes" : ["2"]
+                                                }
+                                            ],
+                                            "argumentTypes" : ["2"]
+                                        }
+                                    ],
+                                    "argumentTypes" : ["0"]
+                                }
                             ],
                             "argumentTypes" : ["1","0","1"]
                         }
@@ -415,7 +441,7 @@
         },
         {
             "name" : "depositmagic",
-            "description" : "Deposit magic points. If you do not have enough, then none will be depositted.",
+            "description" : "deposit amount of magic points given with a 10% fee. If you do not have enough, then none will be depositted.",
             "methods" : [
                 {
                     "method" : "setCustomVariableByName",
@@ -433,9 +459,35 @@
                                     "argumentTypes" : ["0"],
                                     "field" : "player",
                                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                                }
+                                },
                                 "+",
-                                "%ph%0"
+                                {
+                                    "method" : "valueOf",
+                                    "class" : "java.lang.Integer",
+                                    "arguments" : [
+                                        {
+                                            "method" : "toString",
+                                            "class" : "java.lang.Double",
+                                            "arguments" : [
+                                                {
+                                                    "method" : "ceil",
+                                                    "class" : "java.lang.Math",
+                                                    "arguments" : [
+                                                        {
+                                                            "method" : "calculateFromTwoDoubles",
+                                                            "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                            "arguments" : ["%ph%0", "*", ".90"],
+                                                            "argumentTypes" : ["2", "0", "2"]
+                                                        }
+                                                    ],
+                                                    "argumentTypes" : ["2"]
+                                                }
+                                            ],
+                                            "argumentTypes" : ["2"]
+                                        }
+                                    ],
+                                    "argumentTypes" : ["0"]
+                                }
                             ],
                             "argumentTypes" : ["1","0","1"]
                         }
@@ -524,7 +576,7 @@
         },
         {
             "name" : "depositmetalscraps",
-            "description" : "deposit metal scraps. If you do not have enough, then none will be depositted.",
+            "description" : "deposit amount of metal scraps given with a 10% fee. If you do not have enough, then none will be depositted.",
             "methods" : [
                 {
                     "method" : "setCustomVariableByName",
@@ -542,9 +594,35 @@
                                     "argumentTypes" : ["0"],
                                     "field" : "player",
                                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                                }
+                                },
                                 "+",
-                                "%ph%0"
+                                {
+                                    "method" : "valueOf",
+                                    "class" : "java.lang.Integer",
+                                    "arguments" : [
+                                        {
+                                            "method" : "toString",
+                                            "class" : "java.lang.Double",
+                                            "arguments" : [
+                                                {
+                                                    "method" : "ceil",
+                                                    "class" : "java.lang.Math",
+                                                    "arguments" : [
+                                                        {
+                                                            "method" : "calculateFromTwoDoubles",
+                                                            "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                            "arguments" : ["%ph%0", "*", ".90"],
+                                                            "argumentTypes" : ["2", "0", "2"]
+                                                        }
+                                                    ],
+                                                    "argumentTypes" : ["2"]
+                                                }
+                                            ],
+                                            "argumentTypes" : ["2"]
+                                        }
+                                    ],
+                                    "argumentTypes" : ["0"]
+                                }
                             ],
                             "argumentTypes" : ["1","0","1"]
                         }
@@ -639,7 +717,7 @@
                     "method" : "movePlayer",
                     "class" : "com.seanjohnson.textfighter.PackMethods",
                     "arguments" : ["menu"],
-                    "argumentTypes" : ["0"],
+                    "argumentTypes" : ["0"]
                 }
             ],
             "usage" : "back"
