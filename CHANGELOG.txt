@@ -48,6 +48,7 @@ Release v1.3.3
 	  - Arguments got "stuck" after inputting incorrect arguments when equipping a weapon in the inventory
 	  - The staff and the leafdisguise could be crafted despite already having them
 	  - Special item, armor, and tool information can be viewed from the inventory with different choices
+	  - Could not craft a shield at the forge if the player had gloves
 
 Release v1.3.2
   - Modmakers:

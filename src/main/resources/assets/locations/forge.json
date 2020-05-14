@@ -316,7 +316,7 @@
                 {
                     "method" : "isCarrying",
                     "class" : "com.seanjohnson.textfighter.Player",
-                    "arguments" : ["gloves", "armor"],
+                    "arguments" : ["shield", "tool"],
                     "argumentTypes" : ["0","0"],
                     "field" : "player",
                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
