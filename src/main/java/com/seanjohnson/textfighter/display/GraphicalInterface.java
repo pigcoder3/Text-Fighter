@@ -301,7 +301,7 @@ public class GraphicalInterface extends JFrame {
 		}
 		int l = possibleWantedCommands.length;
 		if(l > 0 && possibleWantedCommands[0] == null) { return inputText; } //If there are none, then do nothing
-		if((l == 1 && possibleWantedCommands[0] != null) || (l > 1 && possibleWantedCommands[1] == null)) { //If there is only one, then we are good to just use it
+		if((l == 1) || (l > 1 && possibleWantedCommands[1] == null)) { //If there is only one, then we are good to just use it
 			return possibleWantedCommands[0] + " ";
 		}
 		//What if there are multiple commands that start with the current string?

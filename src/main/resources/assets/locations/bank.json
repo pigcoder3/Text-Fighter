@@ -331,24 +331,58 @@
                                     "class" : "java.lang.Integer",
                                     "arguments" : [
                                         {
-                                            "method" : "toString",
-                                            "class" : "java.lang.Double",
+                                            "method" : "substring",
+                                            "class" : "java.lang.String",
                                             "arguments" : [
+                                                "0",
                                                 {
-                                                    "method" : "ceil",
-                                                    "class" : "java.lang.Math",
-                                                    "arguments" : [
-                                                        {
-                                                            "method" : "calculateFromTwoDoubles",
-                                                            "class" : "com.seanjohnson.textfighter.PackMethods",
-                                                            "arguments" : ["%ph%0", "*", ".90"],
-                                                            "argumentTypes" : ["2", "0", "2"]
-                                                        }
-                                                    ],
-                                                    "argumentTypes" : ["2"]
+                                                    "method" : "indexOf",
+                                                    "class" : "java.lang.String",
+                                                    "arguments" : ["."],
+                                                    "argumentTypes" : ["0"],
+                                                    "field" : {
+                                                        "method" : "toString",
+                                                        "class" : "java.lang.Double",
+                                                        "arguments" : [
+                                                            {
+                                                                "method" : "ceil",
+                                                                "class" : "java.lang.Math",
+                                                                "arguments" : [
+                                                                    {
+                                                                        "method" : "calculateFromTwoDoubles",
+                                                                        "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                                        "arguments" : ["%ph%0", "*", ".90"],
+                                                                        "argumentTypes" : ["2", "0", "2"]
+                                                                    }
+                                                                ],
+                                                                "argumentTypes" : ["2"]
+                                                            }
+                                                        ],
+                                                        "argumentTypes" : ["2"]
+                                                    }
                                                 }
                                             ],
-                                            "argumentTypes" : ["2"]
+                                            "argumentTypes" : ["1","1"],
+                                            "field" : {
+                                                "method" : "toString",
+                                                "class" : "java.lang.Double",
+                                                "arguments" : [
+                                                    {
+                                                        "method" : "ceil",
+                                                        "class" : "java.lang.Math",
+                                                        "arguments" : [
+                                                            {
+                                                                "method" : "calculateFromTwoDoubles",
+                                                                "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                                "arguments" : ["%ph%0", "*", ".90"],
+                                                                "argumentTypes" : ["2", "0", "2"]
+                                                            }
+                                                        ],
+                                                        "argumentTypes" : ["2"]
+                                                    }
+                                                ],
+                                                "argumentTypes" : ["2"]
+                                            }
                                         }
                                     ],
                                     "argumentTypes" : ["0"]
@@ -466,24 +500,58 @@
                                     "class" : "java.lang.Integer",
                                     "arguments" : [
                                         {
-                                            "method" : "toString",
-                                            "class" : "java.lang.Double",
+                                            "method" : "substring",
+                                            "class" : "java.lang.String",
                                             "arguments" : [
+                                                "0",
                                                 {
-                                                    "method" : "ceil",
-                                                    "class" : "java.lang.Math",
-                                                    "arguments" : [
-                                                        {
-                                                            "method" : "calculateFromTwoDoubles",
-                                                            "class" : "com.seanjohnson.textfighter.PackMethods",
-                                                            "arguments" : ["%ph%0", "*", ".90"],
-                                                            "argumentTypes" : ["2", "0", "2"]
-                                                        }
-                                                    ],
-                                                    "argumentTypes" : ["2"]
+                                                    "method" : "indexOf",
+                                                    "class" : "java.lang.String",
+                                                    "arguments" : ["."],
+                                                    "argumentTypes" : ["0"],
+                                                    "field" : {
+                                                        "method" : "toString",
+                                                        "class" : "java.lang.Double",
+                                                        "arguments" : [
+                                                            {
+                                                                "method" : "ceil",
+                                                                "class" : "java.lang.Math",
+                                                                "arguments" : [
+                                                                    {
+                                                                        "method" : "calculateFromTwoDoubles",
+                                                                        "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                                        "arguments" : ["%ph%0", "*", ".90"],
+                                                                        "argumentTypes" : ["2", "0", "2"]
+                                                                    }
+                                                                ],
+                                                                "argumentTypes" : ["2"]
+                                                            }
+                                                        ],
+                                                        "argumentTypes" : ["2"]
+                                                    }
                                                 }
                                             ],
-                                            "argumentTypes" : ["2"]
+                                            "argumentTypes" : ["1","1"],
+                                            "field" : {
+                                                "method" : "toString",
+                                                "class" : "java.lang.Double",
+                                                "arguments" : [
+                                                    {
+                                                        "method" : "ceil",
+                                                        "class" : "java.lang.Math",
+                                                        "arguments" : [
+                                                            {
+                                                                "method" : "calculateFromTwoDoubles",
+                                                                "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                                "arguments" : ["%ph%0", "*", ".90"],
+                                                                "argumentTypes" : ["2", "0", "2"]
+                                                            }
+                                                        ],
+                                                        "argumentTypes" : ["2"]
+                                                    }
+                                                ],
+                                                "argumentTypes" : ["2"]
+                                            }
                                         }
                                     ],
                                     "argumentTypes" : ["0"]
@@ -601,24 +669,58 @@
                                     "class" : "java.lang.Integer",
                                     "arguments" : [
                                         {
-                                            "method" : "toString",
-                                            "class" : "java.lang.Double",
+                                            "method" : "substring",
+                                            "class" : "java.lang.String",
                                             "arguments" : [
+                                                "0",
                                                 {
-                                                    "method" : "ceil",
-                                                    "class" : "java.lang.Math",
-                                                    "arguments" : [
-                                                        {
-                                                            "method" : "calculateFromTwoDoubles",
-                                                            "class" : "com.seanjohnson.textfighter.PackMethods",
-                                                            "arguments" : ["%ph%0", "*", ".90"],
-                                                            "argumentTypes" : ["2", "0", "2"]
-                                                        }
-                                                    ],
-                                                    "argumentTypes" : ["2"]
+                                                    "method" : "indexOf",
+                                                    "class" : "java.lang.String",
+                                                    "arguments" : ["."],
+                                                    "argumentTypes" : ["0"],
+                                                    "field" : {
+                                                        "method" : "toString",
+                                                        "class" : "java.lang.Double",
+                                                        "arguments" : [
+                                                            {
+                                                                "method" : "ceil",
+                                                                "class" : "java.lang.Math",
+                                                                "arguments" : [
+                                                                    {
+                                                                        "method" : "calculateFromTwoDoubles",
+                                                                        "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                                        "arguments" : ["%ph%0", "*", ".90"],
+                                                                        "argumentTypes" : ["2", "0", "2"]
+                                                                    }
+                                                                ],
+                                                                "argumentTypes" : ["2"]
+                                                            }
+                                                        ],
+                                                        "argumentTypes" : ["2"]
+                                                    }
                                                 }
                                             ],
-                                            "argumentTypes" : ["2"]
+                                            "argumentTypes" : ["1","1"],
+                                            "field" : {
+                                                "method" : "toString",
+                                                "class" : "java.lang.Double",
+                                                "arguments" : [
+                                                    {
+                                                        "method" : "ceil",
+                                                        "class" : "java.lang.Math",
+                                                        "arguments" : [
+                                                            {
+                                                                "method" : "calculateFromTwoDoubles",
+                                                                "class" : "com.seanjohnson.textfighter.PackMethods",
+                                                                "arguments" : ["%ph%0", "*", ".90"],
+                                                                "argumentTypes" : ["2", "0", "2"]
+                                                            }
+                                                        ],
+                                                        "argumentTypes" : ["2"]
+                                                    }
+                                                ],
+                                                "argumentTypes" : ["2"]
+                                            }
                                         }
                                     ],
                                     "argumentTypes" : ["0"]
