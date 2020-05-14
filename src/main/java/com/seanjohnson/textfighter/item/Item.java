@@ -1,5 +1,7 @@
 package com.seanjohnson.textfighter.item;
 
+import com.seanjohnson.textfighter.CustomVariable;
+
 import java.lang.reflect.*;
 
 public class Item implements Cloneable {

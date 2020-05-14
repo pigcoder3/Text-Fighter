@@ -1164,7 +1164,7 @@ public class Player {
         if(name.equalsIgnoreCase("fists") && type.equalsIgnoreCase("weapon")) { //Ensure that the player will always have fists in their inventory
             return TextFighter.getWeaponByName("fists");
         }
-        if(name == null || type == null) { TextFighter.addToOutput("The method was given invalid input."); return null;}
+        if(type == null) { TextFighter.addToOutput("The method was given invalid input."); return null;}
         for(Item i : inventory) {
             if(i.getName().equals(name) && i.getItemType().equals(type)) {
                 return i;

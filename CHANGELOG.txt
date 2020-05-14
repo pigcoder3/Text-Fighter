@@ -47,6 +47,7 @@ Release v1.3.3
 	  - Total protection from armor and other items is now shown in player stats interface
 	  - Arguments got "stuck" after inputting incorrect arguments when equipping a weapon in the inventory
 	  - The staff and the leafdisguise could be crafted despite already having them
+	  - Special item, armor, and tool information can be viewed from the inventory with different choices
 
 Release v1.3.2
   - Modmakers:

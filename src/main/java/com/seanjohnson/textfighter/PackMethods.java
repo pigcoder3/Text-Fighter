@@ -240,6 +240,7 @@ public class PackMethods {
                 case "*":
                     return(value1 * value2);
                 case "/":
+                    System.out.println(Math.round(value1 / value2));
                     return(Math.round(value1 / value2));
                 default:
                     Display.displayError("The pack gave an invalid comparison operator (" + calculation + ")");
