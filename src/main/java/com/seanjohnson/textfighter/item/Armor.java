@@ -202,9 +202,12 @@ public class Armor extends Item {
      * @return      {@link #name}, {@link #ITEMTYPE}
      */
     public String getSimpleOutput(){
-        return name + " -\n" +
-               "  type:  " + ITEMTYPE + "\n" +
-               "  protection amount: " + protectionAmount + "\n";
+        String output = name + " -\n" +
+                "  type:  " + ITEMTYPE + "\n" +
+                "  protection amount: " + protectionAmount + "\n" +
+                "  durability: " + durability + "\n";
+        if(unbreakable) { output += "unbreakable \n"; }
+        return output;
 
     }
     //Get the output of all the variables
@@ -216,7 +219,9 @@ public class Armor extends Item {
         String output = name + " -\n" +
                         "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
-                        "  protection amount:  " + protectionAmount + "%\n";
+                        "  protection amount:  " + protectionAmount + "%\n" +
+                        "  durability: " + durability +"\n";
+        if(unbreakable) { output += "unbreakable \n"; }
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {
             if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }

@@ -180,7 +180,7 @@ public class Tool extends Item {
     public String getSimpleOutput(){
         String output = name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
-               "  durability:  ";
+               "  durability: " + durability + "\n";
         if(unbreakable) { output += "unbreakable \n"; }
         else { output += durability + "\n"; }
         return output;
@@ -193,7 +193,7 @@ public class Tool extends Item {
         String output = name + " -\n" +
                         "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
-                        "  durability  ";
+                        "  durability: " + durability + "\n";
         if(unbreakable) { output += "unbreakable \n"; }
         else { output += durability + "\n"; }
         //Adds the custom variables to the output
