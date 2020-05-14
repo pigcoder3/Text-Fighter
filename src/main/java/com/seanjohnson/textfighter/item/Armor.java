@@ -205,8 +205,9 @@ public class Armor extends Item {
         String output = name + " -\n" +
                 "  type:  " + ITEMTYPE + "\n" +
                 "  protection amount: " + protectionAmount + "\n" +
-                "  durability: " + durability + "\n";
+                "  durability:  "; //If unbreakable, then dont display durability
         if(unbreakable) { output += "unbreakable \n"; }
+        else { output += durability + "\n"; }
         return output;
 
     }
@@ -220,8 +221,9 @@ public class Armor extends Item {
                         "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
                         "  protection amount:  " + protectionAmount + "%\n" +
-                        "  durability: " + durability +"\n";
+                        "  durability:  "; //If unbreakable, then dont display durability
         if(unbreakable) { output += "unbreakable \n"; }
+        else { output += durability + "\n"; }
         //Adds the custom variables to the output
         for(CustomVariable cv : customVariables) {
             if(cv.getInOutput()) { output=output+"  " + cv.getName() + ":  " + cv.getValue().toString() + "\n"; }
