@@ -15,4 +15,4 @@ Special Actions:
 Rewards:
     25 experience - 100% chance
     20 coins - 100% chance
-    infinitybow - 50% chance
+    infinitybow - 5% chance

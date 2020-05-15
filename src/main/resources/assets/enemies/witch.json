@@ -21,7 +21,7 @@
                 {
                     "method" : "isCarrying",
                     "class" : "com.seanjohnson.textfighter.Player",
-                    "arguments" : ["witchMap","specialItems"],
+                    "arguments" : ["witchMap","specialitem"],
                     "argumentTypes" : ["0","0"],
                     "field" : "player",
                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter",

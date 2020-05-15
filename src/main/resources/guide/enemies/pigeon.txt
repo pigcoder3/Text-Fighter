@@ -1,5 +1,5 @@
 Basic Info:
-    Name: miner
+    Name: pigeon
     Description: This white and gray bird is a surprisingly powerful foe considering its size.
     Strength: 10
     Health: 20
