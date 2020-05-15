@@ -5,7 +5,7 @@
     "health" : "500",
     "maxhealth" : "1000",
     "strength" : "50",
-    "levelRequirement" : "10",
+    "levelRequirement" : "6",
     "finalBoss" : "true",
     "premethods" : [
         {

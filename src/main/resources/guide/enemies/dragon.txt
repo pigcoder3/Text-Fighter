@@ -5,7 +5,7 @@ Basic Info:
     Strength: 50
     Health: 500
     Maximum Health: 1000
-    Level Required To Be Fought: 10
+    Level Required To Be Fought: 6
 
 Requirements:
     None
