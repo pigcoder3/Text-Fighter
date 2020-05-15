@@ -33,6 +33,7 @@ Release v1.3.3
 	  - Increased experience requirement to level up
 	    - New formula: level^2 * 100
 	  - The bank now takes a 10% fee on deposits of coins, magic, and metal scraps
+	  - A bottle is now required to craft an invincibility potion in the witchhut
     - Fixes:
       - Rewards were not given when killing the lumberjack
       - No reward string was displayed for coins and experience when miner is killed
