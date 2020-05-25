@@ -1,0 +1,11 @@
+{
+
+  "name" : "shield",
+  "description" : "Can make you invincible for a turn during fights.",
+  "durability" : "30",
+  "maxDurability" : "30",
+  "unbreakable" : "false",
+  "canBeRepairedAtStation" : "true",
+  "metalScrapsToRepairAtStation" : "30"
+
+}

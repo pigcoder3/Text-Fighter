@@ -1,0 +1,129 @@
+Name: menu
+
+Description: The crossroads to many locations
+
+Interface:
+    ----------------------
+           YOUR STATS
+    ----------------------
+      hp:    <health>
+      maxhp: <maxhealth>
+      deaths: <deaths>
+
+      Health potions: <healthPotions>
+      Strength potions: <strengthPotions>
+      Invincibility potions: <invincibilityPotions>
+
+      Strength turns left: <turnsWithStrengthLeft>
+      Invincibility turns left: <turnsWithInvincibilityLeft>
+
+      weapon: <weapon>
+      durability: <durability>
+      unbreakable: <currentWeaponUnbreakable>
+      strength: <str>
+
+      level: <level>
+      exp:   <experience> / <experienceNeeded>
+
+      coins: <coins>
+      magic: <magic>
+      metal scraps: <metal>
+
+      Wood: <wood>
+      Leaves: <leaves>
+      bottles: <bottles>
+
+Choices:
+
+    Name: fight
+    Description: shows a list of enemies to fight.
+    Function: Moves you to the enemyChoices location.
+    Usage: fight
+    Requirements: None
+
+    Name: shop
+    Description: Goes to the shop.
+    Function: Moves you to the shop location
+    Usage: shop
+    Requirements: None
+
+    Name: mine
+    Description: Goes to the mine.
+    Function: Moves you to the mine location.
+    Usage: mine
+    Requirements: You must have the pickaxe.
+
+    Name: witchhut
+    Description: Goes to the witch's hut
+    Function: Moves you to the witchhut location
+    Usage: witchhut
+    Requirements: You must have the witchmap.
+
+    Name: forest
+    Description: Goes to the forest.
+    Function: Moves you to the forest location.
+    Usage: forest
+    Requirements: None
+
+    Name: weaponsmith
+    Description: Goes to the forge where you can craft armor
+    Function: Moves you to the weapon smith location.
+    Usage: weaponsmith
+    Requirements: None
+
+    Name: craft
+    Description: Goes to the crafting hut
+    Function: Moves you to the crafting hut.
+    Usage: craft
+    Requirements: None
+
+    Name: repairstation
+    Description: Goes to the repairstation.
+    Function: Moves you to the repairstation location.
+    Usage: repairstation
+    Requirements: None
+
+    Name: help
+    Description: Goes to the help menu.
+    Function: Moves you to the help location.
+    Usage: help
+    Requirements: None
+
+    Name: bank
+    Description: Goes to the bank where you can safely store currencies.
+    Function: Moves you to the bank location.
+    Usage: bank
+    Requirements: None
+
+    Name: savegame
+    Description: Saves the game
+    Function: Saves the game in the current save file.
+    Usage: savegame
+    Requirements: None
+
+    Name: savemenu
+    Description: Moves you to the saves menu.
+    Function: Moves you to the saves location.
+    Usage: savemenu
+    Requirements: None
+
+    Name: respawn
+    Description: Respawn. WARNING: All things that normally happen when you die will happen.
+    Function: Kills you.
+    Usage: respawn
+    Requirements: None
+
+    Name: debug
+    Description: Moves you to the debug menu
+    Function: Moves you to the debug menu where values can be modified for debugging purposes
+    Usage: debug
+    Requirements: None
+
+Entering:
+    None
+
+Leaving:
+    None
+
+Extra Info:
+    None

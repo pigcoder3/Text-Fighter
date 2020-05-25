@@ -1,5 +1,5 @@
 Basic Info:
-    Name: miner
+    Name: pigeon
     Description: This white and gray bird is a surprisingly powerful foe considering its size.
     Strength: 10
     Health: 20
@@ -13,8 +13,8 @@ Special Actions:
     Super Thrust Attack - Deals 20 damage instead of 10.
 
 Rewards:
-    20 experience - 100% chance
-    10 coins - 100% chance
+    7 experience - 100% chance
+    7 coins - 100% chance
 
 Entering Fight:
     None

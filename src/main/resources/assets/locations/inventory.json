@@ -12,8 +12,8 @@
     "choices" : [
 
         {
-            "name" : "inspectitem",
-            "description" : "shows you details about an item",
+            "name" : "inspectweapon",
+            "description" : "shows you details about an weapon",
             "methods" : [
                 {
                     "method" : "addToOutput",
@@ -25,7 +25,7 @@
                             "field" : {
                                 "method" : "getFromInventory",
                                 "class" : "com.seanjohnson.textfighter.Player",
-                                "arguments" : ["%ph%0", "%ph%1"],
+                                "arguments" : ["%ph%0","weapon"],
                                 "argumentTypes" : ["0","0"],
                                 "field" : "player",
                                 "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
@@ -35,7 +35,85 @@
                     "argumentTypes" : ["0"]
                 }
             ],
-            "usage" : "inspectitem <nameofitem> <itemtype>"
+            "usage" : "inspectweapon <nameofweapon>"
+        },
+        {
+            "name" : "inspectarmor",
+            "description" : "shows you details about an armor piece",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutput",
+                            "class" : "com.seanjohnson.textfighter.item.Armor",
+                            "field" : {
+                                "method" : "getFromInventory",
+                                "class" : "com.seanjohnson.textfighter.Player",
+                                "arguments" : ["%ph%0","armor"],
+                                "argumentTypes" : ["0","0"],
+                                "field" : "player",
+                                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                            }
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectarmor <nameofarmor>"
+        },
+        {
+            "name" : "inspecttool",
+            "description" : "shows you details about a tool",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutput",
+                            "class" : "com.seanjohnson.textfighter.item.Tool",
+                            "field" : {
+                                "method" : "getFromInventory",
+                                "class" : "com.seanjohnson.textfighter.Player",
+                                "arguments" : ["%ph%0","tool"],
+                                "argumentTypes" : ["0","0"],
+                                "field" : "player",
+                                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                            }
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspecttool <nameoftool>"
+        },
+        {
+            "name" : "inspectspecialitem",
+            "description" : "shows you details about a special item",
+            "methods" : [
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : [
+                        {
+                            "method" : "getOutput",
+                            "class" : "com.seanjohnson.textfighter.item.SpecialItem",
+                            "field" : {
+                                "method" : "getFromInventory",
+                                "class" : "com.seanjohnson.textfighter.Player",
+                                "arguments" : ["%ph%0","specialitem"],
+                                "argumentTypes" : ["0","0"],
+                                "field" : "player",
+                                "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                            }
+                        }
+                    ],
+                    "argumentTypes" : ["0"]
+                }
+            ],
+            "usage" : "inspectspecialitem <nameofspecialitem>"
         },
 		{
 			"name" : "throwaway",

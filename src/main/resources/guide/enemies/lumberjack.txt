@@ -15,6 +15,7 @@ Special Actions:
 Rewards:
     20 experience - 100% chance
     15 coins - 100% chance
+    Axe - 40% chance (unless you have one)
 
 Entering fight:
     None

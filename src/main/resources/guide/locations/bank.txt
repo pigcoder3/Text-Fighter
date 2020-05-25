@@ -36,20 +36,20 @@ Choices:
     Requirements: You have at least 1 metal scrap in the bank. If you have less metal scraps in the bank than the amount specified, none will be withdrawn.
 
     Name: depositcoins
-    Description: deposit coins. If you do not have enough, then none will be deposited.
-    Function: Puts the amount of coins specified into the bank (Assuming there is enough in your inventory).
+    Description: deposit amount of coins given with a 10% fee. If you do not have enough, then none will be deposited.
+    Function: Puts the amount of coins specified into the bank minus a 10% fee (rounded up) (Assuming there is enough in your inventory).
     Usage: depositcoins <amount>
     Requirements: You have at least 1 coin in your inventory. If you have less coins in your inventory than the amount specified, none will be withdrawn.
 
     Name: depositmagic
-    Description: deposit magic points. If you do not have enough, then none will be deposited.
-    Function: Puts the amount of magic points specified into the bank (Assuming there is enough in your inventory).
+    Description: deposit amount of magic points given with a 10% fee. If you do not have enough, then none will be deposited.
+    Function: Puts the amount of magic points specified into the bank minus a 10% fee (rounded up) (Assuming there is enough in your inventory).
     Usage: depositmagics <amount>
     Requirements: You have at least 1 magic in your inventory. If you have less magic in your inventory than the amount specified, none will be withdrawn.
 
     Name: depositmetalscraps
-    Description: deposit metal scraps. If you do not have enough, then none will be deposited.
-    Function: Puts the amount of metal scraps specified into the bank (Assuming there is enough in your inventory).
+    Description: deposit amount of metal scraps given with a 10% fee. If you do not have enough, then none will be deposited.
+    Function: Puts the amount of metal scraps specified into the bank minus a 10% fee (rounded up) (Assuming there is enough in your inventory).
     Usage: depositmetalscraps <amount>
     Requirements: You have at least 1 metal scrap in your inventory. If you have less metal scraps in your inventory than the amount specified, none will be withdrawn.
 

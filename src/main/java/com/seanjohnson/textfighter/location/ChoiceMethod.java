@@ -103,7 +103,7 @@ public class ChoiceMethod {
                     resetArguments();
 				}
             }
-            if(fieldvalue == null) { return false; }
+            if(fieldvalue == null) { resetArguments(); return false; }
         }
 
         Display.writeToLogFile("[<-----------------------Start Of Method Log----------------------->]");

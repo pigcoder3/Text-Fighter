@@ -29,6 +29,31 @@
                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
                 },
                 {
+                    "method" : "setCustomVariableByName",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : [
+                        "bottles",
+                        {
+                            "method" : "calculateFromTwoIntegers",
+                            "class" : "com.seanjohnson.textfighter.PackMethods",
+                            "arguments" : [
+                                {
+                                    "method" : "getCustomVariableFromName",
+                                    "class" : "com.seanjohnson.textfighter.Player",
+                                    "arguments" : ["bottles"],
+                                    "argumentTypes" : ["0"],
+                                    "field" : "player",
+                                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                                },
+                                "-",
+                                "1"
+                            ],
+                            "argumentTypes" : ["1","0","1"],
+                        }
+                    ],
+                    "argumentTypes" : ["0","*1"]
+                },
+                {
                     "method" : "addToOutput",
                     "class" : "com.seanjohnson.textfighter.TextFighter",
                     "arguments" : ["You bought an invincibility potion for 20 magic."],
@@ -50,6 +75,23 @@
                         "30"
                     ],
                     "argumentTypes" : ["1", "0", "1"]
+                },
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getCustomVariableFromName",
+                            "class" : "com.seanjohnson.textfighter.Player",
+                            "arguments" : ["bottles"],
+                            "argumentTypes" : ["0"],
+                            "field" : "player",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        ">=",
+                        "1"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
                 }
             ],
             "usage" : "invincibilitypotion"

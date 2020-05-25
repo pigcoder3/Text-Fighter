@@ -9,7 +9,7 @@
     "finalBoss" : "false",
     "postMethods" : [],
     "preMethods" : [],
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "addToInventory",
             "class" : "com.seanjohnson.textfighter.Player",
@@ -29,7 +29,7 @@
                 }
             ],
             "chance" : "10",
-            "rewarditem" : "A battle wand"
+            "rewarditem" : "battle wand"
         },
         {
             "method" : "gainCoins",
@@ -39,7 +39,7 @@
             "arguments" : ["50"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "10 coins"
+            "rewarditem" : "50 coins"
         },
         {
             "method" : "increaseExperience",
@@ -49,7 +49,7 @@
             "arguments" : ["30"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "10 experience"
+            "rewarditem" : "30 experience"
         },
         {
             "method" : "gainMagic",
@@ -59,17 +59,7 @@
             "arguments" : ["10"],
             "argumentTypes" : ["1"],
             "chance" : "100",
-            "rewarditem" : "10 coins",
-            "requirements" : [
-                {
-                    "method" : "isCarrying",
-                    "class" : "com.seanjohnson.textfighter.Player",
-                    "arguments" : ["manapouch","specialitem"],
-                    "argumentTypes" : ["0","0"],
-                    "field" : "player",
-                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                }
-            ]
+            "rewarditem" : "10 magic"
         }
     ],
     "actions" : [

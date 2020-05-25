@@ -3,7 +3,7 @@ Basic Info:
     Description: It was going to happen, and will happen many more times.
 
 Obtaining:
-    Die one time. Using the respawn choice in the menu counts.
+    Die one time.
 
 Rewards:
     10 experience - 100% chance

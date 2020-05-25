@@ -10,6 +10,27 @@
 
     ],
 
+    "premethods" : [
+        {
+            "method" : "increaseTurnsWithInvincibilityLeft",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "arguments" : ["1"],
+            "argumentTypes" : ["1"],
+            "field" : "player",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "requirements" : [
+                {
+                    "method" : "isCarrying",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["leafdisguise", "specialitem"],
+                    "argumentTypes" : ["0","0"],
+                    "field" : "player",
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                }
+            ]
+        }
+    ],
+
     "choices" : [
 
         {
@@ -19,15 +40,15 @@
                 {
                     "method" : "use",
                     "class" : "com.seanjohnson.textfighter.item.Weapon",
-                    "arguments" : ["You attacked your enemy.","1"],
+                    "arguments" : ["","1"],
                     "argumentTypes" : ["0","1"],
                     "field" : {
                         "method" : "getCurrentWeapon",
                         "class" : "com.seanjohnson.textfighter.Player",
                         "field" : "player",
                         "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                    },
-                },
+                    }
+                }
             ],
             "requirements" : [
                 {
@@ -47,6 +68,70 @@
                 }
             ],
             "usage" : "attack"
+        },
+        {
+            "name" : "block",
+            "description" : "Blocks your enemy using your shield for one turn. Your shield will be damaged for 1 durability.",
+            "methods" : [
+                {
+                    "method" : "increaseTurnsWithInvincibilityLeft",
+                    "class" : "com.seanjohnson.textfighter.Player",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "field" : "player"
+                },
+                {
+                    "method" : "addToOutput",
+                    "class" : "com.seanjohnson.textfighter.TextFighter",
+                    "arguments" : ["You blocked your enemy for one turn using your shield"],
+                    "argumentTypes" : ["0"]
+                },
+                {
+                    "method" : "decreaseDurability",
+                    "class" : "com.seanjohnson.textfighter.item.Tool",
+                    "arguments" : ["1"],
+                    "argumentTypes" : ["1"],
+                    "field" : {
+                        "method" : "getFromInventory",
+                        "class" : "com.seanjohnson.textfighter.Player",
+                        "arguments" : ["shield", "tool"],
+                        "argumentTypes" : ["0", "0"],
+                        "field" : "player",
+                        "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                    }
+                }
+            ],
+            "requirements" : [
+                {
+                    "method" : "variableComparison",
+                    "class" : "com.seanjohnson.textfighter.PackMethods",
+                    "arguments" : [
+                        {
+                            "method" : "getTurnsWithInvincibilityLeft",
+                            "class" : "com.seanjohnson.textfighter.enemy.Enemy",
+                            "field" : "currentEnemy",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                        },
+                        "<",
+                        "1"
+                    ],
+                    "argumentTypes" : ["1","0","1"]
+                },
+                {
+                    "method": "isCarrying",
+                    "class": "com.seanjohnson.textfighter.Player",
+                    "arguments": [
+                        "shield", "tool"
+                    ],
+                    "argumentTypes": [
+                        "0", "0"
+                    ],
+                    "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                    "field" : "player"
+                }
+            ],
+            "usage" : "block"
         },
         {
             "name" : "healthpotion",

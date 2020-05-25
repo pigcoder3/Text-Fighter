@@ -100,6 +100,13 @@
             "field" : "player"
         },
         {
+            "tag" : "<totalProtection>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getTotalProtection",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
             "tag" : "<health>",
             "class" : "com.seanjohnson.textfighter.Player",
             "method" : "getHp",
@@ -117,6 +124,13 @@
             "tag" : "<deaths>",
             "class" : "com.seanjohnson.textfighter.Player",
             "method" : "getDeaths",
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "field" : "player"
+        },
+        {
+            "tag" : "<kills>",
+            "class" : "com.seanjohnson.textfighter.Player",
+            "method" : "getKills",
             "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
             "field" : "player"
         },

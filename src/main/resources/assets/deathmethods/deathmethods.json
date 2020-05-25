@@ -10,10 +10,10 @@
                     "class" : "com.seanjohnson.textfighter.PackMethods",
                     "arguments" : [
                         {
-                            "method" : "getCoins",
                             "class" : "com.seanjohnson.textfighter.Player",
-                            "field" : "player",
-                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+                            "method" : "getCoins",
+                            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+                            "field" : "player"
                         },
                         "/",
                         "2"

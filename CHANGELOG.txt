@@ -1,3 +1,56 @@
+Release v1.3.3
+  - Interface:
+    - Added choice autocompletion (press tab with an incomplete choice in the input area)
+  - General Fixes:
+    - Accepted input even if input field is empty (waste of processing power)
+    - Achievements were not correctly loaded from files (meaning they were not kept when saved, but could be rearned)
+	- Removing a weapon from the player's inventory uneqipped the player's weapon but did not equip "fists"
+	- Fixed protection (used to be brokenly good)
+  - Modmakers:
+	- Rewards json array name changed from "rewardMethods" to "rewards"
+	- Added totalProtection default value for the player
+	  - Stores minimum protection
+	- Added maxProtection default value for the player
+	- Fixes:
+	  - Kills were not incremented upon killing an enemy
+	  - max durability was not loaded from mods correctly
+	  - Arguments were "stuck" (and the method could not be properly used again until reloading the assets) if field of method was a null value
+	  - Saved custom variables were duplicated in save files
+  - Vanilla TextFighter:
+    - Additions:
+      - Added the shield tool
+	    - Blocks your enemy's next attack
+	    - Crafted at the forge for 25 metal scraps and 15 wood
+		- One durability is used each time the shield is used
+	- Changes:
+	  - Kills are now shown in the player stats interface
+	  - Armor protection amounts decreased: 
+	    - Helmet: 7%
+		- Chestplate: 15%
+		- Gloves: 3%
+		- Leggings: 10%
+		- Boots: 5%
+	  - Increased experience requirement to level up
+	    - New formula: level^2 * 100
+	  - The bank now takes a 10% fee on deposits of coins, magic, and metal scraps
+	  - A bottle is now required to craft an invincibility potion in the witchhut
+    - Fixes:
+      - Rewards were not given when killing the lumberjack
+      - No reward string was displayed for coins and experience when miner is killed
+      - Lumberjack guide does not say that axe can be dropped
+      - Executioner enemy guide has typo
+      - sorcerer magic drop required a special item that did not exist (“manapouch”)
+      - Fixed various guide and game text typos
+      - Reduced coin and experience reward of most enemies
+	  - Error upon using the `woodaxe` choice in the forest location (which caused axe durability to be unchanged)
+      - Many of the enemies did not give rewards when killed
+	  - The leaf disguise could not be crafted in the crafting hut
+	  - Total protection from armor and other items is now shown in player stats interface
+	  - Arguments got "stuck" after inputting incorrect arguments when equipping a weapon in the inventory
+	  - The staff and the leafdisguise could be crafted despite already having them
+	  - Special item, armor, and tool information can be viewed from the inventory with different choices
+	  - Could not craft a shield at the forge if the player had gloves
+
 Release v1.3.2
   - Modmakers:
     - Achievement rewards can now have requirements

@@ -1,13 +1,10 @@
 package com.seanjohnson.textfighter;
 
-import com.seanjohnson.textfighter.*;
 import com.seanjohnson.textfighter.location.Location;
 import com.seanjohnson.textfighter.*;
 import com.seanjohnson.textfighter.display.Display;
 import com.seanjohnson.textfighter.item.*;
 import com.seanjohnson.textfighter.method.*;
-
-import java.lang.reflect.*;
 
 import java.util.*;
 
@@ -117,6 +114,11 @@ public class Player {
      */
     public static double defaultTotalProtection = 0;
     /**
+     * Default maximum protection.
+     * <p>Set to 75.</p>
+     */
+    public static double defaultMaxProtection = 75;
+    /**
      * Default strength potion multiplier
      * <p>Set to 2.</p>
      */
@@ -140,9 +142,15 @@ public class Player {
 
     /**
      * Stores the total protection.
-     * <p>Set to {@link #totalProtection} and can only go up to 75% protection.</p>
+     * <p>Set to {@link #defaultTotalProtection} and can only go up to 75% protection default.</p>
      */
     private double totalProtection = defaultTotalProtection;
+
+    /**
+     * Stores the maximum protection percent the player can have.
+     * <p>Set to {@link #defaultMaxProtection}.</p>
+     */
+    private double maxProtection = defaultMaxProtection;
 
     /**
      * Stores the equipped weapon.
@@ -162,9 +170,9 @@ public class Player {
     private int experience = defaultExperience;
     /**
      * Stores the experience needed to level up.
-     * <p>Set to {@link #level} * 10 + 100
+     * <p>Set to {@link #level}^2 * 100
      */
-    private int experienceNeeded = level * 10 + 100;
+    private int experienceNeeded = (int)Math.pow(level, 2) * 100;
     /**
      * Stores the player's score.
      * <p>Set to {@link #defaultScore}.</p>
@@ -544,7 +552,7 @@ public class Player {
      * Gets the {@link #totalProtection}.
      * @return      {@link #totalProtection}
      */
-    public double getTotalProtection() { return totalProtection+1; } //Increase by one here because that is what happens in the damaged method
+    public double getTotalProtection() { return totalProtection; } //Increase by one here because that is what happens in the damaged method
     /***
      * Calculates the total protection and sets {@link #totalProtection} to the new amount (Can only go up to 75%).
      * @return      the total protection from the {@link #defaultTotalProtection} + the protection gained from the armors up to 75%
@@ -554,8 +562,8 @@ public class Player {
         for(Item i : inventory) {
             if(i instanceof Armor) { totalProtection+=((Armor)i).getProtectionAmount(); }
         }
-		// I use 74 (not 75) because I increase the total protection in the damaged method so that it doesn't divide by 0
-        if(totalProtection > 74) { totalProtection = 74; }
+		// I use 75 (not 75) because I increase the total protection in the damaged method so that it doesn't divide by 0
+        if(totalProtection > maxProtection) { totalProtection = maxProtection; }
         return totalProtection;
     }
 
@@ -582,12 +590,11 @@ public class Player {
             return;
         }
         Weapon weapon = (Weapon)getFromInventory(name, "weapon");
-        if(weapon == null) { TextFighter.addToOutput("The player has no weapon of name '" + name + "'"); return; }
+        if(weapon == null) { TextFighter.addToOutput("The player has no weapon of name '" + name + "'"); }
         else {
             currentWeapon = weapon;
             TextFighter.addToOutput("Equipped weapon '" + name + "'");
             calculateStrength();
-            return;
         }
     }
     /**
@@ -599,7 +606,7 @@ public class Player {
         if(currentWeapon == null && (name == null || name.equals("fists"))) { return true;}
         if(currentWeapon != null) {
             if(currentWeapon.getName() != null) {
-                return currentWeapon.getName() == name;
+                return currentWeapon.getName().equals(name);
             }
         }
         return false;
@@ -828,12 +835,12 @@ public class Player {
      * @return      Whether or not the player has leveled up.
      */
     public boolean checkForLevelUp() {
-        experienceNeeded = level * 10 + 100;
+        experienceNeeded = (int)Math.pow(level, 2) * 100;
         if(experience >= experienceNeeded) {
-            decreaseExperience(level*10+100);
+            decreaseExperience(experienceNeeded);
             increaseLevel(1);
             TextFighter.addToOutput("You leveled up! You are now level " + level +"!");
-            experienceNeeded = level * 10 + 100;
+            experienceNeeded = (int)Math.pow(level, 2) * 100;
             invokeLevelupMethods();
             return true;
         } else {
@@ -894,7 +901,12 @@ public class Player {
     public void damaged(int a, String customString) {
         if(turnsWithInvincibilityLeft>0) { TextFighter.addToOutput("You have not been hurt because you are invincibile this turn."); return; }
         calculateTotalProtection();
-        hp = hp - (int)Math.round(a/(totalProtection+1)); //total protection Increased by 1 here so that the game doesn't divide by 0
+        int damageTaken = a;
+        if(totalProtection >= 1) { //We dont want to divide by 0
+            damageTaken = (int) Math.round((double)a * (1.0 - (totalProtection / 100.0)));
+        }
+        hp = hp - damageTaken;
+
 		if(hp < 0) { hp = 0; }
 		if(hp > maxhp) { hp = maxhp; }
 
@@ -905,7 +917,7 @@ public class Player {
         }
 
         if(customString != null) { TextFighter.addToOutput(customString);}
-        TextFighter.addToOutput("You have been hurt for " + a + " hp.");
+        TextFighter.addToOutput("You have been hurt for " + damageTaken + " hp.");
     }
     /**
      * Increases the value of {@link #hp} by the value given.
@@ -1070,12 +1082,12 @@ public class Player {
      */
     public void addToInventory(String name, String type) {
         if(name.equalsIgnoreCase("fists")) { TextFighter.addToOutput("You cannot add your fists to your inventory"); }
-        if(name == null || type == null) { return;}
+        if(type == null) { return;}
         if(type.equals("weapon")) {
             if(isCarrying(name, "weapon")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Weapon item = TextFighter.getWeaponByName(name);
             if(item != null) {
-                try { inventory.add((Weapon)item.clone()); } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
+                try { inventory.add((Weapon)item.clone()); } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e)); return; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
             } else {
                 Display.displayError("Unkown weapon '" + name + "'");
@@ -1085,7 +1097,7 @@ public class Player {
             if(isCarrying(name, "armor")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Armor item = TextFighter.getArmorByName(name);
             if(item != null) {
-                try { inventory.add((Armor)item.clone());  } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
+                try { inventory.add((Armor)item.clone());  } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e)); return; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
                 calculateTotalProtection(); //Recalculate the total protection because there is more armor
             } else {
@@ -1096,7 +1108,7 @@ public class Player {
             if(isCarrying(name, "tool")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             Tool item = TextFighter.getToolByName(name);
             if(item != null) {
-                try { inventory.add((Tool)item.clone()); } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
+                try { inventory.add((Tool)item.clone()); } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e)); return; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
             } else {
                 Display.displayError("Unkown tool '" + name + "'");
@@ -1106,7 +1118,7 @@ public class Player {
             if(isCarrying(name, "specialitem")) { TextFighter.addToOutput("A '" + name + "' of type '" + type + "' is already in your inventory"); return; }
             SpecialItem item = TextFighter.getSpecialItemByName(name);
             if(item != null) {
-                try { inventory.add((SpecialItem)item.clone());  } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e));; }
+                try { inventory.add((SpecialItem)item.clone());  } catch(CloneNotSupportedException e) { Display.displayError(Display.exceptionToString(e)); return; }
                 TextFighter.addToOutput("A " + name + " was added to your inventory.");
             } else {
                 Display.displayError("Unkown specialitem '" + name + "'");
@@ -1117,10 +1129,9 @@ public class Player {
     public void removeFromInventory(String name, String type) {
         for(int i=0;i<inventory.size();i++) {
             if(name.equals(inventory.get(i).getName()) && type.equals(inventory.get(i).getItemType())) {
-                if(inventory.get(i).equals(currentWeapon)) { setCurrentWeapon(null); }
+                if(currentWeapon != null && name.equals(currentWeapon.getName())) { setCurrentWeapon(null); } //sets to fists
 				inventory.remove(i);
 				TextFighter.addToOutput("'" + name + "' has been removed from your inventory");
-                setCurrentWeapon("fists");
                 return;
             }
         }
@@ -1153,7 +1164,7 @@ public class Player {
         if(name.equalsIgnoreCase("fists") && type.equalsIgnoreCase("weapon")) { //Ensure that the player will always have fists in their inventory
             return TextFighter.getWeaponByName("fists");
         }
-        if(name == null || type == null) { TextFighter.addToOutput("The method was given invalid input."); return null;}
+        if(type == null) { TextFighter.addToOutput("The method was given invalid input."); return null;}
         for(Item i : inventory) {
             if(i.getName().equals(name) && i.getItemType().equals(type)) {
                 return i;
@@ -1169,6 +1180,7 @@ public class Player {
      * @param a     The achievement that is earned.
      */
     public void achievementEarned(Achievement a) {
+        if(isAchievementEarned(a.getName())) { return; } //The player already has this achievement tho
         achievements.add(a);
         a.invokeRewardMethods();
         Display.achievementEarned(a.getName());
@@ -1180,12 +1192,13 @@ public class Player {
      * @return                  Whether or not the player has earned the achievement with the given name
      */
     public boolean isAchievementEarned(String achievementName) {
+
         for(Achievement achievement : achievements) {
             if(achievement.getName().equalsIgnoreCase(achievementName)) {
                 return true;
             }
         }
-        return false; //Gets here if no acheivements the player has earned have this name (also includes if the achievement doesnt exists).
+        return false; //Gets here if no achievements the player has earned have this name (also includes if the achievement doesnt exist).
     }
 
     /**
@@ -1203,7 +1216,7 @@ public class Player {
      */
     public ArrayList<Achievement> getAchievements() { return achievements; }
 
-    public Player(int deaths, int kills, Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
+    public Player(int deaths, int kills, Location location, int hp, int maxhp, int coins, int magic, int metalScraps, int level, int experience, int score, int healthPotions, int strengthPotions, int invincibilityPotions, int turnsWithStrengthLeft, int turnsWithInvincibilityLeft, Weapon currentWeapon, boolean gameBeaten, ArrayList<Item> inventory, ArrayList<Achievement> achievements, ArrayList<CustomVariable> customVariables, ArrayList<IDMethod> deathMethods, ArrayList<IDMethod> levelupmethods) {
         this.location = location;
         this.deaths = deaths;
         this.kills = kills;
@@ -1214,11 +1227,13 @@ public class Player {
         this.metalScraps = metalScraps;
         this.level = level;
         this.experience = experience;
-        this.experienceNeeded = this.level * 10 + 100;
+        this.experienceNeeded = (int)Math.pow(level, 2) * 100;
         this.score = score;
         this.healthPotions = healthPotions;
         this.strengthPotions = strengthPotions;
         this.invincibilityPotions = invincibilityPotions;
+        this.turnsWithStrengthLeft = turnsWithStrengthLeft;
+        this.turnsWithInvincibilityLeft = turnsWithInvincibilityLeft;
         this.currentWeapon = currentWeapon;
         this.gameBeaten = gameBeaten;
         this.inventory = inventory;

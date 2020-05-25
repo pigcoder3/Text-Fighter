@@ -1,7 +1,7 @@
 Basic Info:
     Name: gloves
     Description: A piece of armor that covers your hands
-    Protection Amount: 5%
+    Protection Amount: 3%
 
 Obtaining:
     Crafted at the forge for 20 metal scraps

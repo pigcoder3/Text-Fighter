@@ -1,0 +1,14 @@
+Basic info:
+    Name: shield
+    Description: Can make you invincible for a turn during fights.
+    Durability: 30
+    Maximum Durability: 30
+    Unbreakable: false
+    canBeRepairedAtStation: true
+    metalScrapsToRepairAtStation: 30
+
+Obtaining:
+    Crafted for 25 metal scraps and 15 wood at the forge
+
+More Info:
+    Damaged for 1 durability when used during a fight

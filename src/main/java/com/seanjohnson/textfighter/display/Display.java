@@ -2,7 +2,6 @@ package com.seanjohnson.textfighter.display;
 
 import com.seanjohnson.textfighter.location.Location;
 import com.seanjohnson.textfighter.TextFighter;
-import com.seanjohnson.textfighter.display.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -85,12 +84,12 @@ public class Display {
      * Stores all the interface tags.
      * <p>Set to an empty ArrayList of UiTags.</p>
      */
-    public static ArrayList<UiTag> interfaceTags = new ArrayList<UiTag>();
+    public static ArrayList<UiTag> interfaceTags = new ArrayList<>();
     /**
      * Stores all the interfaces.
      * <p>Set to an empty ArrayList of UserInterfaces.</p>
      */
-    public static ArrayList<UserInterface> interfaces = new ArrayList<UserInterface>();
+    public static ArrayList<UserInterface> interfaces = new ArrayList<>();
 
     /**
      * Creates the gui
@@ -352,14 +351,13 @@ public class Display {
         displayProgressMessage("Loading the display colors...");
         File displayColors = new File(TextFighter.configDir.getAbsolutePath() + File.separatorChar + "display");
         if(!displayColors.exists()) { return; }
-        try (BufferedReader br = new BufferedReader(new FileReader(displayColors));) {
+        try (BufferedReader br = new BufferedReader(new FileReader(displayColors))) {
             String line;
             boolean colorWarning = true;
             while ((line = br.readLine()) != null) { //Make sure the line isnt null
                 String key = "";
                 String value = "";
-                if(key == null && value == null) { continue; }
-                if(line.indexOf("=") != -1) {
+                if(line.contains("=")) {
                     key = line.substring(0,line.indexOf("="));
                     value = line.substring(line.indexOf("=")+1,line.length()).trim();
                 } else {
@@ -432,7 +430,7 @@ public class Display {
             }
 
         } catch (IOException e) {
-            Display.displayError(Display.exceptionToString(e));;
+            Display.displayError(Display.exceptionToString(e));
             displayError("Unable to read the colors in the display file. (The file does exist).");
         }
     }

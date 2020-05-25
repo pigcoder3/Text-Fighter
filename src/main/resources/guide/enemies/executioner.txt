@@ -15,7 +15,7 @@ Special Actions:
 Rewards:
     100 experience - 100% chance
     100 coins - 100% chance
-    A battleaxe - 25% chance (Assuming you don not have one)
+    A battleaxe - 25% chance (Assuming you do not have one)
 
 Entering fight:
     None

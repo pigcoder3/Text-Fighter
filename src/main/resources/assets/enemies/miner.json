@@ -9,7 +9,7 @@
     "finalBoss" : "false",
     "postMethods" : [],
     "preMethods" : [],
-    "rewardMethods" : [
+    "rewards" : [
         {
             "method" : "addToInventory",
             "class" : "com.seanjohnson.textfighter.Player",
@@ -29,7 +29,7 @@
                 }
             ],
             "chance" : "50",
-            "rewarditem" : "A pickaxe. It can be used to mine metal scraps."
+            "rewarditem" : "pickaxe"
         },
         {
             "method" : "increaseExperience",
@@ -37,15 +37,17 @@
             "arguments" : ["25"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "25 experience"
         },
         {
             "method" : "gainCoins",
             "class" : "com.seanjohnson.textfighter.Player",
-            "arguments" : ["25"],
+            "arguments" : ["12"],
             "argumentTypes" : ["1"],
             "field" : "player",
-            "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
+            "fieldclass" : "com.seanjohnson.textfighter.TextFighter",
+            "rewarditem" : "12 coins"
         }
     ]
 }

@@ -11,7 +11,7 @@ Basic Info:
     Long Range: true
 
 Obtaining:
-    Dropped by the archer at a 50% chance
+    Dropped by the archer at a 5% chance
 
 More Info:
     None

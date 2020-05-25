@@ -14,7 +14,7 @@ Special Actions:
 
 Rewards:
     25 experience - 100% chance
-    25 coins - 100% chance
+    12 coins - 100% chance
     A pickaxe - 50% chance
 
 Entering Fight:

@@ -4,7 +4,7 @@
 
     <groupId>org.seanjohnson</groupId>
     <artifactId>textfighter</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -56,8 +56,8 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
                         <goals>
                             <goal>single</goal>
                         </goals>

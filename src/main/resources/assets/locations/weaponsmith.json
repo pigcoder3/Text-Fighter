@@ -54,12 +54,6 @@
                     "argumentTypes" : ["1"],
                     "field" : "player",
                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "com.seanjohnson.textfighter.TextFighter",
-                    "arguments" : ["You bought a sword."],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [
@@ -124,12 +118,6 @@
                     "argumentTypes" : ["1"],
                     "field" : "player",
                     "fieldclass" : "com.seanjohnson.textfighter.TextFighter"
-                },
-                {
-                    "method" : "addToOutput",
-                    "class" : "com.seanjohnson.textfighter.TextFighter",
-                    "arguments" : ["You bought a deagle."],
-                    "argumentTypes" : ["0"]
                 }
             ],
             "requirements" : [

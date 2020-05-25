@@ -4,8 +4,6 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import com.seanjohnson.textfighter.method.*;
 
-import com.seanjohnson.textfighter.display.Display;
-
 @SuppressWarnings("unchecked")
 
 public class Achievement {

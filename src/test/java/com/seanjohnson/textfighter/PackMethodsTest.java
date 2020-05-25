@@ -118,9 +118,9 @@ public class PackMethodsTest {
 	public void getsCorrectPossibleEnemyOutputs() {
 		player = new Player();
 
-		Enemy enemy1 = new Enemy("testEnemy1", "a test enemy", 1, 1, 1, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-		Enemy enemy2 = new Enemy("testEnemy2", "a test enemy", 1, 1, 1, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-		Enemy enemy3 = new Enemy("testEnemy3", "a test enemy", 1, 1, 1, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		Enemy enemy1 = new Enemy("testEnemy1", "a test enemy", 1, 1, 1, 1, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		Enemy enemy2 = new Enemy("testEnemy2", "a test enemy", 1, 1, 1, 1, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		Enemy enemy3 = new Enemy("testEnemy3", "a test enemy", 1, 1, 1, 1, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
 		TextFighter.enemies.add(enemy1);
 		TextFighter.enemies.add(enemy2);

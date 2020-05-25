@@ -293,7 +293,7 @@ public class Enemy implements Cloneable {
             if(customString != null) { TextFighter.addToOutput(customString); }
             TextFighter.addToOutput("Your enemy has been hurt for " + a + " hp.");
         } else {
-            TextFighter.addToOutput("You enemy cannot be hurt this turn!");
+            TextFighter.addToOutput("Your enemy cannot be hurt this turn!");
         }
     }
     /**
@@ -307,7 +307,6 @@ public class Enemy implements Cloneable {
         if(hp < 0) { hp = 0; }
         TextFighter.addToOutput("Your enemy has been healed for " + a + " hp.");
     }
-
     //strength methods
     /**
      * Returns the {@link #strength}.
@@ -511,7 +510,7 @@ public class Enemy implements Cloneable {
         }
         //Print out all of the rewards the player recieved
         if(rewardStrings.size() > 0) {
-            TextFighter.addToOutput("Rewards:");
+            TextFighter.addToOutput("Enemy Rewards:");
             for(int i=0; i<rewardStrings.size(); i++) {
                 String s = rewardStrings.get(i);
                 if(i != rewardStrings.size()-1) {
@@ -568,21 +567,21 @@ public class Enemy implements Cloneable {
         }
     }
 
-    public Enemy(String name, String description, int hp, int str, int levelRequirement, boolean finalBoss, ArrayList<Requirement> requirements, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postMethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions, ArrayList<CustomVariable> customVariables) {
+    public Enemy(String name, String description, int hp, int maxhp, int str, int levelRequirement, boolean finalBoss, ArrayList<Requirement> requirements, ArrayList<TFMethod> premethods, ArrayList<TFMethod> postmethods, ArrayList<Reward> rewardMethods, ArrayList<EnemyAction> actions, ArrayList<CustomVariable> customVariables) {
 
         //Sets the variables
         this.name = name;
         this.description = description;
-        this.maxhp = hp;
+        this.maxhp = maxhp;
         this.hp = hp;
         this.strength = str;
         this.levelRequirement = levelRequirement;
-        this.difficulty = Math.round(hp * str * levelRequirement / 100);
+        this.difficulty = (int)Math.round(hp * str * levelRequirement / 100.0);
         this.requirements = requirements;
         this.finalBoss = finalBoss;
         this.allActions = actions;
         this.allPremethods = premethods;
-        this.allPostmethods = allPostmethods;
+        this.allPostmethods = postmethods;
         this.allRewardMethods = rewardMethods;
         this.customVariables = customVariables;
     }

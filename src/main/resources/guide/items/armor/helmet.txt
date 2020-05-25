@@ -1,7 +1,7 @@
 Basic Info:
     Name: helmet
     Description: A piece of armor that covers your head
-    Protection Amount: 15%
+    Protection Amount: 7%
 
 Obtaining:
     Crafted at the forge for 50 metal scraps

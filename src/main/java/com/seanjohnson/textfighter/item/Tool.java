@@ -152,13 +152,13 @@ public class Tool extends Item {
     /**
      * Increases the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
-     * @param a     The new value.
+     * @param a     The amount increased.
      */
     public void increaseDurability(int a) { if(unbreakable) { return; } durability+=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
     /**
      * Decrease the value of {@link #durability}.
      * <p>If the weapon is {@link #unbreakable} then nothing happens. If the new value is less than 1, then it breaks.</p>
-     * @param a     The new value.
+     * @param a     The amount decreased.
      */
     public void decreaseDurability(int a) { if(unbreakable) { return; } durability-=a; if(durability < 1) { durability = 0; broken(); } if(durability > maxDurability) { durability = maxDurability; }  }
     /**
@@ -180,7 +180,7 @@ public class Tool extends Item {
     public String getSimpleOutput(){
         String output = name + " -\n" +
                "  type:  " + ITEMTYPE + "\n" +
-               "  durability:  ";
+               "  durability:  "; //If unbreakable, then dont display durability
         if(unbreakable) { output += "unbreakable \n"; }
         else { output += durability + "\n"; }
         return output;
@@ -193,7 +193,7 @@ public class Tool extends Item {
         String output = name + " -\n" +
                         "  description:  " + description + "\n" +
                         "  type:  " + ITEMTYPE + "\n" +
-                        "  durability  ";
+                        "  durability: ";
         if(unbreakable) { output += "unbreakable \n"; }
         else { output += durability + "\n"; }
         //Adds the custom variables to the output

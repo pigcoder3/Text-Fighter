@@ -172,7 +172,7 @@ public class Reward {
         }
         resetArguments();
         Display.writeToLogFile("[<------------------------End Of Method Log------------------------>]");
-        return "";
+        return null;
     }
 
     //Reset the arguments to the original arguments because arguments that are methods may have changed them

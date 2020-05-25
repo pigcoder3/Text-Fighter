@@ -27,4 +27,4 @@ Leaving:
     None
 
 Extra Info:
-    None
+    The witchmap special item is required in order to get here.
